@@ -1,0 +1,98 @@
+plugins {
+    id 'java'
+    id 'maven'
+}
+
+//sourceCompatibility = 1.8
+
+//repositories {
+//    maven { url "http://192.168.100.88:8081/repository/maven-public/" }
+//    maven {url "http://maven.aliyun.com/nexus/content/groups/public"}
+//    maven { url "https://repo.spring.io/libs-milestone/" }
+//    jcenter()
+//    mavenCentral()
+//
+//}
+
+dependencies {
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    compile group: 'commons-codec', name: 'commons-codec', version:"${codecVersion}"
+    // https://mvnrepository.com/artifact/org.ostermiller/utils
+    compile group: 'org.ostermiller', name: 'utils', version: "${ostermillerVersion}"
+
+    //commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:"${commonLang3Version}"
+    // https://mvnrepository.com/artifact/dom4j/dom4j
+    compile group: 'dom4j', name: 'dom4j', version:"${dom4jVersion}"
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    compile group: 'org.apache.poi', name: 'poi',version:"${poiVersion}"
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: "${poiOoxmlVersion}"
+    // https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans
+//    compile group: 'org.apache.xmlbeans', name: 'xmlbeans'
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version:"${commonsIoVersion}"
+    // https://mvnrepository.com/artifact/stax/stax-api
+    compile group: 'stax', name: 'stax-api', version: "${staxVersion}"
+    // https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
+
+    compile group: 'com.itextpdf', name: 'itext-asian', version: "${itextAsianVersion}"
+    compile group: 'com.lowagie', name: 'itext', version: "${itextVersion}"
+
+// https://mvnrepository.com/artifact/com.google.zxing/core
+    compile group: 'com.google.zxing', name: 'core', version: "${zxingCoreVersion}"
+
+    compile fileTree(dir: 'lib', include: '*.jar')
+
+    //jzip压缩
+    compile group: 'org.apache.ant', name: 'ant', version: "${apacheAntVersion}"
+
+    // ip to area
+    compile group: 'org.lionsoul', name: 'ip2region', version: "${ip2regionVersion}"
+
+    //hutool-all
+    compile "cn.hutool:hutool-all:${htoolVersion}"
+
+    compile "cglib:cglib:${cglibVersion}"
+
+    //https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version:"${guavaVersion}"
+
+    // https://mvnrepository.com/artifact/com.belerweb/pinyin4j
+    //拼音转换工具包
+    compile group: 'com.belerweb', name: 'pinyin4j', version: "${pingyin4jVersion}"
+
+    // https://mvnrepository.com/artifact/com.vdurmont/emoji-java
+    compile group: 'com.vdurmont', name: 'emoji-java', version: "${emojiJavaVersion}"
+
+    // https://mvnrepository.com/artifact/com.squareup.okio/okio
+    compile group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
+
+    compile group: 'org.freemarker', name: 'freemarker', version: "${freemarkerVersion}"
+    
+    // https://mvnrepository.com/artifact/com.yahoo.platform.yui/yuicompressor
+    compile group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: "${yuicompressorVersion}"
+
+    // https://mvnrepository.com/artifact/com.rnkrsoft.bopomofo4j/bopomofo4j
+    //拼音转换工具包
+    compile group: 'com.rnkrsoft.bopomofo4j', name: 'bopomofo4j', version: "${bopomofo4jVersion}"
+
+    // https://mvnrepository.com/artifact/com.github.junrar/junrar
+    compile group: 'com.github.junrar', name: 'junrar', version: "${junrarVersion}"
+
+    testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    testCompile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.version="${project.version}"
+        pom.artifactId="${project.archivesBaseName}"
+        pom.groupId="${project.group}"
+    }
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="anchorPane" maxHeight="430.0" maxWidth="434.0" prefHeight="430.0" prefWidth="434.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iscas.biz.javafx.controller.LoginController">
+   <children>
+      <TextField fx:id="userBox" layoutX="169.0" layoutY="119.0" />
+      <Label layoutX="68.0" layoutY="116.0" prefHeight="30.0" prefWidth="81.0" text="用户">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Button fx:id="loginButton" defaultButton="true" layoutX="122.0" layoutY="323.0" mnemonicParsing="false" onAction="#processLogin" text="登陆" />
+      <Button layoutX="257.0" layoutY="323.0" mnemonicParsing="false" onAction="#processCancel" text="取消" />
+      <Label layoutX="162.0" layoutY="47.0" text="用户登陆">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="68.0" layoutY="200.0" prefHeight="30.0" prefWidth="81.0" text="密码">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="pwdBox" layoutX="169.0" layoutY="204.0" />
+   </children>
+</AnchorPane>

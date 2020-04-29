@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+//sourceCompatibility = 1.8
+
+//repositories {
+//    maven { url "http://192.168.100.88:8081/repository/maven-public/" }
+//    maven {url "http://maven.aliyun.com/nexus/content/groups/public"}
+//    maven { url "https://repo.spring.io/libs-milestone/" }
+//    jcenter()
+//    mavenCentral()
+//
+//}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit'
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:"${jacksonVersion}"
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
+
+    // https://mvnrepository.com/artifact/cn.miludeer/jsoncode
+    compile group: 'cn.miludeer', name: 'jsoncode', version: "${jsoncodeVersion}"
+
+    // https://mvnrepository.com/artifact/net.sf.json-lib/json-lib
+    compile ("net.sf.json-lib:json-lib:${jsonlibVersion}")
+
+    // https://mvnrepository.com/artifact/org.json/json
+    compile group: 'org.json', name: 'json', version: "${orgJsonVersion}"
+
+    compile ("xom:xom:${xomVersion}")
+
+    compile "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
+
+
+}

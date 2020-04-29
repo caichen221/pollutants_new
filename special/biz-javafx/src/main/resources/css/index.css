@@ -1,0 +1,91 @@
+
+/*root类选择器给所有的元素设置样式*/
+.root {
+    -fx-font-family: "微软雅黑";
+    -fx-font-size: 16px;
+    /*-fx-background-image: url(../images/background.jpg);*/
+    -fx-background-size: stretch stretch;
+    -fx-background-position: center center;
+    -fx-background-color: #dedede;
+}
+
+#leftPane {
+    -fx-font-family: "微软雅黑";
+    -fx-font-size: 16px;
+    -fx-background-color: #fff5ee;
+    -fx-background-size: stretch stretch;
+    -fx-background-position: center center;
+}
+
+.leftButton {
+    -fx-background-color: #c1e3ce;
+    -fx-font-family: "youyuan";
+    -fx-font-size: 20px;
+    -fx-text-fill: black;
+    -fx-alignment: center;
+}
+
+.leftButton:hover {
+    -fx-background-color: #c1e3ff;
+    -fx-font-family: "youyuan";
+    -fx-font-size: 20px;
+    -fx-text-fill: black;
+    -fx-alignment: center;
+}
+
+.leftButtonClick {
+    -fx-background-color: #389bff;
+    -fx-font-family: "youyuan";
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+}
+
+#rightPane {
+    -fx-font-family: "微软雅黑";
+    -fx-font-size: 16px;
+    -fx-background-color: #e1d8d2;
+    -fx-background-size: stretch stretch;
+    -fx-background-position: center center;
+}
+
+/*#btn {*/
+/*    -fx-font-size: 20px;*/
+/*    -fx-font-weight: bolder;*/
+/*    -fx-text-fill: darkslategray;*/
+/*    !*-fx-background-image: url("background.jpg");*!*/
+/*}*/
+/*.button {*/
+/*    -fx-background-color:*/
+/*            linear-gradient(#dedede 0%, #232723 25%, #373837 75%, #757575 100%),*/
+/*            linear-gradient(#020b02, #3a3a3a),*/
+/*            linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),*/
+/*            linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),*/
+/*            linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);*/
+/*    -fx-background-insets: 0,1,4,5,6;*/
+/*    -fx-background-radius: 9,8,5,4,3;*/
+/*    -fx-padding: 15 30 15 30;*/
+/*    -fx-font-family: "Arial Black";*/
+/*    -fx-font-size: 18px;*/
+/*    -fx-font-weight: bold;*/
+/*    -fx-text-fill: white;*/
+/*    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+/*}*/
+
+/*.button:hover {*/
+/*    -fx-background-color:*/
+/*            linear-gradient(#757575 0%, #373837 25%, #232723 75%, #686868 100%),*/
+/*            linear-gradient(#3a3a3a, #020b02),*/
+/*            linear-gradient(#242424 0%, #343534 20%, #6b6a6b 80%, #9d9e9d 100%),*/
+/*            linear-gradient(#262626 0%, #343534 20%, #6b6a6b 80%, #8a8a8a 100%),*/
+/*            linear-gradient(#2a2b2a 0%, #505250 50%, #606060 51%, #777777 100%);*/
+/*    -fx-background-insets: 0,1,4,5,6;*/
+/*    -fx-background-radius: 9,8,5,4,3;*/
+/*    -fx-padding: 15 30 15 30;*/
+/*    -fx-font-family: "Arial Black";*/
+/*    -fx-font-size: 18px;*/
+/*    -fx-font-weight: bold;*/
+/*    -fx-text-fill: white;*/
+/*    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+/*    -fx-cursor:hand;*/
+/*}*/
