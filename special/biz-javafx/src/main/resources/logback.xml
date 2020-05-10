@@ -3,7 +3,7 @@
     <contextName>stc-pub日志配置</contextName>
     <property name="LOG_PATH" value="logs" />
     <!--设置系统日志目录-->
-    <property name="APPDIR" value="dataCollect" />
+    <property name="APPDIR" value="biz-javafx" />
 
     <!-- 日志记录器，日期滚动记录 -->
     <appender name="FILEERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">

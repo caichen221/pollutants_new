@@ -1,7 +1,7 @@
-package com.iscas.biz.javafx.view;
+package com.iscas.biz.jf.view;
 
-import de.felixroske.jfxsupport.AbstractFxmlView;
-import de.felixroske.jfxsupport.FXMLView;
+import com.iscas.biz.jf.support.AbstractFxmlView;
+import com.iscas.biz.jf.support.FXMLView;
 
 /**
  * //TODO

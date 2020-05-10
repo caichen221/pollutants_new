@@ -1,0 +1,2 @@
+如果在idea中运行需要在vm options中添加-Djava.awt.headless=false
+如果打完jar后运行也需要添加，例如：

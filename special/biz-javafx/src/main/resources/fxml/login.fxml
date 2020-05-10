@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<AnchorPane fx:id="anchorPane" maxHeight="430.0" maxWidth="434.0" prefHeight="430.0" prefWidth="434.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iscas.biz.javafx.controller.LoginController">
+<AnchorPane fx:id="anchorPane" maxHeight="430.0" maxWidth="434.0" prefHeight="430.0" prefWidth="434.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iscas.biz.jf.controller.LoginController">
    <children>
       <TextField fx:id="userBox" layoutX="169.0" layoutY="119.0" />
       <Label layoutX="68.0" layoutY="116.0" prefHeight="30.0" prefWidth="81.0" text="用户">

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<AnchorPane fx:id="anchorPane" prefHeight="841.0" prefWidth="1229.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iscas.biz.javafx.controller.IndexController">
+<AnchorPane fx:id="anchorPane" prefHeight="841.0" prefWidth="1229.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iscas.biz.jf.controller.IndexController">
    <children>
       <Label layoutX="389.0" layoutY="357.0" text="这是主界面啦啦啦拉拉">
          <font>
