@@ -27,11 +27,10 @@ dependencies {
 //    compile project(":biz-mp")
     
     //引入jpa,如果引入了这个模块
-//    compile project(":biz-jpa")
+    compile project(":biz-jpa")
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 }
-
 
 //打入本地maven库配置
 install {

@@ -59,8 +59,9 @@ public class JpaPrimaryConfig {
     @Autowired(required = false)
     private PersistenceUnitManager persistenceUnitManager;
 
-    private Map<String, Object> getVenorProperties() {
-        return jpaProperties.getHibernateProperties(new HibernateSettings());
+    private Map<String, String> getVenorProperties() {
+        return jpaProperties.getProperties();
+//        return jpaProperties.getHibernateProperties(new HibernateSettings());
     }
 
     @Primary

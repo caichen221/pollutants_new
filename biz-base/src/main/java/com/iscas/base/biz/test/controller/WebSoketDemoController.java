@@ -1,5 +1,10 @@
 package com.iscas.base.biz.test.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -16,6 +21,7 @@ public class WebSoketDemoController {
 //
 //    @Autowired
 //    private SimpUserRegistry userRegistry;
+
 //
 //
 //
@@ -28,6 +34,7 @@ public class WebSoketDemoController {
 //            logger.info("用户" + i++ + "---" + user);
 //        }
 //        //发送消息给指定用户
+//        messagingTemplate.convertAndSend("/topic/message", new Object());
 //        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/message","服务器主动推的数据");
 //    }
 //
