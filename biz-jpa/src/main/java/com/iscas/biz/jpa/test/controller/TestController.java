@@ -36,7 +36,7 @@ public class TestController extends BaseController {
     @GetMapping("/testAdd")
     public ResponseEntity testAdd() {
         var app = new App();
-        app.setAppAddr("192.168.100.88").setName("zhangsan");
+        app.setAppAddr("192.168.100.88").setName("zhangsanxxxx");
         var save = appDao.save(app);
         var response = getResponse();
         response.setValue(save);

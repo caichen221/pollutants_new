@@ -2,6 +2,7 @@ package com.iscas.biz.jpa.config.db.single;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -20,8 +21,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * //TODO
@@ -58,8 +62,24 @@ public class JpaConfig {
     @Autowired(required = false)
     private PersistenceUnitManager persistenceUnitManager;
 
-    private Map<String, String> getVenorProperties() {
-        return jpaProperties.getProperties();
+    private Map<String, Object> getVenorProperties() {
+        https://blog.csdn.net/fall_hat/article/details/105219307
+
+//        return jpaProperties.getProperties();
+
+        List<HibernatePropertiesCustomizer> hibernatePropertiesCustomizers = determineHibernatePropertiesCustomizers(
+                physicalNamingStrategy.getIfAvailable(),
+                implicitNamingStrategy.getIfAvailable(), beanFactory,
+                this.hibernatePropertiesCustomizers.orderedStream()
+                        .collect(Collectors.toList()));
+        Supplier<String> defaultDdlMode = () -> new HibernateDefaultDdlAutoProvider(providers)
+                .getDefaultDdlAuto(dataSource);
+        return new LinkedHashMap<>(this.hibernateProperties.determineHibernateProperties(
+                properties.getProperties(),
+                new HibernateSettings().ddlAuto(defaultDdlMode)
+                        .hibernatePropertiesCustomizers(
+                                hibernatePropertiesCustomizers)));
+
 //        return jpaProperties.getHibernateProperties(new HibernateSettings());
     }
 

@@ -47,7 +47,7 @@ public class App implements Serializable{
 	 private String name;//应用名称
 	 @Column(length=80)
 	 private String description;//应用说明
-	 @Column(length=150)
+	 @Column(name = "app_addr", length=150)
 	 private String appAddr;
 	 
 	 @OneToMany(mappedBy = "app",fetch=FetchType.EAGER,cascade={CascadeType.REMOVE /*,CascadeType.PERSIST*/ /*, CascadeType.MERGE, CascadeType.REFRESH */ /*,CascadeType.REMOVE*/})
