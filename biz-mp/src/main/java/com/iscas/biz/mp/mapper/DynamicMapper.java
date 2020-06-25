@@ -2,6 +2,8 @@ package com.iscas.biz.mp.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.ResultSetType;
+import org.apache.ibatis.session.ResultHandler;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +30,11 @@ public interface DynamicMapper extends BaseMapper {
 
     @Delete("${sql}")
     void dynamicDelete(@Param("sql") String sql);
+
+    @Select("${sql}")
+    @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = 1000)
+    @ResultType(Map.class)
+    void dynamicSelectLargeData(@Param("sql") String sql, ResultHandler<Map> handler);
+
+
 }
