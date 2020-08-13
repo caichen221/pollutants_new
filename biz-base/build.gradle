@@ -32,6 +32,9 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+
 //    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     // https://mvnrepository.com/artifact/org.springframework/spring-tx
     compile group: 'org.springframework', name: 'spring-tx'
