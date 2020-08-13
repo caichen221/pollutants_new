@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.util;
 
 import com.iscas.biz.mp.mapper.DynamicMapper;
+import lombok.SneakyThrows;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -10,6 +11,9 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +109,47 @@ public class MybatisGeneralUtils {
                 sqlSession.close();
             }
         }
+    }
+
+
+    /**
+     * 批量提交
+     * forceExecute 表示是否强制提交，sqls的size小于batchSize
+     * */
+    public static void executeBatch(SqlSessionFactory sessionFactory, List<String> sqls, int batchSize, boolean forceExecute) throws SQLException {
+        SqlSession sqlSession = null;
+
+        if (sqls == null) {
+            return;
+        }
+        if (sqls.size() < batchSize && !forceExecute) {
+            return;
+        }
+
+        sqlSession = sessionFactory.openSession();
+        Connection conn = sqlSession.getConnection();
+        try {
+            Statement statement = conn.createStatement();
+            for (String sql : sqls) {
+                statement.addBatch(sql);
+            }
+            statement.executeBatch();
+            conn.commit();
+        } catch (Exception e) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            throw e;
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }
