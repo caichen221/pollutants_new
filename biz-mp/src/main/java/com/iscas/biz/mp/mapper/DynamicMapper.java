@@ -19,6 +19,10 @@ import java.util.Map;
  */
 @Repository
 public interface DynamicMapper extends BaseMapper {
+
+    @Select("${sql}" )
+    Map dynamicSelectOne(@Param("sql") String sql);
+
     @Select("${sql}" )
     List<Map> dynamicSelect(@Param("sql") String sql);
 
@@ -35,6 +39,11 @@ public interface DynamicMapper extends BaseMapper {
     @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = 1000)
     @ResultType(Map.class)
     void dynamicSelectLargeData(@Param("sql") String sql, ResultHandler<Map> handler);
+
+    @Insert("<script><foreach close=\"\" collection=\"sqls\" index=\"index\" item=\"item\" open=\"\" separator=\";\">  " +
+            "     #{item}       " +
+            "        </foreach></script>  ")
+    void dynamicBatch(@Param("sqls") List<String> sqls);
 
 
 }

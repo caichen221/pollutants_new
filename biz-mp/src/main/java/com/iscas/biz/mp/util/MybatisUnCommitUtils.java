@@ -81,6 +81,7 @@ public class MybatisUnCommitUtils {
         }
 
         Connection conn = sqlSession.getConnection();
+        conn.setAutoCommit(false);
         try {
             Statement statement = conn.createStatement();
             for (String sql : sqls) {
@@ -98,6 +99,7 @@ public class MybatisUnCommitUtils {
             throw e;
         } finally {
             try {
+                conn.setAutoCommit(true);
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();

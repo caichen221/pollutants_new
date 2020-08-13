@@ -24,7 +24,7 @@ dependencies {
     compile project(":biz-base")
 
     //引入mybatis,如果引入了这个模块，
-//    compile project(":biz-mp")
+    compile project(":biz-mp")
     
     //引入jpa,如果引入了这个模块
 //    compile project(":biz-jpa")

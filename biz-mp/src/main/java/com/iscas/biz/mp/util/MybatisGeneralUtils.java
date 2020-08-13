@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -30,16 +31,25 @@ import java.util.Map;
  * @since jdk11
  */
 public class MybatisGeneralUtils {
+    private static volatile Map<String, SqlSessionFactory> sqlSessionFactoryMap = new ConcurrentHashMap<>();
 
     public static SqlSessionFactory getSessionFactory(String envId, DataSource dataSource) {
+        if (!sqlSessionFactoryMap.containsKey(envId)) {
+            synchronized (envId.intern()) {
+                if (!sqlSessionFactoryMap.containsKey(envId)) {
+                    Configuration configuration = new Configuration();
+                    configuration.addMapper(DynamicMapper.class);
+                    TransactionFactory transactionFactory = new JdbcTransactionFactory();
+                    Environment environment = new Environment(envId, transactionFactory, dataSource);
+                    configuration.setEnvironment(environment);
+                    SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+                    sqlSessionFactoryMap.put(envId, sessionFactory);
+                    return sessionFactory;
+                }
+            }
+        }
+        return sqlSessionFactoryMap.get(envId);
 
-        Configuration configuration = new Configuration();
-        configuration.addMapper(DynamicMapper.class);
-        TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        Environment environment = new Environment(envId, transactionFactory, dataSource);
-        configuration.setEnvironment(environment);
-        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-        return sessionFactory;
     }
 
     private static Map<String, String> createSqlMap(String sql) {
@@ -48,6 +58,22 @@ public class MybatisGeneralUtils {
         return sqlMap;
     }
 
+    public static Map executeSearchOne(SqlSessionFactory sessionFactory, String sql) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = sessionFactory.openSession();
+            Map<String, String> sqlMap = createSqlMap(sql);
+            Map result = null;
+            String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicSelect";
+            result = sqlSession.selectOne(method, sqlMap);
+            sqlSession.commit();
+            return result;
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
+    }
 
     public static List<Map> executeSearch(SqlSessionFactory sessionFactory, String sql) {
         SqlSession sqlSession = null;
@@ -128,6 +154,7 @@ public class MybatisGeneralUtils {
 
         sqlSession = sessionFactory.openSession();
         Connection conn = sqlSession.getConnection();
+        conn.setAutoCommit(false);
         try {
             Statement statement = conn.createStatement();
             for (String sql : sqls) {
@@ -145,6 +172,7 @@ public class MybatisGeneralUtils {
             throw e;
         } finally {
             try {
+                conn.setAutoCommit(true);
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
