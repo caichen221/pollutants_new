@@ -135,6 +135,7 @@ public class MybatisGeneralUtils {
             }
             statement.executeBatch();
             conn.commit();
+            sqls.clear();
         } catch (Exception e) {
             try {
                 conn.rollback();
