@@ -3,6 +3,8 @@ package com.iscas.biz.mp.config.db.multi;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -38,7 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- *  多数据源配置例子
+ * 多数据源配置例子
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -87,16 +89,16 @@ public class DruidConfiguration {
     @ConditionalOnProperty(name = "spring.datasource.druid.mysql1.name", havingValue = "mysql1",
             matchIfMissing = true)
 //    @ConfigurationProperties(prefix = "spring.datasource.druid.mysql1")
-    public DataSource db1(){
+    public DataSource db1() {
         DruidDataSource datasource = (DruidDataSource) datasource1Properties.initializeDataSourceBuilder().build();
 
         //        datasource.setUseGlobalDataSourceStat(useGlobalDataSourceStat);
-        try {
-            datasource.setFilters(filters);
-        } catch (SQLException e) {
-            log.error("druid configuration initialization filter: "+ e);
-        }
-        datasource.setProxyFilters(Arrays.asList(statFilter(),logFilter()));
+//        try {
+//            datasource.setFilters(filters);
+//        } catch (SQLException e) {
+//            log.error("druid configuration initialization filter: " + e);
+//        }
+        datasource.setProxyFilters(Arrays.asList(statFilter(), logFilter(), wallFilter()));
 //        datasource.setConnectionProperties(connectionProperties);
         return datasource;
     }
@@ -106,30 +108,31 @@ public class DruidConfiguration {
     @ConditionalOnProperty(name = "spring.datasource.druid.mysql2.name", havingValue = "mysql2",
             matchIfMissing = true)
 //    @ConfigurationProperties(prefix = "spring.datasource.druid.mysql2")
-    public DataSource db2(){
+    public DataSource db2() {
         DruidDataSource datasource = (DruidDataSource) datasource2Properties.initializeDataSourceBuilder().build();
-        try {
-            datasource.setFilters(filters2);
-        } catch (SQLException e) {
-            log.error("druid configuration initialization filter: "+ e);
-        }
-        datasource.setProxyFilters(Arrays.asList(statFilter(),logFilter()));
+//        try {
+//            datasource.setFilters(filters2);
+//        } catch (SQLException e) {
+//            log.error("druid configuration initialization filter: " + e);
+//        }
+        datasource.setProxyFilters(Arrays.asList(statFilter(), logFilter(), wallFilter()));
 //        datasource.setConnectionProperties(connectionProperties);
         return datasource;
     }
 
     /**
      * 动态数据源配置
+     *
      * @return
      */
     @Bean
     @Primary
-    public DataSource multipleDataSource (@Qualifier("mysql1") DataSource db1,
-                                          @Qualifier("mysql2") DataSource db2) {
+    public DataSource multipleDataSource(@Qualifier("mysql1") DataSource db1,
+                                         @Qualifier("mysql2") DataSource db2) {
 
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        Map< Object, Object > targetDataSources = new HashMap<>(2 << 2);
-        targetDataSources.put(DbTypeEnum.db1.getValue(), db1 );
+        Map<Object, Object> targetDataSources = new HashMap<>(2 << 2);
+        targetDataSources.put(DbTypeEnum.db1.getValue(), db1);
         targetDataSources.put(DbTypeEnum.db2.getValue(), db2);
         dynamicDataSource.setTargetDataSources(targetDataSources);
         dynamicDataSource.setDefaultTargetDataSource(db1);
@@ -140,7 +143,7 @@ public class DruidConfiguration {
     @Primary
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
-        factory.setDataSource(multipleDataSource(db1(),db2()));
+        factory.setDataSource(multipleDataSource(db1(), db2()));
 //        sqlSessionFactory.setDataSource(multipleDataSource);
         //sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*/*Mapper.xml"));
 
@@ -177,10 +180,9 @@ public class DruidConfiguration {
     }
 
 
-
     @Bean
     @Primary
-    public StatFilter statFilter(){
+    public StatFilter statFilter() {
         StatFilter statFilter = new StatFilter();
         statFilter.setSlowSqlMillis(slowSqlMill);
         statFilter.setLogSlowSql(logslowSql);
@@ -189,7 +191,7 @@ public class DruidConfiguration {
     }
 
     @Bean
-    public Slf4jLogFilter logFilter(){
+    public Slf4jLogFilter logFilter() {
         Slf4jLogFilter filter = new Slf4jLogFilter();
 //        filter.setResultSetLogEnabled(false);
 //        filter.setConnectionLogEnabled(false);
@@ -198,6 +200,25 @@ public class DruidConfiguration {
 //        filter.setStatementCloseAfterLogEnabled(false);
 //        filter.setStatementParameterSetLogEnabled(false);
 //        filter.setStatementPrepareAfterLogEnabled(false);
-        return  filter;
+        return filter;
+    }
+
+    @Bean
+
+    public WallFilter wallFilter() {
+        WallFilter wallFilter = new WallFilter();
+        wallFilter.setConfig(wallConfig());
+        return wallFilter;
+
+    }
+
+    @Bean
+
+    public WallConfig wallConfig() {
+        WallConfig config = new WallConfig();
+        config.setMultiStatementAllow(true);//允许一次执行多条语句
+        config.setNoneBaseStatementAllow(true);//允许非基本语句的其他语句
+        return config;
+
     }
 }

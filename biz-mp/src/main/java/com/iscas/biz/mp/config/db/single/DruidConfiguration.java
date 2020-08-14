@@ -4,6 +4,9 @@ package com.iscas.biz.mp.config.db.single;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,12 +61,12 @@ public class DruidConfiguration {
 
         //        datasource.setUseGlobalDataSourceStat(useGlobalDataSourceStat);
         log.info("------------注册Druid过滤器-----------");
-        try {
-            datasource.setFilters(filters);
-        } catch (SQLException e) {
-            log.error("druid configuration initialization filter: "+ e);
-        }
-        datasource.setProxyFilters(Arrays.asList(statFilter(),logFilter()));
+//        try {
+//            datasource.setFilters(filters);
+//        } catch (SQLException e) {
+//            log.error("druid configuration initialization filter: "+ e);
+//        }
+        datasource.setProxyFilters(Arrays.asList(statFilter(),logFilter(), wallFilter()));
         log.info("------------注册Druid过滤器结束-----------");
         log.info("------------注册DruidDatasource结束-----------");
         return datasource;
@@ -90,6 +93,31 @@ public class DruidConfiguration {
 //        filter.setStatementParameterSetLogEnabled(false);
 //        filter.setStatementPrepareAfterLogEnabled(false);
         return  filter;
+    }
+
+    @Bean
+
+    public WallFilter wallFilter() {
+        WallFilter wallFilter = new WallFilter();
+        wallFilter.setConfig(wallConfig());
+        return wallFilter;
+
+    }
+
+    @Bean
+
+    public WallConfig wallConfig() {
+        WallConfig config = new WallConfig();
+        config.setMultiStatementAllow(true);//允许一次执行多条语句
+        config.setNoneBaseStatementAllow(true);//允许非基本语句的其他语句
+        return config;
+
+    }
+
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        return paginationInterceptor;
     }
 
 }

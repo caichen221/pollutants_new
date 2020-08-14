@@ -40,8 +40,8 @@ public interface DynamicMapper extends BaseMapper {
     @ResultType(Map.class)
     void dynamicSelectLargeData(@Param("sql") String sql, ResultHandler<Map> handler);
 
-    @Insert("<script><foreach close=\"\" collection=\"sqls\" index=\"index\" item=\"item\" open=\"\" separator=\";\">  " +
-            "     #{item}       " +
+    @Update("<script><foreach close=\"\" collection=\"sqls\" index=\"index\" item=\"item\" open=\"\" separator=\";\">  " +
+            "     ${item}       " +
             "        </foreach></script>  ")
     void dynamicBatch(@Param("sqls") List<String> sqls);
 

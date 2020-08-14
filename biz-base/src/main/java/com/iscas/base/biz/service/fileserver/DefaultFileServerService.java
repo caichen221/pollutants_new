@@ -52,9 +52,9 @@ public class DefaultFileServerService implements FileServerService{
         return result;
     }
 
-    public static void main(String[] args) {
-        System.out.println("F:\\fileserver\\2019-09-25\\hsvVn3nX\\pod hook.txt".replace("\\", "/"));
-    }
+//    public static void main(String[] args) {
+//        System.out.println("F:\\fileserver\\2019-09-25\\hsvVn3nX\\pod hook.txt".replace("\\", "/"));
+//    }
 
     @Override
     public void download(String path) throws BaseException {
