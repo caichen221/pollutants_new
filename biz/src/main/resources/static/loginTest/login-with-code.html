@@ -46,12 +46,44 @@
             return CryptoJS.enc.Utf8.stringify(decrypt).toString();
         }
         function tosubmit(){
+            //验证验证码
+            var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
+            xhr.open('get', 'http://localhost:7901/demo/verification/code/verify?code=' + $1("code").value);
+            xhr.setRequestHeader("Content-type", "application/json;charset=utf-8");
+            //发送请求
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var jsonx = JSON.parse(xhr.responseText);
+                    if(jsonx.status != 200){
+                        console.log(jsonx.message);
+                        var verifySuccess = jsonx.value;
+                        if (verifySuccess == true) {
+                            //发送用户名密码
+                            submitUserAndPwd();
+                        } else {
+                            alert("验证码校验失败");
+                        }
+                    }else{
+                        console.log(jsonx.data);
+                    }
+                }else{
+                    // var json = JSON.parse(xhr.responseText);
+                    console.log(xhr.responseText);
+                }
+            };
+
+        }
+
+        function submitUserAndPwd() {
+            var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
             var username = $1("user").value;
             var password = $1("pwd").value;
             username = Encrypt(username, aesKey);
             password = Encrypt(password, aesKey);
-            var xhr = new XMLHttpRequest();
-            xhr.withCredentials = true;
+
             xhr.open('post', 'http://localhost:7901/demo/login');
             xhr.setRequestHeader("Content-type", "application/json;charset=utf-8");
             //发送请求
@@ -82,7 +114,8 @@
 <body>
 用户名:<input type="text" value="" id="user"/> <br/>
 密码:<input type="text" id="pwd" /><br/>
-<!--验证码:<img src="http://localhost:7901/demo/verification/code" onclick="this.src=this.src+'?m='+Math.random();"/><br/>-->
+验证码:<img src="http://localhost:7901/demo/verification/code" onclick="this.src=this.src+'?m='+Math.random();"/>
+        <input type="text", id = "code"/><br/>
 <input type="button" value="提交" onclick="tosubmit();"/>
 </body>
 </html>

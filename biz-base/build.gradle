@@ -35,33 +35,13 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
 
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     // https://mvnrepository.com/artifact/org.springframework/spring-tx
     compile group: 'org.springframework', name: 'spring-tx'
 
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
-//    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version:"${springCloudConfigVersion}"
     compile('org.springframework.boot:spring-boot-starter-validation')
 
-//    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
-    // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
-//    compile group: 'org.apache.velocity', name: 'velocity-engine-core', version: "${velocity_engine_core_version}"
-
-    // https://mvnrepository.com/artifact/freemarker/freemarker
-//    compile group: 'org.freemarker', name: 'freemarker'
-
-    //knife4j
+    //knife4j,替代swagger
     compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
-
-    //swagger
-//    compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
-//    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
-    // mysql连接
-//    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
-    //mybatis分页插件(基本弃用)
-//    compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
-    //druid连接池配置
-//    compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: "${druidVersion}"
 
     //okhttp
     compile "com.squareup.okhttp3:okhttp"
@@ -76,16 +56,43 @@ dependencies {
     //eu.bitwalker
     compile group: 'nl.bitwalker', name: 'UserAgentUtils', version: "${userAgentUtilVersion}"
 
-    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    // jsoup
     compile group: 'org.jsoup', name: 'jsoup', version: "${jsoupVersion}"
 
-
-//    compile group: 'com.iscas.log', name: 'log-expansion', version: "${logExpansionVersion}"
 
     //实现RSA 对请求和返回值的加解密
     compile "cn.shuibo:rsa-encrypt-body-spring-boot:${rsaEncryVersion}"
 
+    //springboot-admin客户端
     compile "de.codecentric:spring-boot-admin-starter-client:${bootAdminVersion}"
+
+    //验证码
+    compile "com.github.penggle:kaptcha:${kaptchaVersion}"
+
+
+    //    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
+    // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
+//    compile group: 'org.apache.velocity', name: 'velocity-engine-core', version: "${velocity_engine_core_version}"
+
+    // https://mvnrepository.com/artifact/freemarker/freemarker
+//    compile group: 'org.freemarker', name: 'freemarker'
+
+    //    compile group: 'com.iscas.log', name: 'log-expansion', version: "${logExpansionVersion}"
+
+    //swagger
+//    compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+//    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
+    // mysql连接
+//    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    //mybatis分页插件(基本弃用)
+//    compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
+    //druid连接池配置
+//    compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: "${druidVersion}"
+
+    //    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
+//    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version:"${springCloudConfigVersion}"
+
+    //    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
 
 }
 

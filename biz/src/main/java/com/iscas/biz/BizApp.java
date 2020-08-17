@@ -3,6 +3,7 @@ package com.iscas.biz;
 
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -37,11 +38,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableDruidMonitor //开启Druid监控（未使用biz-mp或biz-jpa模块时无法使用）
 //@EnableSecurity //是否开启rsa接口请求以及返回值的加解密，可在非https下使用，需要在接口使用注解
 @EnableDatasongClientPlus //是否开启Datasongclient客户端，如果关闭请把biz-base模块下com.iscas.base.biz.test.datasongplus下所有内容注释或删掉
+@Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(BizApp.class);
 //        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);
+        log.info("==========服务已启动=================");
     }
     /**
      *重写configure
@@ -51,7 +54,9 @@ public class BizApp extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 //        builder.listeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
-        return builder.sources(BizApp.class);
+        SpringApplicationBuilder sources = builder.sources(BizApp.class);
+        log.info("==========服务已启动=================");
+        return sources;
     }
 
 }
