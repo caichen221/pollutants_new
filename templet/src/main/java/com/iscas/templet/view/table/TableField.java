@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  **/
 @Data
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class TableField implements Serializable{
     /*表字段名称*/
     protected String field;

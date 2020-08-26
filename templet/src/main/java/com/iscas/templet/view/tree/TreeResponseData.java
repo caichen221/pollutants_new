@@ -1,11 +1,13 @@
 package com.iscas.templet.view.tree;
 
+import com.iscas.templet.view.table.TableResponseData;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,13 +31,24 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
     /*是否选中*/
     protected Boolean selected = false;
     /*子节点*/
-    protected List<TreeResponseData> children;
+    protected List<TreeResponseData<T>> children;
     /**前台Path*/
     protected String path;
 
     /*当前节点对应的值(实体对象值)*/
     protected T data;
 
+    public static <T> TreeResponseData<T> newInstance(Class<T> tClass) {
+        return newInstance(true, tClass);
+    }
+
+    public static <T> TreeResponseData<T> newInstance(boolean childIsNull, Class<T> tClass) {
+        TreeResponseData<T> treeData = new TreeResponseData<>();
+        if (!childIsNull) {
+            treeData.setChildren(new ArrayList<>());
+        }
+        return treeData;
+    }
 
     @Override
     public TreeResponseData clone() {
