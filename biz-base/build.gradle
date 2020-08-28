@@ -34,14 +34,12 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+    compile group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
     // https://mvnrepository.com/artifact/org.springframework/spring-tx
     compile group: 'org.springframework', name: 'spring-tx'
 
     compile('org.springframework.boot:spring-boot-starter-validation')
-
-    //knife4j,替代swagger
-    compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
 
     //okhttp
     compile "com.squareup.okhttp3:okhttp"
@@ -69,6 +67,8 @@ dependencies {
     //验证码
     compile "com.github.penggle:kaptcha:${kaptchaVersion}"
 
+    //knife4j,替代swagger
+//    compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
 
     //    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
