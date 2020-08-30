@@ -40,6 +40,14 @@ public class TestBatchController {
                 stringArrayList, 6, true);
     }
 
+    @GetMapping("/t11")
+    public void t11() throws SQLException {
+        ArrayList<String> stringArrayList = new ArrayList<String>();
+        stringArrayList.add("insert into test values('3')");
+        MybatisGeneralUtils.executeBatch2(sqlSessionFactory,
+                stringArrayList, 6, true);
+    }
+
     @GetMapping("/t2")
     public Map t2() throws SQLException {
         return dynamicMapper.dynamicSelectOne("select id as id from test");
@@ -51,5 +59,23 @@ public class TestBatchController {
         stringArrayList.add("insert into test values('6')");
         stringArrayList.add("insert into test values('7')");
         dynamicMapper.dynamicBatch(stringArrayList);
+    }
+
+//    @GetMapping("/t4")
+//    public void t4() throws SQLException {
+//        TTT o = (TTT) dynamicMapper.dynamicSelectOne("select * from test where id =7", TTT.class);
+//        System.out.println(o);
+//    }
+
+    class TTT{
+        private Integer id;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
     }
 }

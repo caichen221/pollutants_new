@@ -4,4 +4,4 @@
 4、完善k8s相关工具类
 5、完善rabbitmq相关工具类
 6、使用责任链实现系统启动后执行某些操作-----完成
-7、添加mybatis插件
+7、mybatis 执行SQL动态传入ResultType

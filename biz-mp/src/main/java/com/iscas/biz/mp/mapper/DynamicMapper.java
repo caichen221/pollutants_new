@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.ResultHandler;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @Repository
-public interface DynamicMapper extends BaseMapper {
+public interface DynamicMapper<T> extends BaseMapper {
 
     @Select("${sql}" )
     Map dynamicSelectOne(@Param("sql") String sql);

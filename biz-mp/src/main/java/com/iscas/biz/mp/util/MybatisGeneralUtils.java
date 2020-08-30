@@ -3,10 +3,7 @@ package com.iscas.biz.mp.util;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import lombok.SneakyThrows;
 import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
@@ -175,6 +172,47 @@ public class MybatisGeneralUtils {
                 conn.setAutoCommit(true);
                 conn.close();
             } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * 批量提交
+     * forceExecute 表示是否强制提交，sqls的size小于batchSize
+     * 使用ExecutorType.Batch,效率应该没有executeBatch快
+     * */
+    public static void executeBatch2(SqlSessionFactory sessionFactory, List<String> sqls, int batchSize, boolean forceExecute) throws SQLException {
+        SqlSession sqlSession = null;
+
+        if (sqls == null) {
+            return;
+        }
+        if (sqls.size() < batchSize && !forceExecute) {
+            return;
+        }
+
+        sqlSession = sessionFactory.openSession(ExecutorType.BATCH, false);
+        try {
+            for (String sql : sqls) {
+                String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicUpdate";
+                Map<String, String> sqlMap = createSqlMap(sql);
+                sqlSession.update(method, sqlMap);
+            }
+            sqlSession.commit();
+            sqls.clear();
+        } catch (Exception e) {
+            try {
+                sqlSession.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            throw e;
+        } finally {
+            try {
+                sqlSession.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
