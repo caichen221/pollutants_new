@@ -98,8 +98,10 @@ public class TableDefinitionService {
 		tableSetting.setBackInfo(tableDefinition.getBackInfo());
 //		tableSetting.setCellEditable(tableDefinition.getCellEditable());
 		tableSetting.setFrontInfo(tableDefinition.getFrontInfo());
-		tableSetting.setViewType(tableDefinition.getViewType() == null ? null : TableViewType.valueOf(tableDefinition.getViewType()));
-
+		// tableSetting.setViewType(tableDefinition.getViewType() == null ? null : TableViewType.valueOf(tableDefinition.getViewType()));
+        //增加判断，修复了传入值为空时异常的BUG
+        tableSetting.setViewType((tableDefinition.getViewType() == null || tableDefinition.getViewType().isEmpty()) ? null : TableViewType.valueOf(tableDefinition.getViewType()));
+        
 		//构建buttonSetting
 		String buttonSetting = tableDefinition.getButtonSetting();
 		if (org.apache.commons.lang3.StringUtils.isNotEmpty(buttonSetting)) {
