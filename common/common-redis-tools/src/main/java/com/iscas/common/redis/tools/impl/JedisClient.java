@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * JedisClient
@@ -1475,6 +1474,12 @@ public class JedisClient implements IJedisClient {
                     String[] keyArr = new String[keys.size()];
                     jd.del(keys.toArray(keyArr));
                 }
+            } else if (jedis instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jedis;
+                throw new RuntimeException("ShardedJedis 暂不支持pattern删除");
+            } else if (jedis instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jedis;
+                throw new RuntimeException("JedisCluster 暂不支持pattern删除");
             }
         } finally {
             returnResource(jedis);
@@ -1505,6 +1510,31 @@ public class JedisClient implements IJedisClient {
         setZSetAdd(key, map);
         MAP_DELAY.put(task, consumer);
         delayTaskHandler(key);
+    }
+
+    @Override
+    public void expire(String key, int milliseconds) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (milliseconds <= 0) {
+                return;
+            }
+            jedis.pexpire(key, milliseconds);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long scard(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.scard(key);
+        }finally {
+            returnResource(jedis);
+        }
     }
 
     private void delayTaskHandler(String key) {

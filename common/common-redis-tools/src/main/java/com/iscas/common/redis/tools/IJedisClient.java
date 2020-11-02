@@ -133,14 +133,14 @@ public interface IJedisClient {
     Object rpopObjectList(String key) throws IOException, ClassNotFoundException;
 
     /**
-     * 获取缓存
+     * 获取集合缓存
      * @param key 键
      * @return 值
      */
     Set<String> getSet(String key);
 
     /**
-     * 获取缓存
+     * 获取集合缓存
      * @param key 键
      * @return 值
      */
@@ -372,7 +372,7 @@ public interface IJedisClient {
     String acquireLock(String lockName, long lockTimeoutInMS);
 
     /**
-     * 缓存是否存在
+     * 释放分布式锁
      * @param lockName 锁key
      * @param identifier 锁标识
      * @return
@@ -389,6 +389,7 @@ public interface IJedisClient {
      * 按照key表达式规则删除
      * */
     void deleteByPattern(String pattern) throws UnsupportedEncodingException;
+
 
     /**
      * redis实现延时队列，并放入任务
@@ -408,4 +409,31 @@ public interface IJedisClient {
      * @param consumer 消费者,这里定义延时时间到后的处理，建议执行处理采用异步的方式
      * */
     void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer);
+
+    /**
+     * 设置过期时间
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/2
+     * @param key 缓存的key
+     * @param millisecond 过期时间毫秒
+     * @throws
+     * @return
+     */
+    void expire(String key, int millisecond);
+
+    /**
+     * 获取集合中元素的个数
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/2
+     * @param key 集合的key
+     * @throws
+     * @return
+     */
+    long scard(String key);
+
+
+    //https://blog.csdn.net/lbl123xx/article/details/89213943
+
 }

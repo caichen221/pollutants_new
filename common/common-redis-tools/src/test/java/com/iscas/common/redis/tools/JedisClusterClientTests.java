@@ -446,6 +446,21 @@ public class JedisClusterClientTests {
 
         }
 
+    /**
+     * 测试获取集合中元素的个数
+     * */
+    @Test
+    public void test35() throws IOException {
+        try {
+            jedisClient.del("testSet");
+            jedisClient.setSetObjectAdd("testSet", 2, 3, 4);
+            long sum = jedisClient.scard("testSet");
+            Assert.assertEquals(3, sum);
+        } finally {
+            jedisClient.del("testSet");
+        }
+    }
+
 
 
 }

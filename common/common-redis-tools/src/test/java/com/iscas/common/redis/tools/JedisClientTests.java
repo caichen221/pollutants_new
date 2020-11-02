@@ -9,8 +9,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.Consumer;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 单机redis测试
@@ -451,6 +453,40 @@ public class JedisClientTests {
         jedisClient.putDelayQueue("this is test", 5, TimeUnit.SECONDS, (task)-> {
             System.out.println(task);
         });
+    }
+
+    /**
+     * 测试获取集合中元素的个数
+     * */
+    @Test
+    public void test35() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", 2, 3, 4);
+            long sum = jedisClient.scard("testKey");
+            Assert.assertEquals(3, sum);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试设置key的过期时间
+     * */
+    @Test
+    public void test36() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "11111", 0);
+            jedisClient.expire("testKey", 5000);
+            Assert.assertEquals("11111", jedisClient.get("testKey"));
+            TimeUnit.SECONDS.sleep(6);
+            Assert.assertNull(jedisClient.get("testKey"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            jedisClient.del("testKey");
+        }
     }
 
 }
