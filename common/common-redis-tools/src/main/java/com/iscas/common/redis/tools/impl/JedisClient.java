@@ -1373,7 +1373,7 @@ public class JedisClient implements IJedisClient {
             return shardedJedis.sadd(bytesKey, bytesValue);
         } else if (jedisCommands instanceof JedisCluster) {
             JedisCluster jedisCluster = (JedisCluster) jedisCommands;
-            jedisCluster.sadd(bytesKey, bytesValue);
+           return jedisCluster.sadd(bytesKey, bytesValue);
         }
         return 0;
     }
@@ -1534,6 +1534,64 @@ public class JedisClient implements IJedisClient {
             return jedis.scard(key);
         }finally {
             returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> sdiff(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sdiff(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sdiff(keys);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<Object> sdiffObject(String... keys) throws IOException, ClassNotFoundException {
+        if (keys == null) {
+            throw new RuntimeException("keys不能为空");
+        }
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            //将key转为byte，与存入时对应
+            byte[][] byteKeys = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                byteKeys[i] = getBytesKey(keys[i]);
+            }
+            Set<byte[]> sdiffBytes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                sdiffBytes = jedis.sdiff(byteKeys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                sdiffBytes = jedisCluster.sdiff(byteKeys);
+            }
+            //转化结果
+            Set<Object> result = new HashSet<>();
+            if (sdiffBytes != null) {
+                for (byte[] sdiffByte : sdiffBytes) {
+                    result.add(toObject(sdiffByte));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
         }
     }
 

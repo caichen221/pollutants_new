@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Jedis操作接口
@@ -432,6 +431,26 @@ public interface IJedisClient {
      * @return
      */
     long scard(String key);
+
+    /**
+     * 返回从第一个Key和其他key的集合之间的差异的成员，如果没有差异，返回空集合
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/4
+     * @param keys 集合的keys
+     * @return Set 差集
+     */
+    Set<String> sdiff(String... keys);
+
+    /**
+     * 返回从第一个Key和其他key的集合之间的差异的成员，返回结果为反序列的对象，放入时也必须是非字符串的对象。如果没有差异，返回空集合
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/4
+     * @param keys 集合的keys
+     * @return Set 差集
+     */
+    Set<Object> sdiffObject(String... keys) throws IOException, ClassNotFoundException;
 
 
     //https://blog.csdn.net/lbl123xx/article/details/89213943

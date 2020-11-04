@@ -461,6 +461,46 @@ public class JedisClusterClientTests {
         }
     }
 
+    /**
+     * 测试差集
+     * */
+    @Test
+    public void test37() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "22222", "33333");
+            jedisClient.del("testKey2");
+            jedisClient.setSetAdd("testKey2", "11111", "22222", "44444");
+            Set<String> diffSet = jedisClient.sdiff("testKey", "testKey2");
+            diffSet.forEach(System.out::println);
+            Assert.assertEquals(1, diffSet.size());
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
+    /**
+     * 测试对象差集
+     * */
+    @Test
+    public void test38() throws IOException, ClassNotFoundException {
+        try {
+            HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
+            objectObjectHashMap.put("a", "xxxx");
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "22222", objectObjectHashMap);
+            jedisClient.del("testKey2");
+            jedisClient.setSetObjectAdd("testKey2", "11111", "22222", "44444");
+            Set<Object> diffSet = jedisClient.sdiffObject("testKey", "testKey2");
+            diffSet.forEach(System.out::println);
+            Assert.assertEquals(1, diffSet.size());
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
 
 
 }
