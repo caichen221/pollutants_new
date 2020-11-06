@@ -132,6 +132,7 @@ public interface IJedisClient {
     Object rpopObjectList(String key) throws IOException, ClassNotFoundException;
 
     /**
+     * 为了使函数名与命令更接近，弃用，见新函数{@link #smembers(String)}
      * 获取集合缓存
      * @param key 键
      * @return 值
@@ -139,6 +140,7 @@ public interface IJedisClient {
     Set<String> getSet(String key);
 
     /**
+     * 为了使函数名与命令更接近，弃用，见新函数{@link #smembers(String)}
      * 获取集合缓存
      * @param key 键
      * @return 值
@@ -452,6 +454,119 @@ public interface IJedisClient {
      */
     Set<Object> sdiffObject(String... keys) throws IOException, ClassNotFoundException;
 
+    /**
+     * 这个命令等于{@link #sdiff},但返回的不是结果集,而是将结果集存储在新的集合中，如果目标已存在，则覆盖。
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param newkey 存储的心集合
+     * @param keys 要取差集的集合的key
+     * @throws
+     * @return long 新集合中的记录数
+     */
+    long sdiffStore(String newkey, String... keys);
+
+    /**
+     * 这个命令等于{@link #sdiffObject},但返回的不是结果集,而是将结果集存储在新的集合中，如果目标已存在，则覆盖。
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param newkey 存储的心集合
+     * @param keys 要取差集的集合的key
+     * @throws
+     * @return long 新集合中的记录数
+     */
+    long sdiffObjectStore(String newkey, String... keys) throws IOException, ClassNotFoundException;
+
+    /**
+     * 返回给定集合交集的成员,如果其中一个集合为不存在或为空，则返回空Set
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param keys 要取差集的集合的key
+     * @throws
+     * @return Set<String> 交集的集合
+     */
+    Set<String> sinter(String... keys);
+
+    /**
+     * 返回给定集合交集的成员,如果其中一个集合为不存在或为空，则返回空Set,适用于存放对象的集合
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param keys 要取差集的集合的key
+     * @throws
+     * @return Set<Object> 交集的集合
+     */
+    Set<Object> sinterObject(String... keys) throws IOException, ClassNotFoundException;
+
+    /**
+     * 个命令等于{@link #sinter},但返回的不是结果集,而是将结果集存储在新的集合中，如果目标已存在，则覆盖。
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param keys 要取差集的集合的key
+     * @throws
+     * @return long 交集的条目
+     */
+    long sinterStore(String newKey, String... keys);
+
+    /**
+     * 个命令等于{@link #sinterObject},但返回的不是结果集,而是将结果集存储在新的集合中，如果目标已存在，则覆盖。
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param keys 要取差集的集合的key
+     * @throws
+     * @return long 交集的条目
+     */
+    long sinterObjectStore(String newKey, String... keys) throws IOException;
+
+    /**
+     * 判断一个给定的值在集合中是否存在
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param key 集合的key
+     * @param member 成员
+     * @throws
+     * @return boolean true:存在 false:不存在
+     */
+    boolean sismember(String key, String member);
+
+    /**
+     * 判断一个给定的值在集合中是否存在,集合中存储的为对象
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param key 集合的key
+     * @param member 成员
+     * @throws
+     * @return boolean true:存在 false:不存在
+     */
+    boolean sismemberObject(String key, Object member) throws IOException;
+
+    /**
+     * 返回集合中的所有成员，成员为字符串
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param key 集合的key
+     * @throws
+     * @return Set<String> 集合中的所有值
+     */
+    Set<String> smembers(String key);
+
+    /**
+     * 返回集合中的所有成员, 成员为对象
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/6
+     * @param key 集合的key
+     * @throws
+     * @return Set<String> 集合中的所有值
+     */
+    Set<Object> smembersObject(String key) throws IOException, ClassNotFoundException;
 
     //https://blog.csdn.net/lbl123xx/article/details/89213943
 

@@ -457,5 +457,35 @@ public class JedisShardClientTests {
         }
     }
 
+    /**
+     * 测试集合中某个元素是否存在
+     * */
+    @Test
+    public void test45() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "33333");
+            boolean exists = jedisClient.sismember("testKey", "11111");
+            Assert.assertEquals(true, exists);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试集合中某个元素是否存在
+     * */
+    @Test
+    public void test46() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "33333", 1111);
+            boolean exists = jedisClient.sismemberObject("testKey", 1111);
+            Assert.assertEquals(true, exists);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
 
 }

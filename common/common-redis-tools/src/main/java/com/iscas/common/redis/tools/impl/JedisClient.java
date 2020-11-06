@@ -378,47 +378,27 @@ public class JedisClient implements IJedisClient {
 
 
     /**
+     *
+     * 为了使函数名与命令更接近，弃用，见新函数{@link #smembers(String)}
      * 获取集合，类型为字符串
      * @param key 键
      * @return 值
      */
     @Override
+    @Deprecated
     public Set<String> getSet(String key) {
-        Set<String> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                value = jedis.smembers(key);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
+        return smembers(key);
     }
 
     /**
+     * 为了使函数名与命令更接近，弃用，见新函数{@link #smembersObject(String)}
      * 获取集合数据，类型为对象
      * @param key 键
      * @return 值
      */
     @Override
     public Set<Object> getObjectSet(String key) throws IOException, ClassNotFoundException {
-        Set<Object> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
-                value = new HashSet<>();
-                Set<byte[]> set = jedisCommandsBytesSmembers(jedis, getBytesKey(key));
-                for (byte[] bs : set){
-                    value.add(toObject(bs));
-                }
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
+        return smembersObject(key);
     }
 
     /**
@@ -1560,9 +1540,6 @@ public class JedisClient implements IJedisClient {
 
     @Override
     public Set<Object> sdiffObject(String... keys) throws IOException, ClassNotFoundException {
-        if (keys == null) {
-            throw new RuntimeException("keys不能为空");
-        }
         JedisCommands jc = null;
         try {
             jc = getResource();
@@ -1593,6 +1570,226 @@ public class JedisClient implements IJedisClient {
         } finally {
             returnResource(jc);
         }
+    }
+
+    @Override
+    public long sdiffStore(String newkey, String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sdiffstore(newkey, keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sdiffstore(newkey, keys);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long sdiffObjectStore(String newkey, String... keys) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            //将key转为byte，与存入时对应
+            byte[][] byteKeys = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                byteKeys[i] = getBytesKey(keys[i]);
+            }
+            byte[] bytesNewKey = getBytesKey(newkey);
+            Set<byte[]> sdiffBytes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sdiffstore(bytesNewKey, byteKeys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sdiffstore(bytesNewKey, byteKeys);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> sinter(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sinter(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sinter");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sinter(keys);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<Object> sinterObject(String... keys) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            //将key转为byte，与存入时对应
+            byte[][] byteKeys = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                byteKeys[i] = getBytesKey(keys[i]);
+            }
+            Set<byte[]> sinnerBytes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                sinnerBytes = jedis.sinter(byteKeys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sinter");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                sinnerBytes = jedisCluster.sinter(byteKeys);
+            }
+            //转化结果
+            Set<Object> result = new HashSet<>();
+            if (sinnerBytes != null) {
+                for (byte[] sdiffByte : sinnerBytes) {
+                    result.add(toObject(sdiffByte));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long sinterStore(String newKey, String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sinterstore(newKey, keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sinter");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sinterstore(newKey, keys);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long sinterObjectStore(String newKey, String... keys) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            //将key转为byte，与存入时对应
+            byte[][] byteKeys = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                byteKeys[i] = getBytesKey(keys[i]);
+            }
+            byte[] bytesNewKey = getBytesKey(newKey);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sinterstore(bytesNewKey, byteKeys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sinter");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sinterstore(bytesNewKey, byteKeys);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean sismember(String key, String member) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.sismember(key, member);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean sismemberObject(String key, Object member) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[] bytes = toBytes(member);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sismember(bytesKey, bytes);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.sismember(bytesKey, bytes);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sismember(bytesKey, bytes);
+            }
+            throw new RuntimeException("不支持的JedisCommands类型:" + jc);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> smembers(String key) {
+        Set<String> value = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedis.exists(key)) {
+                value = jedis.smembers(key);
+            }
+        } finally {
+            returnResource(jedis);
+        }
+        return value;
+    }
+
+    @Override
+    public Set<Object> smembersObject(String key) throws IOException, ClassNotFoundException {
+        Set<Object> value = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
+                value = new HashSet<>();
+                Set<byte[]> set = jedisCommandsBytesSmembers(jedis, getBytesKey(key));
+                for (byte[] bs : set){
+                    value.add(toObject(bs));
+                }
+            }
+        } finally {
+            returnResource(jedis);
+        }
+        return value;
     }
 
     private void delayTaskHandler(String key) {

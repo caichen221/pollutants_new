@@ -529,4 +529,192 @@ public class JedisClientTests {
         }
     }
 
+    /**
+     * 测试差集，存储到新集合中
+     * */
+    @Test
+    public void test39() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "22222", "33333");
+            jedisClient.del("testKey2");
+            jedisClient.setSetAdd("testKey2", "11111", "22222", "44444");
+            long result = jedisClient.sdiffStore("newKey", "testKey", "testKey2");
+            System.out.println(result);
+            Set<String> newSet = jedisClient.getSet("newKey");
+            newSet.stream().forEach(System.out::println);
+            Assert.assertEquals(1, result);
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("newKey");
+        }
+    }
+
+    /**
+     * 测试差集，存储到新集合中
+     * */
+    @Test
+    public void test40() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "22222", "33333", 123);
+            jedisClient.del("testKey2");
+            jedisClient.setSetObjectAdd("testKey2", "11111", "22222", "44444", 566);
+            long result = jedisClient.sdiffObjectStore("newKey", "testKey", "testKey2");
+            System.out.println(result);
+            Set<Object> newSet = jedisClient.getObjectSet("newKey");
+            newSet.stream().forEach(System.out::println);
+            Assert.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("newKey");
+        }
+    }
+
+    /**
+     * 测试交集
+     * */
+    @Test
+    public void test41() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "22222", "33333");
+            jedisClient.del("testKey2");
+            jedisClient.setSetAdd("testKey2", "11111", "22222", "44444");
+            Set<String> result = jedisClient.sinter("testKey", "testKey2");
+            result.stream().forEach(System.out::println);
+            Assert.assertEquals(2, result.size());
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
+    /**
+     * 测试交集
+     * */
+    @Test
+    public void test42() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "22222", "33333", 45);
+            jedisClient.del("testKey2");
+            jedisClient.setSetObjectAdd("testKey2", "11111", "22222", "44444", 45);
+            Set<Object> result = jedisClient.sinterObject("testKey", "testKey2");
+            result.stream().forEach(System.out::println);
+            Assert.assertEquals(3, result.size());
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
+    /**
+     * 测试交集,存入新集合
+     * */
+    @Test
+    public void test43() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "33333");
+            jedisClient.del("testKey2");
+            jedisClient.setSetAdd("testKey2", "11111", "44444");
+            long result = jedisClient.sinterStore("newKey","testKey", "testKey2");
+            Set<String> newSet = jedisClient.getSet("newKey");
+            newSet.stream().forEach(System.out::println);
+            Assert.assertEquals(1, result);
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("newKey");
+        }
+    }
+
+    /**
+     * 测试交集,存入新集合
+     * */
+    @Test
+    public void test44() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "33333", 67);
+            jedisClient.del("testKey2");
+            jedisClient.setSetObjectAdd("testKey2", "11111", "44444", 67);
+            long result = jedisClient.sinterObjectStore("newKey","testKey", "testKey2");
+            Set<Object> newSet = jedisClient.getObjectSet("newKey");
+            newSet.stream().forEach(System.out::println);
+            Assert.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("newKey");
+        }
+    }
+
+    /**
+     * 测试集合中某个元素是否存在
+     * */
+    @Test
+    public void test45() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "33333");
+            boolean exists = jedisClient.sismember("testKey", "11111");
+            Assert.assertEquals(true, exists);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试集合中某个元素是否存在
+     * */
+    @Test
+    public void test46() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "33333", 1111);
+            boolean exists = jedisClient.sismemberObject("testKey", 1111);
+            Assert.assertEquals(true, exists);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取集合中所有的元素
+     * */
+    @Test
+    public void test47() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "33333");
+            Set<String> members = jedisClient.smembers("testKey");
+            members.stream().forEach(System.out::println);
+            Assert.assertEquals(2, members.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取集合中所有的元素,集合中存储为对象
+     * */
+    @Test
+    public void test48() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "33333", 23455);
+            Set<Object> members = jedisClient.smembersObject("testKey");
+            members.stream().forEach(System.out::println);
+            Assert.assertEquals(3, members.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+
+
 }
