@@ -715,6 +715,149 @@ public class JedisClientTests {
         }
     }
 
+    /**
+     * 测试从集合中移除成员,放入目标集合
+     * */
+    @Test
+    public void test49() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("srcKey");
+            jedisClient.del("dstKey");
+            jedisClient.setSetAdd("srcKey", "11111", "33333");
+            jedisClient.setSetAdd("dstKey", "2222", "5555");
+            jedisClient.smove("srcKey", "dstKey", "11111");
+            Set<String> srcSet = jedisClient.smembers("srcKey");
+            Set<String> dstSet = jedisClient.smembers("dstKey");
+            srcSet.forEach(System.out::println);
+            dstSet.forEach(System.out::println);
+            Assert.assertEquals(1, srcSet.size());
+            Assert.assertEquals(3, dstSet.size());
+        } finally {
+            jedisClient.del("srcKey");
+            jedisClient.del("dstKey");
+        }
+    }
+
+    /**
+     * 测试从集合中移除对象成员,放入目标集合
+     * */
+    @Test
+    public void test50() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("srcKey");
+            jedisClient.del("dstKey");
+            jedisClient.setSetObjectAdd("srcKey", "11111", "33333");
+            jedisClient.setSetObjectAdd("dstKey", "2222", "5555");
+            jedisClient.smoveObject("srcKey", "dstKey", "11111");
+            Set<Object> srcSet = jedisClient.smembersObject("srcKey");
+            Set<Object> dstSet = jedisClient.smembersObject("dstKey");
+            srcSet.forEach(System.out::println);
+            dstSet.forEach(System.out::println);
+            Assert.assertEquals(1, srcSet.size());
+            Assert.assertEquals(3, dstSet.size());
+        } finally {
+            jedisClient.del("srcKey");
+            jedisClient.del("dstKey");
+        }
+    }
+
+    /**
+     * 测试从集合中随机移除成员并返回
+     * */
+    @Test
+    public void test51() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "33333");
+            String data = jedisClient.spop("testKey");
+            System.out.println(data);
+            Assert.assertEquals(1, jedisClient.scard("testKey"));
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从集合中随机移除对象成员并返回
+     * */
+    @Test
+    public void test52() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "33333");
+            Object data = jedisClient.spopObject("testKey");
+            System.out.println(data);
+            Assert.assertEquals(1, jedisClient.scard("testKey"));
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取集合中对象元素的个数
+     * */
+    @Test
+    public void test53() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", 2, 3, 4);
+            long sum = jedisClient.scardObject("testKey");
+            Assert.assertEquals(3, sum);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试设置存储对象的key的过期时间
+     * */
+    @Test
+    public void test54() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setObject("testKey", "11111", 0);
+            jedisClient.expireObject("testKey", 5000);
+            Assert.assertEquals("11111", jedisClient.getObject("testKey"));
+            TimeUnit.SECONDS.sleep(6);
+            Assert.assertNull(jedisClient.getObject("testKey"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从集合中随机移除成员多个并返回
+     * */
+    @Test
+    public void test55() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetAdd("testKey", "11111", "33333");
+            Set<String> datas = jedisClient.spop("testKey", 3);
+            datas.forEach(System.out::println);
+            Assert.assertEquals(2, datas.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从集合中随机移除对象成员并返回
+     * */
+    @Test
+    public void test56() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.setSetObjectAdd("testKey", "11111", "33333", 3);
+            Set<Object> datas = jedisClient.spopObject("testKey", 3);
+            datas.forEach(System.out::println);
+            Assert.assertEquals(3, datas.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
 
 
 }

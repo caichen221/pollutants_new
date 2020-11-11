@@ -1493,7 +1493,7 @@ public class JedisClient implements IJedisClient {
     }
 
     @Override
-    public void expire(String key, int milliseconds) {
+    public void expire(String key, long milliseconds) {
         JedisCommands jedis = null;
         try {
             jedis = getResource();
@@ -1507,6 +1507,29 @@ public class JedisClient implements IJedisClient {
     }
 
     @Override
+    public void expireObject(String key, long milliseconds) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (milliseconds <= 0) {
+                return;
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                jedis.pexpire(getBytesKey(key), milliseconds);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                shardedJedis.pexpire(getBytesKey(key), milliseconds);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                jedisCluster.pexpire(getBytesKey(key), milliseconds);
+            }
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
     public long scard(String key) {
         JedisCommands jedis = null;
         try {
@@ -1514,6 +1537,27 @@ public class JedisClient implements IJedisClient {
             return jedis.scard(key);
         }finally {
             returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long scardObject(String key) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.scard(getBytesKey(key));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.scard(getBytesKey(key));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.scard(getBytesKey(key));
+            }
+            return 0;
+        }finally {
+            returnResource(jc);
         }
     }
 
@@ -1790,6 +1834,129 @@ public class JedisClient implements IJedisClient {
             returnResource(jedis);
         }
         return value;
+    }
+
+    @Override
+    public long smove(String srckey, String dstkey, String member) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.smove(srckey, dstkey, member);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持smove");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.smove(srckey, dstkey, member);
+            }
+            return -1;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long smoveObject(String srckey, String dstkey, Object member) throws IOException {
+        JedisCommands jc = null;
+        try {
+            byte[] srcKeyBytes = getBytesKey(srckey);
+            byte[] dstKeyBytes = getBytesKey(dstkey);
+            byte[] memberBytes = toBytes(member);
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.smove(srcKeyBytes, dstKeyBytes, memberBytes);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持smove");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.smove(srcKeyBytes, dstKeyBytes, memberBytes);
+            }
+            return -1;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public String spop(String key) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.spop(key);
+        } finally {
+            returnResource(jc);
+        }
+
+    }
+
+    @Override
+    public Object spopObject(String key) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                byte[] result = jedis.spop(bytesKey);
+                return result == null ? null : toObject(result);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                byte[] result = shardedJedis.spop(bytesKey);
+                return result == null ? null : toObject(result);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                byte[] result = jedisCluster.spop(bytesKey);
+                return result == null ? null : toObject(result);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> spop(String key, long count) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.spop(key, count);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<Object> spopObject(String key, long count) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            Set<byte[]> bytesResult = null;
+            Set<Object> result = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytesResult = jedis.spop(bytesKey, count);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytesResult = shardedJedis.spop(bytesKey, count);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytesResult = jedisCluster.spop(bytesKey, count);
+            }
+            if (bytesResult != null) {
+                result = new HashSet<>();
+                for (byte[] bytes : bytesResult) {
+                    result.add(toObject(bytes));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
     }
 
     private void delayTaskHandler(String key) {

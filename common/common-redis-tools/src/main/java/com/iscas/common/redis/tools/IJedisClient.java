@@ -421,7 +421,19 @@ public interface IJedisClient {
      * @throws
      * @return
      */
-    void expire(String key, int millisecond);
+    void expire(String key, long millisecond);
+
+    /**
+     * 设置对象存储的过期时间
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/2
+     * @param key 缓存的key
+     * @param millisecond 过期时间毫秒
+     * @throws
+     * @return
+     */
+    void expireObject(String key, long millisecond) throws IOException;
 
     /**
      * 获取集合中元素的个数
@@ -433,6 +445,17 @@ public interface IJedisClient {
      * @return
      */
     long scard(String key);
+
+    /**
+     * 获取集合中对象元素的个数
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/2
+     * @param key 集合的key
+     * @throws
+     * @return
+     */
+    long scardObject(String key) throws IOException;
 
     /**
      * 返回从第一个Key和其他key的集合之间的差异的成员，如果没有差异，返回空集合
@@ -567,6 +590,84 @@ public interface IJedisClient {
      * @return Set<String> 集合中的所有值
      */
     Set<Object> smembersObject(String key) throws IOException, ClassNotFoundException;
+
+    /**
+     * 将成员从源集合移出放入目标集合 </br>
+     * 如果源集合不存在或不包哈指定成员，不进行任何操作，返回0 </br>
+     * 否则该成员从源集合上删除，并添加到目标集合，如果目标集合中成员已存在，则只在源集合进行删除
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/11
+     * @param srckey 源集合的key
+     * @param dstkey 目标集合的key
+     * @param member 源集合中的元素
+     * @throws
+     * @return 如果源集合不存在或不包哈指定成员，不进行任何操作，返回0
+     */
+    long smove(String srckey, String dstkey, String member);
+
+    /**
+     * 将对象成员从源集合移出放入目标集合 </br>
+     * 如果源集合不存在或不包哈指定成员，不进行任何操作，返回0 </br>
+     * 否则该成员从源集合上删除，并添加到目标集合，如果目标集合中成员已存在，则只在源集合进行删除
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/11
+     * @param srckey 源集合的key
+     * @param dstkey 目标集合的key
+     * @param member 源集合中的元素
+     * @throws
+     * @return 如果源集合不存在或不包哈指定成员，不进行任何操作，返回0
+     */
+    long smoveObject(String srckey, String dstkey, Object member) throws IOException;
+
+    /**
+     * 从集合中移除成员并返回
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/11
+     * @param key 集合的key
+     * @throws
+     * @return
+     */
+    String spop(String key);
+
+    /**
+     * 从集合中移除对象成员并返回
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/11
+     * @param key 集合的key
+     * @throws
+     * @return
+     */
+    Object spopObject(String key) throws IOException, ClassNotFoundException;
+
+    /**
+     * 从集合中移除成员并返回
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/11
+     * @param key 集合的key
+     * @param count 移除集合的数目
+     * @throws
+     * @return
+     */
+    Set<String> spop(String key, long count);
+
+    /**
+     * 从集合中移除对象成员并返回
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/11
+     * @param key 集合的key
+     * @param count 移除集合的数目
+     * @throws
+     * @return
+     */
+    Set<Object> spopObject(String key, long count) throws IOException, ClassNotFoundException;
+
+
 
     //https://blog.csdn.net/lbl123xx/article/details/89213943
 
