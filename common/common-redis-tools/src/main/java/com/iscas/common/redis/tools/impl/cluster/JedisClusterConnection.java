@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class JedisClusterConnection implements JedisConnection {
     private ConfigInfo configInfo;
-    private JedisCluster jedisCluster = null;
+    private volatile JedisCluster jedisCluster = null;
     @Override
     public Object getPool() {
         if(jedisCluster == null){

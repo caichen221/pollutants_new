@@ -18,7 +18,7 @@ import java.util.List;
  * @since jdk1.8
  */
 public class JedisStandAloneConnection implements JedisConnection {
-    private JedisPool jedisPool = null;
+    private volatile JedisPool jedisPool = null;
     private ConfigInfo configInfo;
     private JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 

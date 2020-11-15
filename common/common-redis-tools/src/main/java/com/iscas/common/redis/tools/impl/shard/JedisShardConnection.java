@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 public class JedisShardConnection implements JedisConnection {
-    private ShardedJedisPool jedisPool = null;
+    private volatile ShardedJedisPool jedisPool = null;
     private ConfigInfo configInfo;
     private JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 
