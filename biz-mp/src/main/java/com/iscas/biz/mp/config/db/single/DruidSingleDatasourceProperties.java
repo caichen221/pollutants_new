@@ -1,6 +1,5 @@
 package com.iscas.biz.mp.config.db.single;
 
-import com.alibaba.druid.util.DruidDataSourceUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;

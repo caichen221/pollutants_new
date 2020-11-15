@@ -43,7 +43,6 @@ import java.util.Map;
 public class DruidConfiguration {
 
     //mysql1
-
     @Value("${spring.datasource.druid.mysql1.filters:stat,wall,logback}")
     private String filters;
     @Value("${spring.datasource.druid.mysql1.filter.stat.log-slow-sql:true}")
@@ -74,6 +73,58 @@ public class DruidConfiguration {
     @Autowired
     private DruidMultiDatasource2Properties datasource2Properties;
 
+    //Mysql1
+    @Value("${spring.datasource.druid.mysql1.initial-size}")
+    private int initialSize;
+    @Value("${spring.datasource.druid.mysql1.min-idle}")
+    private int minIdle;
+    @Value("${spring.datasource.druid.mysql1.max-active}")
+    private int maxActive;
+    @Value("${spring.datasource.druid.mysql1.max-wait}")
+    private int maxWait;
+    @Value("${spring.datasource.druid.mysql1.time-between-eviction-runs-millis}")
+    private int timeBetweenEvictionRunsMillis;
+    @Value("${spring.datasource.druid.mysql1.min-evictable-idle-time-millis:60000}")
+    private int minEvictableIdleTimeMillis;
+    @Value("${spring.datasource.druid.mysql1.validation-query}")
+    private String validationQuery;
+    @Value("${spring.datasource.druid.mysql1.test-while-idle}")
+    private boolean testWhileIdle;
+    @Value("${spring.datasource.druid.mysql1.test-on-borrow}")
+    private boolean testOnBorrow;
+    @Value("${spring.datasource.druid.mysql1.test-on-return}")
+    private boolean testOnReturn;
+    @Value("${spring.datasource.druid.mysql1.pool-prepared-statements}")
+    private boolean poolPreparedStatements;
+    @Value("${spring.datasource.druid.mysql1.max-pool-prepared-statement-per-connection-size}")
+    private int maxPoolPreparedStatementPerConnectionSize;
+
+    //mysql2
+    @Value("${spring.datasource.druid.mysql2.initial-size}")
+    private int initialSize2;
+    @Value("${spring.datasource.druid.mysql2.min-idle}")
+    private int minIdle2;
+    @Value("${spring.datasource.druid.mysql2.max-active}")
+    private int maxActive2;
+    @Value("${spring.datasource.druid.mysql2.max-wait}")
+    private int maxWait2;
+    @Value("${spring.datasource.druid.mysql2.time-between-eviction-runs-millis}")
+    private int timeBetweenEvictionRunsMillis2;
+    @Value("${spring.datasource.druid.mysql2.min-evictable-idle-time-millis:60000}")
+    private int minEvictableIdleTimeMillis2;
+    @Value("${spring.datasource.druid.mysql2.validation-query}")
+    private String validationQuery2;
+    @Value("${spring.datasource.druid.mysql2.test-while-idle}")
+    private boolean testWhileIdle2;
+    @Value("${spring.datasource.druid.mysql2.test-on-borrow}")
+    private boolean testOnBorrow2;
+    @Value("${spring.datasource.druid.mysql2.test-on-return}")
+    private boolean testOnReturn2;
+    @Value("${spring.datasource.druid.mysql2.pool-prepared-statements}")
+    private boolean poolPreparedStatements2;
+    @Value("${spring.datasource.druid.mysql2.max-pool-prepared-statement-per-connection-size}")
+    private int maxPoolPreparedStatementPerConnectionSize2;
+
 
     @Bean(name = "mysql1")
     @ConditionalOnProperty(name = "spring.datasource.druid.mysql1.name", havingValue = "mysql1",
@@ -81,7 +132,19 @@ public class DruidConfiguration {
 //    @ConfigurationProperties(prefix = "spring.datasource.druid.mysql1")
     public DataSource db1() {
         DruidDataSource datasource = (DruidDataSource) datasource1Properties.initializeDataSourceBuilder().build();
-
+        //configuration
+        datasource.setInitialSize(initialSize);
+        datasource.setMinIdle(minIdle);
+        datasource.setMaxActive(maxActive);
+        datasource.setMaxWait(maxWait);
+        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        datasource.setValidationQuery(validationQuery);
+        datasource.setTestWhileIdle(testWhileIdle);
+        datasource.setTestOnBorrow(testOnBorrow);
+        datasource.setTestOnReturn(testOnReturn);
+        datasource.setPoolPreparedStatements(poolPreparedStatements);
+        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
         //        datasource.setUseGlobalDataSourceStat(useGlobalDataSourceStat);
 //        try {
 //            datasource.setFilters(filters);
@@ -100,6 +163,20 @@ public class DruidConfiguration {
 //    @ConfigurationProperties(prefix = "spring.datasource.druid.mysql2")
     public DataSource db2() {
         DruidDataSource datasource = (DruidDataSource) datasource2Properties.initializeDataSourceBuilder().build();
+
+        //configuration
+        datasource.setInitialSize(initialSize2);
+        datasource.setMinIdle(minIdle2);
+        datasource.setMaxActive(maxActive2);
+        datasource.setMaxWait(maxWait2);
+        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis2);
+        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis2);
+        datasource.setValidationQuery(validationQuery2);
+        datasource.setTestWhileIdle(testWhileIdle2);
+        datasource.setTestOnBorrow(testOnBorrow2);
+        datasource.setTestOnReturn(testOnReturn2);
+        datasource.setPoolPreparedStatements(poolPreparedStatements2);
+        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize2);
 //        try {
 //            datasource.setFilters(filters2);
 //        } catch (SQLException e) {
