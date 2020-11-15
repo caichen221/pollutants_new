@@ -45,7 +45,7 @@ public class JedisClient implements IJedisClient {
      * @return 值
      */
     @Override
-    public Object get(String key) throws IOException, ClassNotFoundException {
+    public <T> T get(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
         Object value = null;
         JedisCommands jedis = null;
         try {
@@ -56,7 +56,7 @@ public class JedisClient implements IJedisClient {
         } finally {
             returnResource(jedis);
         }
-        return value;
+        return (T) value;
     }
 
     /**

@@ -24,10 +24,11 @@ public interface IJedisClient {
 
     /**
      * 获取缓存
+     * @param tClass 对象泛型
      * @param key 键
      * @return 值
      */
-    Object get(String key) throws IOException, ClassNotFoundException;
+    <T> T get(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
 
     /**
      * 设置缓存

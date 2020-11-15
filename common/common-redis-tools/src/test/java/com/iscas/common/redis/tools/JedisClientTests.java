@@ -59,7 +59,7 @@ public class JedisClientTests {
     @Test
     @Ignore
     public void test5() throws IOException, ClassNotFoundException {
-        Object result = jedisClient.get("t2");
+        Object result = jedisClient.get(Object.class, "t2");
         Assert.assertTrue(result instanceof String);
         System.out.println(result);
     }
@@ -410,9 +410,9 @@ public class JedisClientTests {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "11111", 0);
             jedisClient.expire("testKey", 5000);
-            Assert.assertEquals("11111", jedisClient.get("testKey"));
+            Assert.assertEquals("11111", jedisClient.get(Object.class, "testKey"));
             TimeUnit.SECONDS.sleep(6);
-            Assert.assertNull(jedisClient.get("testKey"));
+            Assert.assertNull(jedisClient.get(Object.class, "testKey"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
