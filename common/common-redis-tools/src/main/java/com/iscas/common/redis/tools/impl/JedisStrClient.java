@@ -44,6 +44,259 @@ public class JedisStrClient implements IJedisStrClient {
         jedisPool = jedisConnection.getPool();
     }
 
+    /*=============================set begin===============================================*/
+    /**
+     * 设置Set, 值为字符串类型
+     * @param key 键
+     * @param value 值
+     * @param cacheSeconds 超时时间，0为不超时
+     * @return
+     */
+    @Override
+    public  long sadd(String key, Set<String> value, int cacheSeconds) {
+        long result = 0;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (value == null || value.size() == 0 ) {
+                throw new RuntimeException("集合不能为空");
+            }
+            if (jedis.exists(key)) {
+                jedis.del(key);
+            }
+            String[] strs = new String[value.size()];
+            int i = 0;
+            for (String str: value) {
+                strs[i++] = str;
+            }
+            result = jedis.sadd(key, strs);
+            if (cacheSeconds != 0) {
+                jedis.expire(key, cacheSeconds);
+            }
+        } finally {
+            returnResource(jedis);
+        }
+        return result;
+    }
+
+    /**
+     * 向Set中追加值，值为字符串
+     * @param key 键
+     * @param value 值
+     * @return
+     */
+    @Override
+    public  long sadd(String key, String... value) {
+        long result = 0;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            result = jedis.sadd(key, value);
+        } finally {
+            returnResource(jedis);
+        }
+        return result;
+    }
+
+    @Override
+    public long scard(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.scard(key);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> sdiff(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sdiff(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sdiff(keys);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long sdiffStore(String newkey, String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sdiffstore(newkey, keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sdiffstore(newkey, keys);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> sinter(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sinter(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sinter");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sinter(keys);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long sinterStore(String newKey, String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sinterstore(newKey, keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sinter");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sinterstore(newKey, keys);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean sismember(String key, String member) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.sismember(key, member);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> smembers(String key) {
+        Set<String> value = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedis.exists(key)) {
+                value = jedis.smembers(key);
+            }
+        } finally {
+            returnResource(jedis);
+        }
+        return value;
+    }
+
+    @Override
+    public long smove(String srckey, String dstkey, String member) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.smove(srckey, dstkey, member);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持smove");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.smove(srckey, dstkey, member);
+            }
+            return -1;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public String spop(String key) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.spop(key);
+        } finally {
+            returnResource(jc);
+        }
+
+    }
+
+    @Override
+    public Set<String> spop(String key, long count) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.spop(key, count);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long srem(String key, String... member) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.srem(key, member);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> sunion(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sunion(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sunion");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sunion(keys);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    /*=============================set end  ===============================================*/
+
     /**
      * 获取数据，获取字符串数据
      * @param key 键
@@ -200,132 +453,6 @@ public class JedisStrClient implements IJedisStrClient {
         }
         return value;
     }
-
-
-    /**
-     * 设置Set, 值为字符串类型
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    @Override
-    public  long sadd(String key, Set<String> value, int cacheSeconds) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (value == null || value.size() == 0 ) {
-                throw new RuntimeException("集合不能为空");
-            }
-            if (jedis.exists(key)) {
-                jedis.del(key);
-            }
-            String[] strs = new String[value.size()];
-            int i = 0;
-            for (String str: value) {
-                strs[i++] = str;
-            }
-            result = jedis.sadd(key, strs);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    /**
-     * 向Set中追加值，值为字符串
-     * @param key 键
-     * @param value 值
-     * @return
-     */
-    @Override
-    public  long sadd(String key, String... value) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedis.sadd(key, value);
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    @Override
-    public Map<String, Double> getZSet(String key) {
-        Map<String, Double> result = new LinkedHashMap<>();
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                Set<Tuple> tuples = jedis.zrangeWithScores(key, 0, -1);
-                if (tuples != null) {
-                    for (Tuple tuple : tuples) {
-                        result.put(tuple.getElement(), tuple.getScore());
-                    }
-                }
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    @Override
-    public Set<Tuple> getZSetToTuple(String key) {
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                Set<Tuple> tuples = jedis.zrangeWithScores(key, 0, -1);
-                return tuples;
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return null;
-    }
-
-    @Override
-    public long setZSet(String key, Map<String, Double> valueScoreMap, int cacheSeconds) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (valueScoreMap == null || valueScoreMap.size() == 0 ) {
-                throw new RuntimeException("集合不能为空");
-            }
-            if (jedis.exists(key)) {
-                jedis.del(key);
-            }
-            result = jedis.zadd(key, valueScoreMap);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    @Override
-    public long setZSetAdd(String key, Map<String, Double> valueScoreMap) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedis.zadd(key, valueScoreMap);
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-
 
     /**
      * 获取Map
@@ -1001,7 +1128,7 @@ public class JedisStrClient implements IJedisStrClient {
         long targetScore = l + x;
         Map<String, Double> map = new HashMap();
         map.put(task, Double.valueOf(String.valueOf(targetScore)));
-        setZSetAdd(key, map);
+        zadd(key, map);
         MAP_DELAY.put(task, consumer);
         delayTaskHandler(key);
     }
@@ -1020,203 +1147,6 @@ public class JedisStrClient implements IJedisStrClient {
         }
     }
 
-    @Override
-    public long scard(String key) {
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            return jedis.scard(key);
-        }finally {
-            returnResource(jedis);
-        }
-    }
-
-    @Override
-    public Set<String> sdiff(String... keys) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sdiff(keys);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.sdiff(keys);
-            }
-            return null;
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public long sdiffStore(String newkey, String... keys) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sdiffstore(newkey, keys);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.sdiffstore(newkey, keys);
-            }
-            return 0;
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public Set<String> sinter(String... keys) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sinter(keys);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                throw new RuntimeException("ShardedJedis 暂不支持sinter");
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.sinter(keys);
-            }
-            return null;
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public long sinterStore(String newKey, String... keys) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sinterstore(newKey, keys);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                throw new RuntimeException("ShardedJedis 暂不支持sinter");
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.sinterstore(newKey, keys);
-            }
-            return 0;
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public boolean sismember(String key, String member) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            return jc.sismember(key, member);
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public Set<String> smembers(String key) {
-        Set<String> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                value = jedis.smembers(key);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
-    }
-
-    @Override
-    public long smove(String srckey, String dstkey, String member) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.smove(srckey, dstkey, member);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                throw new RuntimeException("ShardedJedis 暂不支持smove");
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.smove(srckey, dstkey, member);
-            }
-            return -1;
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public String spop(String key) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            return jc.spop(key);
-        } finally {
-            returnResource(jc);
-        }
-
-    }
-
-    @Override
-    public Set<String> spop(String key, long count) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            return jc.spop(key, count);
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public long srem(String key, String... member) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            return jc.srem(key, member);
-        } finally {
-            returnResource(jc);
-        }
-    }
-
-    @Override
-    public Set<String> sunion(String... keys) {
-        JedisCommands jc = null;
-        try {
-            jc = getResource();
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sunion(keys);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                throw new RuntimeException("ShardedJedis 暂不支持sunion");
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.sunion(keys);
-            }
-            return null;
-        } finally {
-            returnResource(jc);
-        }
-    }
-
     private void delayTaskHandler(String key) {
         JedisCommands jedis = null;
         try {
@@ -1226,7 +1156,7 @@ public class JedisStrClient implements IJedisStrClient {
                     if (MAP_DELAY_EXECUTE.get(key) == null) {
                         MAP_DELAY_EXECUTE.put(key, true);
                         while (true) {
-                            Map<String, Double> zSet = getZSet(key);
+                            Map<String, Double> zSet = zrangeWithScoresToMap(key, 0, -1);
                             if (zSet == null || zSet.size() == 0) {
                                 break;
                             }
@@ -1255,4 +1185,190 @@ public class JedisStrClient implements IJedisStrClient {
         }
 
     }
+
+    /*==============================sort set begin=====================================================*/
+    @Override
+    public long zadd(String key, double score, String member) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            return jc.zadd(key, score, member);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zadd(String key, Map<String, Double> valueScoreMap, int cacheSeconds) {
+        long result = 0;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (valueScoreMap == null || valueScoreMap.size() == 0 ) {
+                throw new RuntimeException("集合不能为空");
+            }
+            if (jedis.exists(key)) {
+                jedis.del(key);
+            }
+            result = jedis.zadd(key, valueScoreMap);
+            if (cacheSeconds != 0) {
+                jedis.expire(key, cacheSeconds);
+            }
+        } finally {
+            returnResource(jedis);
+        }
+        return result;
+    }
+
+    @Override
+    public long zadd(String key, Map<String, Double> valueScoreMap) {
+        long result = 0;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            result = jedis.zadd(key, valueScoreMap);
+        } finally {
+            returnResource(jedis);
+        }
+        return result;
+    }
+
+    @Override
+    public long zcard(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zcard(key);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zcount(String key, double min, double max) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zcount(key, min, max);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public double zincrby(String key, double score, String member) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zincrby(key, score, member);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> zrange(String key, long start, long end) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrange(key, start, end);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Map<String, Double> zrangeWithScoresToMap(String key, long start, long end) {
+        Set<Tuple> tuples = zrangeWithScores(key, start, end);
+        Map<String, Double> result = new HashMap<>();
+        if (tuples != null) {
+            for (Tuple tuple : tuples) {
+                result.put(tuple.getElement(), tuple.getScore());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<Tuple> zrangeWithScores(String key, long start, long end) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            Set<Tuple> tuples = jedis.zrangeWithScores(key, start, end);
+            return tuples;
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> zrangeByScore(String key, double min, double max) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrangeByScore(key, min, max);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> zrangeByScore(String key, double min, double max, int offset, int count) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrangeByScore(key, min, max, offset, count);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrangeByScoreWithScores(key, min, max);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max) {
+        Set<Tuple> tuples = zrangeByScoreWithScores(key, min, max);
+        Map<String, Double> result = new HashMap<>();
+        if (tuples != null) {
+            for (Tuple tuple : tuples) {
+                result.put(tuple.getElement(), tuple.getScore());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max, int offset, int count) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrangeByScoreWithScores(key, min, max, offset, count);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max, int offset, int count) {
+        Set<Tuple> tuples = zrangeByScoreWithScores(key, min, max, offset, count);
+        Map<String, Double> result = new HashMap<>();
+        if (tuples != null) {
+            for (Tuple tuple : tuples) {
+                result.put(tuple.getElement(), tuple.getScore());
+            }
+        }
+        return result;
+    }
+
+    /*==============================sort set end  =====================================================*/
+
 }

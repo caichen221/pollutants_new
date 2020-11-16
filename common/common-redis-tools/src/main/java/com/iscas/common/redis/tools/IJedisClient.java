@@ -2,12 +2,12 @@ package com.iscas.common.redis.tools;
 
 import com.iscas.common.redis.tools.interfaces.IJedisListClient;
 import com.iscas.common.redis.tools.interfaces.IJedisSetClient;
+import com.iscas.common.redis.tools.interfaces.IJedisSortSetClient;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Jedis操作接口<br/>
@@ -23,7 +23,7 @@ import java.util.Set;
  */
 
 
-public interface IJedisClient extends IJedisListClient, IJedisSetClient {
+public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient {
 
     /**
      * 获取缓存
@@ -89,33 +89,6 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient {
      * @return
      */
     <T> T rpopList(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
-
-    /**
-     * 获取zSET缓存
-     *
-     * @param key 键
-     * @return 值
-     */
-    Map<Object, Double> getZSet(String key) throws IOException, ClassNotFoundException;
-
-    /**
-     * 设置zSet缓存
-     *
-     * @param key           键
-     * @param valueScoreMap (value和score)
-     * @param cacheSeconds  超时时间，0为不超时
-     * @return
-     */
-    long setZSet(String key, Map<Object, Double> valueScoreMap, int cacheSeconds) throws IOException;
-
-    /**
-     * 向ZSet缓存中添加值
-     *
-     * @param key           键
-     * @param valueScoreMap (value和score)
-     * @return
-     */
-    long setZSetAdd(String key, Map<Object, Double> valueScoreMap) throws IOException;
 
     /**
      * 获取Map缓存

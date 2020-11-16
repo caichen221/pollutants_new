@@ -601,85 +601,6 @@ public class JedisClient implements IJedisClient {
     }
 
     @Override
-    public Map<Object, Double> getZSet(String key) throws IOException, ClassNotFoundException {
-        Map<Object, Double> result = new LinkedHashMap<>();
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
-                Set<Tuple> tuples = jedis.zrangeByScoreWithScores(key, 0, -1);
-                if (tuples != null) {
-                    for (Tuple tuple : tuples) {
-                        result.put(JSONObject.parse(tuple.getBinaryElement()), tuple.getScore());
-                    }
-                }
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    @Override
-    public long setZSet(String key, Map<Object, Double> valueScoreMap, int cacheSeconds) throws IOException {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (valueScoreMap == null || valueScoreMap.size() == 0 ) {
-                throw new RuntimeException("集合不能为空");
-            }
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
-                jedis.del(key);
-            }
-            //暂时先将Object 转为String
-            if (valueScoreMap != null) {
-                Map<String, Double> strValueScoreMap = new HashMap<>();
-
-                for (Map.Entry<Object, Double> entry : valueScoreMap.entrySet()) {
-                    Object key1 = entry.getKey();
-                    Double value = entry.getValue();
-                    String s = JSONObject.toJSONString(key1);
-                    strValueScoreMap.put(s, value);
-                }
-                result = jedis.zadd(key, strValueScoreMap);
-                if (cacheSeconds != 0) {
-                    jedis.expire(key, cacheSeconds);
-                }
-
-
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    @Override
-    public long setZSetAdd(String key, Map<Object, Double> valueScoreMap) throws IOException {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            //暂时先将Object 转为String
-            if (valueScoreMap != null) {
-                Map<String, Double> strValueScoreMap = new HashMap<>();
-                for (Map.Entry<Object, Double> entry : valueScoreMap.entrySet()) {
-                    Object key1 = entry.getKey();
-                    Double value = entry.getValue();
-                    String s = JSONObject.toJSONString(key1);
-                    strValueScoreMap.put(s, value);
-                }
-                result = jedis.zadd(key, strValueScoreMap);
-
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    @Override
     public Map<byte[], byte[]> getBytesMap(byte[] key) {
         Map<byte[], byte[]> value = null;
         JedisCommands jedis = null;
@@ -1375,7 +1296,322 @@ public class JedisClient implements IJedisClient {
     }
 
 
+    /*===========================sort set begin========================================*/
+    @Override
+    public long zadd(String key, double score, Object member) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zadd(getBytesKey(key), score, toBytes(member));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zadd(getBytesKey(key), score, toBytes(member));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zadd(getBytesKey(key), score, toBytes(member));
+            }
+            return 0L;
+        } finally {
+            returnResource(jc);
+        }
+    }
 
+    @Override
+    public long zadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) throws IOException {
+        long result = zadd(key, valueScoreMap);
+        if (result > 0) {
+            expire(key, cacheSeconds);
+        }
+        return result;
+    }
+
+    @Override
+    public long zadd(String key, Map<? extends Object, Double> valueScoreMap) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Map<byte[], Double> members = new HashMap<>();
+            for (Map.Entry<?, Double> entry : valueScoreMap.entrySet()) {
+                members.put(toBytes(entry.getKey()), entry.getValue());
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zadd(getBytesKey(key), members);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zadd(getBytesKey(key), members);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zadd(getBytesKey(key), members);
+            }
+            return 0L;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zcard(String key) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zcard(bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zcard(bytesKey);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zcard(bytesKey);
+            }
+            return 0L;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zcount(String key, double min, double max) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zcount(bytesKey, min, max);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zcount(bytesKey, min, max);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zcount(bytesKey, min, max);
+            }
+            return 0L;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public double zincrby(String key, double score, Object member) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zincrby(bytesKey, score, toBytes(member));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zincrby(bytesKey, score, toBytes(member));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zincrby(bytesKey, score, toBytes(member));
+            }
+            return 0L;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> Set<T> zrange(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Set<byte[]> bytesResult = null;
+            Set<T> result = new HashSet<>();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytesResult = jedis.zrange(bytesKey, start, end);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytesResult = shardedJedis.zrange(bytesKey, start, end);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytesResult = jedisCluster.zrange(bytesKey, start, end);
+            }
+            if (bytesResult != null) {
+                for (byte[] bytes : bytesResult) {
+                    result.add((T) toObject(bytes));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> Map<T, Double> zrangeWithScoresToMap(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException {
+        Set<Tuple> tuples = zrangeWithScores(key, start, end);
+        Map<T, Double> result = new HashMap<>();
+        if (tuples != null) {
+            for (Tuple tuple : tuples) {
+                Object o = toObject(tuple.getBinaryElement());
+                result.put((T) o, tuple.getScore());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<Tuple> zrangeWithScores(String key, long start, long end) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Set<Tuple> result = null;
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                result = jedis.zrangeWithScores(bytesKey, start, end);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                result = shardedJedis.zrangeWithScores(bytesKey, start, end);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                result = jedisCluster.zrangeWithScores(bytesKey, start, end);
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> Set<T> zrangeByScore(Class<T> tClass, String key, double min, double max) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Set<T> result = new HashSet<>();
+            Set<byte[]> bytes = null;
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytes = jedis.zrangeByScore(bytesKey, min, max);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytes = shardedJedis.zrangeByScore(bytesKey, min, max);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytes = jedisCluster.zrangeByScore(bytesKey, min, max);
+            }
+            if (bytes != null) {
+                for (byte[] aByte : bytes) {
+                    result.add((T) toObject(aByte));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> Set<T> zrangeByScore(Class<T> tClass, String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Set<T> result = new HashSet<>();
+            Set<byte[]> bytes = null;
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytes = jedis.zrangeByScore(bytesKey, min, max, offset, count);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytes = shardedJedis.zrangeByScore(bytesKey, min, max, offset, count);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytes = jedisCluster.zrangeByScore(bytesKey, min, max, offset, count);
+            }
+            if (bytes != null) {
+                for (byte[] aByte : bytes) {
+                    result.add((T) toObject(aByte));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Set<Tuple> tuples = null;
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                tuples = jedis.zrangeByScoreWithScores(bytesKey, min, max);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                tuples = shardedJedis.zrangeByScoreWithScores(bytesKey, min, max);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                tuples = jedisCluster.zrangeByScoreWithScores(bytesKey, min, max);
+            }
+            return tuples;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public  <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max)  throws IOException, ClassNotFoundException {
+        Map<T, Double> result = new HashMap<>();
+        Set<Tuple> tuples = zrangeByScoreWithScores(key, min, max);
+        if (tuples != null) {
+            for (Tuple tuple : tuples) {
+                result.put((T) toObject(tuple.getBinaryElement()), tuple.getScore());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            Set<Tuple> tuples = null;
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                tuples = jedis.zrangeByScoreWithScores(bytesKey, min, max, offset, count);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                tuples = shardedJedis.zrangeByScoreWithScores(bytesKey, min, max, offset, count);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                tuples = jedisCluster.zrangeByScoreWithScores(bytesKey, min, max, offset, count);
+            }
+            return tuples;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException {
+        Map<T, Double> result = new HashMap<>();
+        Set<Tuple> tuples = zrangeByScoreWithScores(key, min, max, offset, count);
+        if (tuples != null) {
+            for (Tuple tuple : tuples) {
+                result.put((T) toObject(tuple.getBinaryElement()), tuple.getScore());
+            }
+        }
+        return result;
+    }
+
+    /*===========================sort set end==========================================*/
 
 //    private void delayTaskHandler(String key) {
 //        JedisCommands jedis = null;

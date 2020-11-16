@@ -2,6 +2,7 @@ package com.iscas.common.redis.tools;
 
 import com.iscas.common.redis.tools.interfaces.IJedisListStrClient;
 import com.iscas.common.redis.tools.interfaces.IJedisSetStrClient;
+import com.iscas.common.redis.tools.interfaces.IJedisSortSetStrClient;
 import redis.clients.jedis.Tuple;
 
 import java.io.UnsupportedEncodingException;
@@ -22,7 +23,7 @@ import java.util.function.Consumer;
  */
 
 
-public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient {
+public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient, IJedisSortSetStrClient {
 
     /**
      * 获取缓存
@@ -78,33 +79,6 @@ public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient
      * @return
      * */
     String rpopList(String key);
-
-    /**
-     * 获取zset缓存
-     * @param key 键
-     * @return 值
-     */
-    Map<String, Double> getZSet(String key);
-
-    Set<Tuple> getZSetToTuple(String key);
-
-    /**
-     * 设置ZSet缓存
-     * @param key 键
-     * @param valueScoreMap (value和score)
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    long setZSet(String key, Map<String, Double> valueScoreMap, int cacheSeconds);
-
-
-    /**
-     * 向ZSet缓存中添加值
-     * @param key 键
-     * @param valueScoreMap (value和score)
-     * @return
-     */
-    long setZSetAdd(String key, Map<String, Double> valueScoreMap);
 
     /**
      * 获取Map缓存
