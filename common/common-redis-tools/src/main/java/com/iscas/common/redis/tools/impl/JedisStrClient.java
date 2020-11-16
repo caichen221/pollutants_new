@@ -201,18 +201,6 @@ public class JedisStrClient implements IJedisStrClient {
         return value;
     }
 
-    /**
-     *
-     * 为了使函数名与命令更接近，弃用，见新函数{@link #smembers(String)}
-     * 获取集合，类型为字符串
-     * @param key 键
-     * @return 值
-     */
-    @Override
-    @Deprecated
-    public Set<String> getSet(String key) {
-        return smembers(key);
-    }
 
     /**
      * 设置Set, 值为字符串类型
@@ -222,7 +210,7 @@ public class JedisStrClient implements IJedisStrClient {
      * @return
      */
     @Override
-    public  long setSet(String key, Set<String> value, int cacheSeconds) {
+    public  long sadd(String key, Set<String> value, int cacheSeconds) {
         long result = 0;
         JedisCommands jedis = null;
         try {
@@ -255,7 +243,7 @@ public class JedisStrClient implements IJedisStrClient {
      * @return
      */
     @Override
-    public  long setSetAdd(String key, String... value) {
+    public  long sadd(String key, String... value) {
         long result = 0;
         JedisCommands jedis = null;
         try {
@@ -1203,6 +1191,27 @@ public class JedisStrClient implements IJedisStrClient {
         try {
             jc = getResource();
             return jc.srem(key, member);
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Set<String> sunion(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.sunion(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持sunion");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.sunion(keys);
+            }
+            return null;
         } finally {
             returnResource(jc);
         }
