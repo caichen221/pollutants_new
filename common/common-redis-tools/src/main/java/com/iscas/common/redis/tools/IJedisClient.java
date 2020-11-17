@@ -91,25 +91,6 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisS
      */
     <T> T rpopList(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
 
-
-    /**
-     * 移除Map缓存中的值
-     *
-     * @param key    键
-     * @param mapKey 值
-     * @return
-     */
-    long mapRemove(String key, String mapKey) throws IOException;
-
-    /**
-     * 判断Map缓存中的Key是否存在
-     *
-     * @param key    键
-     * @param mapKey 值
-     * @return
-     */
-    boolean mapExists(String key, String mapKey) throws IOException;
-
     /**
      * 删除缓存
      *

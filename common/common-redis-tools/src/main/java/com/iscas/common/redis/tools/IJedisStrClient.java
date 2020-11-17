@@ -79,27 +79,6 @@ public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient
      * */
     String rpopList(String key);
 
-
-
-    String getMapByMapKey(String key, String mapKey);
-
-
-    /**
-     * 移除Map缓存中的值
-     * @param key 键
-     * @param mapKey 值
-     * @return
-     */
-    long mapRemove(String key, String mapKey);
-
-    /**
-     * 判断Map缓存中的Key是否存在
-     * @param key 键
-     * @param mapKey 值
-     * @return
-     */
-    boolean mapExists(String key, String mapKey);
-
     /**
      * 删除缓存
      * @param key 键

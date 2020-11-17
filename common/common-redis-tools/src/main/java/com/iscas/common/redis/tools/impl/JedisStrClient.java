@@ -455,64 +455,6 @@ public class JedisStrClient implements IJedisStrClient {
     }
 
     /**
-     * 获取Map
-     * @param key 键
-     * @return 值
-     */
-    @Override
-    public String getMapByMapKey(String key, String mapKey) {
-        String value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                value = jedis.hget(key, mapKey);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
-    }
-
-    /**
-     * 移除Map缓存中的值
-     * @param key 键
-     * @param mapKey 值
-     * @return
-     */
-    @Override
-    public  long mapRemove(String key, String mapKey) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedis.hdel(key, mapKey);
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    /**
-     * 判断Map缓存中的Key是否存在
-     * @param key 键
-     * @param mapKey 值
-     * @return
-     */
-    @Override
-    public  boolean mapExists(String key, String mapKey) {
-        boolean result = false;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedis.hexists(key, mapKey);
-        } finally {
-            returnResource(jedis);
-        }
-        return result;
-    }
-
-    /**
      * 删除缓存
      * @param key 键
      * @return
@@ -1408,6 +1350,128 @@ public class JedisStrClient implements IJedisStrClient {
             returnResource(jedis);
         }
     }
+
+    @Override
+    public long hdel(String key, String... fields) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hdel(key, fields);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public boolean hexists(String key, String field) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hexists(key, field);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String hget(String key, String field) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hget(key, field);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long hset(String key, String field, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hset(key, field, value);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long hsetnx(String key, String field, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hsetnx(key, field, value);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public List<String> hvals(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hvals(key);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long hincrby(String key, String field, long value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hincrBy(key, field, value);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Double hincrby(String key, String field, double value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hincrByFloat(key, field, value);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> hkeys(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hkeys(key);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long hlen(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hlen(key);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public List<String> hmget(String key, String... fields) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hmget(key, fields);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
     /*==============================hash end    =====================================================*/
 
 
