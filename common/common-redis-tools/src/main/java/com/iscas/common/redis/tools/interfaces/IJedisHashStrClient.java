@@ -26,4 +26,16 @@ public interface IJedisHashStrClient {
      */
     boolean hmset(String key, Map<String, String> map, int cacheSenconds);
 
+    /**
+     * 从hash中获取所有元素存入map
+     *
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/17
+     * @param key key
+     * @throws
+     * @return
+     */
+    Map<String, String> hgetAll(String key);
+
 }

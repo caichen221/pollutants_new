@@ -427,16 +427,6 @@ public class JedisClientTests {
     }
 
     /**
-     * 获取Map 类型为对象
-     */
-    @Test
-    @Ignore
-    public void test25() throws IOException, ClassNotFoundException {
-        Map<String, Object> map1 = jedisClient.getMap("map2");
-        System.out.println(map1);
-    }
-
-    /**
      * 移除某个Map值,类型为对象
      */
     @Test
@@ -1113,6 +1103,26 @@ public class JedisClientTests {
             hash.put("b", "2");
             boolean result = jedisClient.hmset("testKey", hash, 5);
             Assert.assertEquals(true, result);
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取hash中所有的元素
+     * */
+    @Test
+    public void testHgetAll() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            Map<String, String> result = jedisClient.hgetAll(String.class, String.class, "testKey");
+            result.entrySet().forEach(System.out::println);
+            Assert.assertEquals(2, result.size());
 
         } finally {
             jedisClient.del("testKey");

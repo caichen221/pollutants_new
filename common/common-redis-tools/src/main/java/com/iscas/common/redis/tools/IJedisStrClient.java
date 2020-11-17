@@ -79,23 +79,10 @@ public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient
      * */
     String rpopList(String key);
 
-    /**
-     * 获取Map缓存
-     * @param key 键
-     * @return 值
-     */
-    Map<String, String> getMap(String key);
 
 
     String getMapByMapKey(String key, String mapKey);
 
-
-    /**
-     * 获取Map缓存
-     * @param key 键
-     * @return 值
-     */
-    Map<byte[], byte[]> getBytesMap(byte[] key);
 
     /**
      * 移除Map缓存中的值

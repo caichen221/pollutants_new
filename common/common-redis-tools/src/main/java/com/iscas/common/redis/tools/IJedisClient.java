@@ -91,21 +91,6 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisS
      */
     <T> T rpopList(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
 
-    /**
-     * 获取Map缓存
-     *
-     * @param key 键
-     * @return 值
-     */
-    Map<byte[], byte[]> getBytesMap(byte[] key);
-
-    /**
-     * 获取Map缓存
-     *
-     * @param key 键
-     * @return 值
-     */
-    Map<String, Object> getMap(String key) throws IOException, ClassNotFoundException;
 
     /**
      * 移除Map缓存中的值

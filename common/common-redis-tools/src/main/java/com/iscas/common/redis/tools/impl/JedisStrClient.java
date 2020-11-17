@@ -475,64 +475,6 @@ public class JedisStrClient implements IJedisStrClient {
     }
 
     /**
-     * 获取Map
-     * @param key 键
-     * @return 值
-     */
-    @Override
-    public Map<String, String> getMap(String key) {
-        Map<String, String> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                value = jedis.hgetAll(key);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
-    }
-
-    @Override
-    public Map<byte[], byte[]> getBytesMap(byte[] key) {
-        Map<byte[], byte[]> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis instanceof Jedis) {
-                Jedis jd = (Jedis) jedis;
-                if (jd.exists(key)) {
-                    value = jd.hgetAll(key);
-                }
-            }
-
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
-
-    }
-
-    public  boolean setMap(String key, String field, String value, int cacheSeconds) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-//            if (jedis.exists(key)) {
-//                jedis.del(key);
-//            }
-            result = jedis.hset(key, field, value);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result == 1;
-    }
-
-    /**
      * 移除Map缓存中的值
      * @param key 键
      * @param mapKey 值
@@ -1451,6 +1393,17 @@ public class JedisStrClient implements IJedisStrClient {
                 return true;
             }
             return false;
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Map<String, String> hgetAll(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.hgetAll(key);
         } finally {
             returnResource(jedis);
         }

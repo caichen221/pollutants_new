@@ -26,4 +26,16 @@ public interface IJedisHashClient {
      * @return 成功返回true
      */
     boolean hmset(String key, Map map, int cacheSenconds) throws IOException;
+
+    /**
+     * 从hash中获取所有元素存入map
+     *
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/17
+     * @param key key
+     * @throws
+     * @return
+     */
+    <K extends Object, V extends Object> Map<K, V> hgetAll(Class<K> keyClass, Class<V> valClass, String key) throws IOException, ClassNotFoundException;
 }

@@ -599,51 +599,6 @@ public class JedisClient implements IJedisClient {
         return (T) value;
     }
 
-    @Override
-    public Map<byte[], byte[]> getBytesMap(byte[] key) {
-        Map<byte[], byte[]> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis instanceof Jedis) {
-                Jedis jd = (Jedis) jedis;
-                if (jd.exists(key)) {
-                    value = jd.hgetAll(key);
-                }
-            }
-
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
-
-    }
-
-    /**
-     * 获取Map 类型为对象
-     * @param key 键
-     * @return 值
-     */
-    @Override
-    public Map<String, Object> getMap(String key) throws IOException, ClassNotFoundException {
-        Map<String, Object> value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
-                value = new HashMap<>();
-                Map<byte[], byte[]> map = jedisCommandsBytesHgetall(jedis, getBytesKey(key));
-                for (Map.Entry<byte[], byte[]> e : map.entrySet()){
-                    value.put(MyStringHelper.toString(e.getKey()), toObject(e.getValue()));
-                }
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return value;
-    }
-
-
     public boolean setMap(String key, String field, String value, int cacheSeconds) {
         long result = 0;
         JedisCommands jedis = null;
@@ -1745,6 +1700,35 @@ public class JedisClient implements IJedisClient {
                 return true;
             }
             return false;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <K extends Object, V extends Object> Map<K, V> hgetAll(Class<K> keyClass, Class<V> valClass, String key) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            Map<byte[], byte[]> result = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                result = jedis.hgetAll(bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                result = shardedJedis.hgetAll(bytesKey);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                result = jedisCluster.hgetAll(bytesKey);
+            }
+            Map<K, V> mapRes = new HashMap<>();
+            if (result != null) {
+                for (Map.Entry<byte[], byte[]> entry : result.entrySet()) {
+                    mapRes.put((K) toObject(entry.getKey()), (V) toObject(entry.getValue()));
+                }
+            }
+            return mapRes;
         } finally {
             returnResource(jc);
         }
