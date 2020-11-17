@@ -1369,6 +1369,17 @@ public class JedisStrClient implements IJedisStrClient {
         return result;
     }
 
+    @Override
+    public long zrank(String key, String member) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrank(key, member);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
     /*==============================sort set end  =====================================================*/
 
 }

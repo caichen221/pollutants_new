@@ -1611,6 +1611,28 @@ public class JedisClient implements IJedisClient {
         return result;
     }
 
+    @Override
+    public long zrank(String key, Object member) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zrank(bytesKey, toBytes(member));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zrank(bytesKey, toBytes(member));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zrank(bytesKey, toBytes(member));
+            }
+            return -1;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
     /*===========================sort set end==========================================*/
 
 //    private void delayTaskHandler(String key) {

@@ -223,7 +223,7 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisS
     /**
      * 设置对象存储的过期时间
      *
-     * @param key         缓存的key
+     * @param key 缓存的key
      * @param millisecond 过期时间毫秒
      * @return
      * @throws

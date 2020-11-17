@@ -896,6 +896,27 @@ public class JedisClientTests {
             jedisClient.del("testKey");
         }
     }
+
+    /**
+     * 测试按照权重查找zset中元素,返回值附带权重, 返回Map，带偏移量
+     * */
+    @Test
+    public void testZrank() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            long result = jedisClient.zrank("testKey", "2");
+            Assert.assertEquals(1, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
     /*=============================sort set end========================================*/
 
 

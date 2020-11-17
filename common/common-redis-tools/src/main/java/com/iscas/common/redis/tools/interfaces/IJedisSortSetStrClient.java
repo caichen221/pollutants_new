@@ -151,5 +151,14 @@ public interface IJedisSortSetStrClient {
      */
     Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max, int offset, int count);
 
+    /**
+     * 获取指定值在zset中的位置，集合排序从低到高
+     *
+     * @param key 键
+     * @param member  成员
+     * @return 值
+     */
+    long zrank(String key, String member);
+
 
 }
