@@ -662,88 +662,6 @@ public class JedisClient implements IJedisClient {
         return result == 1;
     }
 
-    @Override
-    public boolean setBytesMap(byte[] key, Map<byte[], byte[]> value, int cacheSeconds) {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis instanceof Jedis) {
-                Jedis jd = (Jedis) jedis;
-                if (jd.exists(key)){
-                    jd.del(key);
-                }
-                result = jd.hmset(key, value);
-                if (cacheSeconds != 0) {
-                    jd.expire(key, cacheSeconds);
-                }
-            }
-//            if (jedis.exists(key)) {
-//                jedis.del(key);
-//            }
-//            result = jedis.hmset(key, value);
-//            if (cacheSeconds != 0) {
-//                jedis.expire(key, cacheSeconds);
-//            }
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
-    /**
-     * 设置Map 类型为对象
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    @Override
-    public  boolean setMap(String key, Map<String, Object> value, int cacheSeconds) throws IOException {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
-                jedis.del(key);
-            }
-            Map<byte[], byte[]> map = new HashMap<>();
-            for (Map.Entry<String, Object> e : value.entrySet()){
-                map.put(getBytesKey(e.getKey()), toBytes(e.getValue()));
-            }
-            result = jedisCommandsBytesHmset(jedis, getBytesKey(key), (Map<byte[], byte[]>)map);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
-    /**
-     * 向Map中添加值， 类型为对象
-     * @param key 键
-     * @param value 值
-     * @return
-     */
-    @Override
-    public  boolean mapPut(String key, Map<String, Object> value) throws IOException {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            Map<byte[], byte[]> map = new HashMap<>();
-            for (Map.Entry<String, Object> e : value.entrySet()){
-                map.put(getBytesKey(e.getKey()), toBytes(e.getValue()));
-            }
-            result = jedisCommandsBytesHmset(jedis, getBytesKey(key), (Map<byte[], byte[]>)map);
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
     /**
      * 移除Map缓存中的值
      * @param key 键
@@ -1793,6 +1711,40 @@ public class JedisClient implements IJedisClient {
                 return jedisCluster.zunionstore(dstBytesKey, bytesKey);
             }
             return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean hmset(String key, Map map, int cacheSenconds) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            Map<byte[], byte[]> bytesMap = new HashMap<>();
+            for (Object o : map.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
+                bytesMap.put(toBytes(entry.getKey()), toBytes(entry.getValue()));
+            }
+            String result = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                result = jedis.hmset(bytesKey, bytesMap);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                result = shardedJedis.hmset(bytesKey, bytesMap);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                result = jedisCluster.hmset(bytesKey, bytesMap);
+            }
+            if ("ok".equalsIgnoreCase(result)) {
+                if (!Objects.equals(0, cacheSenconds)) {
+                    expire(key, cacheSenconds * 1000);
+                }
+                return true;
+            }
+            return false;
         } finally {
             returnResource(jc);
         }

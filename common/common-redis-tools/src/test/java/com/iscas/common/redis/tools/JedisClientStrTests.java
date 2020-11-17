@@ -398,21 +398,6 @@ public class JedisClientStrTests {
     }
 
 
-
-    /**
-     * 测试Map 设置Map,类型为字符串
-     * */
-    @Test
-    @Ignore
-    public void test22() {
-        Map map = new HashMap<>();
-        map.put("a", "11");
-        map.put("b", "22");
-        map.put("c", "33");
-        boolean result = jedisClient.setMap("map1", map, 0);
-        System.out.println(result);
-    }
-
     /**
      * 获取Map 类型为字符串
      * */
@@ -421,18 +406,6 @@ public class JedisClientStrTests {
     public void test24() {
         Map<String, String> map1 = jedisClient.getMap("map1");
         System.out.println(map1);
-    }
-
-    /**
-     * 向map中添加数据
-     * */
-    @Test
-    @Ignore
-    public void test26() throws IOException, ClassNotFoundException {
-        Map<String, String> map = new HashMap<>();
-        map.put("f", "F");
-        boolean result = jedisClient.mapPut("map1", map);
-        System.out.println(result);
     }
 
     /**
@@ -1141,6 +1114,28 @@ public class JedisClientStrTests {
     }
 
     /*=============================sort set end========================================*/
+
+
+    /*=============================hash begin  ========================================*/
+    /**
+     * 测试存入hash
+     * */
+    @Test
+    public void testHmset() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            boolean result = jedisClient.hmset("testKey", hash, 5);
+            Assert.assertEquals(true, result);
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /*=============================hash end    ========================================*/
 
 
 

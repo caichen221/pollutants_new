@@ -1,5 +1,6 @@
 package com.iscas.common.redis.tools;
 
+import com.iscas.common.redis.tools.interfaces.IJedisHashClient;
 import com.iscas.common.redis.tools.interfaces.IJedisListClient;
 import com.iscas.common.redis.tools.interfaces.IJedisSetClient;
 import com.iscas.common.redis.tools.interfaces.IJedisSortSetClient;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 
 
-public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient {
+public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient, IJedisHashClient {
 
     /**
      * 获取缓存
@@ -105,36 +106,6 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisS
      * @return 值
      */
     Map<String, Object> getMap(String key) throws IOException, ClassNotFoundException;
-
-    /**
-     * 设置Map缓存
-     *
-     * @param key          键
-     * @param value        值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    boolean setBytesMap(byte[] key, Map<byte[], byte[]> value, int cacheSeconds);
-
-    /**
-     * 设置Map缓存
-     *
-     * @param key          键
-     * @param value        值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    boolean setMap(String key, Map<String, Object> value,
-                   int cacheSeconds) throws IOException;
-
-    /**
-     * 向Map缓存中添加值
-     *
-     * @param key   键
-     * @param value 值
-     * @return
-     */
-    boolean mapPut(String key, Map<String, Object> value) throws IOException;
 
     /**
      * 移除Map缓存中的值

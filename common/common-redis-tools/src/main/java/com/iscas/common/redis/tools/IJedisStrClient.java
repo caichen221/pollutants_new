@@ -1,14 +1,13 @@
 package com.iscas.common.redis.tools;
 
+import com.iscas.common.redis.tools.interfaces.IJedisHashStrClient;
 import com.iscas.common.redis.tools.interfaces.IJedisListStrClient;
 import com.iscas.common.redis.tools.interfaces.IJedisSetStrClient;
 import com.iscas.common.redis.tools.interfaces.IJedisSortSetStrClient;
-import redis.clients.jedis.Tuple;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -23,7 +22,7 @@ import java.util.function.Consumer;
  */
 
 
-public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient, IJedisSortSetStrClient {
+public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient, IJedisSortSetStrClient, IJedisHashStrClient {
 
     /**
      * 获取缓存
@@ -97,34 +96,6 @@ public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient
      * @return 值
      */
     Map<byte[], byte[]> getBytesMap(byte[] key);
-
-
-    /**
-     * 设置Map缓存
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    boolean setMap(String key, Map<String, String> value, int cacheSeconds);
-
-    /**
-     * 设置Map缓存
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    boolean setBytesMap(byte[] key, Map<byte[], byte[]> value, int cacheSeconds);
-
-    /**
-     * 向Map缓存中添加值
-     * @param key 键
-     * @param value 值
-     * @return
-     */
-    boolean mapPut(String key, Map<String, String> value);
-
 
     /**
      * 移除Map缓存中的值

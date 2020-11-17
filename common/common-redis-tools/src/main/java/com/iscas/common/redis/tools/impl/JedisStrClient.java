@@ -532,81 +532,6 @@ public class JedisStrClient implements IJedisStrClient {
         return result == 1;
     }
 
-
-    /**
-     * 设置Map, 类型为字符串
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    @Override
-    public  boolean setMap(String key, Map<String, String> value, int cacheSeconds) {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                jedis.del(key);
-            }
-            result = jedis.hmset(key, value);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
-    @Override
-    public boolean setBytesMap(byte[] key, Map<byte[], byte[]> value, int cacheSeconds) {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis instanceof Jedis) {
-                Jedis jd = (Jedis) jedis;
-                if (jd.exists(key)){
-                    jd.del(key);
-                }
-                result = jd.hmset(key, value);
-                if (cacheSeconds != 0) {
-                    jd.expire(key, cacheSeconds);
-                }
-            }
-//            if (jedis.exists(key)) {
-//                jedis.del(key);
-//            }
-//            result = jedis.hmset(key, value);
-//            if (cacheSeconds != 0) {
-//                jedis.expire(key, cacheSeconds);
-//            }
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
-    /**
-     * 向Map中添加值 类型为字符串
-     * @param key 键
-     * @param value 值
-     * @return
-     */
-    @Override
-    public  boolean mapPut(String key, Map<String, String> value) {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedis.hmset(key, value);
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
     /**
      * 移除Map缓存中的值
      * @param key 键
@@ -1510,5 +1435,29 @@ public class JedisStrClient implements IJedisStrClient {
     }
 
     /*==============================sort set end  =====================================================*/
+
+
+    /*==============================hash begin  =====================================================*/
+    @Override
+    public boolean hmset(String key, Map<String, String> map, int cacheSenconds) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            String result = jedis.hmset(key, map);
+            if ("ok".equalsIgnoreCase(result)) {
+                if (!Objects.equals(0, cacheSenconds)) {
+                    expire(key, cacheSenconds * 1000);
+                }
+                return true;
+            }
+            return false;
+        } finally {
+            returnResource(jedis);
+        }
+    }
+    /*==============================hash end    =====================================================*/
+
+
+
 
 }
