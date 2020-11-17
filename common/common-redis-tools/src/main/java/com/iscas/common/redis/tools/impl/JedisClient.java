@@ -1,7 +1,6 @@
 package com.iscas.common.redis.tools.impl;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.iscas.common.redis.tools.ConfigInfo;
 import com.iscas.common.redis.tools.IJedisClient;
 import com.iscas.common.redis.tools.JedisConnection;
@@ -1632,6 +1631,201 @@ public class JedisClient implements IJedisClient {
             returnResource(jc);
         }
     }
+
+    @Override
+    public long zrevrank(String key, Object member) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zrevrank(bytesKey, toBytes(member));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zrevrank(bytesKey, toBytes(member));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zrevrank(bytesKey, toBytes(member));
+            }
+            return -1;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zrem(String key, Object... members) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[][] memberBytes = new byte[members.length][];
+            for (int i = 0; i < members.length; i++) {
+                memberBytes[i] = toBytes(members[i]);
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zrem(bytesKey, memberBytes);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zrem(bytesKey, memberBytes);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zrem(bytesKey, memberBytes);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zremrangeByRank(String key, int start, int end) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zremrangeByRank(bytesKey, start, end);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zremrangeByRank(bytesKey, start, end);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zremrangeByRank(bytesKey, start, end);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zremrangeByScore(String key, double min, double max) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zremrangeByScore(bytesKey, min, max);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zremrangeByScore(bytesKey, min, max);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zremrangeByScore(bytesKey, min, max);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public Double zscore(String key, Object memeber) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zscore(bytesKey, toBytes(memeber));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.zscore(bytesKey, toBytes(memeber));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zscore(bytesKey, toBytes(memeber));
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zinterstore(String dstKey, String... keys) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] dstBytesKey = getBytesKey(dstKey);
+            byte[][] bytesKey = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                bytesKey[i] = getBytesKey(keys[i]);
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zinterstore(dstBytesKey, bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持zinterstore");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zinterstore(dstBytesKey, bytesKey);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long zunionstore(String dstKey, String... keys) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] dstBytesKey = getBytesKey(dstKey);
+            byte[][] bytesKey = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                bytesKey[i] = getBytesKey(keys[i]);
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.zunionstore(dstBytesKey, bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new RuntimeException("ShardedJedis 暂不支持zinterstore");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.zunionstore(dstBytesKey, bytesKey);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+//    @Override
+//    public <T> Set<T> zrangeByLex(Class<T> tClass, String key, String min, String max) throws IOException, ClassNotFoundException {
+//        JedisCommands jc = null;
+//        try {
+//            jc = getResource();
+//            byte[] bytesKey = getBytesKey(key);
+//            Set<byte[]> bytes = null;
+//            Set<T> result = new HashSet<>();
+//            if (jc instanceof Jedis) {
+//                Jedis jedis = (Jedis) jc;
+//                bytes = jedis.zrangeByLex(bytesKey, toBytes(min), toBytes(max));
+//            } else if (jc instanceof ShardedJedis) {
+//                ShardedJedis shardedJedis = (ShardedJedis) jc;
+//                bytes = shardedJedis.zrangeByLex(bytesKey, toBytes(min), toBytes(max));
+//            } else if (jc instanceof JedisCluster) {
+//                JedisCluster jedisCluster = (JedisCluster) jc;
+//                bytes = jedisCluster.zrangeByLex(bytesKey, toBytes(min), toBytes(max));
+//            }
+//            if (bytes != null) {
+//                for (byte[] aByte : bytes) {
+//                    result.add((T) toObject(aByte));
+//                }
+//            }
+//            return result;
+//        } finally {
+//            returnResource(jc);
+//        }
+//    }
 
     /*===========================sort set end==========================================*/
 

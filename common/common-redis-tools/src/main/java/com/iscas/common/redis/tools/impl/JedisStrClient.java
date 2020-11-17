@@ -1105,7 +1105,6 @@ public class JedisStrClient implements IJedisStrClient {
         } finally {
             returnResource(jedis);
         }
-
     }
 
     @Override
@@ -1375,6 +1374,136 @@ public class JedisStrClient implements IJedisStrClient {
         try {
             jedis = getResource();
             return jedis.zrank(key, member);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zrevrank(String key, String member) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrevrank(key, member);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zrem(String key, String... members) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrem(key, members);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zremrangeByRank(String key, int start, int end) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zremrangeByRank(key, start, end);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zremrangeByScore(String key, double min, double max) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zremrangeByScore(key, min, max);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Double zscore(String key, String memeber) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zscore(key, memeber);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> zrangeByLex(String key, String min, String max) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrangeByLex(key, min, max);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public Set<String> zrangeByLex(String key, String min, String max, int offset, int count) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zrangeByLex(key, min, max, offset, count);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zremrangeByLex(String key, String min, String max) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.zremrangeByLex(key, min, max);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zinterstore(String dstKey, String... keys) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedis instanceof Jedis) {
+                Jedis jd = (Jedis) jedis;
+                return jd.zinterstore(dstKey, keys);
+            } else if (jedis instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jedis;
+                throw new RuntimeException("ShardedJedis 暂不支持zinterstore");
+            } else if (jedis instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jedis;
+                return jedisCluster.zinterstore(dstKey, keys);
+            }
+            return 0;
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long zunionstore(String dstKey, String... keys) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedis instanceof Jedis) {
+                Jedis jd = (Jedis) jedis;
+                return jd.zunionstore(dstKey, keys);
+            } else if (jedis instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jedis;
+                throw new RuntimeException("ShardedJedis 暂不支持zinterstore");
+            } else if (jedis instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jedis;
+                return jedisCluster.zunionstore(dstKey, keys);
+            }
+            return 0;
         } finally {
             returnResource(jedis);
         }

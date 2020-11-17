@@ -1,8 +1,6 @@
 package com.iscas.common.redis.tools;
 
 import com.iscas.common.redis.tools.impl.JedisStrClient;
-import com.iscas.common.redis.tools.impl.cluster.JedisClusterConnection;
-import com.iscas.common.redis.tools.impl.shard.JedisShardConnection;
 import com.iscas.common.redis.tools.impl.standalone.JedisStandAloneConnection;
 import org.junit.Assert;
 import org.junit.Before;
@@ -863,7 +861,7 @@ public class JedisClientStrTests {
     }
 
     /**
-     * 测试按照权重查找zset中元素,返回值附带权重, 返回Map，带偏移量
+     * 测试从低到高权重排列，某个元素的位置
      * */
     @Test
     public void testZrank() {
@@ -882,6 +880,266 @@ public class JedisClientStrTests {
             jedisClient.del("testKey");
         }
     }
+
+    /**
+     * 测试从高到低权重排列，某个元素的位置
+     * */
+    @Test
+    public void testZrevrank() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            long result = jedisClient.zrevrank("testKey", "2");
+            Assert.assertEquals(3, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从zset中删除元素
+     * */
+    @Test
+    public void testZrem() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            long result = jedisClient.zrem("testKey", "2", "5");
+            Assert.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从zset中删除指定位置的元素
+     * */
+    @Test
+    public void testZremrangeByRank() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            long result = jedisClient.zremrangeByRank("testKey", 2, 4);
+            Assert.assertEquals(3, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从zset中删除指定群众的元素
+     * */
+    @Test
+    public void testZremrangeByScore() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            long result = jedisClient.zremrangeByScore("testKey", 1.0, 3.7);
+            Assert.assertEquals(3, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试指定元素在zset中的权重
+     * */
+    @Test
+    public void testZscore() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Double result1 = jedisClient.zscore("testKey", "1");
+            Assert.assertEquals(1.0, result1, 1);
+            Double result2 = jedisClient.zscore("testKey", "88");
+            Assert.assertNull(result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试通过字典区间返回有序集合的成员
+     * */
+    @Test
+    public void testZrangeByLex() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
+            result1.forEach(System.out::println);
+            Assert.assertEquals(5, result1.size());
+
+            Set<String> result2 = jedisClient.zrangeByLex("testKey", "[2", "(4");
+            result2.forEach(System.out::println);
+            Assert.assertEquals(2, result2.size());
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试通过字典区间返回有序集合的成员
+     * */
+    @Test
+    public void testZrangeByLex2() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
+            result1.forEach(System.out::println);
+            Assert.assertEquals(5, result1.size());
+
+            Set<String> result2 = jedisClient.zrangeByLex("testKey", "[2", "(4", 0, 1);
+            result2.forEach(System.out::println);
+            Assert.assertEquals(1, result2.size());
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试通过字典区间删除有序集合的成员
+     * */
+    @Test
+    public void testZremrangeByLex() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
+            result1.forEach(System.out::println);
+            Assert.assertEquals(5, result1.size());
+
+            long count = jedisClient.zremrangeByLex("testKey", "[2", "(4");
+            Assert.assertEquals(2, count);
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试zset取交集并存入新集合
+     * */
+    @Test
+    public void testZinterstore() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("testKey3");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+
+            Map<String, Double> memebers2 = new HashMap<>();
+            memebers2.put("1", 1.0);
+            memebers2.put("2", 2.0);
+            memebers2.put("3", 3.0);
+            memebers2.put("4", 4.0);
+            memebers2.put("6", 6.0);
+            jedisClient.zadd("testKey2", memebers2);
+            long result = jedisClient.zinterstore("testKey3", "testKey", "testKey2");
+            Set<String> set = jedisClient.zrange("testKey3", 0, -1);
+            set.forEach(System.out::println);
+            Assert.assertEquals(result, 4);
+
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("testKey3");
+        }
+    }
+
+    /**
+     * 测试zset取交集并存入新集合
+     * */
+    @Test
+    public void testZunionstore() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("testKey3");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+
+            Map<String, Double> memebers2 = new HashMap<>();
+            memebers2.put("1", 1.0);
+            memebers2.put("2", 2.0);
+            memebers2.put("3", 3.0);
+            memebers2.put("4", 4.0);
+            memebers2.put("6", 6.0);
+            jedisClient.zadd("testKey2", memebers2);
+            long result = jedisClient.zunionstore("testKey3", "testKey", "testKey2");
+            Set<String> set = jedisClient.zrange("testKey3", 0, -1);
+            set.forEach(System.out::println);
+            Assert.assertEquals(result, 6);
+
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("testKey3");
+        }
+    }
+
     /*=============================sort set end========================================*/
 
 

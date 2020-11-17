@@ -156,9 +156,104 @@ public interface IJedisSortSetStrClient {
      *
      * @param key 键
      * @param member  成员
-     * @return 值
+     * @return 位置
      */
     long zrank(String key, String member);
 
+    /**
+     * 获取指定值在zset中的位置，集合排序从高到低
+     *
+     * @param key 键
+     * @param member  成员
+     * @return 位置
+     */
+    long zrevrank(String key, String member);
+
+    /**
+     * 从zset中删除成员
+     *
+     * @param key 键
+     * @param members 成员
+     * @return 删除的数量
+     */
+    long zrem(String key, String... members);
+
+    /**
+     * 删除zset中给定位置区间的元素
+     *
+     * @param key 键
+     * @param start 开始位置(包含)
+     * @param end   结束位置(包含)
+     * @return 删除的数量
+     */
+    long zremrangeByRank(String key, int start, int end);
+
+    /**
+     * 删除zset中给定权重区间的元素
+     *
+     * @param key 键
+     * @param min 最小权重(包含)
+     * @param max 最大权重(包含)
+     * @return 删除的数量
+     */
+    long zremrangeByScore(String key, double min, double max);
+
+    /**
+     * 获取给定值在zset中的权重
+     *
+     * @param key 键
+     * @param memeber 元素
+     * @return 权重，没找到返回null
+     */
+    Double zscore(String key, String memeber);
+
+    /**
+     * 通过字典区间返回zset的成员
+     *
+     * @param key 键
+     * @param min 字典中排序位置较小的成员,必须以"["开头,或者以"("开头,可使用"-"代替
+     * @param max 字典中排序位置较大的成员,必须以"["开头,或者以"("开头,可使用"+"代替
+     * @return 元素集合
+     */
+    Set<String> zrangeByLex(String key, String min, String max);
+
+
+    /**
+     * 通过字典区间返回zset的成员
+     *
+     * @param key 键
+     * @param min 字典中排序位置较小的成员,必须以"["开头,或者以"("开头,可使用"-"代替
+     * @param max 字典中排序位置较大的成员,必须以"["开头,或者以"("开头,可使用"+"代替
+     * @return 元素集合
+     */
+    Set<String> zrangeByLex(String key, String min, String max, int offset, int count);
+
+    /**
+     * 通过字典区间删除成员
+     *
+     * @param key 键
+     * @param min 字典中排序位置较小的成员,必须以"["开头,或者以"("开头,可使用"-"代替
+     * @param max 字典中排序位置较大的成员,必须以"["开头,或者以"("开头,可使用"+"代替
+     * @return long 删除的数目
+     */
+    long zremrangeByLex(String key, String min, String max);
+
+    /**
+     * 计算给定的一个或多个zset的交集，并存储在新的 key 中
+     *
+     * @param dstKey 目标zset的key
+     * @param keys 取交集的zset的key
+     * @return long 交集后的数目
+     */
+    long zinterstore(String dstKey, String... keys);
+
+    /**
+     * 计算给定的一个或多个zset的并集，并存储在新的 key 中
+     *
+     * @param dstKey 目标zset的key
+     * @param keys 取交集的zset的key
+     * @return long 交集后的数目
+     */
+    long zunionstore(String dstKey, String... keys);
 
 }
