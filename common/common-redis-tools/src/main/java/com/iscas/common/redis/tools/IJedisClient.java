@@ -1,9 +1,6 @@
 package com.iscas.common.redis.tools;
 
-import com.iscas.common.redis.tools.interfaces.IJedisHashClient;
-import com.iscas.common.redis.tools.interfaces.IJedisListClient;
-import com.iscas.common.redis.tools.interfaces.IJedisSetClient;
-import com.iscas.common.redis.tools.interfaces.IJedisSortSetClient;
+import com.iscas.common.redis.tools.interfaces.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,26 +21,8 @@ import java.util.Map;
  */
 
 
-public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient, IJedisHashClient {
-
-    /**
-     * 获取缓存
-     *
-     * @param tClass 对象泛型
-     * @param key    键
-     * @return 值
-     */
-    <T> T get(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
-
-    /**
-     * 设置缓存
-     *
-     * @param key          键
-     * @param value        值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    boolean set(String key, Object value, int cacheSeconds) throws IOException;
+public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient, IJedisHashClient,
+        IJedisStringClient {
 
     /**
      * 获取List缓存

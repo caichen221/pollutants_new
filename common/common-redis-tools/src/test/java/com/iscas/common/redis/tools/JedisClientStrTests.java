@@ -314,38 +314,6 @@ public class JedisClientStrTests {
 
     /*=====================================测试SET END  ===================================================*/
 
-    /**
-     * 测试插入一个字符串，无超时时间
-     * */
-    @Test
-    @Ignore
-    public void test1() {
-        boolean result = jedisClient.set("t1", "value", 0);
-        Assert.assertTrue(result);
-    }
-
-    /**
-     * 测试插入一个字符串，有超时时间
-     * */
-    @Test
-    @Ignore
-    public void test2() {
-        boolean result = jedisClient.set("t1", "value", 20);
-        Assert.assertTrue(result);
-    }
-
-
-    /**
-     * 测试获取字符串
-     * */
-    @Test
-    @Ignore
-    public void test4() {
-        String result = jedisClient.get("t1");
-        System.out.println(result);
-    }
-
-
 
     /**
      * 测试设置List数据
@@ -1333,6 +1301,230 @@ public class JedisClientStrTests {
 
 
     /*=============================hash end    ========================================*/
+
+
+    /*=============================string begin========================================*/
+
+    /**
+     * 测试插入一个字符串，无超时时间
+     */
+    @Test
+    @Ignore
+    public void testSet() {
+        try {
+            jedisClient.del("testKey");
+            boolean result = jedisClient.set("testKey", "value", 0);
+            Assert.assertTrue(result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+
+    }
+
+    /**
+     * 测试插入一个字符串，有超时时间
+     * */
+    @Test
+    @Ignore
+    public void testSet2() {
+        try {
+            jedisClient.del("testKey");
+            boolean result = jedisClient.set("testKey", "value", 20);
+            Assert.assertTrue(result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+
+    /**
+     * 测试获取字符串
+     * */
+    @Test
+    @Ignore
+    public void testGet() {
+        try {
+            jedisClient.del("testKey");
+            boolean setResult = jedisClient.set("testKey", "value", 0);
+            String result = jedisClient.get("testKey");
+            Assert.assertEquals(result, "value");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setnx
+     * */
+    @Test
+    @Ignore
+    public void testSetnx() {
+        try {
+            jedisClient.del("testKey");
+            long result1 = jedisClient.setnx("testKey", "value");
+            Assert.assertEquals(result1, 1L);
+            long result2 = jedisClient.setnx("testKey", "value2");
+            Assert.assertEquals(result2, 0);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setnx
+     * */
+    @Test
+    @Ignore
+    public void testSetrange() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "123456", 0);
+            long result = jedisClient.setrange("testKey", 2, "99999999");
+            Assert.assertEquals(result, 10);
+            String strRes = jedisClient.get("testKey");
+            Assert.assertEquals("1299999999", strRes);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试append
+     * */
+    @Test
+    @Ignore
+    public void testAppend() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "123456", 0);
+            long len = jedisClient.append("testKey", "abcd");
+            Assert.assertEquals(10, len);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试decrBy
+     * */
+    @Test
+    @Ignore
+    public void testDecrBy() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            long result = jedisClient.decrBy("testKey", 1000);
+            Assert.assertEquals(9000, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试incrBy
+     * */
+    @Test
+    @Ignore
+    public void testIncrBy() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            long result = jedisClient.incrBy("testKey", 1000);
+            Assert.assertEquals(11000, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试getrange
+     * */
+    @Test
+    @Ignore
+    public void testGetRange() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            String result = jedisClient.getrange("testKey", 0, 2);
+            Assert.assertEquals("100", result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试getSet
+     * */
+    @Test
+    @Ignore
+    public void testGetSet() {
+        try {
+            jedisClient.del("testKey");
+            String result1 = jedisClient.getSet("testKey", "10000");
+            Assert.assertNull(result1);
+            String result2 = jedisClient.getSet("testKey", "123");
+            Assert.assertEquals(result2, "10000");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试mget
+     * */
+    @Test
+    @Ignore
+    public void testMget() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.set("testKey", "111", 0);
+            jedisClient.set("testKey2", "222", 0);
+            List<String> result = jedisClient.mget("testKey", "testKey2");
+            Assert.assertEquals("111", result.get(0));
+            Assert.assertEquals("222", result.get(1));
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
+    /**
+     * 测试mset
+     * */
+    @Test
+    @Ignore
+    public void testMset() {
+        try {
+            jedisClient.del("111");
+            jedisClient.del("222");
+            jedisClient.mset("111", "a", "222", "b");
+            List<String> result = jedisClient.mget("111", "222");
+            Assert.assertEquals("a", result.get(0));
+            Assert.assertEquals("b", result.get(1));
+        } finally {
+            jedisClient.del("111");
+            jedisClient.del("222");
+        }
+    }
+
+    /**
+     * 测试strlen
+     * */
+    @Test
+    @Ignore
+    public void testStrlen() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            long len = jedisClient.strlen("testKey");
+            Assert.assertEquals(5, len);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /*=============================string end==========================================*/
 
 
 

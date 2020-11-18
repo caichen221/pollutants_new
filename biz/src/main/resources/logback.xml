@@ -114,12 +114,33 @@
     <logger name="org.apache.ibatis" level="DEBUG" />
     <logger name="com.sxd.swapping.dao.mybatis" level="DEBUG" />-->
 
+    <logger name="org.apache.ibatis" level="DEBUG" />
     <logger name="com.iscas.biz" level="DEBUG" />
-    <logger name="root" level="INFO" />
+    <logger name="sun.rmi.transport.tcp" level="INFO" />
+    <logger name="org.apache.http" level="INFO" />
+    <logger name="com.sun.mail.smtp" level="INFO" />
+    <logger name="javax.management" level="INFO" />
+    <logger name="sun.rmi" level="INFO" />
+    <logger name="de.codecentric" level="INFO" />
+    <logger name="druid.sql.Connection" level="INFO" />
+    <logger name="druid.sql.Statement" level="INFO" />
+    <logger name="druid.sql.ResultSet" level="INFO" />
+    <logger name="org.hibernate.validator" level="INFO" />
+    <logger name="org.mybatis.spring.mapper" level="INFO" />
+    <logger name="org.xnio.nio" level="INFO" />
+    <logger name="springfox.documentation" level="INFO" />
+    <logger name="springfox.bean" level="INFO" />
+    <logger name="com.baomidou.mybatisplus.core" level="INFO" />
+    <logger name="io.undertow" level="INFO" />
+    <logger name="io.micrometer.core" level="INFO" />
+    <logger name="com.baomidou.mybatisplus.extension.spring" level="INFO" />
+    <logger name="Validator" level="INFO" />
+    <logger name="root" level="DEBUG" />
+
 
 
     <!-- 生产环境下，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="FILEERROR" />
         <appender-ref ref="FILEWARN" />
         <appender-ref ref="FILEINFO" />

@@ -298,50 +298,6 @@ public class JedisStrClient implements IJedisStrClient {
     /*=============================set end  ===============================================*/
 
     /**
-     * 获取数据，获取字符串数据
-     * @param key 键
-     * @return 值
-     */
-    @Override
-    public String get(String key) {
-        String value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedis.exists(key)) {
-                value = jedis.get(key);
-                value = MyStringHelper.isNotBlank(value) && !"nil".equalsIgnoreCase(value) ? value : null;
-            }
-        }finally {
-            returnResource(jedis);
-        }
-        return value;
-    }
-
-    /**
-     * 设置数据，字符串数据
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    @Override
-    public  boolean set(String key, String value, int cacheSeconds) {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedis.set(key, value);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
-    /**
      * 获取List数据，List中数据为字符串
      * @param key 键
      * @return 值
@@ -1472,7 +1428,184 @@ public class JedisStrClient implements IJedisStrClient {
         }
     }
 
-    /*==============================hash end    =====================================================*/
+    /*==============================hash end=====================================================*/
+
+
+    /*==============================string begin=====================================================*/
+    /**
+     * 设置数据，字符串数据
+     * @param key 键
+     * @param value 值
+     * @param cacheSeconds 超时时间，0为不超时
+     * @return
+     */
+    @Override
+    public boolean set(String key, String value, int cacheSeconds) {
+        String result = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            result = jedis.set(key, value);
+            if (cacheSeconds != 0) {
+                jedis.expire(key, cacheSeconds);
+            }
+            return "OK".equals(result);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    /**
+     * 获取数据，获取字符串数据
+     * @param key 键
+     * @return 值
+     */
+    @Override
+    public String get(String key) {
+        String value = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedis.exists(key)) {
+                value = jedis.get(key);
+                value = MyStringHelper.isNotBlank(value) && !"nil".equalsIgnoreCase(value) ? value : null;
+            }
+        }finally {
+            returnResource(jedis);
+        }
+        return value;
+    }
+
+    @Override
+    public long setnx(String key, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.setnx(key, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long setrange(String key, long offset, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.setrange(key, offset, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long append(String key, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.append(key, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long decrBy(String key, long number) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.decrBy(key, number);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long incrBy(String key, long number) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.incrBy(key, number);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String getrange(String key, long startOffset, long endOffset) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.getrange(key, startOffset, endOffset);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String getSet(String key, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.getSet(key, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public List<String> mget(String... keys) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.mget(keys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new UnsupportedOperationException("sharedJedis不支持mget操作");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.mget(keys);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean mset(String... keysvalues) {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return "OK".equalsIgnoreCase(jedis.mset(keysvalues));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new UnsupportedOperationException("sharedJedis不支持mset操作");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return "OK".equalsIgnoreCase(jedisCluster.mset(keysvalues));
+            }
+            return false;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long strlen(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.strlen(key);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+    /*==============================string end=====================================================*/
 
 
 

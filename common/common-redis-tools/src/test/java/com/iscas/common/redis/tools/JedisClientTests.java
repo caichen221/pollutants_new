@@ -344,23 +344,6 @@ public class JedisClientTests {
     /*=====================================测试SET END===================================================*/
 
     /**
-     * 测试插入一个对象，有超时时间，并测试获取这个对象
-     */
-    @Test
-    @Ignore
-    public void testSetAndGet() throws IOException, ClassNotFoundException {
-        try {
-            boolean result = jedisClient.set("testKey", "value", 20);
-            String testValue = jedisClient.get(String.class, "testKey");
-            Assert.assertTrue(result);
-            Assert.assertEquals(testValue, "value");
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
-
-
-    /**
      * 测试设置List数据,数据为对象, 并测试获取List数据
      */
     @Test
@@ -1275,6 +1258,156 @@ public class JedisClientTests {
     }
 
     /*=============================hash end  ========================================*/
+
+    /*=============================string begin========================================*/
+    /**
+     * 测试插入一个对象，有超时时间，并测试获取这个对象
+     */
+    @Test
+    @Ignore
+    public void testSetAndGet() throws IOException, ClassNotFoundException {
+        try {
+            boolean result = jedisClient.set("testKey", "value", 20);
+            String testValue = jedisClient.get(String.class, "testKey");
+            Assert.assertTrue(result);
+            Assert.assertEquals(testValue, "value");
+            Map map = new HashMap();
+            map.put("x", Arrays.asList(1,2,3));
+            jedisClient.set("testKey", map, 20);
+            Map testMap = jedisClient.get(Map.class, "testKey");
+            System.out.println(testMap);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setnx
+     */
+    @Test
+    @Ignore
+    public void testSetnx() throws IOException, ClassNotFoundException {
+        try {
+            Map map = new HashMap();
+            map.put("a", 123);
+            jedisClient.del("testKey");
+            long result1 = jedisClient.setnx("testKey", map);
+            Assert.assertEquals(result1, 1L);
+            long result2 = jedisClient.setnx("testKey", 22);
+            Assert.assertEquals(result2, 0L);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setnx
+     * */
+    @Test
+    @Ignore
+    public void testSetrange() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "123456", 0);
+            long result = jedisClient.setrange("testKey", 2, "99999999");
+            String strRes = jedisClient.get(String.class, "testKey");
+            System.out.println(strRes);
+            Assert.assertEquals(result, 10);
+            Assert.assertEquals("1299999999", strRes);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试decrBy
+     * */
+    @Test
+    @Ignore
+    public void testDecrBy() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", 10000, 0);
+            long result = jedisClient.decrBy("testKey", 1000);
+            Assert.assertEquals(9000, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试getSet
+     * */
+    @Test
+    @Ignore
+    public void testGetSet() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            String result1 = jedisClient.getSet(String.class, "testKey", "10000");
+            Assert.assertNull(result1);
+            String result2 = jedisClient.getSet(String.class, "testKey", "123");
+            Assert.assertEquals(result2, "10000");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试mget
+     * */
+    @Test
+    @Ignore
+    public void testMget() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.set("testKey", "111", 0);
+            jedisClient.set("testKey2", 222, 0);
+            List<Object> result = jedisClient.mget(Object.class, "testKey", "testKey2");
+            Assert.assertEquals("111", result.get(0));
+            Assert.assertEquals(222, result.get(1));
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
+    /**
+     * 测试mset
+     * */
+    @Test
+    @Ignore
+    public void testMset() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("111");
+            jedisClient.del("222");
+            jedisClient.mset("111", "a", "222", "b");
+            List<String> result = jedisClient.mget(String.class, "111", "222");
+            Assert.assertEquals("a", result.get(0));
+            Assert.assertEquals("b", result.get(1));
+        } finally {
+            jedisClient.del("111");
+            jedisClient.del("222");
+        }
+    }
+
+    /**
+     * 测试strlen
+     * */
+    @Test
+    @Ignore
+    public void testStrlen() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            long len = jedisClient.strlen("testKey");
+            Assert.assertEquals(5, len);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /*=============================string end==========================================*/
 
 
 }

@@ -423,49 +423,6 @@ public class JedisClient implements IJedisClient {
     /*========================================set end  ========================================================*/
 
     /**
-     * 获取数据，获取对象数据，需经过反序列化
-     * @param key 键
-     * @return 值
-     */
-    @Override
-    public <T> T get(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        Object value = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
-                value = toObject(jedisCommandsBytesGet(jedis, getBytesKey(key)));
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return (T) value;
-    }
-
-    /**
-     * 设置数据，对象数据，序列化后存入redis
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    @Override
-    public  boolean set(String key, Object value, int cacheSeconds) throws IOException {
-        String result = null;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-            result = jedisCommandsBytesSet(jedis, getBytesKey(key), toBytes(value));
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return "OK".equals(result);
-    }
-
-    /**
      * 获取List数据，List中为对象，经过反序列化
      * @param key 键
      * @return 值
@@ -597,24 +554,6 @@ public class JedisClient implements IJedisClient {
             returnResource(jedis);
         }
         return (T) value;
-    }
-
-    public boolean setMap(String key, String field, String value, int cacheSeconds) {
-        long result = 0;
-        JedisCommands jedis = null;
-        try {
-            jedis = getResource();
-//            if (jedis.exists(key)) {
-//                jedis.del(key);
-//            }
-            result = jedis.hset(key, field, value);
-            if (cacheSeconds != 0) {
-                jedis.expire(key, cacheSeconds);
-            }
-        } finally {
-            returnResource(jedis);
-        }
-        return result == 1;
     }
 
     /**
@@ -1855,12 +1794,12 @@ public class JedisClient implements IJedisClient {
 
     @Override
     public long hincrby(String key, String field, long value) throws IOException {
-        throw new UnsupportedOperationException("不支持此操作");
+        throw new UnsupportedOperationException("redis暂不支持此操作,请使用IJedisStrClient中对应的函数");
     }
 
     @Override
     public Double hincrby(String key, String field, double value) throws IOException {
-        throw new UnsupportedOperationException("不支持此操作");
+        throw new UnsupportedOperationException("redis暂不支持此操作,请使用IJedisStrClient中对应的函数");
     }
 
     @Override
@@ -1948,6 +1887,187 @@ public class JedisClient implements IJedisClient {
     }
 
     /*===========================hash end==========================================*/
+
+    /*===========================string begin==========================================*/
+    /**
+     * 设置数据，对象数据，序列化后存入redis
+     * @param key 键
+     * @param value 值
+     * @param cacheSeconds 超时时间，0为不超时
+     * @return
+     */
+    @Override
+    public  boolean set(String key, Object value, int cacheSeconds) throws IOException {
+        String result = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            result = jedisCommandsBytesSet(jedis, getBytesKey(key), toBytes(value));
+            if (cacheSeconds != 0) {
+                jedis.expire(key, cacheSeconds);
+            }
+            return "OK".equals(result);
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public <T> T get(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
+        Object value = null;
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
+                value = toObject(jedisCommandsBytesGet(jedis, getBytesKey(key)));
+            }
+        } finally {
+            returnResource(jedis);
+        }
+        return (T) value;
+    }
+
+    @Override
+    public long setnx(String key, Object value) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.setnx(bytesKey, toBytes(value));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.setnx(bytesKey, toBytes(value));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.setnx(bytesKey, toBytes(value));
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long setrange(String key, long offset, Object value) throws IOException {
+        throw new UnsupportedOperationException("redis暂不支持此setrange操作,请使用IJedisStrClient中对应的函数");
+    }
+
+    @Override
+    public long append(String key, String value) {
+        throw new UnsupportedOperationException("redis暂不支持此append操作,请使用IJedisStrClient中对应的函数");
+
+    }
+
+    @Override
+    public long decrBy(String key, long number) throws IOException {
+        throw new UnsupportedOperationException("redis暂不支持此decrBy操作,请使用IJedisStrClient中对应的函数");
+    }
+
+    @Override
+    public long incrBy(String key, long number) throws IOException {
+        throw new UnsupportedOperationException("redis暂不支持此incrBy操作,请使用IJedisStrClient中对应的函数");
+    }
+
+    @Override
+    public <T> T getrange(Class<T> tClass, String key, long startOffset, long endOffset) {
+        throw new UnsupportedOperationException("redis暂不支持此getrange操作,请使用IJedisStrClient中对应的函数");
+    }
+
+    @Override
+    public <T> T getSet(Class<T> tClass, String key, String value) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[] byteRes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                byteRes = jedis.getSet(bytesKey, toBytes(value));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                byteRes = shardedJedis.getSet(bytesKey, toBytes(value));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                byteRes = jedisCluster.getSet(bytesKey, toBytes(value));
+            }
+            if (byteRes != null) {
+                return (T) toObject(byteRes);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> List<T> mget(Class<T> tClass, String... keys) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[][] bytesKeys = new byte[keys.length][];
+            for (int i = 0; i < keys.length; i++) {
+                bytesKeys[i] = getBytesKey(keys[i]);
+            }
+            List<byte[]> byteRes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                byteRes = jedis.mget(bytesKeys);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new UnsupportedOperationException("sharedJedis不支持mget操作");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                byteRes = jedisCluster.mget(bytesKeys);
+            }
+            List<T> result = new ArrayList<>();
+            if (byteRes != null) {
+                for (byte[] byteRe : byteRes) {
+                    result.add((T) toObject(byteRe));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean mset(Object... keysvalues) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[][] bytesKeys = new byte[keysvalues.length][];
+            for (int i = 0; i < keysvalues.length; i++) {
+                if (i % 2 == 0) {
+                    bytesKeys[i] = getBytesKey(keysvalues[i]);
+                } else {
+                    bytesKeys[i] = toBytes(keysvalues[i]);
+                }
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return "OK".equalsIgnoreCase(jedis.mset(bytesKeys));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                throw new UnsupportedOperationException("sharedJedis不支持mset操作");
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return "OK".equalsIgnoreCase(jedisCluster.mset(bytesKeys));
+            }
+            return false;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long strlen(String key) throws IOException {
+        throw new UnsupportedOperationException("redis暂不支持此strlen操作,请使用IJedisStrClient中对应的函数");
+    }
+
+    /*===========================string end============================================*/
 
 
 
