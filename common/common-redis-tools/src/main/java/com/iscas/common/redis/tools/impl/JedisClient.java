@@ -2067,6 +2067,278 @@ public class JedisClient implements IJedisClient {
         throw new UnsupportedOperationException("redis暂不支持此strlen操作,请使用IJedisStrClient中对应的函数");
     }
 
+    @Override
+    public long rpush(String key, Object... value) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[][] bytesValue = new byte[value.length][];
+            for (int i = 0; i < value.length; i++) {
+                bytesValue[i] = toBytes(value[i]);
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.rpush(bytesKey, bytesValue);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.rpush(bytesKey, bytesValue);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.rpush(bytesKey, bytesValue);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long lpush(String key, String... value) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[][] bytesValue = new byte[value.length][];
+            for (int i = 0; i < value.length; i++) {
+                bytesValue[i] = toBytes(value[i]);
+            }
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.lpush(bytesKey, bytesValue);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.lpush(bytesKey, bytesValue);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.lpush(bytesKey, bytesValue);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long llen(String key) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.llen(bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.llen(bytesKey);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.llen(bytesKey);
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean lset(String key, int index, Object value) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return "OK".equalsIgnoreCase(jedis.lset(bytesKey, index, toBytes(value)));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return "OK".equalsIgnoreCase(shardedJedis.lset(bytesKey, index, toBytes(value)));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return "OK".equalsIgnoreCase(jedisCluster.lset(bytesKey, index, toBytes(value)));
+            }
+            return false;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long linsert(String key, BinaryClient.LIST_POSITION where, Object pivot, Object value) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.linsert(bytesKey, where, toBytes(pivot), toBytes(value));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.linsert(bytesKey, where, toBytes(pivot), toBytes(value));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.linsert(bytesKey, where, toBytes(pivot), toBytes(value));
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> T lindex(Class<T> tClass, String key, long index) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[] bytesResult = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytesResult = jedis.lindex(bytesKey, index);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytesResult = shardedJedis.lindex(bytesKey, index);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytesResult = jedisCluster.lindex(bytesKey, index);
+            }
+            if (bytesResult != null) {
+                return (T) toObject(bytesResult);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> T lpop(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[] bytesResult = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytesResult = jedis.lpop(bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytesResult = shardedJedis.lpop(bytesKey);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytesResult = jedisCluster.lpop(bytesKey);
+            }
+            if (bytesResult != null) {
+                return (T) toObject(bytesResult);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> T rpop(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[] bytesResult = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                bytesResult = jedis.rpop(bytesKey);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                bytesResult = shardedJedis.rpop(bytesKey);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                bytesResult = jedisCluster.rpop(bytesKey);
+            }
+            if (bytesResult != null) {
+                return (T) toObject(bytesResult);
+            }
+            return null;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public <T> List<T> lrange(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            byte[] bytesResult = null;
+            List<byte[]> byteRes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                byteRes = jedis.lrange(bytesKey, start, end);
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                byteRes = shardedJedis.lrange(bytesKey, start, end);
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                byteRes = jedisCluster.lrange(bytesKey, start, end);
+            }
+            List<T> result = new ArrayList<>();
+            if (byteRes != null) {
+                for (byte[] byteRe : byteRes) {
+                    result.add((T) toObject(byteRe));
+                }
+            }
+            return result;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public long lrem(String key, int count, Object value) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            List<byte[]> byteRes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return jedis.lrem(bytesKey, count, toBytes(value));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return shardedJedis.lrem(bytesKey, count, toBytes(value));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return jedisCluster.lrem(bytesKey, count, toBytes(value));
+            }
+            return 0;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
+    @Override
+    public boolean ltrim(String key, long start, long end) throws IOException {
+        JedisCommands jc = null;
+        try {
+            jc = getResource();
+            byte[] bytesKey = getBytesKey(key);
+            List<byte[]> byteRes = null;
+            if (jc instanceof Jedis) {
+                Jedis jedis = (Jedis) jc;
+                return "OK".equalsIgnoreCase(jedis.ltrim(bytesKey, start, end));
+            } else if (jc instanceof ShardedJedis) {
+                ShardedJedis shardedJedis = (ShardedJedis) jc;
+                return "OK".equalsIgnoreCase(shardedJedis.ltrim(bytesKey, start, end));
+            } else if (jc instanceof JedisCluster) {
+                JedisCluster jedisCluster = (JedisCluster) jc;
+                return "OK".equalsIgnoreCase(jedisCluster.ltrim(bytesKey, start, end));
+            }
+            return false;
+        } finally {
+            returnResource(jc);
+        }
+    }
+
     /*===========================string end============================================*/
 
 

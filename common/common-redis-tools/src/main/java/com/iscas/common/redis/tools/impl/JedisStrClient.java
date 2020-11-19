@@ -1608,6 +1608,130 @@ public class JedisStrClient implements IJedisStrClient {
     /*==============================string end=====================================================*/
 
 
+    /*==============================list begin=====================================================*/
+    @Override
+    public long rpush(String key, String... value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.rpush(key, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long lpush(String key, String... value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.lpush(key, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long llen(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.llen(key);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public boolean lset(String key, int index, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return "OK".equalsIgnoreCase(jedis.lset(key, index, value));
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long linsert(String key, BinaryClient.LIST_POSITION where, String pivot, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.linsert(key, where, pivot, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String lindex(String key, long index) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.lindex(key, index);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String lpop(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.lpop(key);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public String rpop(String key) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.rpop(key);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public List<String> lrange(String key, long start, long end) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.lrange(key, start, end);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public long lrem(String key, int count, String value) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return jedis.lrem(key, count, value);
+        }finally {
+            returnResource(jedis);
+        }
+    }
+
+    @Override
+    public boolean ltrim(String key, long start, long end) {
+        JedisCommands jedis = null;
+        try {
+            jedis = getResource();
+            return "OK".equalsIgnoreCase(jedis.ltrim(key, start, end));
+        }finally {
+            returnResource(jedis);
+        }
+    }
+    /*==============================list end=======================================================*/
+
+
 
 
 }

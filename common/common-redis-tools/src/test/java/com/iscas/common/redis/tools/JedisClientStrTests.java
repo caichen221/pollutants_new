@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import redis.clients.jedis.BinaryClient;
 import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
@@ -1525,6 +1526,192 @@ public class JedisClientStrTests {
     }
 
     /*=============================string end==========================================*/
+
+    /*=============================list begin==========================================*/
+    /**
+     * 测试rpush
+     * */
+    @Test
+    @Ignore
+    public void testRpush() {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.rpush("testKey", "10000", "22222");
+            long result2 = jedisClient.rpush("testKey", "aaa", "bbb");
+            Assert.assertEquals(4, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试rpush
+     * */
+    @Test
+    @Ignore
+    public void testLpush() {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.lpush("testKey", "10000", "22222");
+            long result2 = jedisClient.lpush("testKey", "aaa", "bbb");
+            Assert.assertEquals(4, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试llen
+     * */
+    @Test
+    @Ignore
+    public void testLlen() {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.rpush("testKey", "10000", "22222");
+            long result2 = jedisClient.llen("testKey");
+            Assert.assertEquals(2, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lset
+     * */
+    @Test
+    @Ignore
+    public void testLset() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            boolean result1 = jedisClient.lset("testKey", 1, "dfg");
+            Assert.assertTrue(result1);
+            boolean result2 = jedisClient.lset("testKey", 0, "zqw");
+            Assert.assertTrue(result2);
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试linsert
+     * */
+    @Test
+    @Ignore
+    public void testLinsert() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            long result = jedisClient.linsert("testKey", BinaryClient.LIST_POSITION.AFTER, "10000", "33333");
+            Assert.assertEquals(result, 3);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lindex
+     * */
+    @Test
+    @Ignore
+    public void testLindex() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            String result = jedisClient.lindex("testKey", 1);
+            Assert.assertEquals(result, "22222");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lpop
+     * */
+    @Test
+    @Ignore
+    public void testLpop() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            String result = jedisClient.lpop("testKey");
+            Assert.assertEquals(result, "10000");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试rpop
+     * */
+    @Test
+    @Ignore
+    public void testRpop() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            String result = jedisClient.rpop("testKey");
+            Assert.assertEquals(result, "22222");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lrange
+     * */
+    @Test
+    @Ignore
+    public void testLrange() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222", "444", "adsdb");
+            List<String> result = jedisClient.lrange("testKey", 0, 2);
+            Assert.assertEquals(result.size(), 3);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lrem
+     * */
+    @Test
+    @Ignore
+    public void testLrem() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
+            long result = jedisClient.lrem("testKey", 6, "10000");
+            Assert.assertEquals(3, result);
+            long result2 = jedisClient.lrem("testKey", -1, "22222");
+            Assert.assertEquals(1, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试ltrim
+     * */
+    @Test
+    @Ignore
+    public void testLtrim() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
+            boolean result = jedisClient.ltrim("testKey", 2, 3);
+            Assert.assertTrue(result);
+            List<String> result2 = jedisClient.lrange("testKey", 0, -1);
+            Assert.assertEquals(2, result2.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /*=============================list end============================================*/
 
 
 
