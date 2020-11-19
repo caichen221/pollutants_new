@@ -4,8 +4,6 @@ import com.iscas.common.redis.tools.interfaces.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Jedis操作接口<br/>
@@ -23,52 +21,6 @@ import java.util.Map;
 
 public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient, IJedisHashClient,
         IJedisStringClient {
-
-    /**
-     * 获取List缓存
-     *
-     * @param tClass 对象泛型
-     * @param key    键
-     * @return 值
-     */
-    <T> List<T> getList(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
-
-    /**
-     * 设置List缓存
-     *
-     * @param key          键
-     * @param value        值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    long setList(String key, List value, int cacheSeconds) throws IOException;
-
-    /**
-     * 向List缓存中添加值
-     *
-     * @param key   键
-     * @param value 值
-     * @return
-     */
-    long listAdd(String key, Object... value) throws IOException;
-
-    /**
-     * 模拟出队列，存储为对象
-     *
-     * @param tClass 对象泛型
-     * @param key    键
-     * @return
-     */
-    <T> T lpopList(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
-
-    /**
-     * 模拟出栈，存储为对象
-     *
-     * @param tClass 对象泛型
-     * @param key    键
-     * @return
-     */
-    <T> T rpopList(Class<T> tClass, String key) throws IOException, ClassNotFoundException;
 
     /**
      * 删除缓存

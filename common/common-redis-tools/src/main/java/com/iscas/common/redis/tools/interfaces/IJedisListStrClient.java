@@ -1,6 +1,6 @@
 package com.iscas.common.redis.tools.interfaces;
 
-import redis.clients.jedis.BinaryClient;
+import redis.clients.jedis.ListPosition;
 
 import java.util.List;
 
@@ -74,7 +74,7 @@ public interface IJedisListStrClient {
      * @throws
      * @return 追加元素后链表的长度
      */
-    long linsert(String key, BinaryClient.LIST_POSITION where, String pivot, String value);
+    long linsert(String key, ListPosition where, String pivot, String value);
 
     /**
      * 获取List中指定位置的值

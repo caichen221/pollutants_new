@@ -23,44 +23,6 @@ public interface IJedisStrClient extends IJedisSetStrClient, IJedisListStrClient
         IJedisStringStrClient {
 
     /**
-     * 获取List缓存
-     * @param key 键
-     * @return 值
-     */
-    List<String> getList(String key);
-
-    /**
-     * 设置List缓存
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    long setList(String key, List<String> value, int cacheSeconds);
-
-    /**
-     * 向List缓存中添加值
-     * @param key 键
-     * @param value 值
-     * @return
-     */
-    long listAdd(String key, String... value);
-
-    /**
-     * 模拟出队列
-     * @param key 键
-     * @return
-     * */
-    String lpopList(String key);
-
-    /**
-     * 模拟出栈，存储为字符串
-     * @param key 键
-     * @return
-     * */
-    String rpopList(String key);
-
-    /**
      * 删除缓存
      * @param key 键
      * @return

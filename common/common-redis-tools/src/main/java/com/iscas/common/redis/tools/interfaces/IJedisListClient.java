@@ -1,6 +1,7 @@
 package com.iscas.common.redis.tools.interfaces;
 
 import redis.clients.jedis.BinaryClient;
+import redis.clients.jedis.ListPosition;
 
 import java.io.IOException;
 import java.util.List;
@@ -74,7 +75,7 @@ public interface IJedisListClient {
      * @throws
      * @return 追加元素后链表的长度
      */
-    long linsert(String key, BinaryClient.LIST_POSITION where, Object pivot, Object value) throws IOException;
+    long linsert(String key, ListPosition where, Object pivot, Object value) throws IOException;
 
     /**
      * 获取List中指定位置的值

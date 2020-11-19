@@ -5,7 +5,6 @@ import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.RedisInfo;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.util.Pool;
 
 import java.util.List;
 

@@ -3,10 +3,9 @@ package com.iscas.common.redis.tools.impl.cluster;
 import com.iscas.common.redis.tools.ConfigInfo;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.RedisInfo;
-import com.iscas.common.redis.tools.impl.shard.JedisShardConnection;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.*;
-import redis.clients.util.Pool;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.List;
 import java.util.Set;

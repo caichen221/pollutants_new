@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import redis.clients.jedis.BinaryClient;
+import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
@@ -28,7 +28,6 @@ public class JedisClientStrTests {
     private IJedisStrClient jedisClient;
     private int goodsCount = 50;
     @Before
-    @Ignore
     public void before() {
         JedisConnection jedisConnection = new JedisStandAloneConnection();
         ConfigInfo configInfo = new ConfigInfo();
@@ -75,12 +74,109 @@ public class JedisClientStrTests {
 //        jedisClient = new JedisStrClient(jedisConnection, configInfo);
 //    }
 
+    /*==============================通用begin======================================*/
+    /**
+     * 测试分布式锁
+     * */
+    @Test
+    public void test32() throws InterruptedException {
+        //JVM 锁
+        final Object lock = new Object();
+
+        CountDownLatch countDownLatch = new CountDownLatch(10);
+        Runnable runnable = () -> {
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (int i = 0; i < 5; i++) {
+                //不使用任何锁
+//                goodsCount--;
+
+                //使用JVM锁
+//                synchronized (lock) {
+//                    goodsCount--;
+//                }
+
+                //使用redis作分布式锁
+                String lockFlag = null;
+                while (true) {
+                    lockFlag = jedisClient.acquireLock("goodscount", 100000);
+                    if (lockFlag != null) {
+                        goodsCount--;
+                        break;
+                    }
+                }
+                jedisClient.releaseLock("goodscount", lockFlag);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 10 ; i++) {
+            executorService.submit(runnable);
+            countDownLatch.countDown();
+        }
+//        // 假设一个足够长的时间去验证最后的goodCount
+        for (int i = 0; i < 10 ; i++) {
+            System.out.println(goodsCount);
+            TimeUnit.SECONDS.sleep(1);
+        }
+    }
+
+    /**
+     * 测试分布式限流
+     * */
+    @Test
+    public void test33() {
+        for (int i = 0; i < 150 ; i++) {
+            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
+            System.out.println(flag);
+        }
+
+    }
+
+    /**
+     * 测试延时队列
+     * */
+    @Test
+    public void test34() {
+        jedisClient.putDelayQueue("this is test", 5, TimeUnit.SECONDS, (task)-> {
+            System.out.println(task);
+        });
+    }
+
+    /**
+     * 测试设置key的过期时间
+     * */
+    @Test
+    public void test36() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "11111", 0);
+            jedisClient.expire("testKey", 5000);
+            Assert.assertEquals("11111", jedisClient.get("testKey"));
+            TimeUnit.SECONDS.sleep(6);
+            Assert.assertNull(jedisClient.get("testKey"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+    /*==============================通用end========================================*/
+
+
     /*=====================================测试SET BEGIN===================================================*/
     /**
      * 测试设置集合，数据为字符串
      * */
     @Test
-    @Ignore
     public void testAdd() {
         try {
             jedisClient.del("set1");
@@ -89,7 +185,7 @@ public class JedisClientStrTests {
             set.add("y");
             set.add("z");
             set.add("m");
-            long result = jedisClient.sadd("set1", set, 0);
+            long result = jedisClient.sadd("set1", set.toArray(String[]::new));
             System.out.println(result);
         } finally {
             jedisClient.del("set1");
@@ -100,7 +196,6 @@ public class JedisClientStrTests {
      * 测试集合追加值，数据为字符串
      * */
     @Test
-    @Ignore
     public void testAdd2()  {
         try {
             jedisClient.del("set1");
@@ -314,154 +409,6 @@ public class JedisClientStrTests {
     }
 
     /*=====================================测试SET END  ===================================================*/
-
-
-    /**
-     * 测试设置List数据
-     * */
-    @Test
-    @Ignore
-    public void test6() {
-        long list1 = jedisClient.setList("list1", Arrays.asList("4", "5", "6"), 100);
-        System.out.println(list1);
-    }
-
-    /**
-     * 测试向List添加数据,数据为字符串
-     * */
-    @Test
-    @Ignore
-    public void test8() {
-        long list1 = jedisClient.listAdd("list1", "x", "y", "z");
-        System.out.println(list1);
-    }
-
-    /**
-     * 测试从List获取数据,数据为字符串
-     * */
-    @Test
-    @Ignore
-    public void test10() {
-        List<String> list1 = jedisClient.getList("list1");
-        list1.stream().forEach(System.out::println);
-    }
-
-    /**
-     * 测试从List pop数据,数据为字符串，适用于队列模式
-     * */
-    @Test
-    @Ignore
-    public void test12(){
-        String result = jedisClient.lpopList("list1");
-        System.out.println(result);
-    }
-
-    /**
-     * 测试从List pop数据,数据为字符串，适用于栈模式
-     * */
-    @Test
-    @Ignore
-    public void test14(){
-        String result = jedisClient.rpopList("list1");
-        System.out.println(result);
-    }
-
-    /**
-     * 测试分布式锁
-     * */
-    @Test
-    @Ignore
-    public void test32() throws InterruptedException {
-        //JVM 锁
-        final Object lock = new Object();
-
-        CountDownLatch countDownLatch = new CountDownLatch(10);
-        Runnable runnable = () -> {
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < 5; i++) {
-                //不使用任何锁
-//                goodsCount--;
-
-                //使用JVM锁
-//                synchronized (lock) {
-//                    goodsCount--;
-//                }
-
-                //使用redis作分布式锁
-                String lockFlag = null;
-                while (true) {
-                    lockFlag = jedisClient.acquireLock("goodscount", 100000);
-                    if (lockFlag != null) {
-                        goodsCount--;
-                        break;
-                    }
-                }
-                jedisClient.releaseLock("goodscount", lockFlag);
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        };
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 10 ; i++) {
-            executorService.submit(runnable);
-            countDownLatch.countDown();
-        }
-//        // 假设一个足够长的时间去验证最后的goodCount
-        for (int i = 0; i < 10 ; i++) {
-            System.out.println(goodsCount);
-            TimeUnit.SECONDS.sleep(1);
-        }
-    }
-
-    /**
-     * 测试分布式限流
-     * */
-    @Test
-    @Ignore
-    public void test33() {
-        for (int i = 0; i < 150 ; i++) {
-            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
-            System.out.println(flag);
-        }
-
-    }
-
-    /**
-     * 测试延时队列
-     * */
-    @Test
-    public void test34() {
-        jedisClient.putDelayQueue("this is test", 5, TimeUnit.SECONDS, (task)-> {
-            System.out.println(task);
-        });
-    }
-
-    /**
-     * 测试设置key的过期时间
-     * */
-    @Test
-    public void test36() throws IOException {
-        try {
-            jedisClient.del("testKey");
-            jedisClient.set("testKey", "11111", 0);
-            jedisClient.expire("testKey", 5000);
-            Assert.assertEquals("11111", jedisClient.get("testKey"));
-            TimeUnit.SECONDS.sleep(6);
-            Assert.assertNull(jedisClient.get("testKey"));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
 
     /*=============================sort set begin======================================*/
     /**
@@ -1310,7 +1257,6 @@ public class JedisClientStrTests {
      * 测试插入一个字符串，无超时时间
      */
     @Test
-    @Ignore
     public void testSet() {
         try {
             jedisClient.del("testKey");
@@ -1326,7 +1272,6 @@ public class JedisClientStrTests {
      * 测试插入一个字符串，有超时时间
      * */
     @Test
-    @Ignore
     public void testSet2() {
         try {
             jedisClient.del("testKey");
@@ -1342,7 +1287,6 @@ public class JedisClientStrTests {
      * 测试获取字符串
      * */
     @Test
-    @Ignore
     public void testGet() {
         try {
             jedisClient.del("testKey");
@@ -1358,7 +1302,6 @@ public class JedisClientStrTests {
      * 测试setnx
      * */
     @Test
-    @Ignore
     public void testSetnx() {
         try {
             jedisClient.del("testKey");
@@ -1375,7 +1318,6 @@ public class JedisClientStrTests {
      * 测试setnx
      * */
     @Test
-    @Ignore
     public void testSetrange() {
         try {
             jedisClient.del("testKey");
@@ -1393,7 +1335,6 @@ public class JedisClientStrTests {
      * 测试append
      * */
     @Test
-    @Ignore
     public void testAppend() {
         try {
             jedisClient.del("testKey");
@@ -1409,7 +1350,6 @@ public class JedisClientStrTests {
      * 测试decrBy
      * */
     @Test
-    @Ignore
     public void testDecrBy() {
         try {
             jedisClient.del("testKey");
@@ -1425,7 +1365,6 @@ public class JedisClientStrTests {
      * 测试incrBy
      * */
     @Test
-    @Ignore
     public void testIncrBy() {
         try {
             jedisClient.del("testKey");
@@ -1441,7 +1380,6 @@ public class JedisClientStrTests {
      * 测试getrange
      * */
     @Test
-    @Ignore
     public void testGetRange() {
         try {
             jedisClient.del("testKey");
@@ -1457,7 +1395,6 @@ public class JedisClientStrTests {
      * 测试getSet
      * */
     @Test
-    @Ignore
     public void testGetSet() {
         try {
             jedisClient.del("testKey");
@@ -1474,7 +1411,6 @@ public class JedisClientStrTests {
      * 测试mget
      * */
     @Test
-    @Ignore
     public void testMget() {
         try {
             jedisClient.del("testKey");
@@ -1494,7 +1430,6 @@ public class JedisClientStrTests {
      * 测试mset
      * */
     @Test
-    @Ignore
     public void testMset() {
         try {
             jedisClient.del("111");
@@ -1513,7 +1448,6 @@ public class JedisClientStrTests {
      * 测试strlen
      * */
     @Test
-    @Ignore
     public void testStrlen() {
         try {
             jedisClient.del("testKey");
@@ -1532,7 +1466,6 @@ public class JedisClientStrTests {
      * 测试rpush
      * */
     @Test
-    @Ignore
     public void testRpush() {
         try {
             jedisClient.del("testKey");
@@ -1548,7 +1481,6 @@ public class JedisClientStrTests {
      * 测试rpush
      * */
     @Test
-    @Ignore
     public void testLpush() {
         try {
             jedisClient.del("testKey");
@@ -1564,7 +1496,6 @@ public class JedisClientStrTests {
      * 测试llen
      * */
     @Test
-    @Ignore
     public void testLlen() {
         try {
             jedisClient.del("testKey");
@@ -1580,7 +1511,6 @@ public class JedisClientStrTests {
      * 测试lset
      * */
     @Test
-    @Ignore
     public void testLset() {
         try {
             jedisClient.del("testKey");
@@ -1599,12 +1529,11 @@ public class JedisClientStrTests {
      * 测试linsert
      * */
     @Test
-    @Ignore
     public void testLinsert() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
-            long result = jedisClient.linsert("testKey", BinaryClient.LIST_POSITION.AFTER, "10000", "33333");
+            long result = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", "33333");
             Assert.assertEquals(result, 3);
         } finally {
             jedisClient.del("testKey");
@@ -1615,7 +1544,6 @@ public class JedisClientStrTests {
      * 测试lindex
      * */
     @Test
-    @Ignore
     public void testLindex() {
         try {
             jedisClient.del("testKey");
@@ -1631,7 +1559,6 @@ public class JedisClientStrTests {
      * 测试lpop
      * */
     @Test
-    @Ignore
     public void testLpop() {
         try {
             jedisClient.del("testKey");
@@ -1647,7 +1574,6 @@ public class JedisClientStrTests {
      * 测试rpop
      * */
     @Test
-    @Ignore
     public void testRpop() {
         try {
             jedisClient.del("testKey");
@@ -1663,7 +1589,6 @@ public class JedisClientStrTests {
      * 测试lrange
      * */
     @Test
-    @Ignore
     public void testLrange() {
         try {
             jedisClient.del("testKey");
@@ -1679,7 +1604,6 @@ public class JedisClientStrTests {
      * 测试lrem
      * */
     @Test
-    @Ignore
     public void testLrem() {
         try {
             jedisClient.del("testKey");
@@ -1697,7 +1621,6 @@ public class JedisClientStrTests {
      * 测试ltrim
      * */
     @Test
-    @Ignore
     public void testLtrim() {
         try {
             jedisClient.del("testKey");

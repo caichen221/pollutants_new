@@ -3,16 +3,13 @@ package com.iscas.common.redis.tools;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.impl.JedisClient;
 import com.iscas.common.redis.tools.impl.standalone.JedisStandAloneConnection;
-import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import redis.clients.jedis.BinaryClient;
+import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.Tuple;
-import redis.clients.util.SafeEncoder;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -33,7 +30,6 @@ public class JedisClientTests {
     private int goodsCount = 50;
 
     @Before
-    @Ignore
     public void before() {
         JedisConnection jedisConnection = new JedisStandAloneConnection();
         ConfigInfo configInfo = new ConfigInfo();
@@ -80,13 +76,101 @@ public class JedisClientTests {
 //        jedisClient = new JedisStrClient(jedisConnection, configInfo);
 //    }
 
+
+    /*======================================通用 begin==============================================================*/
+    /**
+     * 测试分布式锁
+     */
+    @Test
+    public void test32() throws InterruptedException {
+        //JVM 锁
+        final Object lock = new Object();
+
+        CountDownLatch countDownLatch = new CountDownLatch(10);
+        Runnable runnable = () -> {
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (int i = 0; i < 5; i++) {
+                //不使用任何锁
+//                goodsCount--;
+
+                //使用JVM锁
+//                synchronized (lock) {
+//                    goodsCount--;
+//                }
+
+                //使用redis作分布式锁
+                String lockFlag = null;
+                while (true) {
+                    lockFlag = jedisClient.acquireLock("goodscount", 100000);
+                    if (lockFlag != null) {
+                        goodsCount--;
+                        break;
+                    }
+                }
+                jedisClient.releaseLock("goodscount", lockFlag);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 10; i++) {
+            executorService.submit(runnable);
+            countDownLatch.countDown();
+        }
+//        // 假设一个足够长的时间去验证最后的goodCount
+        for (int i = 0; i < 10; i++) {
+            System.out.println(goodsCount);
+            TimeUnit.SECONDS.sleep(1);
+        }
+    }
+
+    /**
+     * 测试分布式限流
+     */
+    @Test
+    public void test33() {
+        for (int i = 0; i < 150; i++) {
+            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
+            System.out.println(flag);
+        }
+
+    }
+
+
+    /**
+     * 测试设置存储对象的key的过期时间
+     */
+    @Test
+    public void test54() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "11111", 0);
+            jedisClient.expire("testKey", 5000);
+            Assert.assertEquals("11111", jedisClient.get(Object.class, "testKey"));
+            TimeUnit.SECONDS.sleep(6);
+            Assert.assertNull(jedisClient.get(Object.class, "testKey"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+    /*======================================通用 end==============================================================*/
+
     /*=====================================测试SET BEGIN=================================================*/
 
     /**
      * 测试设置集合，并测试获取集合的值
      */
     @Test
-    @Ignore
     public void testSadd() throws IOException, ClassNotFoundException {
         try {
             Set<Object> set = new HashSet<>();
@@ -107,7 +191,6 @@ public class JedisClientTests {
      * 测试集合追加值，数据为对象
      */
     @Test
-    @Ignore
     public void testSdd2() throws IOException, ClassNotFoundException {
         try {
             long result = jedisClient.sadd("testKey", 1, 2, 4, "wegw");
@@ -304,7 +387,6 @@ public class JedisClientTests {
      * 测试sdiff 差集
      */
     @Test
-    @Ignore
     public void testSdiff() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -324,7 +406,6 @@ public class JedisClientTests {
      * 测试sdiff 差集
      */
     @Test
-    @Ignore
     public void testSdiffStore() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -345,159 +426,6 @@ public class JedisClientTests {
 
     /*=====================================测试SET END===================================================*/
 
-    /**
-     * 测试设置List数据,数据为对象, 并测试获取List数据
-     */
-    @Test
-    @Ignore
-    public void testSetAndGetList() throws IOException, ClassNotFoundException {
-        try {
-            long result = jedisClient.setList("testKey", Arrays.asList("4", "5", "6"), 20);
-            List<String> list = jedisClient.getList(String.class, "testKey");
-            Assert.assertEquals(3, result);
-            list.forEach(System.out::println);
-            Assert.assertEquals(list.size(), 3);
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
-
-    /**
-     * 测试向List添加数据,数据为对象
-     */
-    @Test
-    @Ignore
-    public void testListAdd() throws IOException, ClassNotFoundException {
-        try {
-            long result = jedisClient.listAdd("testKey", "x", "y", "z");
-            Assert.assertEquals(3, result);
-            result = jedisClient.listAdd("testKey", 11, 333);
-            Assert.assertEquals(5, result);
-            List<Object> list = jedisClient.getList(Object.class, "testKey");
-            list.forEach(System.out::println);
-        } finally {
-            jedisClient.del("testKey");
-        }
-
-    }
-
-    /**
-     * 测试从List pop数据,数据为对象，适用于队列模式
-     */
-    @Test
-    @Ignore
-    public void testLpopList() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.listAdd("testKey", "x", "y", "z");
-            String result = jedisClient.lpopList(String.class, "testKey");
-            Assert.assertEquals("x", result);
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
-
-    /**
-     * 测试从List pop数据,数据为对象，适用于队列模式
-     */
-    @Test
-    @Ignore
-    public void testRpopList() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.listAdd("testKey", "x", "y", "z");
-            String result = jedisClient.rpopList(String.class, "testKey");
-            Assert.assertEquals("z", result);
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
-
-    /**
-     * 测试分布式锁
-     */
-    @Test
-    @Ignore
-    public void test32() throws InterruptedException {
-        //JVM 锁
-        final Object lock = new Object();
-
-        CountDownLatch countDownLatch = new CountDownLatch(10);
-        Runnable runnable = () -> {
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < 5; i++) {
-                //不使用任何锁
-//                goodsCount--;
-
-                //使用JVM锁
-//                synchronized (lock) {
-//                    goodsCount--;
-//                }
-
-                //使用redis作分布式锁
-                String lockFlag = null;
-                while (true) {
-                    lockFlag = jedisClient.acquireLock("goodscount", 100000);
-                    if (lockFlag != null) {
-                        goodsCount--;
-                        break;
-                    }
-                }
-                jedisClient.releaseLock("goodscount", lockFlag);
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        };
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 10; i++) {
-            executorService.submit(runnable);
-            countDownLatch.countDown();
-        }
-//        // 假设一个足够长的时间去验证最后的goodCount
-        for (int i = 0; i < 10; i++) {
-            System.out.println(goodsCount);
-            TimeUnit.SECONDS.sleep(1);
-        }
-    }
-
-    /**
-     * 测试分布式限流
-     */
-    @Test
-    @Ignore
-    public void test33() {
-        for (int i = 0; i < 150; i++) {
-            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
-            System.out.println(flag);
-        }
-
-    }
-
-
-    /**
-     * 测试设置存储对象的key的过期时间
-     */
-    @Test
-    public void test54() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.del("testKey");
-            jedisClient.set("testKey", "11111", 0);
-            jedisClient.expire("testKey", 5000);
-            Assert.assertEquals("11111", jedisClient.get(Object.class, "testKey"));
-            TimeUnit.SECONDS.sleep(6);
-            Assert.assertNull(jedisClient.get(Object.class, "testKey"));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
 
     /*=============================sort set begin======================================*/
     /**
@@ -1266,7 +1194,6 @@ public class JedisClientTests {
      * 测试插入一个对象，有超时时间，并测试获取这个对象
      */
     @Test
-    @Ignore
     public void testSetAndGet() throws IOException, ClassNotFoundException {
         try {
             boolean result = jedisClient.set("testKey", "value", 20);
@@ -1287,7 +1214,6 @@ public class JedisClientTests {
      * 测试setnx
      */
     @Test
-    @Ignore
     public void testSetnx() throws IOException, ClassNotFoundException {
         try {
             Map map = new HashMap();
@@ -1306,7 +1232,6 @@ public class JedisClientTests {
      * 测试setnx
      * */
     @Test
-    @Ignore
     public void testSetrange() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1325,7 +1250,6 @@ public class JedisClientTests {
      * 测试decrBy
      * */
     @Test
-    @Ignore
     public void testDecrBy() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1341,7 +1265,6 @@ public class JedisClientTests {
      * 测试getSet
      * */
     @Test
-    @Ignore
     public void testGetSet() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1358,7 +1281,6 @@ public class JedisClientTests {
      * 测试mget
      * */
     @Test
-    @Ignore
     public void testMget() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1378,7 +1300,6 @@ public class JedisClientTests {
      * 测试mset
      * */
     @Test
-    @Ignore
     public void testMset() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("111");
@@ -1397,7 +1318,6 @@ public class JedisClientTests {
      * 测试strlen
      * */
     @Test
-    @Ignore
     public void testStrlen() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1417,7 +1337,6 @@ public class JedisClientTests {
      * 测试rpush
      * */
     @Test
-    @Ignore
     public void testRpush() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1433,7 +1352,6 @@ public class JedisClientTests {
      * 测试rpush
      * */
     @Test
-    @Ignore
     public void testLpush() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1449,7 +1367,6 @@ public class JedisClientTests {
      * 测试llen
      * */
     @Test
-    @Ignore
     public void testLlen() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1465,7 +1382,6 @@ public class JedisClientTests {
      * 测试lset
      * */
     @Test
-    @Ignore
     public void testLset() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1484,14 +1400,13 @@ public class JedisClientTests {
      * 测试linsert
      * */
     @Test
-    @Ignore
     public void testLinsert() throws IOException {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
-            long result = jedisClient.linsert("testKey", BinaryClient.LIST_POSITION.AFTER, "10000", "33333");
+            long result = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", "33333");
             Assert.assertEquals(result, 3);
-            long result2 = jedisClient.linsert("testKey", BinaryClient.LIST_POSITION.AFTER, "10000", 45678);
+            long result2 = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", 45678);
             Assert.assertEquals(result2, 4);
         } finally {
             jedisClient.del("testKey");
@@ -1501,7 +1416,6 @@ public class JedisClientTests {
      * 测试lindex
      * */
     @Test
-    @Ignore
     public void testLindex() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1517,7 +1431,6 @@ public class JedisClientTests {
      * 测试lpop
      * */
     @Test
-    @Ignore
     public void testLpop() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1533,7 +1446,6 @@ public class JedisClientTests {
      * 测试lpop
      * */
     @Test
-    @Ignore
     public void testRpop() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1549,7 +1461,6 @@ public class JedisClientTests {
      * 测试lrange
      * */
     @Test
-    @Ignore
     public void testLrange() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -1565,7 +1476,6 @@ public class JedisClientTests {
      * 测试lrem
      * */
     @Test
-    @Ignore
     public void testLrem() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1583,7 +1493,6 @@ public class JedisClientTests {
      * 测试ltrim
      * */
     @Test
-    @Ignore
     public void testLtrim() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");

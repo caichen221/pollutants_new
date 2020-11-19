@@ -11,14 +11,6 @@ import java.util.Set;
  * @since jdk1.8
  */
 public interface IJedisSetStrClient {
-    /**
-     * 设置Set缓存
-     * @param key 键
-     * @param value 值
-     * @param cacheSeconds 超时时间，0为不超时
-     * @return
-     */
-    long sadd(String key, Set<String> value, int cacheSeconds);
 
     /**
      * 向Set缓存中添加值

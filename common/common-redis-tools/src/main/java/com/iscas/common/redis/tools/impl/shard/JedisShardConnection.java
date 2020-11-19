@@ -6,9 +6,7 @@ import com.iscas.common.redis.tools.RedisInfo;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
 import redis.clients.jedis.ShardedJedisPool;
-import redis.clients.util.Pool;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

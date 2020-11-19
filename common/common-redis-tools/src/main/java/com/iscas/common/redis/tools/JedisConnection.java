@@ -1,7 +1,5 @@
 package com.iscas.common.redis.tools;
 
-import redis.clients.util.Pool;
-
 /**
  * jedis连接操作接口
  *
