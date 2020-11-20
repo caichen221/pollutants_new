@@ -163,6 +163,25 @@ public class JedisClientTests {
             jedisClient.del("testKey");
         }
     }
+
+    /**
+     * 测试pipeline
+     * */
+    @Test
+    public void testPipelineBatch() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.pipelineBatch(pipelineBase -> {
+                pipelineBase.set("testKey", "1111");
+                pipelineBase.append("testKey", "2222");
+            });
+            String value = jedisClient.get(String.class, "testKey");
+            Assert.assertEquals("11112222", value);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
     /*======================================通用 end==============================================================*/
 
     /*=====================================测试SET BEGIN=================================================*/

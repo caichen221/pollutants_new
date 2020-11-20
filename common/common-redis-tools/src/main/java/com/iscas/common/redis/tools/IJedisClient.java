@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
  */
 
 
-public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisSortSetClient, IJedisHashClient,
+public interface IJedisClient extends IJedisCommonClient, IJedisListClient, IJedisSetClient, IJedisSortSetClient, IJedisHashClient,
         IJedisStringClient {
 
     /**
@@ -38,35 +38,24 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisS
      */
     boolean exists(String key) throws IOException;
 
-
-    /**
-     * 获取分布式锁
-     *
-     * @param lockName        锁key
-     * @param lockTimeoutInMS 锁超时时间
-     * @return 锁标识
-     */
-    String acquireLock(String lockName, long lockTimeoutInMS);
-
-    /**
-     * 释放分布式锁
-     *
-     * @param lockName   锁key
-     * @param identifier 锁标识
-     * @return
-     */
-    boolean releaseLock(String lockName, String identifier);
-
-
-    /**
-     * 对IP进行限流
-     */
-    boolean accessLimit(String ip, int timeout, int limit);
-
     /**
      * 按照key表达式规则删除
      */
     void deleteByPattern(String pattern) throws UnsupportedEncodingException;
+
+    /**
+     * 设置对象存储的过期时间
+     *
+     * @param key 缓存的key
+     * @param millisecond 过期时间毫秒
+     * @return
+     * @throws
+     * @version 1.0
+     * @date 2020/11/2
+     * @since jdk1.8
+     */
+    void expire(String key, long millisecond) throws IOException;
+
 
 
 //    /**
@@ -88,18 +77,7 @@ public interface IJedisClient extends IJedisListClient, IJedisSetClient, IJedisS
 //     * */
 //    void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer);
 
-    /**
-     * 设置对象存储的过期时间
-     *
-     * @param key 缓存的key
-     * @param millisecond 过期时间毫秒
-     * @return
-     * @throws
-     * @version 1.0
-     * @date 2020/11/2
-     * @since jdk1.8
-     */
-    void expire(String key, long millisecond) throws IOException;
+
 
 
     //https://blog.csdn.net/lbl123xx/article/details/89213943

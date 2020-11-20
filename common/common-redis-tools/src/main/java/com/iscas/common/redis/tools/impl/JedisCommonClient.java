@@ -2,10 +2,7 @@ package com.iscas.common.redis.tools.impl;
 
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.util.Pool;
@@ -245,6 +242,31 @@ public class JedisCommonClient  {
             return jedisCluster.evalsha(jedisCluster.scriptLoad(lua, lua), key, val);
         }
         return 0;
+    }
+
+    public PipelineBase getPipeline(Object jedisResource) {
+        if (jedisResource instanceof Jedis) {
+            Jedis jedis = (Jedis) jedisResource;
+            return jedis.pipelined();
+        } else if (jedisResource instanceof ShardedJedis) {
+            ShardedJedis shardedJedis = (ShardedJedis) jedisResource;
+            return shardedJedis.pipelined();
+        } else if (jedisResource instanceof JedisCluster) {
+            JedisCluster jedisCluster = (JedisCluster) jedisResource;
+            throw new RuntimeException("JedisCluster 暂不支持pipeline");
+        }
+        throw new RuntimeException("jedisResource:" + jedisResource.getClass().getSimpleName() + " 为不支持的类型");
+    }
+
+    public void pipelineBatch(Consumer<PipelineBase> consumer) {
+        Object jc = null;
+        try {
+            jc = getResource(Object.class);
+            PipelineBase pipeline = getPipeline(jc);
+            consumer.accept(pipeline);
+        } finally {
+            returnResource(jc);
+        }
     }
 
 

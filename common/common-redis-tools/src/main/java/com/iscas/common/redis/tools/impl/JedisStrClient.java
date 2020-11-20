@@ -88,7 +88,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     }
 
     @Override
-    public void deleteByPattern(String pattern) throws UnsupportedEncodingException {
+    public void deleteByPattern(String pattern) {
         Object jedis = null;
         try {
             jedis = getResource(Object.class);

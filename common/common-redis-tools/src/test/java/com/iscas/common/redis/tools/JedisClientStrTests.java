@@ -169,6 +169,24 @@ public class JedisClientStrTests {
             jedisClient.del("testKey");
         }
     }
+
+    /**
+     * 测试pipeline
+     * */
+    @Test
+    public void testPipelineBatch() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.pipelineBatch(pipelineBase -> {
+                pipelineBase.set("testKey", "1111");
+                pipelineBase.append("testKey", "2222");
+            });
+            String value = jedisClient.get("testKey");
+            Assert.assertEquals("11112222", value);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
     /*==============================通用end========================================*/
 
 
@@ -177,7 +195,7 @@ public class JedisClientStrTests {
      * 测试设置集合，数据为字符串
      * */
     @Test
-    public void testAdd() {
+    public void testAdd() throws IOException {
         try {
             jedisClient.del("set1");
             Set<String> set = new HashSet<>();
