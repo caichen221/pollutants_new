@@ -1,13 +1,35 @@
-plugins {
-    id 'java'
+
+apply plugin: "com.google.protobuf"
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protocVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${protocGenGrpcJavaVersion}"
+        }
+    }
+
+//    generatedFilesBaseDir = "src"
+    generateProtoTasks.generatedFilesBaseDir = "src"
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                setOutputSubDir 'java'
+//                outputSubDir = "java"
+            }
+        }
+    }
 }
 
 dependencies {
     // https://mvnrepository.com/artifact/com.alipay.sofa/sofa-rpc-all
     compile group: 'com.alipay.sofa', name: 'sofa-rpc-all', version: "${sofaVersion}"
 
-    //https://blog.csdn.net/qq924862077/article/details/81915213
-    //https://www.sofastack.tech/en/projects/sofa-rpc/getting-started-with-rpc/
+    // https://mvnrepository.com/artifact/io.grpc/grpc-all
+    compile group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
+
 
 
 }

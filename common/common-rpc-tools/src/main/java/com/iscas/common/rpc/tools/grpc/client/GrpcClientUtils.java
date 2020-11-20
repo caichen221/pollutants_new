@@ -1,0 +1,37 @@
+package com.iscas.common.rpc.tools.grpc.client;
+
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+
+/**
+ * grpc 客户端工具类
+ *
+ * @author zhuquanwen
+ * @vesion 1.0
+ * @date 2020/11/20 18:47
+ * @since jdk1.8
+ */
+public class GrpcClientUtils {
+    private GrpcClientUtils(){}
+
+    /**
+     * 获取ManagedChannel
+     *
+     * 使用例子:
+     * PersonServiceGrpc.PersonServiceBlockingStub blockingStub = PersonServiceGrpc
+     *                 .newBlockingStub(managedChannel);
+     * MyResponse myResponse = blockingStub
+     *                 .getRealNameByUsername(MyRequest.newBuilder().setUsername("zhangsan").build());
+     *
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/20
+     * @param ip 服务端IP
+     * @param port 端口
+     * @throws
+     * @return io.grpc.ManagedChannel
+     */
+    public static ManagedChannel getManagedChannel(String ip, int port) {
+        return ManagedChannelBuilder.forAddress(ip, port).usePlaintext().build();
+    }
+}
