@@ -4,11 +4,9 @@ import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.JdkRegexpMethodPointcut;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

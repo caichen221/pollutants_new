@@ -2,15 +2,13 @@ package com.iscas.base.biz.config.norepeat.submit;
 
 import com.iscas.base.biz.aop.enable.EnableNoRepeatSubmit;
 import org.springframework.context.annotation.ImportSelector;
-import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.util.Assert;
 
 
 
 /**
- * //TODO
+ *
  *
  * @author zhuquanwen
  * @vesion 1.0

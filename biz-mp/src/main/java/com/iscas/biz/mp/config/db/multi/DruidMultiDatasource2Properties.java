@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

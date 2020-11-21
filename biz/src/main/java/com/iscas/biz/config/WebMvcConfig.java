@@ -6,7 +6,6 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

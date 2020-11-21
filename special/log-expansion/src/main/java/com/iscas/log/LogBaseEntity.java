@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -19,7 +18,7 @@ public class LogBaseEntity {
     protected Date time;
 
     /**
-     * 日志级别 支持（DEBUG/INFO/WARN/ERROR），TODO 可以定义为枚举
+     * 日志级别 支持（DEBUG/INFO/WARN/ERROR），
      * */
     protected String level;
 

@@ -3,25 +3,18 @@ package com.iscas.common.redis.tools.impl;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
-import com.iscas.common.redis.tools.impl.cluster.JedisClusterConnection;
-import io.lettuce.core.cluster.RedisClusterClient;
-import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
-import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.util.Pool;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * //TODO
+ * Jedis通用客户端接口
  *
  * @author zhuquanwen
  * @vesion 1.0

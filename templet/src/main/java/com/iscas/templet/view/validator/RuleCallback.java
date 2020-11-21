@@ -3,7 +3,6 @@ package com.iscas.templet.view.validator;
 import com.iscas.templet.view.table.TableField;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

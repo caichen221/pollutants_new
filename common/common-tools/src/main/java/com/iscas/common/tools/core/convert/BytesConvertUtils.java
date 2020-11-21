@@ -1,7 +1,7 @@
 package com.iscas.common.tools.core.convert;
 
 /**
- * //TODO
+ * 字节转换工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

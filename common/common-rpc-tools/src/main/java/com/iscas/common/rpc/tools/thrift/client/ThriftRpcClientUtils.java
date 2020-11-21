@@ -4,7 +4,7 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
 /**
- * //TODO
+ * thrift客户端工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

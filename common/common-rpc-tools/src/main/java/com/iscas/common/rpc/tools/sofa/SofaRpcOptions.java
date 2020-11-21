@@ -1,7 +1,7 @@
 package com.iscas.common.rpc.tools.sofa;
 
 /**
- * //TODO
+ * sofa-rpc配置信息
  *
  * @author zhuquanwen
  * @vesion 1.0

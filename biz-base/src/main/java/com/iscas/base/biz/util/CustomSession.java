@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * //TODO
+ * 自定义session
  *
  * @author zhuquanwen
  * @vesion 1.0

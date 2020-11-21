@@ -3,7 +3,6 @@ package com.iscas.biz.mp.config.db.multi;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

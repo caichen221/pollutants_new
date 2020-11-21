@@ -1,6 +1,5 @@
 package com.iscas.common.rpc.tools.rmi.server;
 
-import javax.management.remote.rmi.RMIServer;
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
@@ -9,7 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 /**
- * //TODO
+ * RMI服务工具类
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -21,7 +20,7 @@ public class RmiServerUtils {
     }
 
     /**
-     * //TODO
+     * RMI发布服务
      * @version 1.0
      * @since jdk1.8
      * @date 2020/11/21

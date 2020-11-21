@@ -1,7 +1,6 @@
 package com.iscas.common.tools.core.object;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

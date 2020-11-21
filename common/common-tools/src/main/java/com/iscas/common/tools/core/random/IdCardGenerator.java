@@ -1,7 +1,6 @@
 package com.iscas.common.tools.core.random;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

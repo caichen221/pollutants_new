@@ -1,14 +1,11 @@
 package com.iscas.common.redis.tools.interfaces;
 
-import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.PipelineBase;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.function.Consumer;
 
 /**
- * //TODO
+ * Jedis通用接口
  *
  * @author zhuquanwen
  * @vesion 1.0

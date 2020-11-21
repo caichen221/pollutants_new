@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * //TODO
+ * 序列化测试
  *
  * @author zhuquanwen
  * @vesion 1.0

@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 /**
- * //TODO
- *
+ * 验证码配置类
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2020/8/17 20:52

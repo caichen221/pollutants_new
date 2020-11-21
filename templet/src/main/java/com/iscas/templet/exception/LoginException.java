@@ -1,9 +1,6 @@
 package com.iscas.templet.exception;
 
-import com.iscas.templet.exception.BaseException;
-
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

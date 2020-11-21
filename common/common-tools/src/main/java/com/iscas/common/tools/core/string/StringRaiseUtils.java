@@ -4,7 +4,6 @@ package com.iscas.common.tools.core.string;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * //TODO
  *
  *
  * @author zhuquanwen

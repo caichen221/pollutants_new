@@ -1,15 +1,16 @@
 package com.iscas.common.tools.core.collection;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
-import com.iscas.common.tools.core.string.StringRaiseUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * //TODO
+ * Map扩展工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

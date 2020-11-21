@@ -50,7 +50,7 @@ public class ZXingCode
     {
 //      String filePath = (javax.servlet.http.HttpServletRequest)request.getSession().getServletContext().getRealPath("/") + "resources/images/logoImages/llhlogo.png";
         //filePath是二维码logo的路径，但是实际中我们是放在项目的某个路径下面的，所以路径用上面的，把下面的注释就好
-//        String filePath = "F:/stc.png";  //TODO
+//        String filePath = "F:/stc.png";
         String content = qrUrl;
         try
         {
@@ -157,7 +157,7 @@ public class ZXingCode
             //可以看到这个方法最终返回的是这个二维码的imageBase64字符串
             //前端用 <img src="data:image/png;base64,${imageBase64QRCode}"/>  其中${imageBase64QRCode}对应二维码的imageBase64字符串
             String fileName = localPath + System.currentTimeMillis() + ".png";
-            ImageIO.write(image, "png", new File(fileName)); //TODO
+            ImageIO.write(image, "png", new File(fileName));
 
             String imageBase64QRCode =  Base64.encodeBase64URLSafeString(baos.toByteArray());
 

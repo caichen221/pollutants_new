@@ -1,7 +1,7 @@
 package com.iscas.base.biz.util;
 
 /**
- * //TODO
+ * 字符串工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

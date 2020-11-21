@@ -1,11 +1,10 @@
 package com.iscas.common.rpc.tools.sofa.client;
 
 import com.alipay.sofa.rpc.config.ConsumerConfig;
-import com.google.common.graph.ImmutableNetwork;
 import com.iscas.common.rpc.tools.sofa.SofaRpcOptions;
 
 /**
- * //TODO
+ * sofa-rpc客户端工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

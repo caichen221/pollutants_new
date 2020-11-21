@@ -1,7 +1,5 @@
 package com.iscas.base.biz.listener;
 
-import com.iscas.base.biz.schedule.CronTaskRegister;
-import com.iscas.base.biz.schedule.SchedulingRunnable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -10,7 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
- * //TODO
+ * 启动启动后监听
  *
  * @author zhuquanwen
  * @vesion 1.0

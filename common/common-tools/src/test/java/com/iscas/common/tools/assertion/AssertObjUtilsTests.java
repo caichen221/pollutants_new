@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * //TODO
+ * 对象断言测试
  *
  * @author zhuquanwen
  * @vesion 1.0

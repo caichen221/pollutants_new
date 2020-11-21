@@ -1,11 +1,8 @@
 package com.iscas.base.biz.aop.norepeat.submit;
 
-import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
-
 import java.lang.annotation.*;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

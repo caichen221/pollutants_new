@@ -1,13 +1,8 @@
 package com.iscas.templet.annotation.table;
 
-import com.iscas.templet.view.table.TableFieldType;
-import com.iscas.templet.view.table.TableSearchType;
-
 import java.lang.annotation.*;
-import java.util.Map;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

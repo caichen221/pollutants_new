@@ -3,7 +3,6 @@ package com.iscas.base.biz.config.norepeat.submit;
 import org.springframework.context.annotation.Bean;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

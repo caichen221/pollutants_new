@@ -1,11 +1,8 @@
 package com.iscas.common.web.tools.json;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

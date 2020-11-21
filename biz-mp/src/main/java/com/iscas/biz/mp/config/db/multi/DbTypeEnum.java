@@ -1,7 +1,7 @@
 package com.iscas.biz.mp.config.db.multi;
 
 /**
- * //TODO
+ * 数据库类型
  *
  * @author zhuquanwen
  * @vesion 1.0

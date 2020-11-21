@@ -6,7 +6,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 import org.junit.Test;
 
 /**
- * //TODO
+ *拼音工具测试
  *
  * @author zhuquanwen
  * @vesion 1.0

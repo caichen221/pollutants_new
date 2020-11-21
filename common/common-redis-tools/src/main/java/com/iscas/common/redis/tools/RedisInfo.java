@@ -1,7 +1,7 @@
 package com.iscas.common.redis.tools;
 
 /**
- * //TODO
+ * redis信息
  *
  * @author zhuquanwen
  * @vesion 1.0

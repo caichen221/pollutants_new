@@ -1,14 +1,10 @@
 package com.iscas.common.redis.tools;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisShardInfo;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * //TODO
+ * redis配置信息
  *
  * @author zhuquanwen
  * @vesion 1.0

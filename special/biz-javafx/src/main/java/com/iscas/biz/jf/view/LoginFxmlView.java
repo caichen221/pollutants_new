@@ -4,7 +4,6 @@ import com.iscas.biz.jf.support.AbstractFxmlView;
 import com.iscas.biz.jf.support.FXMLView;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

@@ -3,16 +3,14 @@ package com.iscas.base.biz.test.controller;
 import com.iscas.base.biz.aop.norepeat.submit.NoRepeatSubmit;
 import com.iscas.base.biz.service.common.OkHttpCustomClient;
 import com.iscas.templet.common.ResponseEntity;
-import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
- * //TODO
+ *
  *
  * @author zhuquanwen
  * @vesion 1.0

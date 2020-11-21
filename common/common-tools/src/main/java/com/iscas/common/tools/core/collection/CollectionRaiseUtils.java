@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * //TODO
+ * 集合扩展工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

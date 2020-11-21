@@ -3,7 +3,6 @@ package com.iscas.log;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

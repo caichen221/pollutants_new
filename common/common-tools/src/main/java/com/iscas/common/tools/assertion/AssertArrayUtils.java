@@ -3,7 +3,7 @@ package com.iscas.common.tools.assertion;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
- * //TODO
+ * 数组断言
  *
  * @author zhuquanwen
  * @vesion 1.0

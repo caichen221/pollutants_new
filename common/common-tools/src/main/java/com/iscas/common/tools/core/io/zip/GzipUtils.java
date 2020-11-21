@@ -8,7 +8,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * //TODO
+ * gzip工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

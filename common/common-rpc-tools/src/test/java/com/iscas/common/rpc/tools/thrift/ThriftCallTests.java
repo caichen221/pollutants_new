@@ -6,8 +6,6 @@ import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.server.THsHaServer;
-import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.junit.Test;
@@ -18,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * //TODO
+ * thrift测试
  *
  * @author zhuquanwen
  * @vesion 1.0

@@ -1,8 +1,6 @@
 package com.iscas.common.tools.core.collection;
 
 import cn.hutool.core.map.MapUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.util.StringUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -10,7 +8,7 @@ import org.junit.runners.JUnit4;
 import java.util.Map;
 
 /**
- * //TODO
+ * Map扩展工具测试
  *
  * @author zhuquanwen
  * @vesion 1.0

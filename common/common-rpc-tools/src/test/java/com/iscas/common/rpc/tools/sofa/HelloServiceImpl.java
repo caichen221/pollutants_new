@@ -1,7 +1,6 @@
 package com.iscas.common.rpc.tools.sofa;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

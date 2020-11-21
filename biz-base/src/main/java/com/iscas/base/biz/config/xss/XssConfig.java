@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.Map;
 
 /**
- * //TODO
+ * xss过滤器配置类
  *
  * @author zhuquanwen
  * @vesion 1.0

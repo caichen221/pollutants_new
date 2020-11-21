@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * //TODO
+ * 启动页面
  *
  * @author zhuquanwen
  * @vesion 1.0

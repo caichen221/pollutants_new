@@ -1,7 +1,6 @@
 package com.iscas.biz.mp.config.db.multi;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

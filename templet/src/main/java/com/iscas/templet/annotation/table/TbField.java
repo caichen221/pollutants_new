@@ -1,16 +1,11 @@
 package com.iscas.templet.annotation.table;
 
-import com.iscas.templet.view.table.ComboboxData;
 import com.iscas.templet.view.table.TableFieldType;
 import com.iscas.templet.view.table.TableSearchType;
-import com.iscas.templet.view.table.TableViewType;
-import com.iscas.templet.view.validator.Rule;
 
 import java.lang.annotation.*;
-import java.util.List;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

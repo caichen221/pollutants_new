@@ -6,10 +6,8 @@ import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

@@ -3,14 +3,10 @@ package com.iscas.biz.mp.test.model.enums;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.iscas.biz.mp.test.model.TestEntity;
-import lombok.Getter;
 
 import java.util.Objects;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

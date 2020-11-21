@@ -3,7 +3,7 @@ package com.iscas.common.redis.tools.helper;
 import java.io.*;
 
 /**
- * //TODO
+ * 对象序列化类
  *
  * @author zhuquanwen
  * @vesion 1.0

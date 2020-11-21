@@ -12,7 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
- * //TODO
+ * 用户工具类
  *
  * @author zhuquanwen
  * @vesion 1.0

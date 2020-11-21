@@ -1,7 +1,7 @@
 package com.iscas.base.biz.config.log;
 
 /**
- * //TODO
+ *
  *
  * @author zhuquanwen
  * @vesion 1.0

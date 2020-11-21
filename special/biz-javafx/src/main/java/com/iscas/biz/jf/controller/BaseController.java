@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

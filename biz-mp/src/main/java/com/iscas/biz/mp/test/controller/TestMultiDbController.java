@@ -3,7 +3,6 @@ package com.iscas.biz.mp.test.controller;
 import com.iscas.biz.mp.test.model.TestEntity;
 import com.iscas.biz.mp.test.service.mysql1.TestService1;
 import com.iscas.biz.mp.test.service.mysql2.TestService2;
-import com.iscas.templet.common.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

@@ -1,7 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
 import com.iscas.biz.mp.test.mapper.TestEntityMapper;
-import com.iscas.biz.mp.test.model.enums.SexEnum;
 import com.iscas.biz.mp.test.model.TestEntity;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

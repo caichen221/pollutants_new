@@ -1,7 +1,6 @@
 package com.iscas.log.handler;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

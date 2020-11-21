@@ -5,7 +5,6 @@ import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.RedisInfo;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -17,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * //TODO
+ * jedis-cluster 连接
  *
  * @author zhuquanwen
  * @vesion 1.0
