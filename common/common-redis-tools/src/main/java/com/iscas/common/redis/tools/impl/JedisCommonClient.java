@@ -1,7 +1,12 @@
 package com.iscas.common.redis.tools.impl;
 
+import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
+import com.iscas.common.redis.tools.impl.cluster.JedisClusterConnection;
+import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
+import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.jedis.params.SetParams;
@@ -25,6 +30,7 @@ import java.util.function.Consumer;
  */
 public class JedisCommonClient  {
     protected Object jedisPool;
+    protected JedisConnection jedisConnection;
     protected static String RESULT_OK = "OK";
     protected static int RESULT_1 = 1;
     protected static String DELAY_QUEUE_DEFUALT_KEY = "delay_queue_default_key_20190806";
@@ -264,6 +270,11 @@ public class JedisCommonClient  {
             jc = getResource(Object.class);
             PipelineBase pipeline = getPipeline(jc);
             consumer.accept(pipeline);
+            if (pipeline instanceof Pipeline) {
+                ((Pipeline) pipeline).sync();
+            } else if (pipeline instanceof ShardedJedisPipeline) {
+                ((ShardedJedisPipeline) pipeline).sync();
+            }
         } finally {
             returnResource(jc);
         }

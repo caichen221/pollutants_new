@@ -1,6 +1,7 @@
 package com.iscas.common.redis.tools;
 
 import com.iscas.common.redis.tools.interfaces.*;
+import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,15 @@ import java.util.function.Consumer;
 public interface IJedisStrClient extends IJedisCommonClient, IJedisSetStrClient, IJedisListStrClient, IJedisSortSetStrClient, IJedisHashStrClient,
         IJedisStringStrClient {
 
+    /**
+     * redis-cluser 使用pipeline,使用lettuce实现
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/20
+     * @throws
+     * @return
+     */
+    void pipelineClusterBatch(Consumer<RedisAdvancedClusterCommands<String, String>> consumer);
 
     /**
      * 删除缓存

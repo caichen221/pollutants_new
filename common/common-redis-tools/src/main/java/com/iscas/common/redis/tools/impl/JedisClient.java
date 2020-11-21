@@ -21,6 +21,7 @@ import java.util.*;
 public class JedisClient extends JedisCommonClient implements IJedisClient {
 
     public JedisClient(JedisConnection jedisConnection, ConfigInfo configInfo) {
+        this.jedisConnection = jedisConnection;
         jedisConnection.initConfig(configInfo);
         jedisPool = jedisConnection.getPool();
     }

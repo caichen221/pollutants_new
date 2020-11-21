@@ -54,7 +54,15 @@ public interface IJedisCommonClient {
      */
     PipelineBase getPipeline(Object jedisResource);
 
+    /**
+     * 使用pipeline批量执行，jedisCluster暂不支持
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/11/20
+     * @param consumer
+     * @throws
+     * @return
+     */
     void pipelineBatch(Consumer<PipelineBase> consumer);
-
 
 }

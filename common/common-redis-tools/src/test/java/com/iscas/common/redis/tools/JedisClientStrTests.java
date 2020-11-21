@@ -187,6 +187,25 @@ public class JedisClientStrTests {
             jedisClient.del("testKey");
         }
     }
+
+    /**
+     * 测试pipeline,必须在Cluster模式下才能用
+     * */
+    @Test
+    @Ignore
+    public void testPipelineClusterBatch() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.pipelineClusterBatch(pipeline -> {
+                pipeline.set("testKey", "1111");
+                pipeline.append("testKey", "2222");
+            });
+            String value = jedisClient.get("testKey");
+            Assert.assertEquals("11112222", value);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
     /*==============================通用end========================================*/
 
 

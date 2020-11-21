@@ -5,6 +5,10 @@ import com.iscas.common.redis.tools.ConfigInfo;
 import com.iscas.common.redis.tools.IJedisStrClient;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
+import com.iscas.common.redis.tools.impl.cluster.JedisClusterConnection;
+import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
+import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 
 import java.io.UnsupportedEncodingException;
@@ -29,12 +33,23 @@ import java.util.function.Consumer;
 public class JedisStrClient extends JedisCommonClient implements IJedisStrClient {
 
     public JedisStrClient(JedisConnection jedisConnection, ConfigInfo configInfo) {
+        this.jedisConnection = jedisConnection;
         jedisConnection.initConfig(configInfo);
         jedisPool = jedisConnection.getPool();
     }
 
 
     /*========================通用 begin=================================*/
+
+    @Override
+    public void pipelineClusterBatch(Consumer<RedisAdvancedClusterCommands<String, String>> consumer) {
+        JedisClusterConnection jedisClusterConnection = (JedisClusterConnection) jedisConnection;
+        RedisClusterClient lettuceClusterClient = jedisClusterConnection.getLettuceClusterClient();
+        StatefulRedisClusterConnection<String, String> connect = lettuceClusterClient.connect();
+        RedisAdvancedClusterCommands<String, String> commands = connect.sync();
+        consumer.accept(commands);
+        connect.close();
+    }
     /**
      * 删除缓存
      * @param key 键
