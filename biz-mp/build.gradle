@@ -43,6 +43,10 @@ dependencies {
     //druid连接池配置
 //    compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: "${druidVersion}"
     compile group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
+
+    // https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core
+    compile group: 'cn.smallbun.screw', name: 'screw-core', version: "${screwCoreVersion}"
+
 }
 
 
