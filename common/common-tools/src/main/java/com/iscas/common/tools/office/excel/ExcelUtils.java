@@ -2,11 +2,9 @@ package com.iscas.common.tools.office.excel;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import java.beans.PropertyDescriptor;
 import java.io.*;
@@ -237,7 +235,11 @@ public class ExcelUtils {
                             if (styleMap != null && styleMap.get(headers[j]) != null) {
                                 newCell.setCellStyle((CellStyle) styleMap.get(headers[j]));
                             } else {
-                                CellStyle cellStyle = workbook.createCellStyle();
+//                                CellStyle cellStyle = workbook.createCellStyle();
+                                //workbook.createCellStyle()只支持64000的长度,做一下修改 update 2020-11-22
+                                StylesTable stylesTable = new StylesTable();
+                                CellStyle cellStyle = new XSSFCellStyle(stylesTable);
+
                                 DataFormat format = workbook.createDataFormat();
                                 cellStyle.setDataFormat(format.getFormat("@"));
                                 newCell.setCellStyle(cellStyle);

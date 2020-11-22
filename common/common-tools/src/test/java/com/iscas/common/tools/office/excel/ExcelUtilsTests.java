@@ -138,6 +138,13 @@ public class ExcelUtilsTests {
     @Test
     @Ignore
     public void test7() throws Exception {
-//
+        List<Model> models = new ArrayList<>();
+        for (int i = 0; i < 70000; i++) {
+            Model model = new Model("AWsds","sdWE","为我weg国");
+            models.add(model);
+        }
+        excelResult.setContent(models);
+        String path = "d:/test.xlsx";
+        ExcelUtils.exportXLSXExcel(Arrays.asList(excelResult),79,path);
     }
 }
