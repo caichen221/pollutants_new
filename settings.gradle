@@ -25,3 +25,6 @@ findProject(':special:biz-rabbitmq')?.name = 'biz-rabbitmq'
 include 'admin-server'
 include 'special:biz-javafx'
 findProject(':special:biz-javafx')?.name = 'biz-javafx'
+include 'special:rule-engine'
+findProject(':special:rule-engine')?.name = 'rule-engine'
+

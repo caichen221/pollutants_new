@@ -1,6 +1,7 @@
 package com.iscas.biz.test.controller;
 
 import com.iscas.common.tools.assertion.AssertObjUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/assert")
 public class AssertController {
+    @Autowired
     @GetMapping("/test")
     public String test() {
         String str = null;
