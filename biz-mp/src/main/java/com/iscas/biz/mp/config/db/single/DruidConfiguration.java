@@ -70,7 +70,7 @@ public class DruidConfiguration {
     private boolean poolPreparedStatements;
     @Value("${spring.datasource.druid.max-pool-prepared-statement-per-connection-size}")
     private int maxPoolPreparedStatementPerConnectionSize;
-    @Value("${spring.datasource.druid.filters:stat,wall,logback}")
+//    @Value("${spring.datasource.druid.filters:stat,wall,logback}")
 
 
     @Bean     //声明其为Bean实例
