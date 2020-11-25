@@ -2,12 +2,13 @@ package com.iscas.base.biz.filter;
 
 
 import com.iscas.base.biz.config.cros.CrosProps;
+import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsProcessor;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.DefaultCorsProcessor;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,14 +29,14 @@ import java.util.Map;
  * @Date: 2018/3/20 15:12
  * @Modified:
  **/
-public class CustomCrosFilter extends CorsFilter {
+@AllArgsConstructor
+public class CustomCrosFilter_backup extends OncePerRequestFilter {
     private final CorsConfigurationSource configSource;
     private CorsProcessor processor = new DefaultCorsProcessor();
     private CrosProps crosProps;
     private Map<String, String> ignoreUrlAllMatchMap = new HashMap<>();
     List<String> ignoreUrlPrefixMapList = new ArrayList<>();
-    public CustomCrosFilter(CorsConfigurationSource configSource, CrosProps crosProps) {
-        super(configSource);
+    public CustomCrosFilter_backup(CorsConfigurationSource configSource, CrosProps crosProps) {
         Assert.notNull(configSource, "CorsConfigurationSource must not be null");
         this.configSource = configSource;
         this.crosProps = crosProps;

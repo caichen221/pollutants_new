@@ -1,9 +1,13 @@
 package com.iscas.base.biz.config.stomp;
 
-import org.springframework.context.annotation.Bean;
+import com.iscas.base.biz.config.cros.CrosProps;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 /**
@@ -16,7 +20,8 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 //@Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketStompConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
-
+    @Autowired
+    private CrosProps crosProps;
     /**
      * 注册stomp的端点
      */
@@ -28,8 +33,9 @@ public class WebSocketStompConfig /*extends AbstractWebSocketMessageBrokerConfig
         // 来和服务器的WebSocket连接
         registry.addEndpoint("/webSocketServer")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins("*")
+                .setAllowedOrigins(crosProps.getOrigin())
                 .withSockJS();
+
 
     }
 
@@ -58,7 +64,7 @@ public class WebSocketStompConfig /*extends AbstractWebSocketMessageBrokerConfig
 
 
      /*将客户端渠道拦截器加入spring ioc容器*/
-    @Bean
+//    @Bean
     public UserInterceptor createUserInterceptor() {
         return new UserInterceptor();
     }
