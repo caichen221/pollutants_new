@@ -17,6 +17,7 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,9 +33,9 @@ public class UserInterceptor implements ChannelInterceptor {
             if (raw instanceof Map) {
                 //这里就是token
                 Object name = ((Map) raw).get(Constants.TOKEN_KEY);
-                if (name instanceof LinkedList) {
+                if (name instanceof List) {
                     // 设置当前访问器的认证用户
-//                    String token = ((LinkedList) name).get(0).toString();
+//                    String token = ((List) name).get(0).toString();
 //                    String username = null;
 //                    try {
 //                        Map<String, Claim> claimMap = JWTUtils.verifyToken(token);
