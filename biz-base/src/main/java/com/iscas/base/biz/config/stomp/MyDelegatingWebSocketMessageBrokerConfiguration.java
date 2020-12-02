@@ -7,6 +7,8 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration;
 
+import java.lang.reflect.Method;
+
 /**
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写DelegatingWebSocketMessageBrokerConfiguration
  *
@@ -29,14 +31,18 @@ public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingW
 
         ApplicationContext applicationContext = getApplicationContext();
         if (applicationContext != null) {
-            try {
-                ReflectUtil.setFieldValue(this, "applicationContext", applicationContext);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-//            registry.setApplicationContext(applicationContext);
+//            try {
+//                ReflectUtil.setFieldValue(this, "applicationContext", applicationContext);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+            Method method = ReflectUtil.getMethod(MyWebMvcStompEndpointRegistry.class, "setApplicationContext", ApplicationContext.class);
+            ReflectUtil.invoke(registry, method, applicationContext);
+//            setApplicationContext(applicationContext);
         }
         registerStompEndpoints(registry);
         return registry.getHandlerMapping();
     }
+
+
 }
