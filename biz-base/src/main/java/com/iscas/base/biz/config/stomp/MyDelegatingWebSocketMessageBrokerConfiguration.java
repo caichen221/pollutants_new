@@ -31,11 +31,6 @@ public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingW
 
         ApplicationContext applicationContext = getApplicationContext();
         if (applicationContext != null) {
-//            try {
-//                ReflectUtil.setFieldValue(this, "applicationContext", applicationContext);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
             Method method = ReflectUtil.getMethod(MyWebMvcStompEndpointRegistry.class, "setApplicationContext", ApplicationContext.class);
             ReflectUtil.invoke(registry, method, applicationContext);
 //            setApplicationContext(applicationContext);
