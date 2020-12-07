@@ -6,6 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
@@ -43,11 +45,15 @@ public class JWTUtils {
                 .sign(Algorithm.HMAC256(SECRET));
 
         //将token缓存起来
-        CaffCacheUtils.set(token, iatDate);
+//        CaffCacheUtils.set(token, iatDate);
+        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+        authCacheService.set(token, iatDate);
         return token;
     }
     public static Map<String, Claim> verifyToken(String token) throws UnsupportedEncodingException, ValidTokenException {
-        Object obj = CaffCacheUtils.get(token);
+//        Object obj = CaffCacheUtils.get(token);
+        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+        Object obj = authCacheService.get(token);
         if(obj == null){
             throw new ValidTokenException("登录凭证校验失败","token:" + token + "不存在或已经被注销");
         }
@@ -92,7 +98,9 @@ public class JWTUtils {
         } catch (UnsupportedEncodingException e) {
             throw new AuthorizationRuntimeException("未获取到当前登录的用户信息");
         }
-        String tokenx = (String) CaffCacheUtils.get("user-token" + username);
+        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+//        String tokenx = (String) CaffCacheUtils.get("user-token" + username);
+        String tokenx = (String) authCacheService.get("user-token" + username);
         if(!Objects.equals(token, tokenx)){
             throw new AuthorizationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }

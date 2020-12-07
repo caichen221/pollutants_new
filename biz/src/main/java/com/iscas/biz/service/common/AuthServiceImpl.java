@@ -5,6 +5,7 @@ import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
+import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
@@ -22,6 +23,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -49,6 +51,9 @@ import java.util.UUID;
 @Service()
 @Slf4j
 public class AuthServiceImpl extends AbstractAuthService {
+  @Autowired
+  private IAuthCacheService authCacheService;
+
 //    @Autowired
 //    private UserService userService;
     @Cacheable(value = "auth", key="'url_map'")
@@ -92,7 +97,8 @@ public class AuthServiceImpl extends AbstractAuthService {
                 token = cookie.getValue();
             }
         }
-        CaffCacheUtils.remove(token);
+//        CaffCacheUtils.remove(token);
+        authCacheService.remove(token);
         request.getSession().invalidate();
     }
 
@@ -262,11 +268,14 @@ public class AuthServiceImpl extends AbstractAuthService {
                 token = JWTUtils.createToken(username, expire);
                 //清除以前的TOKEN
                 //暂时加上这个处理
-                String tokenold = (String) CaffCacheUtils.get("user-token" + username);
+//                String tokenold = (String) CaffCacheUtils.get("user-token" + username);
+                String tokenold = (String) authCacheService.get("user-token" + username);
                 if (tokenold != null) {
-                    CaffCacheUtils.remove(tokenold);
+//                    CaffCacheUtils.remove(tokenold);
+                    authCacheService.remove(tokenold);
                 }
-                CaffCacheUtils.set("user-token" + username, token);
+//                CaffCacheUtils.set("user-token" + username, token);
+                authCacheService.set("user-token" + username, token);
 
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
                 String roleKey = getRoles(username);

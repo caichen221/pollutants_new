@@ -2,6 +2,7 @@ package com.iscas.base.biz.model.auth;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @Data
-public class Role {
+public class Role implements Serializable {
     private String key;
     private String name;
     private List<Url> urls = new ArrayList<>();

@@ -1,6 +1,8 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 import com.iscas.base.biz.model.auth.Role;
@@ -93,7 +95,10 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 //                return;
                 throw new AuthorizationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
             }
-            if(CaffCacheUtils.get(token) == null){
+
+            IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+//            if(CaffCacheUtils.get(token) == null){
+            if(authCacheService.get(token) == null){
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :token有误或已被注销");
 //                OutputUtils.output(response, 401, "身份认证信息有误",

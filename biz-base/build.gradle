@@ -67,6 +67,11 @@ dependencies {
     //验证码
     compile "com.github.penggle:kaptcha:${kaptchaVersion}"
 
+    //redis
+    compile "org.springframework.boot:spring-boot-starter-data-redis"
+            
+
+
     //knife4j,替代swagger
 //    compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
 

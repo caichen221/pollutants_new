@@ -1,6 +1,9 @@
 package com.iscas.base.biz.model.auth;
 
+import com.sun.source.doctree.SerialDataTree;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * URL
@@ -11,7 +14,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
-public class Url {
+public class Url implements Serializable {
     private String key;
     private String name;
 }

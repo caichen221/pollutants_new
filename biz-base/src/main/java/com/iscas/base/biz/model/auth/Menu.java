@@ -2,6 +2,8 @@ package com.iscas.base.biz.model.auth;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 菜单
  *
@@ -11,7 +13,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
-public class Menu {
+public class Menu implements Serializable {
     private String key;
     private String name;
 
