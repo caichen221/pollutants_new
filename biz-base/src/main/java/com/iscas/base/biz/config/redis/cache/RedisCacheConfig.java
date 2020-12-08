@@ -34,15 +34,15 @@ import java.util.Map;
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis", matchIfMissing = false)
-public class RedisConfig {
+public class RedisCacheConfig {
     @Value("${spring.cache.redis.time-to-live:2000000}")
     private int timeToLive;
+
     /**
      * 序列化配置
      */
     @Bean
-    public RedisTemplate<String, Serializable> redisTemplate
-    (LettuceConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Serializable> redisTemplate (LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Serializable> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
@@ -56,14 +56,14 @@ public class RedisConfig {
         return new RedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
                 this.getRedisCacheConfigurationWithTtl(timeToLive), // 默认策略，未配置的 key 会使用这个
                 this.getRedisCacheConfigurationMap() // 指定 key 策略
-                );
+        );
     }
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
         redisCacheConfigurationMap.put("auth", this.getRedisCacheConfigurationWithTtl(3000));
         redisCacheConfigurationMap.put("test", this.getRedisCacheConfigurationWithTtl(18000));
-
+        redisCacheConfigurationMap.put("test", this.getRedisCacheConfigurationWithTtl(18000));
         return redisCacheConfigurationMap;
     }
 
@@ -73,7 +73,6 @@ public class RedisConfig {
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
-
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
         redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(
                 RedisSerializationContext

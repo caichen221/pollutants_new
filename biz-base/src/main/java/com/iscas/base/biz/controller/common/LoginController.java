@@ -4,6 +4,7 @@ package com.iscas.base.biz.controller.common;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
+import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.LoginCacheUtils;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.common.BaseController;

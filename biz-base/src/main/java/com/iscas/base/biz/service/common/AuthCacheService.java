@@ -3,6 +3,7 @@ package com.iscas.base.biz.service.common;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,10 @@ public class AuthCacheService implements IAuthCacheService {
             CaffCacheUtils.remove(key);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-
+            Cache authCache = redisCacheManager.getCache("auth");
+            if (authCache == null) return;
+            authCache.evict(key);
         }
-
     }
 
     @Override
@@ -36,7 +38,11 @@ public class AuthCacheService implements IAuthCacheService {
             CaffCacheUtils.set(key, value);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-
+            Cache authCache = redisCacheManager.getCache("auth");
+            if (authCache == null) {
+                throw new RuntimeException("找不到缓存：auth");
+            }
+            authCache.put(key, value);
         }
     }
 
@@ -46,7 +52,15 @@ public class AuthCacheService implements IAuthCacheService {
             return CaffCacheUtils.get(key);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            return null;
+            Cache authCache = redisCacheManager.getCache("auth");
+            if (authCache == null) {
+                return null;
+            }
+            Cache.ValueWrapper valueWrapper = authCache.get(key);
+            if (valueWrapper == null) {
+                return null;
+            }
+            return valueWrapper.get();
         }
     }
 
