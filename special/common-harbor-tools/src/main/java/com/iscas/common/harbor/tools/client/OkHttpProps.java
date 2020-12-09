@@ -1,4 +1,4 @@
-package com.iscas.common.harbor.tools;//package com.iscas.cmi.config.okhttp;
+package com.iscas.common.harbor.tools.client;//package com.iscas.cmi.config.okhttp;
 
 import lombok.Data;
 

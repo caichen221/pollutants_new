@@ -23,6 +23,9 @@ apply plugin: 'war'
 dependencies {
     compile project(":biz-base")
 
+    //SSH客户端
+//    compile project(":special:common-ssh-tools")
+
     //引入mybatis,如果引入了这个模块，
 //    compile project(":biz-mp")
     

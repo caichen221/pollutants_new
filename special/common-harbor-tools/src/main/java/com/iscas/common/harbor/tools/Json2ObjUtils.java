@@ -1,4 +1,4 @@
-package com.iscas.common.harbor.tools.utils;
+package com.iscas.common.harbor.tools;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

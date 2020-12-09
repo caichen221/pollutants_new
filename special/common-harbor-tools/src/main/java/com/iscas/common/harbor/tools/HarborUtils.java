@@ -1,7 +1,7 @@
-package com.iscas.common.harbor.tools.utils;
+package com.iscas.common.harbor.tools;
 
-import com.iscas.common.harbor.tools.OkHttpCustomClient;
-import com.iscas.common.harbor.tools.OkHttpProps;
+import com.iscas.common.harbor.tools.client.OkHttpCustomClient;
+import com.iscas.common.harbor.tools.client.OkHttpProps;
 import com.iscas.common.harbor.tools.exception.CallHarborException;
 import com.iscas.common.harbor.tools.model.ModuleHealth;
 import com.iscas.common.harbor.tools.model.Project;
