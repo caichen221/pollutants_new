@@ -1,0 +1,9 @@
+
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    //okhttp
+    compile "com.squareup.okhttp3:okhttp"
+    compile project (":common:common-web-tools")
+    compile project (":common:common-tools")
+}

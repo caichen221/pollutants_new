@@ -5,20 +5,26 @@ import com.iscas.common.harbor.tools.OkHttpProps;
 import com.iscas.common.harbor.tools.exception.CallHarborException;
 import com.iscas.common.harbor.tools.model.ModuleHealth;
 import com.iscas.common.harbor.tools.model.Project;
+import com.iscas.common.harbor.tools.model.Repositroy;
+import com.iscas.common.harbor.tools.model.Tag;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.common.web.tools.json.JsonUtils;
+import okhttp3.Credentials;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiFunction;
 
 /**
- * 访问Harbor的工具类
+ * <>访问Harbor的工具类</>
+ * <>可以从Harbor网址中进入swagger查看restful接口</>
+ * <>也可以通过https://editor.swagger.io/打开swagger.yaml查看</>
+ * <>可以通过以上两种方式丰富工具</>
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -30,6 +36,7 @@ public class HarborUtils {
     private static String password = "Harbor12345";
     private static String url = "http://192.168.100.96:80/api";
     private static OkHttpCustomClient httpClient = new OkHttpCustomClient(new OkHttpProps());
+    private static String dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss";
 
     public static void setProp(String username, String password, String url) {
         HarborUtils.username = username;
@@ -40,12 +47,6 @@ public class HarborUtils {
 
     private HarborUtils() {}
 
-    private static void throwResultError(String s) throws CallHarborException {
-        if (s != null && s.startsWith("<!DOCTYPE HTML>")) {
-            throw new CallHarborException("调用Harbor出错");
-        }
-    }
-
     /**
      * 查看Harbor各个组件模块健康状况
      * */
@@ -53,7 +54,7 @@ public class HarborUtils {
         List<ModuleHealth> moduleHealths = new ArrayList<>();
         String visitUrl = url + "/health";
         String result = httpClient.doGet(visitUrl);
-        throwResultError(result);
+        throwHtmlResultError(result);
         Map map = JsonUtils.fromJson(result, Map.class);
         if (MapUtils.isNotEmpty(map) && map.containsKey("components")) {
             List list = (List) map.get("components");
@@ -73,49 +74,169 @@ public class HarborUtils {
     /**
      * 查看Harbor的project,模糊查询
      * */
-    public static List<Project> search(String projectName) throws IOException, CallHarborException {
+    public static List<Project> searchProject(String projectName) throws IOException, CallHarborException {
         List<Project> projects = new ArrayList<>();
         String visitUrl = url + "/search" ;
         if (StringUtils.isNotEmpty(projectName)) {
             visitUrl += "?q=" + projectName;
         }
         String result = httpClient.doGet(visitUrl);
-        System.out.println(result);
-        throwResultError(result);
+        throwHtmlResultError(result);
+        analyzeResultErrorCode(result, "500", "查询工程出现未知错误");
         Map map = JsonUtils.fromJson(result, Map.class);
         if (MapUtils.isNotEmpty(map)) {
             List<Map> projectMaps = (List<Map>) map.get("project");
             if (CollectionUtils.isNotEmpty(projectMaps)) {
-
-                BiFunction<String, Object, Object> biFunction = new BiFunction<String, Object, Object>() {
-                    @Override
-                    public Object apply(String s, Object s2) {
-                        if (Objects.equals("createTime", s) || Objects.equals("updateTime", s)) {
-                            if (s2 != null) {
-                                Date date = null;
-                                try {
-                                    date = DateSafeUtils.parse(s2.toString().substring(0, s2.toString().length() - 4), "yyyy-MM-dd'T'HH:mm:ss.SSS");
-                                } catch (ParseException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                return date;
-                            }
-                        } else if (Objects.equals("projectPublic", s)) {
-                            Map meta = (Map) s2;
-                            return Boolean.valueOf((String) meta.get("public"));
-                        }
-                        return s2;
-                    }
-                };
-
-                projects = Json2ObjUtils.json2List(Project.class, projectMaps, biFunction,
+                projects = Json2ObjUtils.json2List(Project.class, projectMaps, createProjectBiFunction(),
                         "project_id", "projectId", "owner_id", "ownerId", "name", "name",
                         "creation_time", "createTime", "update_time", "updateTime", "deleted", "deleted",
                         "repo_count", "repoCount", "metadata", "projectPublic");
             }
         }
-
         return projects;
+    }
+
+    /**
+     * 查看Harbor的repository(镜像),模糊查询
+     * */
+    public static List<Repositroy> searchRepo(String repoName) throws IOException, CallHarborException {
+        List<Repositroy> repos = new ArrayList<>();
+        String visitUrl = url + "/search" ;
+        if (StringUtils.isNotEmpty(repoName)) {
+            visitUrl += "?q=" + repoName;
+        }
+        String result = httpClient.doGet(visitUrl);
+        throwHtmlResultError(result);
+        analyzeResultErrorCode(result, "500", "查询仓库出现未知错误");
+        Map map = JsonUtils.fromJson(result, Map.class);
+        if (MapUtils.isNotEmpty(map)) {
+            List<Map> repoMaps = (List<Map>) map.get("repository");
+            if (CollectionUtils.isNotEmpty(repoMaps)) {
+                repos = Json2ObjUtils.json2List(Repositroy.class, repoMaps, null,
+                        "project_id", "projectId", "project_name", "projectName", "project_public", "projectPublic",
+                        "pull_count", "pullCount", "repository_name", "name", "tags_count", "tagsCount");
+            }
+        }
+        return repos;
+    }
+
+    /** 创建一个project*/
+    public static void createProject(Project project) throws IOException, CallHarborException {
+        String visitUrl = url + "/projects";
+        JSONObject request = new JSONObject();
+        request.put("project_name", project.getName());
+        request.put("count_limit", project.getRepoCount());
+        JSONObject metadata = new JSONObject();
+        metadata.put("public", project.getProjectPublic() ? "1" : "0");
+        request.put("metadata", metadata);
+        String requestyBody = request.toString();
+        String s = httpClient.doPost(visitUrl, getCredentialHeader(), requestyBody);
+        throwHtmlResultError(s);
+        analyzeResultErrorCode(s, "400", "请求不符合格式要求", "401", "未登录", "409", "工程名称已存在",
+                "415", "content-type必须是application/json", "500", "创建工程出现未知错误");
+    }
+
+    /** 按照project的ID获取project的信息 */
+    public static Project getProjectById(int projectId) throws IOException, CallHarborException {
+        String visitUrl = url + "/projects/" + projectId;
+        String result = httpClient.doGet(visitUrl, getCredentialHeader());
+        throwHtmlResultError(result);
+        analyzeResultErrorCode(result, "500", "查询工程出现未知错误", "401", "未登录");
+        Project project = Json2ObjUtils.json2Obj(Project.class, JsonUtils.fromJson(result, Map.class), createProjectBiFunction(),
+                "project_id", "projectId", "owner_id", "ownerId", "name", "name",
+                "creation_time", "createTime", "update_time", "updateTime", "deleted", "deleted",
+                "repo_count", "repoCount", "metadata", "projectPublic");
+        return project;
+    }
+
+    /**
+     * 获取一个镜像下的tag
+     * */
+    public static List<Tag> getTags(String repoName) throws IOException, CallHarborException {
+        List<Tag> tags = new ArrayList<>();
+        String visitUrl = url + "/repositories/" + repoName + "/tags";
+        String result = httpClient.doGet(visitUrl, getCredentialHeader());
+        throwHtmlResultError(result);
+        analyzeResultErrorCode(result, "500", "获取tag出现未知错误", "401", "未登录", "404", String.format("镜像:[%s]对应的工程不存在", repoName));
+
+        List<Map> list = JsonUtils.fromJson(result, List.class);
+        if (CollectionUtils.isNotEmpty(list)) {
+            tags = Json2ObjUtils.json2List(Tag.class, list, createTagBiFunction(),
+                    "digest", "digest", "name", "name", "size", "size",
+                    "architecture", "architecture", "os", "os", "os.version", "osVersion",
+                    "docker_version", "dockerVersion", "created", "createTime",
+                    "push_time", "pushTime", "pull_time", "pullTime");
+        }
+        return tags;
+    }
+
+    private static void throwHtmlResultError(String s) throws CallHarborException {
+        if (s != null && s.startsWith("<!DOCTYPE HTML>")) {
+            throw new CallHarborException("调用Harbor出错");
+        }
+    }
+
+    private static Map<String, String> getCredentialHeader() {
+        Map<String, String> map = new HashMap<>();
+        String credential = Credentials.basic(username, password);
+        map.put("Authorization", credential);
+        return map;
+    }
+
+    private static void analyzeResultErrorCode(String s, String ... codeMsg) throws CallHarborException {
+        Map resultMap = null;
+        try {
+            if (s.startsWith("[")) return;
+            resultMap = JsonUtils.fromJson(s, Map.class);
+        } catch (Throwable e) {
+            return;
+        }
+        Integer code = (Integer) resultMap.get("code");
+        for (int i = 0; i < codeMsg.length; i = i + 2) {
+            if (Objects.equals(code + "", codeMsg[i])) {
+                throw new CallHarborException(codeMsg[i + 1]);
+            }
+        }
+
+    }
+
+    private static BiFunction<String, Object, Object> createProjectBiFunction() {
+        BiFunction<String, Object, Object> biFunction = (s, s2) -> {
+            if (Objects.equals("createTime", s) || Objects.equals("updateTime", s)) {
+                if (s2 != null) {
+                    Date date = null;
+                    try {
+                        date = DateSafeUtils.parse(s2.toString().substring(0, 18), dateTimePattern);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return date;
+                }
+            } else if (Objects.equals("projectPublic", s)) {
+                Map meta = (Map) s2;
+                return Boolean.valueOf((String) meta.get("public"));
+            }
+            return s2;
+        };
+        return biFunction;
+    }
+
+    private static BiFunction<String, Object, Object> createTagBiFunction() {
+        BiFunction<String, Object, Object> biFunction = (s, s2) -> {
+            if (Objects.equals("createTime", s) || Objects.equals("pushTime", s) || Objects.equals("pullTime", s)) {
+                if (s2 != null) {
+                    Date date = null;
+                    try {
+                        date = DateSafeUtils.parse(s2.toString().substring(0, 18), dateTimePattern);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return date;
+                }
+            }
+            return s2;
+        };
+        return biFunction;
     }
 
 }

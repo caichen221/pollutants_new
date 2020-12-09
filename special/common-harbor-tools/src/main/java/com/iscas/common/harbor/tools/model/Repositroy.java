@@ -1,6 +1,7 @@
 package com.iscas.common.harbor.tools.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 镜像信息
@@ -11,9 +12,10 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
+@Accessors(chain = true)
 public class Repositroy {
     /**project ID*/
-    private String projectId;
+    private Integer projectId;
 
     /**project name*/
     private String projectName;
@@ -27,14 +29,11 @@ public class Repositroy {
     /**
      * 镜像的名字
      * */
-    private String imageName;
+    private String name;
 
     /**
      * Tag数量
      * */
     private Integer tagsCount;
-
-
-
 
 }

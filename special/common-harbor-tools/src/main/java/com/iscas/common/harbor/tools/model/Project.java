@@ -1,6 +1,7 @@
 package com.iscas.common.harbor.tools.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
  * @since jdk1.8
  */
 @Data
+@Accessors(chain = true)
 public class Project {
     /**ID*/
     private Integer projectId;

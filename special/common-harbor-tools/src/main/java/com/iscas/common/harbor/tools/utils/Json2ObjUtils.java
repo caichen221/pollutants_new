@@ -28,8 +28,9 @@ public class Json2ObjUtils {
             Object mapValue = jsonMap.get(keys[i]);
             String objKey = keys[i + 1];
             try {
-                mapValue = biFunction.apply(objKey, mapValue);
-
+                if (biFunction != null) {
+                    mapValue = biFunction.apply(objKey, mapValue);
+                }
                 Field field = tClass.getDeclaredField(objKey);
                 field.setAccessible(true);
                 field.set(t, mapValue);
