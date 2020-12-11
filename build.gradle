@@ -76,3 +76,17 @@ subprojects  {
 
 
 }
+
+
+def bootJarModules() {
+    subprojects.findAll {it.name.equals('biz')/* || it.name.equals("rule-engine")*/}
+}
+
+task bootApp {
+    dependsOn /*subprojects.clean,*/ bootJarModules().bootJar
+    doLast {
+        println "bootApp执行结束"
+
+    }
+
+}
