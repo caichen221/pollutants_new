@@ -11,6 +11,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.14'
+//        classpath "se.transmode.gradle:gradle-docker:${gradle_docker_version}"
     }
 }
 //task wrapper(type: Wrapper) {
@@ -86,7 +87,5 @@ task bootApp {
     dependsOn /*subprojects.clean,*/ bootJarModules().bootJar
     doLast {
         println "bootApp执行结束"
-
     }
-
 }

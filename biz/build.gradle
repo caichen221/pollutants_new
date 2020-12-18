@@ -49,34 +49,34 @@ install {
 //docker {
 //    maintainer = 'zqw <quanwenz@sina.cn>'
 ////    baseImage 'openjdk'
-//    baseImage = 'frolvlad/alpine-oraclejdk8:slim'
+//    baseImage = 'java:8-alpine'
 //    useApi true
-//    hostUrl 'http://192.168.100.88:8081/repository/myhub/'
-//    apiUsername 'zqw'
-//    apiPassword '12345678a'
-//    apiEmail 'quanwenz@sina.cn'
+//    hostUrl 'http://192.168.100.96'
+//    apiUsername 'admin'
+//    apiPassword 'Harbor12345'
+//    apiEmail '76775081@qq.com'
 //
 //}
 //task dockerBuild(type: Docker, dependsOn: bootJar) {
 //    applicationName = project.name
-//    tag = "zqw/${applicationName}"
-////    tagVersion = jar.version
-////    volume('/tmp')
-////    addFile("${jar.baseName}-${jar.version}.jar", "app.jar")
-////    entryPoint(["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", 'app.jar'])
-////    exposePort(7950)
-////    doFirst {
-////        copy {
-////            from jar
-////            into stageDir
-////        }
-////    }
+//    tag = "library/${applicationName}"
+//    tagVersion = jar.archiveVersion
+//    volume('/tmp')
+//    addFile("${jar.archiveBaseName}-${jar.archiveVersion}.jar", "app.jar")
+//    entryPoint(["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", 'app.jar'])
+//    exposePort(8080)
+//    doFirst {
+//        copy {
+//            from jar
+//            into stageDir
+//        }
+//    }
 //    addFile {
 //        from configurations.archives.artifacts.files
 //        into '/data/workspace/' + project.name
 //    }
 //    workingDir '/data/workspace/' + project.name
-//    setEnvironment('HOST_MACHINE_IP', hostMachineIp)
+////    setEnvironment('HOST_MACHINE_IP', hostMachineIp)
 //    defaultCommand(['java', '-jar', '-Dspring.profiles.active=docker', "${project.name}-${project.version}.jar"])
 //}
 
