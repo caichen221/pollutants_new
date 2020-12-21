@@ -2,6 +2,7 @@ package com.iscas.base.biz.config.stomp;
 
 import com.iscas.base.biz.config.cros.CrosProps;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;

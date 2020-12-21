@@ -3,6 +3,7 @@ package com.iscas.common.tools.captcha;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
 
@@ -29,7 +30,7 @@ public class CaptchaUtils {
      * 生成验证码图片，使用默认值
      * 返回验证的字符串
      * */
-    public static String createCaptcha(OutputStream os) {
+    public static String createCaptcha(OutputStream os) throws IOException {
         return createCaptcha(DEFAULT_WIDTH, DEFAULT_HEIGHT, LINE_SIZE, RADNOM_STR_NUM, os);
     }
 
@@ -38,7 +39,7 @@ public class CaptchaUtils {
      * 生成验证码图片
      * 返回验证的字符串
      * */
-    public static String createCaptcha(int width, int height, int lineSize, int randomStrNum, OutputStream os) {
+    public static String createCaptcha(int width, int height, int lineSize, int randomStrNum, OutputStream os) throws IOException {
         // BufferedImage类是具有缓冲区的Image类,Image类是用于描述图像信息的类
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
         Graphics g = image.getGraphics();// 产生Image对象的Graphics对象,改对象可以在图像上进行各种绘制操作
@@ -55,12 +56,9 @@ public class CaptchaUtils {
             randomString = drowString(g, randomString, i);
         }
         g.dispose();
-        try {
-            // 将内存中的图片通过流动形式输出到客户端
-            ImageIO.write(image, "JPEG", os);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        // 将内存中的图片通过流动形式输出到客户端
+        ImageIO.write(image, "JPEG", os);
         return randomString;
     }
 

@@ -19,7 +19,7 @@ import java.io.*;
 @RunWith(JUnit4.class)
 public class CaptchaTests {
     @Test
-    public void test() throws FileNotFoundException, IOException {
+    public void test() throws IOException {
         File file = new File("d:/captcha.jpg");
         @Cleanup OutputStream os = new FileOutputStream(file);
         String captcha = CaptchaUtils.createCaptcha(os);

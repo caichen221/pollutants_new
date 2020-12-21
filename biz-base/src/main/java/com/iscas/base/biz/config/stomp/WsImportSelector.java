@@ -27,6 +27,9 @@ public class WsImportSelector implements ImportSelector {
             case RABBITMQ: {
                 return new String[] {WebSocketStompProxyRabbitmqConfig.class.getName()};
             }
+            case SERVER_CLUSTER_USE_RABBIT: {
+                return new String[] {WebSocketStompClusterUseRabbitConfig.class.getName()};
+            }
             default: {
                 return new String[] {WebSocketStompSimpleConfig.class.getName()};
             }

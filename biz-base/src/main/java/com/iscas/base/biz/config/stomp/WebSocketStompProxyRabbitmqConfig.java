@@ -2,6 +2,8 @@ package com.iscas.base.biz.config.stomp;
 
 import com.iscas.base.biz.config.cros.CrosProps;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -22,6 +24,25 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private CrosProps crosProps;
+
+    @Value("${rabbitmq.virtual-host:/}")
+    private String virtualHost;
+    @Value("${rabbitmq.relay-host}")
+    private String relayHost;
+    @Value("${rabbitmq.user}")
+    private String user;
+    @Value("${rabbitmq.password}")
+    private String password;
+    @Value("${rabbitmq.heartbeatSendInterval}")
+    private long heartbeatSendInterval;
+    @Value("${rabbitmq.heartbeatReceiveInterval}")
+    private long heartbeatReceiveInterval;
+    @Value("${rabbitmq.stomp.port}")
+    private int stompPort;
+    @Value("${rabbitmq.amqp.port}")
+    private int amqpPort;
+
+
     /**
      * 注册stomp的端点
      */
@@ -29,12 +50,14 @@ public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessag
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 允许使用socketJs方式访问，访问点为webSocketServer，允许跨域
         // 在网页上我们就可以通过这个链接
-        // http://localhost:8080/webSocketServer
+        // http://localhost:port/webSocketServer
         // 来和服务器的WebSocket连接
         registry.addEndpoint("/webSocketServer")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins(crosProps.getOrigin())
                 .withSockJS();
+
+        //如果想暴露多个节点,继续addEndpoint就可以
 
 
     }
@@ -44,12 +67,22 @@ public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessag
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // 订阅Broker名称
-        registry.enableSimpleBroker("/queue", "/topic");
-        // 全局使用的消息前缀（客户端订阅路径上会体现出来）
-        registry.setApplicationDestinationPrefixes("/app");
-        // 点对点使用的订阅前缀（客户端订阅路径上会体现出来），不设置的话，默认也是/user/
-        registry.setUserDestinationPrefix("/user/");
+        // 使用RabbitMQ做为消息代理，替换默认的Simple Broker
+        //定义了服务端接收地址的前缀，也即客户端给服务端发消息的地址前缀,@SendTo(XXX) 也可以重定向
+        registry.setUserDestinationPrefix("/user"); //这是给sendToUser使用,前端订阅需要加上/user
+
+        registry.setApplicationDestinationPrefixes("/app"); //这是给客户端推送消息到服务器使用 ，推送的接口加上/app
+        // "STOMP broker relay"处理所有消息将消息发送到外部的消息代理
+        registry.enableStompBrokerRelay("/exchange","/topic","/queue","/amq/queue")
+                .setVirtualHost(virtualHost) //对应自己rabbitmq里的虚拟host
+                .setRelayHost(relayHost)
+                .setRelayPort(stompPort)
+                .setClientLogin(user)
+                .setClientPasscode(password)
+                .setSystemLogin(user)
+                .setSystemPasscode(password)
+                .setSystemHeartbeatSendInterval(heartbeatSendInterval)
+                .setSystemHeartbeatReceiveInterval(heartbeatReceiveInterval);
     }
 
     /**
@@ -58,7 +91,6 @@ public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessag
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(createUserInterceptor());
-
     }
 
 

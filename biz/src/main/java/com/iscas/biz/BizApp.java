@@ -3,6 +3,7 @@ package com.iscas.biz;
 
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
+import com.iscas.base.biz.config.stomp.WsPushType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement //开启事务支持
 @EnableRateLimiter //开启自定义的限流支持
 @EnableAuth //开启自定义的用户认证，权限校验
-@EnableWebsocketStomp //开启websocketstomp支持
+@EnableWebsocketStomp(pushType = WsPushType.SIMPLE) //开启websocketstomp支持
 @EnableLog //允许日志记录
 @EnableXssConfig //开启Xss过滤器
 //@EnableDruidMonitor //开启Druid监控（未使用biz-mp或biz-jpa模块时无法使用）

@@ -9,5 +9,5 @@ package com.iscas.base.biz.config.stomp;
  * @since jdk1.8
  */
 public enum WsPushType {
-    SIMPLE, RABBITMQ;
+    SIMPLE, RABBITMQ, SERVER_CLUSTER_USE_RABBIT;
 }
