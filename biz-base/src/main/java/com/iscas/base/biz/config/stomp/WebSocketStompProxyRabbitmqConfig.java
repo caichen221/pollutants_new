@@ -19,7 +19,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 
 //@Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketStompConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
+public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private CrosProps crosProps;
     /**

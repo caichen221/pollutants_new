@@ -69,6 +69,12 @@ dependencies {
 
     //redis
     compile "org.springframework.boot:spring-boot-starter-data-redis"
+
+    //rabiitmq-做websocket集群推送
+    compile "org.springframework.boot:spring-boot-starter-amqp"
+    compile "org.springframework.boot:spring-boot-starter-reactor-netty"
+
+
             
 
 

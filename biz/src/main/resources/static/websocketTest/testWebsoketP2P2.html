@@ -6,7 +6,7 @@
     <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script>
-        var socket = new SockJS("http://192.168.100.88:7601/demo/webSocketServer");
+        var socket = new SockJS("http://localhost:7901/demo/webSocketServer");
         var stompClient = Stomp.over(socket);
         window.onload = function () {
             connect();

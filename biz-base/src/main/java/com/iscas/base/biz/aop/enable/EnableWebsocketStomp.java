@@ -1,6 +1,7 @@
 package com.iscas.base.biz.aop.enable;
 
-import com.iscas.base.biz.config.stomp.WebSocketStompConfig;
+import com.iscas.base.biz.config.stomp.WsImportSelector;
+import com.iscas.base.biz.config.stomp.WsPushType;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -16,6 +17,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(WebSocketStompConfig.class)
+@Import(WsImportSelector.class)
 public @interface EnableWebsocketStomp {
+    WsPushType pushType() default WsPushType.SIMPLE;
 }
