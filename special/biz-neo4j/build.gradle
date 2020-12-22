@@ -1,6 +1,7 @@
 
 
 dependencies {
+    compile project(":biz-base")
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-neo4j'
 

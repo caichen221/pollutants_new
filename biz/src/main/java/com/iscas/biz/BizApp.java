@@ -27,7 +27,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableAutoConfiguration()
 @ServletComponentScan //自动扫描serletBean
-@ComponentScan(basePackages = {"com.iscas.base.biz","com.iscas.biz"/*,"com.iscas.biz.mp"*/ /*,"com.iscas.biz.jpa"*/})
+//@ComponentScan(basePackages = {"com.iscas.base.biz","com.iscas.biz",/*,"com.iscas.biz.mp"*/ /*,"com.iscas.biz.jpa"*/})
+@ComponentScan(basePackages = {"com.iscas"})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
 @EnableCaching //开启缓存
 @EnableTransactionManagement //开启事务支持

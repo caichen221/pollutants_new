@@ -22,6 +22,8 @@ apply plugin: 'war'
 
 dependencies {
     compile project(":biz-base")
+    compile project(":special:biz-neo4j")
+
 
     //SSH客户端
 //    compile project(":special:common-ssh-tools")
