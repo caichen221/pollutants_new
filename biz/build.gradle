@@ -22,7 +22,7 @@ apply plugin: 'war'
 
 dependencies {
     compile project(":biz-base")
-    compile project(":special:biz-neo4j")
+//    compile project(":special:biz-neo4j")
 
 
     //SSH客户端
