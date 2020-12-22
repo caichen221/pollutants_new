@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.jcraft/jsch
+    compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+    compile project (":common:common-tools")
+}
