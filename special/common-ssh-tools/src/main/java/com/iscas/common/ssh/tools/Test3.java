@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Test3 {
     public static void main(String[] args) throws IOException, JSchException, InterruptedException {
-        SshClientDto sshClientDto = SshClientUtils.openSshSession("192.168.100.96", 22, "root", "root", 6000);
+        SshClientDto sshClientDto = SshClientUtils.openSshSession("localhost", 22, "zqw02", "123456", 6000);
         TimeUnit.SECONDS.sleep(3);
         BufferedReader br = sshClientDto.getBr();
         new Thread(() -> {

@@ -28,11 +28,12 @@ public class SshClientUtils {
             session.setTimeout(timeout);
             session.connect();
             Channel exec = session.openChannel("shell");
+
             InputStream is = exec.getInputStream();
             OutputStream os = exec.getOutputStream();
             PrintWriter pw = new PrintWriter(os);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            exec.connect();
+            exec.connect(5000);
             SshClientDto sshClientDto = new SshClientDto(session, pw, br);
             return sshClientDto;
         } catch (Exception e) {

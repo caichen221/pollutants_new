@@ -55,7 +55,7 @@ public class UserInterceptor implements ChannelInterceptor {
 //                    accessor.setUser(user);
 
                     User user = new User();
-                    user.setUsername("lalala");
+                    user.setUsername(((List) name).get(0).toString());
                     accessor.setUser(user);
 
                 }

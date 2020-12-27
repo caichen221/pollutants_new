@@ -32,7 +32,7 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
         // 在网页上我们就可以通过这个链接
         // http://localhost:8080/webSocketServer
         // 来和服务器的WebSocket连接
-        registry.addEndpoint("/webSocketServer")
+        registry.addEndpoint("/webSocketServer", "/webSsh")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins(crosProps.getOrigin())
                 .withSockJS();

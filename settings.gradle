@@ -33,4 +33,5 @@ include 'special:common-ssh-tools'
 findProject(':special:common-ssh-tools')?.name = 'common-ssh-tools'
 include 'special:biz-neo4j'
 findProject(':special:biz-neo4j')?.name = 'biz-neo4j'
+include 'biz-ssh-server'
 
