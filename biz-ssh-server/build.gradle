@@ -1,0 +1,5 @@
+
+dependencies {
+    compile project (":special:common-ssh-tools")
+    compile project (":biz-base")
+}
