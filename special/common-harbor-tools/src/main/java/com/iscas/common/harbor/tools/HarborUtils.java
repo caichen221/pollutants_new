@@ -5,7 +5,7 @@ import com.iscas.common.harbor.tools.client.OkHttpProps;
 import com.iscas.common.harbor.tools.exception.CallHarborException;
 import com.iscas.common.harbor.tools.model.ModuleHealth;
 import com.iscas.common.harbor.tools.model.Project;
-import com.iscas.common.harbor.tools.model.Repositroy;
+import com.iscas.common.harbor.tools.model.Repository;
 import com.iscas.common.harbor.tools.model.Tag;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.common.web.tools.json.JsonUtils;
@@ -99,8 +99,8 @@ public class HarborUtils {
     /**
      * 查看Harbor的repository(镜像),模糊查询
      * */
-    public static List<Repositroy> searchRepo(String repoName) throws IOException, CallHarborException {
-        List<Repositroy> repos = new ArrayList<>();
+    public static List<Repository> searchRepo(String repoName) throws IOException, CallHarborException {
+        List<Repository> repos = new ArrayList<>();
         String visitUrl = url + "/search" ;
         if (StringUtils.isNotEmpty(repoName)) {
             visitUrl += "?q=" + repoName;
@@ -112,7 +112,7 @@ public class HarborUtils {
         if (MapUtils.isNotEmpty(map)) {
             List<Map> repoMaps = (List<Map>) map.get("repository");
             if (CollectionUtils.isNotEmpty(repoMaps)) {
-                repos = Json2ObjUtils.json2List(Repositroy.class, repoMaps, null,
+                repos = Json2ObjUtils.json2List(Repository.class, repoMaps, null,
                         "project_id", "projectId", "project_name", "projectName", "project_public", "projectPublic",
                         "pull_count", "pullCount", "repository_name", "name", "tags_count", "tagsCount");
             }

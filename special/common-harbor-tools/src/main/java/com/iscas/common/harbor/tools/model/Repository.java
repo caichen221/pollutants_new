@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class Repositroy {
+public class Repository {
     /**project ID*/
     private Integer projectId;
 

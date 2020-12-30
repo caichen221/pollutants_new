@@ -151,4 +151,12 @@ public class DateRaiseUtils {
         time = time + offset;
         return new Date(time);
     }
+
+    /**
+     * 时间偏移一定毫秒数
+     * */
+    public static Date timeOffset(Date time, long offset) {
+        time = new Date(time.getTime() + offset);
+        return time;
+    }
 }

@@ -33,4 +33,28 @@ public class TableSearchRequest<T> implements Serializable{
     protected Map<String, List> optionsFilter;
 
 
+    /**
+     * 通过查询的key获取查询的值
+     * */
+    public Object[] getSearchValByKey(String key) {
+        if (filter != null) {
+            Map filterMap = (Map) filter;
+            List<Object> searchVals = (List<Object>) filterMap.get(key);
+            if (searchVals != null && searchVals.size() >= 1) {
+                if (searchVals.size() == 1) {
+                    Object[] result = new Object[1];
+                    result[0] = searchVals.get(0);
+                    return result;
+                } else {
+                    Object[] result = new Object[1];
+                    result[0] = searchVals.get(0);
+                    result[1] = searchVals.get(1);
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+
+
 }

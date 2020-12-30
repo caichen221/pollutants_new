@@ -4,7 +4,7 @@ import com.iscas.common.harbor.tools.HarborUtils;
 import com.iscas.common.harbor.tools.exception.CallHarborException;
 import com.iscas.common.harbor.tools.model.ModuleHealth;
 import com.iscas.common.harbor.tools.model.Project;
-import com.iscas.common.harbor.tools.model.Repositroy;
+import com.iscas.common.harbor.tools.model.Repository;
 import com.iscas.common.harbor.tools.model.Tag;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +59,7 @@ public class HarborUtilsTests {
      * */
     @Test
     public void test4() throws IOException, CallHarborException {
-        List<Repositroy> lib = HarborUtils.searchRepo("lib");
+        List<Repository> lib = HarborUtils.searchRepo("lib");
         lib.forEach(System.out::println);
     }
 
