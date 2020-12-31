@@ -4,6 +4,7 @@ package com.iscas.common.web.tools.file;
 
 import com.iscas.common.web.tools.file.limiter.BandWidthLimiter;
 import com.iscas.common.web.tools.file.limiter.LimiterOutputStream;
+import com.iscas.common.web.tools.util.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -163,7 +164,8 @@ public class FileDownloadUtils {
                     // 输出流
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
             ){
-               bis.transferTo(bos);
+//               bis.transferTo(bos);
+                IOUtils.transferTo(bis, bos);
             }
         }
     }
@@ -246,7 +248,8 @@ public class FileDownloadUtils {
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
                     OutputStream os = new LimiterOutputStream(bos,bandwidthLimiter);
             ){
-                bis.transferTo(os);
+//                bis.transferTo(os);
+                IOUtils.transferTo(bis, os);
             }
         }
     }
@@ -362,7 +365,8 @@ public class FileDownloadUtils {
                         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
                         OutputStream os = new LimiterOutputStream(bos,bandwidthLimiter);
                 ){
-                    bis.transferTo(os);
+//                    bis.transferTo(os);
+                    IOUtils.transferTo(bis, os);
                 }
             }catch(Exception e){
                 throw e;
@@ -436,7 +440,8 @@ public class FileDownloadUtils {
                     // 输出流
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
             ){
-                bis.transferTo(bos);
+//                bis.transferTo(bos);
+                IOUtils.transferTo(bis, bos);
             }
         }
     }
@@ -493,7 +498,8 @@ public class FileDownloadUtils {
                 // 输出流
                 BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
         ){
-            bis.transferTo(bos);
+//            bis.transferTo(bos);
+            IOUtils.transferTo(bis, bos);
         }
     }
 }

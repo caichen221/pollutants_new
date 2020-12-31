@@ -1,6 +1,8 @@
 package com.iscas.common.tools.core.io.zip;
 
+import cn.hutool.core.io.IoUtil;
 import org.apache.commons.lang3.StringUtils;
+import sun.nio.ch.IOUtil;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -33,7 +35,8 @@ public class ZipUtils {
         if(sourceFile.isFile()){
             os.putNextEntry(new org.apache.tools.zip.ZipEntry(name));
             FileInputStream is = new FileInputStream(sourceFile);
-            is.transferTo(os);
+//            is.transferTo(os);
+            IoUtil.copy(is, os);
             is.close();
         } else {
             File[] listFiles = sourceFile.listFiles();
@@ -168,7 +171,8 @@ public class ZipUtils {
                     // 将压缩文件内容写入到这个文件中
                     InputStream is = zipFile.getInputStream(entry);
                     FileOutputStream fos = new FileOutputStream(targetFile);
-                    is.transferTo(fos);
+//                    is.transferTo(fos);
+                    IoUtil.copy(is, fos);
                     is.close();
                     fos.close();
                 }

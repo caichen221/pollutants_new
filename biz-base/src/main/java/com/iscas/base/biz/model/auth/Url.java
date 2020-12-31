@@ -1,6 +1,5 @@
 package com.iscas.base.biz.model.auth;
 
-import com.sun.source.doctree.SerialDataTree;
 import lombok.Data;
 
 import java.io.Serializable;

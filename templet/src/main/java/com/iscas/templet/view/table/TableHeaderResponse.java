@@ -12,6 +12,8 @@ import java.io.Serializable;
  * @Date: 2017/12/25 17:03
  * @Modified:
  **/
+
+
 @Data
 @ToString(callSuper = true)
 public class TableHeaderResponse extends ResponseEntity<TableHeaderResponseData> implements Serializable {
