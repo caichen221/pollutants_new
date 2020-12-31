@@ -1,6 +1,5 @@
 package com.iscas.ssh.server.controller;
 
-import com.iscas.ssh.server.model.SSHConnection;
 import com.iscas.ssh.server.model.WebSSHData;
 import com.iscas.ssh.server.service.SSHService;
 import com.iscas.templet.common.BaseController;
@@ -12,13 +11,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * ssh连接控制器
