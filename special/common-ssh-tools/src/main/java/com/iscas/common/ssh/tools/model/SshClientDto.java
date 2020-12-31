@@ -29,4 +29,8 @@ public class SshClientDto {
 
     private BufferedReader br;
 
+    private InputStream is;
+
+    private OutputStream os;
+
 }

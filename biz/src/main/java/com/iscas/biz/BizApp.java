@@ -6,7 +6,9 @@ import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -25,8 +27,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since jdk1.8
  */
 @Configuration
-@EnableAutoConfiguration()
-@ServletComponentScan //自动扫描serletBean
+//暂时抛除rabbitmq的自动注册，如果使用代理websocket推送需要去掉
+@EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
+        RabbitMetricsAutoConfiguration.class})
+@ServletComponentScan //自动扫描servletBean
 //@ComponentScan(basePackages = {"com.iscas.base.biz","com.iscas.biz",/*,"com.iscas.biz.mp"*/ /*,"com.iscas.biz.jpa"*/})
 @ComponentScan(basePackages = {"com.iscas"})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交

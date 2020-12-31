@@ -34,7 +34,7 @@ public class SshClientUtils {
             PrintWriter pw = new PrintWriter(os);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             exec.connect(5000);
-            SshClientDto sshClientDto = new SshClientDto(session, pw, br);
+            SshClientDto sshClientDto = new SshClientDto(session, pw, br, is, os);
             return sshClientDto;
         } catch (Exception e) {
             if (session != null) session.disconnect();
