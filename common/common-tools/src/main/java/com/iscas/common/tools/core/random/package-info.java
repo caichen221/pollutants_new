@@ -1,6 +1,4 @@
 /**
- * 获取一些随机信息包
- * @author zhuquanwen
- * @date 2018/7/13 18:12
+ * 获取一些随机信息的工具
  **/
 package com.iscas.common.tools.core.random;
