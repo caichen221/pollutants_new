@@ -1,5 +1,6 @@
 package com.iscas.common.tools.core.io.obj;
 
+import com.iscas.common.tools.core.io.serial.SerializableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
