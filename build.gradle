@@ -27,6 +27,7 @@ subprojects  {
     apply plugin: 'idea'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'maven'
+    apply plugin: 'maven-publish'
     group = 'com.iscas'
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = "${javaVersion}".toFloat()
@@ -73,6 +74,36 @@ subprojects  {
     //这里一定得要。在多模块下，不然编译失败，因为不会把依赖模块给打包。
     jar {
         enabled = true
+    }
+
+
+    //上传至nexus
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                //若是war包，就写components.web,若是jar包，就写components.java
+                from components.java
+//                artifact shadowJar
+            }
+        }
+        repositories {
+            maven {
+
+                if (project.version.endsWith('-SNAPSHOT')) {
+                    url = "http://172.16.10.190:8081/repository/maven-snapshots/"
+                } else {
+                    url = "http://172.16.10.190:8081/repository/maven-releases/"
+                }
+
+                credentials {
+                    username 'admin'
+                    password 'admin123'
+                }
+            }
+        }
     }
 
 
