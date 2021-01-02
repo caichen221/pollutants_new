@@ -1,0 +1,4 @@
+
+dependencies {
+    compile group: 'org.luaj', name: 'luaj-jse', version: "${luajJseVersion}"
+}
