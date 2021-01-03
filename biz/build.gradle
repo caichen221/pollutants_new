@@ -47,7 +47,21 @@ install {
         pom.groupId="${project.group}"
     }
 }
-
+bootBuildImage {
+    imageName = "192.168.100.96:80/library/${project.name}:${project.version}"
+    publish = true
+    docker {
+        host = "tcp://192.168.100.91:2375"
+        tlsVerify = false
+//        certPath = "/home/users/.minikube/certs"
+        publishRegistry {
+            username = "admin"
+            password = "Harbor12345"
+            url = "http://192.168.100.96"
+            email = "76775081@qq.com"
+        }
+    }
+}
 
 ////docker打包例子
 //docker {
