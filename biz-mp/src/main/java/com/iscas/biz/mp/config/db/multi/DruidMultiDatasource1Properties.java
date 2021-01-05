@@ -20,4 +20,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "spring.datasource.druid.mysql1")
 @Primary
 public class DruidMultiDatasource1Properties extends DataSourceProperties {
+
 }
