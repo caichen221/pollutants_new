@@ -1,0 +1,11 @@
+
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-web"
+//    compile "org.springframework.boot:spring-boot-starter-undertow"
+    compile "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.springframework.fu:spring-fu-jafu:${jafuVersion}"
+    runtime "org.springframework.fu:spring-fu-autoconfigure-adapter:${jafuVersion}"
+
+}
+
