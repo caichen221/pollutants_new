@@ -1,0 +1,298 @@
+package com.iscas.biz.mp.config.db;
+
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
+import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.JdbcType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
+import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * 多数据源配置例子
+ *
+ * @author zhuquanwen
+ * @vesion 1.0
+ * @date 2019/5/10 13:48
+ * @since jdk1.8
+ */
+@Slf4j
+@Configuration
+public class DruidConfiguration implements EnvironmentAware {
+
+    @Value("${mybatis-plus.global-config.db-config.id-type}")
+    private String idType;
+    @Value("${mybatis-plus.type-enums-package}")
+    private String enumPackages;
+    private final String basePath = "spring.datasource.druid.";
+    private Environment environment;
+
+    public DataSource initDatasource() throws SQLException {
+        String db = environment.getProperty("spring.datasource.names");
+        List<String> dbNames = Arrays.asList(db.split(","));
+        if (dbNames.size() == 0) {
+            log.error("没有数据源，无法使用数据库!!!");
+            return null;
+        }
+        Map<Object, Object> targetDataSources = new HashMap<>(2 << 2);
+        for (String dbName : dbNames) {
+            //初始化数据源
+            DruidDataSource dataSource = initOneDatasource(dbName);
+            if (dataSource != null){
+                targetDataSources.put(dbName, dataSource);
+            }
+        }
+
+        DynamicDataSource dynamicDataSource = new DynamicDataSource();
+
+        //设置数据源
+        if (targetDataSources.size() > 0) {
+            dynamicDataSource.setTargetDataSources(targetDataSources);
+            dynamicDataSource.setDefaultTargetDataSource(targetDataSources.get(dbNames.get(0)));
+        }
+        dynamicDataSource.afterPropertiesSet();
+        return dynamicDataSource;
+    }
+
+    private DruidDataSource initOneDatasource(String dbName) throws SQLException {
+        DruidDataSource datasource = new DruidDataSource();
+        String value;
+        String path = basePath + dbName + ".";
+        datasource.setName(dbName);
+        //必选参数
+        value = environment.getProperty(path + "username");
+        if (StringUtils.isBlank(value)) {
+            log.error("数据源username不能为空");
+            return null;
+        }
+        datasource.setUsername(value);
+        value = environment.getProperty(path + "password");
+        if (StringUtils.isBlank(value)) {
+            log.error("数据源password不能为空");
+            return null;
+        }
+        datasource.setPassword(value);
+        value = environment.getProperty(path + "url");
+        if (StringUtils.isBlank(value)) {
+            log.error("url");
+            return null;
+        }
+        datasource.setUrl(value);
+        value = environment.getProperty(path + "driver-class-name");
+        if (StringUtils.isBlank(value)) {
+            log.error("数据源driver-class-name不能为空");
+            return null;
+        }
+        datasource.setDriverClassName(value);
+
+        //可选参数
+        value = environment.getProperty(path + "initial-size");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setInitialSize(Integer.parseInt(value));
+        }
+        value = environment.getProperty(path + "min-idle");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setMinIdle(Integer.parseInt(value));
+        }
+        value = environment.getProperty(path + "max-active");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setMaxActive(Integer.parseInt(value));
+        }
+        value = environment.getProperty(path + "max-wait");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setMaxWait(Long.parseLong(value));
+        }
+        value = environment.getProperty(path + "time-between-eviction-runs-millis");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setTimeBetweenEvictionRunsMillis(Long.parseLong(value));
+        }
+        value = environment.getProperty(path + "validation-query");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setValidationQuery(value);
+        }
+        value = environment.getProperty(path + "test-while-idle");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setTestWhileIdle(Boolean.getBoolean(value));
+        }
+        value = environment.getProperty(path + "test-on-borrow");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setTestOnBorrow(Boolean.getBoolean(value));
+        }
+        value = environment.getProperty(path + "test-on-return");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setTestOnReturn(Boolean.getBoolean(value));
+        }
+        value = environment.getProperty(path + "pool-prepared-statements");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setPoolPreparedStatements(Boolean.getBoolean(value));
+        }
+        value = environment.getProperty(path + "max-pool-prepared-statement-per-connection-size");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setMaxPoolPreparedStatementPerConnectionSize(Integer.parseInt(value));
+        }
+
+        //Filters
+        value = environment.getProperty(path + "filters");
+        if (StringUtils.isNotBlank(value)) {
+            List<Filter> filterList = handlerFilters(path + "filter.", value);
+            if (filterList.size() > 0) {
+                datasource.setProxyFilters(filterList);
+            }
+        }
+        datasource.init();
+
+        return datasource;
+    }
+
+    private List<Filter> handlerFilters(String path, String value) {
+        String[] filters = value.split(",");
+        List filterList = new ArrayList();
+        for (String filter : filters) {
+            if (StringUtils.isBlank(filter)) {
+                continue;
+            }
+            filter = filter.trim();
+            Filter filterInstance;
+            if (filter.equals("stat")) {
+                filterInstance = statFilter(path + "stat.");
+            } else if (filter.equals("wall")) {
+                filterInstance = wallFilter(path + "wall.");
+            } else if (filter.equals("slf4j")) {
+                filterInstance = logFilter(path + "slf4j.");
+            } else {
+                continue;
+            }
+            filterList.add(filterInstance);
+        }
+        return filterList;
+    }
+
+
+    @Bean
+    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers) throws Exception {
+        MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
+        factory.setDataSource(initDatasource());
+//        sqlSessionFactory.setDataSource(multipleDataSource);
+        //sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*/*Mapper.xml"));
+
+        MybatisConfiguration configuration = new MybatisConfiguration();
+        //configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
+        configuration.setJdbcTypeForNull(JdbcType.NULL);
+        configuration.setMapUnderscoreToCamelCase(true);
+        configuration.setCacheEnabled(false);
+        factory.setConfiguration(configuration);
+//        factory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
+//                paginationInterceptor() //添加分页功能
+//        });
+        PaginationInterceptor paginationInterceptor = paginationInterceptor();
+        factory.setPlugins(paginationInterceptor);
+        if (StringUtils.isNotBlank(enumPackages)) {
+            factory.setTypeEnumsPackage(enumPackages);
+        }
+        factory.setGlobalConfig(globalConfiguration());
+        sqlSessionFactoryCustomizers.customize(configuration, factory);
+        return factory.getObject();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers(ObjectProvider<SqlSessionFactoryCustomizer<?, ?>> customizers) {
+        return new SqlSessionFactoryCustomizers(customizers.stream().collect(Collectors.toList()));
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        return paginationInterceptor;
+    }
+
+
+    private GlobalConfig globalConfiguration() {
+        GlobalConfig conf = GlobalConfigUtils.defaults();
+        conf.getDbConfig().setIdType(IdType.valueOf(idType));
+        return conf;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public StatFilter statFilter(String path) {
+        StatFilter statFilter = new StatFilter();
+        String value = environment.getProperty(path + "log-slow-sql");
+        if (StringUtils.isNotBlank(value)) {
+            statFilter.setLogSlowSql(Boolean.getBoolean(value));
+        }
+        value = environment.getProperty(path + "merge-sql");
+        if (StringUtils.isNotBlank(value)) {
+            statFilter.setMergeSql(Boolean.getBoolean(value));
+        }
+        value = environment.getProperty(path + "slow-sql-millis");
+        if (StringUtils.isNotBlank(value)) {
+            statFilter.setSlowSqlMillis(Long.parseLong(value));
+        }
+        return statFilter;
+    }
+
+    public Slf4jLogFilter logFilter(String path) {
+        Slf4jLogFilter filter = new Slf4jLogFilter();
+//        filter.setResultSetLogEnabled(false);
+//        filter.setConnectionLogEnabled(false);
+//        filter.setStatementParameterClearLogEnable(false);
+//        filter.setStatementCreateAfterLogEnabled(false);
+//        filter.setStatementCloseAfterLogEnabled(false);
+//        filter.setStatementParameterSetLogEnabled(false);
+//        filter.setStatementPrepareAfterLogEnabled(false);
+        return filter;
+    }
+
+    public WallFilter wallFilter(String path) {
+        WallFilter wallFilter = new WallFilter();
+        wallFilter.setConfig(wallConfig());
+        return wallFilter;
+
+    }
+
+    //
+//    @Bean
+//
+    public WallConfig wallConfig() {
+        WallConfig config = new WallConfig();
+        config.setMultiStatementAllow(true);//允许一次执行多条语句
+        config.setNoneBaseStatementAllow(true);//允许非基本语句的其他语句
+        return config;
+
+    }
+}

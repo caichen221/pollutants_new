@@ -1,4 +1,4 @@
-package com.iscas.biz.mp.config.db.multi;
+package com.iscas.biz.mp.config.db;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 

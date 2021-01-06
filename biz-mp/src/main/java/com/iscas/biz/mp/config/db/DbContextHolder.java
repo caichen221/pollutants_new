@@ -1,4 +1,4 @@
-package com.iscas.biz.mp.config.db.multi;
+package com.iscas.biz.mp.config.db;
 
 /**
  *
@@ -11,10 +11,10 @@ public class DbContextHolder {
     private static final ThreadLocal CONTEXT_HOLDER = new ThreadLocal<>();
     /**
      * 设置数据源
-     * @param dbTypeEnum
+     * @param dbType
      */
-    public static void setDbType(DbTypeEnum dbTypeEnum) {
-        CONTEXT_HOLDER.set(dbTypeEnum.getValue());
+    public static void setDbType(String dbType) {
+        CONTEXT_HOLDER.set(dbType);
     }
 
     /**
