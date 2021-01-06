@@ -1,12 +1,11 @@
 package com.iscas.common.tools.assertion;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
 /**
- * 断言
+ * Map断言
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -16,12 +15,16 @@ import java.util.Map;
 public class AssertMapUtils {
     private AssertMapUtils(){}
 
-
     /**
-     * 认为Map不为null，如果为null，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言Map不是空，如果是空，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param map 待判断map
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertMapNotNull(Map map, String msg) {
         if (map == null) {
             throw new AssertRuntimeException(msg);
@@ -29,10 +32,15 @@ public class AssertMapUtils {
     }
 
     /**
-     * 认为Map不为null，如果为null，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言Map是空，如果不是空，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param map 待判断map
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertMapNull(Map map, String msg) {
         if (map != null) {
             throw new AssertRuntimeException(msg);
@@ -40,10 +48,15 @@ public class AssertMapUtils {
     }
 
     /**
-     * 认为Map不为空，如果为空，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言Map不是空Map，如果是空Map，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param map 待判断map
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertMapNotEmpty(Map map, String msg) {
         if (MapUtils.isEmpty(map)) {
             throw new AssertRuntimeException(msg);
@@ -51,10 +64,15 @@ public class AssertMapUtils {
     }
 
     /**
-     * 认为Map不为空，如果为空，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言Map是空Map，如果不是空Map，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param map 待判断map
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertMapEmpty(Map map, String msg) {
         if (MapUtils.isNotEmpty(map)) {
             throw new AssertRuntimeException(msg);

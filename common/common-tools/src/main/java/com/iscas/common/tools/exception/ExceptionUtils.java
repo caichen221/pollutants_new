@@ -8,9 +8,20 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
+ *
+ * 异常处理工具函数
  * Created by LJian on 2017/4/14.
  */
 public class ExceptionUtils {
+    /**
+     * 获取异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param e 异常
+     * @throws
+     * @return java.lang.String
+     */
     public static String getExceptionInfo(Throwable e){
         try {
             String info = e.getMessage();

@@ -3567,6 +3567,14 @@ public class IdCardGenerator {
         IdCardGenerator.AREA_CODE.put("澳门特别行政区", 820000);
     }
 
+    /**
+     * 随机生成人员信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public String generate() {
         StringBuilder generater = new StringBuilder();
         generater.append(this.randomAreaCode());
@@ -3576,6 +3584,14 @@ public class IdCardGenerator {
         return generater.toString();
     }
 
+    /**
+     * 随机生成邮编
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return int
+     */
     public int randomAreaCode() {
         int index = (int) (Math.random() * IdCardGenerator.AREA_CODE.size());
         Collection<Integer> values = IdCardGenerator.AREA_CODE.values();
@@ -3590,6 +3606,14 @@ public class IdCardGenerator {
     }
 
     @SuppressWarnings("AlibabaUndefineMagicConstant")
+    /**
+     * 随机生日
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public String randomBirthday() {
         Calendar birthday = Calendar.getInstance();
         birthday.set(Calendar.YEAR, (int) (Math.random() * 60) + 1950);

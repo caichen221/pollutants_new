@@ -13,6 +13,12 @@ public class BytesConvertUtils {
 
     /**
      * 以大端模式将一个32位的数值转成byte[]，目前支持float、int
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param value 数据
+     * @throws
+     * @return byte[]
      */
     public static <T> byte[] _32ToBytesBig(T value) {
         byte[] src = new byte[4];
@@ -26,9 +32,12 @@ public class BytesConvertUtils {
 
     /**
      * 以小端模式将32位的数值转成byte[]，目前支持float、int
-     *
-     * @param value
-     * @return
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param value 数据
+     * @throws
+     * @return byte[]
      */
     public static <T> byte[] _32ToBytesLittle(T value) {
         int data = getIntData(value);
@@ -42,7 +51,15 @@ public class BytesConvertUtils {
 
     /**
      * 以大端模式将byte[]转成32位
-     **/
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param src 待转换字节数组
+     * @param offset 偏移量
+     * @param clazz 转换后的class对象
+     * @throws
+     * @return T
+     */
     public static <T> T bytesTo_32Big(byte[] src, int offset, Class<T> clazz) {
         int obj = 0;
         obj = (int) (((src[offset] & 0xFF) << 24)
@@ -55,6 +72,14 @@ public class BytesConvertUtils {
 
     /**
      * 以小端模式将byte[]转成32位
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param src 待转换字节数组
+     * @param offset 偏移量
+     * @param clazz 转换后的class对象
+     * @throws
+     * @return T
      */
     public static <T> T bytesTo_32Little(byte[] src, int offset, Class<T> clazz) {
         int obj = 0;
@@ -68,7 +93,14 @@ public class BytesConvertUtils {
 
     /**
      * 以大端模式将byte[]转成16位short
-     **/
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param src 字节数组
+     * @param offset 偏移量
+     * @throws
+     * @return short
+     */
     public static short bytesToShortBig(byte[] src, int offset) {
         short obj = (short) (((src[offset] & 0xFF) << 8)
                 | (src[offset] & 0xFF));
@@ -77,6 +109,13 @@ public class BytesConvertUtils {
 
     /**
      * 以小端模式将byte[]转成16位short
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param src 字节数组
+     * @param offset 偏移量
+     * @throws
+     * @return short
      */
     public static short bytesToShortLittle(byte[] src, int offset) {
         short obj = (short) ((src[offset] & 0xFF)

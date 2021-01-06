@@ -1,12 +1,9 @@
 package com.iscas.common.tools.assertion;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Map;
-
 /**
- * 断言
+ * 字符串断言
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -16,12 +13,16 @@ import java.util.Map;
 public class AssertStrUtils {
     private AssertStrUtils(){}
 
-
     /**
-     * 认为str的字符串不为null，如果为null，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言字符串不为null，如果为null，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param str 待判断字符串
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertStrNotNull(String str, String msg) {
         if (str == null) {
             throw new AssertRuntimeException(msg);
@@ -29,10 +30,15 @@ public class AssertStrUtils {
     }
 
     /**
-     * 认为str的字符串为null，如果不为null，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言字符串为null，如果不为null，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param str 待判断字符串
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertStrNull(String str, String msg) {
         if (str != null) {
             throw new AssertRuntimeException(msg);
@@ -40,10 +46,15 @@ public class AssertStrUtils {
     }
 
     /**
-     * 认为str的字符串不为空，如果为空，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言字符串不为空字符串穿，如果为空字符串，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param str 待判断字符串
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertStrNotEmpty(String str, String msg) {
         if (StringUtils.isEmpty(str)) {
             throw new AssertRuntimeException(msg);
@@ -51,10 +62,15 @@ public class AssertStrUtils {
     }
 
     /**
-     * 认为str的字符串为空，如果不为空，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言字符串为空字符串穿，如果不为空字符串，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param str 待判断字符串
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertStrEmpty(String str, String msg) {
         if (StringUtils.isNotEmpty(str)) {
             throw new AssertRuntimeException(msg);

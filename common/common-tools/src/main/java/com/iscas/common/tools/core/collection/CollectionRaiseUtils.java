@@ -16,7 +16,13 @@ public class CollectionRaiseUtils {
 
     /**
      * 判断集合是不是为空，如果集合里全都是null也判断
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param collection 集合
+     * @throws
+     * @return boolean
+     */
     public static boolean isEmpty(Collection collection) {
         boolean flag = collection == null || collection.size() <= 0;
         if (!flag) {
@@ -35,7 +41,13 @@ public class CollectionRaiseUtils {
 
     /**
      * 判断集合是不是不为空，如果集合里全都是null也判断
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param collection 集合
+     * @throws
+     * @return boolean
+     */
     public static boolean isNotEmpty(Collection collection) {
         return !isEmpty(collection);
     }

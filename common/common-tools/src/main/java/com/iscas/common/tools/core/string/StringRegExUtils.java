@@ -1,4 +1,4 @@
-package com.iscas.common.tools.string;
+package com.iscas.common.tools.core.string;
 
 import java.util.Vector;
 import java.util.regex.Matcher;

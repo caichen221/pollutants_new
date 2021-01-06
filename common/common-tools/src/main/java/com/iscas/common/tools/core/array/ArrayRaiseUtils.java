@@ -39,6 +39,16 @@ public class ArrayRaiseUtils {
         return false;
     }
 
+    /**
+     * 合并两个二维数组
+     *
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2018/7/18
+     * @param array1 数组1
+     * @param array2 数组2
+     * @return Object[][] 合并后结果
+     */
     public static Object[][] merge2Array(Object[][] array1, Object[][] array2) {
         int length1 = array1.length;
         int length2 = array2.length;

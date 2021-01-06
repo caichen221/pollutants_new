@@ -691,7 +691,7 @@ public class FileUtils {
         int counts = 0;
 
         MyFileFilter mfilter = new MyFileFilter(extensions.split(","));
-        PropsUtil pu = new PropsUtil();
+        PropsUtils pu = new PropsUtils();
         String picroot = pu.readSingleProps("DestinationsPICROOT").trim();
         String path = picroot + "/"+dtime.substring(0, 10) + "/";
         File lfile = new File(path);

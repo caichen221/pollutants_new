@@ -3,9 +3,10 @@ package com.iscas.common.tools.core.io.file;
 import java.util.*;
 import java.io.*;
 
-public class PropsUtil {
+@Deprecated
+public class PropsUtils {
 
-     public PropsUtil() {
+     public PropsUtils() {
 
      }
 
@@ -21,10 +22,17 @@ public class PropsUtil {
         InputStream ins = this.getClass().getResourceAsStream("/destinations.properties");
         return ins;
     }
+
+
+
     /**
-     * ��ȡ�����ļ��е�����ֵ
-     * @param attr
-     * @return
+     * 获取字符型属性值
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param attr 属性key
+     * @throws
+     * @return java.lang.String
      */
     public String readSingleProps(String attr){
         String retValue = "";
@@ -44,11 +52,17 @@ public class PropsUtil {
         }
         return retValue;
     }
+
     /**
-     * ��ȡ�����ļ��е�����ֵ
-     * @return
+     * 获取所有属性
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.util.HashMap
      */
     public HashMap readAllProps(){
+
         HashMap h = new HashMap();
         Properties props = new Properties();
 
