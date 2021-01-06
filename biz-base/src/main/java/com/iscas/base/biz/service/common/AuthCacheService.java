@@ -17,8 +17,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthCacheService implements IAuthCacheService {
-    @Autowired
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
+
+    public AuthCacheService(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     @Override
     public void remove(String key) {

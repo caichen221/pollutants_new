@@ -2,17 +2,27 @@ package com.iscas.base.biz.config.stomp;
 
 import org.springframework.context.Lifecycle;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.socket.sockjs.SockJsService;
 import org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler;
+import org.springframework.web.socket.sockjs.transport.handler.DefaultSockJsService;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写MyWebSocketHandlerMapping
@@ -86,11 +96,40 @@ public class MyWebSocketHandlerMapping extends SimpleUrlHandlerMapping implement
                 config.setAllowCredentials(true);
                 config.setMaxAge(365 * 24 * 3600L);
                 config.addAllowedHeader("*");
+
+                //修改sockJs中CorsConfiguration的origin add 2021-01-06
+                SockJsHttpRequestHandler sockJsHttpRequestHandler = (SockJsHttpRequestHandler) resolvedHandler;
+                SockJsService sockJsService = sockJsHttpRequestHandler.getSockJsService();
+                try {
+                    ((DefaultSockJsService) sockJsService).setAllowedOrigins(config.getAllowedOrigins());
+                } catch (Exception e) {
+                    logger.warn("设置SockJs中corsConfiguration的属性allowedOrigins的值出错", e);
+                }
+
+
                 return config;
             } else {
                 return ((CorsConfigurationSource) resolvedHandler).getCorsConfiguration(request);
             }
         }
         return null;
+    }
+
+    protected boolean checkOrigin(ServerHttpRequest request, ServerHttpResponse response, HttpMethod... httpMethods)
+            throws IOException {
+
+        if (WebUtils.isSameOrigin(request)) {
+            return true;
+        }
+
+//        if (this.corsConfiguration.checkOrigin(request.getHeaders().getOrigin()) == null) {
+//            if (logger.isWarnEnabled()) {
+//                logger.warn("Origin header value '" + request.getHeaders().getOrigin() + "' not allowed.");
+//            }
+//            response.setStatusCode(HttpStatus.FORBIDDEN);
+//            return false;
+//        }
+
+        return true;
     }
 }
