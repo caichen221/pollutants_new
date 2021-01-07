@@ -123,19 +123,19 @@ public class TableDefinitionService {
 		List<TableField> tableFields = new ArrayList<>();
 		for(ColumnDefinition columnDefinition : columnDefinitions){
 			TableField tableField = new TableField();
-			tableField.setAddable(columnDefinition.getAddable()==true);
-			tableField.setEditable(columnDefinition.getEditable()==true);
+			tableField.setAddable(columnDefinition.isAddable());
+			tableField.setEditable(columnDefinition.isEditable());
 			tableField.setField(columnDefinition.getField());
 			tableField.setHeader(columnDefinition.getHeader());
-			tableField.setHidden(columnDefinition.getHidden()==true);
-			tableField.setLink(columnDefinition.getLink()==true);
+			tableField.setHidden(columnDefinition.isHidden());
+			tableField.setLink(columnDefinition.isLink());
 			tableField.setSelectUrl(columnDefinition.getSelectUrl());
 
 			//rule
 			Rule rule = new Rule();
-			rule.setDistinct(columnDefinition.getDistinct());
+			rule.setDistinct(columnDefinition.isDistinct());
 			rule.setReg(columnDefinition.getReg());
-			rule.setRequired(columnDefinition.getRequired()==true);
+			rule.setRequired(columnDefinition.isRequired());
 			if(columnDefinition.getMaxLength() != null || columnDefinition.getMinLength() != null) {
 				Map<String, Integer> map = new HashMap<>();
 				if(columnDefinition.getMaxLength() != null) {
@@ -148,12 +148,12 @@ public class TableDefinitionService {
 			}
 			tableField.setRule(rule);
 
-			tableField.setSearch(columnDefinition.getSearch());
+			tableField.setSearch(columnDefinition.isSearch());
 			tableField.setSearchType(TableSearchType.analyzeSearchType(columnDefinition.getSearchType()));
 //			tableField.setSearchWay(columnDefinition.getField());
 //			tableField.setParent();
 			tableField.setType(TableFieldType.analyzeFieldType(columnDefinition.getType()));
-			tableField.setSortable(columnDefinition.getSortable());
+			tableField.setSortable(columnDefinition.isSortable());
 
 			//构建Option选项
 			if(withOption){
@@ -272,7 +272,7 @@ public class TableDefinitionService {
 				ColumnDefinition columnDefinition = null;
 				for (ColumnDefinition tmp : columnDefinitions) {
 					if (entry.getKey().equalsIgnoreCase(tmp.getField())) {
-						if( tmp.getSearch() != true) {
+						if(!tmp.isSearch()) {
 							ValidDataException validDataException = new ValidDataException(
 								String.format("[%s]列的属性search!=true，不允许检索！", tmp.getField()));
 							validDataException.setMsgDetail(String.format("search!=true for field [%s]", tmp.getField()));
@@ -566,7 +566,7 @@ public class TableDefinitionService {
 					}
 					continue;
 				}
-				if(columnDefinition.getAddable() == true || columnDefinition.getEditable() == true){
+				if(columnDefinition.isAddable() || columnDefinition.isEditable()){
 					if (item.containsKey(columnDefinition.getField()) ) {
 						//规则校验
 						Object value = item.get(columnDefinition.getField());
@@ -604,14 +604,14 @@ public class TableDefinitionService {
 						}
 
 						sql.VALUES(columnDefinition.getField(), String.format("#{param.%s}", columnDefinition.getField()));// 设置键值
-					}else if(columnDefinition.getRequired() == true){//必填而没填
+					}else if(columnDefinition.isRequired()){//必填而没填
 						ValidDataException validDataException = new ValidDataException(String.format("[%s]的表格列[%s]必填！", tableIdentity, columnDefinition.getField()));
 						validDataException.setMsgDetail(String.format("column [%s] for tableName [%s] is empty", columnDefinition.getField(), tableIdentity));
 						throw  validDataException;
 					}
 				}
 				//新增时候校验重复问题
-				if (columnDefinition.getAddable() == true && columnDefinition.getDistinct() == true) {
+				if (columnDefinition.isAddable() && columnDefinition.isDistinct()) {
 					String field = columnDefinition.getField();
 					Object value = item.get(columnDefinition.getField());
 //					String strValue = (value == null? null:value.toString());
