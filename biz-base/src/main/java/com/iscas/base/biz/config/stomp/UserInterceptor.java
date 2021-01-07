@@ -27,16 +27,20 @@ import java.util.Map;
  **/
 public class UserInterceptor implements ChannelInterceptor {
 
-  private  UserAccessor userAccessor = SpringService.getApplicationContext().getBean(UserAccessor.class);
+  private volatile UserAccessor userAccessor = null;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-
+        if (userAccessor == null) {
+            synchronized (UserInterceptor.class) {
+                if (userAccessor == null) {
+                    userAccessor = SpringService.getApplicationContext().getBean(UserAccessor.class);
+                }
+            }
+        }
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            if (userAccessor == null){
-                userAccessor = new DefaultUserAccessor();
-            }
+
             userAccessor.accessor(message,accessor);
 //            Object raw = message.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
 //            if (raw instanceof Map) {
