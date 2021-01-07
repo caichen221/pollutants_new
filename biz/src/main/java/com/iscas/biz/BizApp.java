@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 //暂时抛除rabbitmq的自动注册，如果使用代理websocket推送需要去掉
 @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
-        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class,})
+        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
 //@ComponentScan(basePackages = {"com.iscas.base.biz","com.iscas.biz",/*,"com.iscas.biz.mp"*/ /*,"com.iscas.biz.jpa"*/})
 @ComponentScan(basePackages = {"com.iscas"})
