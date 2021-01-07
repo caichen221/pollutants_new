@@ -6,9 +6,11 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.servlet.ConditionalOnMissingFilterBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration;
+import org.springframework.web.socket.config.annotation.WebMvcStompEndpointRegistry;
 
 import java.lang.reflect.Method;
 
@@ -28,8 +30,9 @@ public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingW
 
 //    @Bean
 //    @Primary
-    public HandlerMapping stompWebSocketHandlerMapping() {
-        WebSocketHandler handler = decorateWebSocketHandler(subProtocolWebSocketHandler());
+    public HandlerMapping stompWebSocketHandlerMapping(WebSocketHandler subProtocolWebSocketHandler,
+                                                       TaskScheduler messageBrokerTaskScheduler) {
+        WebSocketHandler handler = decorateWebSocketHandler(subProtocolWebSocketHandler);
         MyWebMvcStompEndpointRegistry registry = new MyWebMvcStompEndpointRegistry(
                 handler, getTransportRegistration(), messageBrokerTaskScheduler());
 
@@ -42,6 +45,19 @@ public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingW
         registerStompEndpoints(registry);
         return registry.getHandlerMapping();
     }
+
+//    public HandlerMapping stompWebSocketHandlerMapping(WebSocketHandler subProtocolWebSocketHandler,
+//                                                       TaskScheduler messageBrokerTaskScheduler) {
+//        WebSocketHandler handler = decorateWebSocketHandler(subProtocolWebSocketHandler);
+//        WebMvcStompEndpointRegistry registry = new WebMvcStompEndpointRegistry(
+//                handler, getTransportRegistration(), messageBrokerTaskScheduler);
+//        ApplicationContext applicationContext = getApplicationContext();
+//        if (applicationContext != null) {
+//            registry.setApplicationContext(applicationContext);
+//        }
+//        registerStompEndpoints(registry);
+//        return registry.getHandlerMapping();
+//    }
 
 
 }

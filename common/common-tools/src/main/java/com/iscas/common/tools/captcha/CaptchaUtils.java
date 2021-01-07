@@ -25,20 +25,35 @@ public class CaptchaUtils {
     private static int LINE_SIZE = 40;// 干扰线数量
     private static int RADNOM_STR_NUM = 4;// 随机产生字符数量
 
-
     /**
-     * 生成验证码图片，使用默认值
-     * 返回验证的字符串
-     * */
+     * <p>生成验证码图片，使用默认值</p>
+     * <p>返回验证的字符串</p>
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param os 输出流
+     * @throws
+     * @return java.lang.String
+     */
     public static String createCaptcha(OutputStream os) throws IOException {
         return createCaptcha(DEFAULT_WIDTH, DEFAULT_HEIGHT, LINE_SIZE, RADNOM_STR_NUM, os);
     }
 
 
     /**
-     * 生成验证码图片
-     * 返回验证的字符串
-     * */
+     * <p>生成验证码图片，使用默认值</p>
+     * <p>返回验证的字符串</p>
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param width 图片宽度
+     * @param height 图片高度
+     * @param lineSize 干扰线数量
+     * @param randomStrNum 随机字符数量
+     * @param os 输出流
+     * @throws
+     * @return java.lang.String
+     */
     public static String createCaptcha(int width, int height, int lineSize, int randomStrNum, OutputStream os) throws IOException {
         // BufferedImage类是具有缓冲区的Image类,Image类是用于描述图像信息的类
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);

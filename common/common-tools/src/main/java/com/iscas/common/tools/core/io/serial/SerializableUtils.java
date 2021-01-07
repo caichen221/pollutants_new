@@ -15,6 +15,15 @@ import java.io.*;
 public class SerializableUtils {
     private SerializableUtils() {}
 
+    /**
+     * 序列化
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param obj 对象
+     * @throws
+     * @return byte[]
+     */
     public static byte[] serialize(Serializable obj) throws IOException {
         //序列化字节流
         @Cleanup ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -25,6 +34,15 @@ public class SerializableUtils {
         return byteArrayOutputStream.toByteArray();
     }
 
+    /**
+     * 反序列化
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param bytes 字节数组
+     * @throws
+     * @return T
+     */
     public static <T extends Serializable> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         //反序列化
         //直接读取直接，用对象输入流直接读取出来

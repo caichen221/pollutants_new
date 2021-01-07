@@ -1,13 +1,11 @@
 package com.iscas.common.tools.assertion;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
- * 断言
+ * 集合断言
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -17,12 +15,16 @@ import java.util.Map;
 public class AssertCollectionUtils {
     private AssertCollectionUtils(){}
 
-
     /**
-     * 认为集合不为null，如果为null，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言集合不为null，如果为null，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param collection 待判断集合
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertCollectionNotNull(Collection collection, String msg) {
         if (collection == null) {
             throw new AssertRuntimeException(msg);
@@ -30,10 +32,15 @@ public class AssertCollectionUtils {
     }
 
     /**
-     * 认为Map不为null，如果为null，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言集合为null，如果不为null，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param collection 待判断集合
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertCollectionNull(Collection collection, String msg) {
         if (collection != null) {
             throw new AssertRuntimeException(msg);
@@ -41,10 +48,15 @@ public class AssertCollectionUtils {
     }
 
     /**
-     * 认为Map不为空，如果为空，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言集合不是空集合，如果是空集合，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param collection 待判断集合
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertCollectionNotEmpty(Collection collection, String msg) {
         if (CollectionUtils.isEmpty(collection)) {
             throw new AssertRuntimeException(msg);
@@ -52,10 +64,15 @@ public class AssertCollectionUtils {
     }
 
     /**
-     * 认为Map不为空，如果为空，抛出异常，msg为异常信息
-     * str 判断的字符串
-     * msg 抛出异常时的信息
-     * */
+     * 断言集合是空集合，如果不是空集合，抛出异常，msg为异常信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/3/14
+     * @param collection 待判断集合
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
     public static void assertMapEmpty(Collection collection, String msg) {
         if (CollectionUtils.isNotEmpty(collection)) {
             throw new AssertRuntimeException(msg);

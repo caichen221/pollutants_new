@@ -14,9 +14,16 @@ public class MemoryPageUtils {
     private MemoryPageUtils() {}
 
     /**
-     *
      * 内存内部对集合进行分页
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param list 集合
+     * @param pageNumber 页码
+     * @param pageSize 每页的条数
+     * @throws
+     * @return java.util.List<T>
+     */
     public static <T> List<T> getPageList(List<T> list, int pageNumber, int pageSize) {
         if (list == null) {
             return null;

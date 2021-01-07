@@ -21,9 +21,15 @@ public class MapRaiseUtils {
     private MapRaiseUtils() {}
 
     /**
-     *
-     * 删除Map中一组对象
-     * */
+     * 删除map中多个对象
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param map
+     * @param keys 待删除的key
+     * @throws
+     * @return void
+     */
     public static void remove(Map map, Object... keys) {
         Assert.notNull(map, "map不能为空");
         Assert.notNull(keys, "要删除的key不能为空");
@@ -32,9 +38,16 @@ public class MapRaiseUtils {
         }
     }
 
+
     /**
      * 判断Map是不是为空，如果Map里全都是null也判断
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param map
+     * @throws
+     * @return boolean
+     */
     public static boolean isEmpty(Map map) {
         boolean flag = map == null || map.size() <= 0;
         if (!flag) {
@@ -52,15 +65,26 @@ public class MapRaiseUtils {
 
     /**
      * 判断Map是不是不为空，如果Map里全都是null也判断
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param map
+     * @throws
+     * @return boolean
+     */
     public static boolean isNotEmpty(Map map) {
         return !isEmpty(map);
     }
 
-
     /**
-     * 将map中的Null值remove
-     * */
+     * 移除Map中的null值
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param map
+     * @throws
+     * @return void
+     */
     public static void removeNullValue(Map<Object, Object> map) {
         Assert.notNull(map, "map不能为空");
         List<Object> keys = new ArrayList<>();
@@ -79,7 +103,13 @@ public class MapRaiseUtils {
 
     /**
      * 将Map的Key转为驼峰的
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param map
+     * @throws
+     * @return java.util.Map<K,V>
+     */
     public static <K, V> Map<K, V> convertToHump(Map<K, V> map) {
         return MapUtil.toCamelCaseMap(map);
     }

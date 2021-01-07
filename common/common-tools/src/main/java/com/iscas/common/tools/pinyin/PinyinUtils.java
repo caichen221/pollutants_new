@@ -34,10 +34,29 @@ public class PinyinUtils {
 
     }
 
+    /**
+     * 汉字转为拼音
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param str 汉字
+     * @throws
+     * @return java.lang.String
+     */
     public static String toPinYin(String str) throws BadHanyuPinyinOutputFormatCombination {
         return toPinYin(str, "", Type.UPPERCASE);
     }
 
+    /**
+     * 汉字转为拼音
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param str 汉字
+     * @param spera 转化结果的分割符
+     * @throws
+     * @return java.lang.String
+     */
     public static String toPinYin(String str, String spera) throws BadHanyuPinyinOutputFormatCombination {
         return toPinYin(str, spera, Type.UPPERCASE);
     }
@@ -47,6 +66,7 @@ public class PinyinUtils {
      * 如： 明天 转换成 MINGTIAN
      * @param str：要转化的汉字
      * @param spera：转化结果的分割符
+     * @param type：转换模式  全部大写UPPERCASE，全部小写LOWERCASE,首字母大写FIRSTUPPER
      * @return
      * @throws BadHanyuPinyinOutputFormatCombination
      */

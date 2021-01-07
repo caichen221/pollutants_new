@@ -25,10 +25,15 @@ import static cn.hutool.core.util.ClassUtil.getClassLoader;
 public class ClassUtils {
     private ClassUtils() {}
 
-
     /**
      * 获取某个包下的所有类
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param packageName 包名
+     * @throws
+     * @return java.util.Set<java.lang.Class<?>>
+     */
     public static Set<Class<?>> getClasses(String packageName) throws IOException {
         Set<Class<?>> classSet = new HashSet<>();
         Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packageName.replace(".", "/"));
@@ -93,6 +98,13 @@ public class ClassUtils {
 
     /**
      * 加载类
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param className 类名
+     * @param isInitialized 是否被初始化
+     * @throws
+     * @return java.lang.Class<?>
      */
     public static Class<?> loadClass(String className, boolean isInitialized) {
         Class<?> cls;
@@ -103,8 +115,15 @@ public class ClassUtils {
         }
         return cls;
     }
+
     /**
      * 加载类（默认将初始化类）
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param className 类名
+     * @throws
+     * @return java.lang.Class<?>
      */
     public static Class<?> loadClass(String className) {
         return loadClass(className, true);

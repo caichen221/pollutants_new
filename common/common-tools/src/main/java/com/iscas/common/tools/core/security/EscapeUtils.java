@@ -57,14 +57,17 @@ public class EscapeUtils {
             0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,
             0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F };
 
-    /** */
     /**
      * 编码
-     *
-     * @param s
-     * @return
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param s 字符串
+     * @throws
+     * @return java.lang.String
      */
     public static String escape(String s) {
+
         StringBuffer sbuf = new StringBuffer();
         int len = s.length();
         for (int i = 0; i < len; i++) {
@@ -92,14 +95,17 @@ public class EscapeUtils {
         return sbuf.toString();
     }
 
-    /** */
     /**
      * 解码 说明：本方法保证 不论参数s是否经过escape()编码，均能得到正确的“解码”结果
-     *
-     * @param s
-     * @return
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param s 待解码字符串
+     * @throws
+     * @return java.lang.String
      */
     public static String unescape(String s) {
+
         StringBuffer sbuf = new StringBuffer();
         int i = 0;
         int len = s.length();

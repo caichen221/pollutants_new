@@ -38,4 +38,7 @@ include 'special:common-lua-tools'
 findProject(':special:common-lua-tools')?.name = 'common-lua-tools'
 include 'special:biz-jafu'
 findProject(':special:biz-jafu')?.name = 'biz-jafu'
+include 'samples'
+include 'samples:graalvm-native-image-test'
+findProject(':samples:graalvm-native-image-test')?.name = 'graalvm-native-image-test'
 

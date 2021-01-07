@@ -29,19 +29,17 @@ public class RandomBaseInfoUtils {
 
 
     /**
-     * 返回Email
-     * @return
+     * 随机生成email
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
      */
     public static String getEmail() {
         return getEmail(6,9);
     }
 
-    /**
-     * 返回Email
-     * @param lMin 最小长度
-     * @param lMax 最大长度
-     * @return
-     */
     public static String getEmail(int lMin,int lMax) {
         int length=getNum(lMin,lMax);
         StringBuffer sb = new StringBuffer();
@@ -57,7 +55,17 @@ public class RandomBaseInfoUtils {
      * 返回手机号码
      */
     private static String[] telFirst="134,135,136,137,138,139,150,151,152,157,158,159,130,131,132,155,156,133,153".split(",");
+
+    /**
+     * 随机生成电话号码
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public static String getTel() {
+
         int index=getNum(0,telFirst.length-1);
         String first=telFirst[index];
         String second=String.valueOf(getNum(1,888)+10000).substring(1);
@@ -65,7 +73,14 @@ public class RandomBaseInfoUtils {
         return first+second+thrid;
     }
 
-
+    /**
+     * 随机生成性别
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public static String getSex(){
         Random random = new Random();
         int i = random.nextInt(2);
@@ -80,6 +95,15 @@ public class RandomBaseInfoUtils {
      * 返回中文姓名
      */
     public static String name_sex = "";
+
+    /**
+     * 随机生成中文姓名
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public static String getChineseName() {
         int index=getNum(0, firstName.length()-1);
         String first=firstName.substring(index, index+1);
@@ -104,9 +128,13 @@ public class RandomBaseInfoUtils {
         return first+second+third;
     }
 
-
     /**
-     * 返回地址
+     * 随机生成地址
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param
+     * @throws
      * @return
      */
     public static String getRoad() {
@@ -116,10 +144,14 @@ public class RandomBaseInfoUtils {
         String third="-"+getNum(1,20)+"-"+getNum(1,10);
         return first+second+third;
     }
-
     /**
      * 随机生成IP地址
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public static String getIp() {
 
         // ip范围
@@ -157,16 +189,24 @@ public class RandomBaseInfoUtils {
     }
 
     /**
-     * 获取随机身份证号码
-     * */
+     * 随机生成身份证号码
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
+     */
     public static String getIdCard(){
         return ID_CARD_GENERATOR.generate();
     }
 
-
     /**
-     * 数据封装
-     * @return
+     * 随机生成身份信息
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.lang.String
      */
     public static Map getBaseInfo() {
         Map map=new HashMap(2 << 4);

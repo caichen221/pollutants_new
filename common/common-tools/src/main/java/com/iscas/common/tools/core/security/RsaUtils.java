@@ -44,29 +44,61 @@ public class RsaUtils {
             "KgpagUVG0AWklv+HOGP9OaTwW9Pectz3nCtOoAVUdPFNAlHgu+I6wsNVMAlQALfLMMh9CJssbWG+21O196oO6Q" +
             "QsGqllLZFDy77TJQy0hgWnttcWM=";
 
-    //生成秘钥对
+    /**
+     * 生成秘钥对
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @throws
+     * @return java.security.KeyPair
+     */
     public static KeyPair getKeyPair() throws Exception {
+
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
     }
 
-    //获取公钥(Base64编码)
+    /**
+     * 获取公钥(Base64编码)
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param keyPair 密钥对
+     * @throws
+     * @return java.lang.String
+     */
     public static String getPublicKey(KeyPair keyPair){
         PublicKey publicKey = keyPair.getPublic();
         byte[] bytes = publicKey.getEncoded();
         return byte2Base64(bytes);
     }
 
-    //获取私钥(Base64编码)
+    /**
+     * 获取私钥(Base64编码)
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param keyPair 密钥对
+     * @throws
+     * @return java.lang.String
+     */
     public static String getPrivateKey(KeyPair keyPair){
         PrivateKey privateKey = keyPair.getPrivate();
         byte[] bytes = privateKey.getEncoded();
         return byte2Base64(bytes);
     }
 
-    //将Base64编码后的公钥转换成PublicKey对象
+    /**
+     * 将Base64编码后的公钥转换成PublicKey对象
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param pubStr 公钥
+     * @throws
+     * @return java.security.PublicKey
+     */
     private static PublicKey string2PublicKey(String pubStr) throws Exception{
         byte[] keyBytes = base642Byte(pubStr);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
@@ -75,7 +107,15 @@ public class RsaUtils {
         return publicKey;
     }
 
-    //将Base64编码后的私钥转换成PrivateKey对象
+    /**
+     * 将Base64编码后的私钥转换成PrivateKey对象
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param priStr 私钥
+     * @throws
+     * @return java.security.PrivateKey
+     */
     private static PrivateKey string2PrivateKey(String priStr) throws Exception{
         byte[] keyBytes = base642Byte(priStr);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);

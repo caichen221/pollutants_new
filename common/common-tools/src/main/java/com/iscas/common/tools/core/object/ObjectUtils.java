@@ -25,17 +25,30 @@ public class ObjectUtils {
     private static String[] skipFieldGlobal = new String[] {"serialVersionUID"};
 
     /**
-     *
-     * @see {@link #deepCopy(Object, Class, boolean, String[])}
-     * */
+     * 深度克隆
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param oriObj 对象
+     * @param targetClass 返回的数据Class对象
+     * @throws
+     * @return T
+     */
     public static <T> T deepCopy(Object oriObj, Class<T> targetClass) throws Exception {
         return deepCopy(oriObj, targetClass, true, null);
     }
 
     /**
-     *
-     * @see {@link #deepCopy(Object, Class, boolean, String[])}
-     * */
+     * 深度克隆
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param oriObj 对象
+     * @param targetClass 返回数据的class对象
+     * @param ignoreNonExistField 忽略的属性
+     * @throws
+     * @return T
+     */
     public static <T> T deepCopy(Object oriObj, Class<T> targetClass, boolean ignoreNonExistField) throws Exception {
         return deepCopy(oriObj, targetClass, ignoreNonExistField, null);
     }

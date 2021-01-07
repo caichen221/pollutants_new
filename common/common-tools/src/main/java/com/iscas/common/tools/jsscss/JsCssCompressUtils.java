@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.Objects;
 
 /**
- *
+ * JS/CSS压缩相关工具
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2019/7/8 15:35
@@ -22,8 +22,17 @@ public class JsCssCompressUtils {
     private static String TYPE_PACK = "pack";
     private JsCssCompressUtils() {}
 
-
+    /**
+     * css压缩
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param content 字节数组
+     * @throws
+     * @return byte[]
+     */
     public static byte[] csscompress(byte[] content) throws IOException {
+
         ByteArrayInputStream bais = new ByteArrayInputStream(content);
         @Cleanup Reader in = new InputStreamReader(bais);
         CssCompressor csscompressor = new CssCompressor(in);
@@ -35,6 +44,15 @@ public class JsCssCompressUtils {
         return bytes;
     }
 
+    /**
+     * CSS压缩
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param content css
+     * @throws
+     * @return java.lang.String
+     */
     public static String csscompress(String content) throws IOException {
         @Cleanup Reader in = new InputStreamReader(IOUtils.toInputStream(content, "utf-8"));
         CssCompressor csscompressor = new CssCompressor(in);
@@ -46,7 +64,18 @@ public class JsCssCompressUtils {
         return new String(bytes, "utf-8");
     }
 
+    /**
+     * js压缩
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param content JS字节数组
+     * @param type 压缩方式 yui 或pack
+     * @throws
+     * @return byte[]
+     */
     public static byte[] jscompress(byte[] content, String type) throws Exception {
+
         if (content == null || content.length == 0) {
             return content;
         }
@@ -91,6 +120,16 @@ public class JsCssCompressUtils {
         return bytes;
     }
 
+    /**
+     * JS压缩
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param content js
+     * @param type 压缩方式yui 或pack
+     * @throws
+     * @return java.lang.String
+     */
     public static String jscompress(String content, String type) throws IOException {
         @Cleanup Reader in = new InputStreamReader(IOUtils.toInputStream(content, "utf-8"));
         JavaScriptCompressor compressor = new JavaScriptCompressor(in, new ErrorReporter() {

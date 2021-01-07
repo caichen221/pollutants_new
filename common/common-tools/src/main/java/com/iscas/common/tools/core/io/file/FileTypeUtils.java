@@ -1,10 +1,10 @@
 package com.iscas.common.tools.core.io.file;
 
-import com.iscas.common.tools.core.convert.BytesConvertUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 判断一个文件类型的工具类
@@ -34,8 +34,15 @@ public class FileTypeUtils {
 
     /**
      * 判断一个文件的类型
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param is 输入流
+     * @throws
+     * @return com.iscas.common.tools.core.io.file.FileTypeEnum
+     */
     public static FileTypeEnum getFileType(InputStream is) throws IOException {
+
         //读取FILE_PREFIX_LENGTH个字节，少于FILE_PREFIX_LENGTH，后面都是0
         int length = FILE_PREFIX_LENGTH;
         byte[] b = new byte[length];
@@ -55,7 +62,13 @@ public class FileTypeUtils {
 
     /**
      * 判断一个文件的类型
-     * */
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param path 文件路径
+     * @throws
+     * @return com.iscas.common.tools.core.io.file.FileTypeEnum
+     */
     public static FileTypeEnum getFileType(String path) throws IOException {
         InputStream is = null;
         try {
