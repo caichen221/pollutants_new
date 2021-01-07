@@ -3,7 +3,6 @@ package com.iscas.base.biz.config.stomp;
 import org.springframework.context.Lifecycle;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.context.ServletContextAware;
@@ -19,10 +18,8 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写MyWebSocketHandlerMapping
