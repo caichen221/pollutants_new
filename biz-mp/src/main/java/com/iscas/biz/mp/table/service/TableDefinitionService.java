@@ -272,7 +272,7 @@ public class TableDefinitionService {
 				ColumnDefinition columnDefinition = null;
 				for (ColumnDefinition tmp : columnDefinitions) {
 					if (entry.getKey().equalsIgnoreCase(tmp.getField())) {
-						if(tmp.isSearch()) {
+						if(!tmp.isSearch()) {
 							ValidDataException validDataException = new ValidDataException(
 								String.format("[%s]列的属性search!=true，不允许检索！", tmp.getField()));
 							validDataException.setMsgDetail(String.format("search!=true for field [%s]", tmp.getField()));
