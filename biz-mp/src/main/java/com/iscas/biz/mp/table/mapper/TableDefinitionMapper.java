@@ -39,6 +39,12 @@ public interface TableDefinitionMapper {
 //	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int saveData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
+
+	@Update("${sql}")//需要用replace
+//	@Options( useGeneratedKeys=true, keyProperty= "param.id")
+//	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
+	int updateData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
+
 	@Delete("delete from ${tableName} where  ${primaryKey} = #{value}")//需要用replace
 	int deleteData(@Param("tableName") String tableName, @Param("primaryKey") String primaryKey, @Param("value") Object value);
 

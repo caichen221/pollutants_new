@@ -634,8 +634,11 @@ public class TableDefinitionService {
 			}*/
 			String sqlString = sql.toString();
 			sqlString = sqlString.replace("INSERT INTO", "REPLACE INTO");
-
-			tableDefinitionMapper.saveData(sqlString, item);
+			if (item.get(tableDefinition.getPrimaryKey() == null ? "id" : tableDefinition.getPrimaryKey()) == null) {
+				tableDefinitionMapper.saveData(sqlString, item);
+			} else {
+				tableDefinitionMapper.updateData(sqlString, item);
+			}
 			responseEntity.setValue(item.get(primaryKey));
 		}catch (BaseException e){
 			e.printStackTrace();
@@ -682,4 +685,5 @@ public class TableDefinitionService {
 		}
 		return responseEntity;
 	}
+
 }
