@@ -1,16 +1,14 @@
 package com.iscas.base.biz.config.stomp;
 
 import cn.hutool.core.util.ReflectUtil;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import com.iscas.base.biz.config.cros.CrosProps;
 import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.boot.autoconfigure.web.servlet.ConditionalOnMissingFilterBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration;
-import org.springframework.web.socket.config.annotation.WebMvcStompEndpointRegistry;
 
 import java.lang.reflect.Method;
 
@@ -23,8 +21,6 @@ import java.lang.reflect.Method;
  * @since jdk1.8
  */
 @Configuration
-//@Primary
-//@Order(Ordered.HIGHEST_PRECEDENCE)
 @ConditionalOnProperty(name = "ws.stomp.register", havingValue = "true", matchIfMissing = false)
 public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingWebSocketMessageBrokerConfiguration {
 

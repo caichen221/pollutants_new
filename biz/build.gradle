@@ -24,6 +24,13 @@ configurations {
     compile.exclude group: 'org.apache.tomcat.embed'
 }
 
+
+bootJar {
+    manifest {
+        attributes 'Start-Class': 'com.iscas.biz.BizApp'
+    }
+}
+
 //sourceCompatibility = 1.8
 
 dependencies {
