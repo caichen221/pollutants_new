@@ -18,6 +18,12 @@ apply plugin: 'java'
 apply plugin: 'war'
 
 
+configurations {
+    compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    compile.exclude group: 'org.apache.tomcat'
+    compile.exclude group: 'org.apache.tomcat.embed'
+}
+
 //sourceCompatibility = 1.8
 
 dependencies {

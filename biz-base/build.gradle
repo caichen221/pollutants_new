@@ -9,12 +9,6 @@ apply plugin: 'war'
 //
 //}
 
-configurations {
-    compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    compile.exclude group: 'org.apache.tomcat'
-    compile.exclude group: 'org.apache.tomcat.embed'
-}
-
 dependencies {
     //导入基础工具工程
     compile project (":common:common-tools")
