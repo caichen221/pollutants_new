@@ -2,7 +2,6 @@ package com.iscas.common.tools.core.io.zip;
 
 import cn.hutool.core.io.IoUtil;
 import org.apache.commons.lang3.StringUtils;
-import sun.nio.ch.IOUtil;
 
 import java.io.*;
 import java.util.Enumeration;

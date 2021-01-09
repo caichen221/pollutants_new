@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
         RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
-//@ComponentScan(basePackages = {"com.iscas.base.biz","com.iscas.biz",/*,"com.iscas.biz.mp"*/ /*,"com.iscas.biz.jpa"*/})
 @ComponentScan(basePackages = {"com.iscas"})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
 @EnableCaching //开启缓存

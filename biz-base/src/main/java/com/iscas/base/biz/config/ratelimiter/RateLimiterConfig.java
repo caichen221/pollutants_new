@@ -21,17 +21,16 @@ import org.springframework.core.Ordered;
  * @since jdk1.8
  */
 @Slf4j
-@Configuration
+//@Configuration
 @EnableConfigurationProperties(RateLimiterProps.class)
-@ConditionalOnClass(RateLimiterFilter.class)
-@ConditionalOnProperty(prefix = "rate.limiter",matchIfMissing = true,value = "enabled")
+//@ConditionalOnClass(RateLimiterFilter.class)
+//@ConditionalOnProperty(prefix = "rate.limiter",matchIfMissing = true,value = "enabled")
 public class RateLimiterConfig {
     @Autowired
     private RateLimiterProps rateLimiterProps;
 
-    @Bean
+//    @Bean
     public RateLimiterFilter rateLimiterFilter(){
-
         return new RateLimiterFilter(rateLimiterProps);
     }
     @Bean
