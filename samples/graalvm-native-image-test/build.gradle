@@ -1,13 +1,30 @@
-plugins {
-    id 'java'
-}
 
-version 'unspecified'
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile('org.springframework.boot:spring-boot-starter-web')
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    implementation 'org.springframework.experimental:spring-graalvm-native:0.8.5'
+    compile 'org.springframework:spring-context-indexer'
 }
+
+bootBuildImage {
+    imageName = "192.168.100.96:80/library/${project.name}:0.0.1"
+    publish = true
+    builder = "paketobuildpacks/builder:tiny"
+    environment = [
+            "BP_BOOT_NATIVE_IMAGE" : "1",
+            "BP_BOOT_NATIVE_IMAGE_BUILD_ARGUMENTS": "-Dspring.spel.ignore=true -Dspring.native.remove-yaml-support=true"
+    ]
+    docker {
+        host = "tcp://192.168.100.91:2375"
+        tlsVerify = false
+//        certPath = "/home/users/.minikube/certs"
+        publishRegistry {
+            username = "admin"
+            password = "Harbor12345"
+            url = "http://192.168.100.96"
+            email = "76775081@qq.com"
+        }
+    }
+}
+
