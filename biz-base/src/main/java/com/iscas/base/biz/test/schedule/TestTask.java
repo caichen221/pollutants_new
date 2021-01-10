@@ -1,5 +1,6 @@
 package com.iscas.base.biz.test.schedule;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  * @since jdk1.8
  */
 @Component("TestTask")
+@Lazy(value = false)
 public class TestTask {
     /**
      * 定时任务

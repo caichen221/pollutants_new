@@ -63,8 +63,6 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
 //            e.printStackTrace();
             throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性urlPathHelper出错", e);
         }
-
-
         if (urlPathHelper != null) {
             hm.setUrlPathHelper(urlPathHelper);
         }

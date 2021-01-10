@@ -3,6 +3,7 @@ package com.iscas.base.biz.service.common;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @since jdk1.8
  */
 @Component
+@Lazy(value = false)
 public class SpringService implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
