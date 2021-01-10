@@ -1,19 +1,4 @@
 
-
-//buildscript {
-//    repositories {
-//        maven { url "http://192.168.100.88:8081/repository/maven-public/" }
-//        maven {url "http://maven.aliyun.com/nexus/content/groups/public"}
-//        maven { url "https://repo.spring.io/libs-milestone/" }
-//        jcenter()
-//        mavenCentral()
-//
-//    }
-//    dependencies {
-//        classpath "se.transmode.gradle:gradle-docker:${gradle_docker_version}"
-//    }
-//}
-//apply plugin: 'docker'
 apply plugin: 'java'
 apply plugin: 'war'
 
@@ -29,9 +14,12 @@ bootJar {
     manifest {
         attributes 'Start-Class': 'com.iscas.biz.BizApp'
     }
+//    launchScript()
 }
 
-//sourceCompatibility = 1.8
+bootRun {
+    main = 'com.iscas.biz.BizApp'
+}
 
 dependencies {
     compile project(":biz-base")
@@ -62,6 +50,8 @@ install {
 }
 bootBuildImage {
     imageName = "192.168.100.96:80/library/${project.name}:${project.version}"
+    pullPolicy = "IF_NOT_PRESENT"
+    builder = "paketobuildpacks/builder:base"
     publish = true
     docker {
         host = "tcp://192.168.100.91:2375"
@@ -75,66 +65,3 @@ bootBuildImage {
         }
     }
 }
-
-////docker打包例子
-//docker {
-//    maintainer = 'zqw <quanwenz@sina.cn>'
-////    baseImage 'openjdk'
-//    baseImage = 'java:8-alpine'
-//    useApi true
-//    hostUrl 'http://192.168.100.96'
-//    apiUsername 'admin'
-//    apiPassword 'Harbor12345'
-//    apiEmail '76775081@qq.com'
-//
-//}
-//task dockerBuild(type: Docker, dependsOn: bootJar) {
-//    applicationName = project.name
-//    tag = "library/${applicationName}"
-//    tagVersion = jar.archiveVersion
-//    volume('/tmp')
-//    addFile("${jar.archiveBaseName}-${jar.archiveVersion}.jar", "app.jar")
-//    entryPoint(["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", 'app.jar'])
-//    exposePort(8080)
-//    doFirst {
-//        copy {
-//            from jar
-//            into stageDir
-//        }
-//    }
-//    addFile {
-//        from configurations.archives.artifacts.files
-//        into '/data/workspace/' + project.name
-//    }
-//    workingDir '/data/workspace/' + project.name
-////    setEnvironment('HOST_MACHINE_IP', hostMachineIp)
-//    defaultCommand(['java', '-jar', '-Dspring.profiles.active=docker', "${project.name}-${project.version}.jar"])
-//}
-
-
-//===============================打瘦包的方式=====================================================
-
-////清除lib的jar
-//task clearJar(type: Delete) {
-//    delete "$buildDir/libs/lib"
-//}
-////复制jar到lib里面去
-//task copyJar(type: Copy) {
-//    from configurations.runtime
-//    into "$buildDir/libs/lib"
-//}
-//
-//
-//bootJar {
-//    // 例外所有的jar
-//    excludes = ["*.jar"]
-//    // lib目录的清除和复制任务
-//    dependsOn clearJar
-//    dependsOn copyJar
-//    //  指定依赖包的路径
-//    manifest {
-//        attributes "Manifest-Version": 1.0,
-//                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
-//
-//    }
-//}

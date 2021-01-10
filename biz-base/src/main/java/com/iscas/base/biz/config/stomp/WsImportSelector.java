@@ -31,7 +31,8 @@ public class WsImportSelector implements ImportSelector {
                 return new String[] {WebSocketStompClusterUseRabbitConfig.class.getName()};
             }
             default: {
-                return new String[] {WebSocketStompSimpleConfig.class.getName()};
+                throw new StompRegistryException("不支持的websocket类型，仅支持SIMPLE、RABBITMQ、SERVER_CLUSTER_USE_RABBIT");
+//                return new String[] {WebSocketStompSimpleConfig.class.getName()};
             }
         }
 

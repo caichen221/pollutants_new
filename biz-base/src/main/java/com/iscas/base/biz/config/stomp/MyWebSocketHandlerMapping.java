@@ -101,9 +101,8 @@ public class MyWebSocketHandlerMapping extends SimpleUrlHandlerMapping implement
                     ((DefaultSockJsService) sockJsService).setAllowedOrigins(config.getAllowedOrigins());
                 } catch (Exception e) {
                     logger.warn("设置SockJs中corsConfiguration的属性allowedOrigins的值出错", e);
+                    throw new StompRegistryException("设置SockJs中corsConfiguration的属性allowedOrigins的值出错", e);
                 }
-
-
                 return config;
             } else {
                 return ((CorsConfigurationSource) resolvedHandler).getCorsConfiguration(request);

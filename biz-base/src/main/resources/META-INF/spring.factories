@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.iscas.base.biz.config.cros.CrosAutoConfiguration
-
+org.springframework.boot.diagnostics.FailureAnalyzer=\
+com.iscas.base.biz.config.failure.StompRegistryFailureAnalyzer
   

@@ -34,7 +34,8 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
         try {
             registrations = (List<WebMvcStompWebSocketEndpointRegistration>) ReflectUtil.getFieldValue(this, "registrations");
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性registrations出错", e);
         }
         for (WebMvcStompWebSocketEndpointRegistration registration : registrations) {
             MultiValueMap<HttpRequestHandler, String> mappings = registration.getMappings();
@@ -50,7 +51,8 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
         try {
             order = (int) ReflectUtil.getFieldValue(this, "order");
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性order出错", e);
         }
         hm.setOrder(order);
 
@@ -58,7 +60,8 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
         try {
             urlPathHelper = (UrlPathHelper) ReflectUtil.getFieldValue(this, "urlPathHelper");
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性urlPathHelper出错", e);
         }
 
 
