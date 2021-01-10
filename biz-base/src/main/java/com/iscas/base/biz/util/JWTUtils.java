@@ -8,6 +8,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.common.tools.core.date.DateRaiseUtils;
+import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
@@ -30,9 +32,10 @@ public class JWTUtils {
     public static final String SECRET = "ISCAS";
     public static String createToken(String username, int expire) throws UnsupportedEncodingException {
         Date iatDate = new Date();
-        Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.MINUTE,expire);
-        Date expiresDate = nowTime.getTime();
+//        Calendar nowTime = Calendar.getInstance();
+//        nowTime.add(Calendar.MINUTE,expire);
+//        Date expiresDate = nowTime.getTime();
+        Date expiresDate = DateRaiseUtils.afterOffsetDate(expire * 60 * 1000L);
         Map<String, Object> map = new HashMap<>(2 << 2);
         map.put("alg", "HS256");
         map.put("typ","JWT");

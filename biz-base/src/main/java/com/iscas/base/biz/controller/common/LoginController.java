@@ -41,7 +41,7 @@ public class LoginController extends BaseController implements Constants {
     @Autowired
     private AbstractAuthService authService;
 
-    @GetMapping(value = "/logout", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @GetMapping(value = "/logout", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity logout(HttpServletRequest request){
         ResponseEntity responseEntity = new ResponseEntity(200, "注销成功");
         authService.invalidToken(request);
@@ -49,7 +49,7 @@ public class LoginController extends BaseController implements Constants {
         return responseEntity;
     }
 
-    @GetMapping(value = "/prelogin", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @GetMapping(value = "/prelogin", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Map> preLogin(){
         ResponseEntity<Map> responseEntity = new ResponseEntity<>();
         String data = RandomStringUtils.randomStr(16);
@@ -61,12 +61,12 @@ public class LoginController extends BaseController implements Constants {
         return responseEntity;
     }
 
-    @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity login(HttpServletResponse response, @RequestBody Map<String,String> user) throws Exception {
         ResponseEntity responseEntity = new ResponseEntity();
         responseEntity.setMessage("登录成功");
         authService.loginHandler(response,  user,
-                responseEntity, tokenProps.getExpire(), tokenProps.getCookieExpire());
+                responseEntity, ((Long) tokenProps.getExpire().toMinutes()).intValue(), tokenProps.getCookieExpire());
         return responseEntity;
     }
 }

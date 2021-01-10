@@ -53,7 +53,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         }
 
 
-        if (!rateLimiter.tryAcquire(rateLimiterProps.getMaxWait(), TimeUnit.MILLISECONDS)) {
+        if (!rateLimiter.tryAcquire(rateLimiterProps.getMaxWait().toMillis(), TimeUnit.MILLISECONDS)) {
             //获取令牌失败，并且超过超时时间
             log.warn(request.getRemoteAddr() + "访问" + request.getRequestURI() + "获取令牌失败");
             ResponseEntity responseEntity = new ResponseEntity(500,"服务器繁忙,请求超时");

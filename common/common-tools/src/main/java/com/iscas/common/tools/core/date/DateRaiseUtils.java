@@ -154,7 +154,9 @@ public class DateRaiseUtils {
 
     /**
      * 时间偏移一定毫秒数
+     * @see {@link #afterOffsetDate(Date, long)}
      * */
+    @Deprecated
     public static Date timeOffset(Date time, long offset) {
         time = new Date(time.getTime() + offset);
         return time;
