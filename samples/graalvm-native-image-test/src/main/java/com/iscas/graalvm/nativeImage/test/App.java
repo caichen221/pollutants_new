@@ -37,6 +37,7 @@ public class App extends SpringBootServletInitializer {
 
     @GetMapping("/test")
     public String get() {
+        System.out.println(1111);
         return "test";
     }
 

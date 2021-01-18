@@ -7,8 +7,20 @@ dependencies {
     compile 'org.springframework:spring-context-indexer'
 }
 
+jar {
+    enabled = true
+}
+
+bootJar {
+    manifest {
+        attributes 'Start-Class': 'com.iscas.graalvm.nativeImage.test.App'
+        attributes 'Main-Class': 'com.iscas.graalvm.nativeImage.test.App'
+    }
+//    launchScript()
+}
+
 bootBuildImage {
-    imageName = "192.168.100.96:80/library/${project.name}:0.0.1"
+    imageName = "192.168.100.96:80/library/${project.name}:0.0.2"
     publish = true
     builder = "paketobuildpacks/builder:tiny"
     environment = [

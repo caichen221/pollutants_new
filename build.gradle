@@ -20,6 +20,13 @@ buildscript {
 //    gradleVersion = '6.7.1'
 //}
 
+//allprojects {
+//    task cleanBuildDir(type: Delete) {
+//        delete "${projectDir}/build"
+//        delete "${projectDir}/out"
+//    }
+//}
+
 subprojects  {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
