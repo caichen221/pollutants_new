@@ -1,5 +1,5 @@
 2、添加motan rpc工具
-3、springboot2.4.1websocket推送的问题
+3、springboot2.4.1websocket推送的问题------------------------已经解决
 4、JarsperReport
 5、web-flux samples
 6、r2dbc
@@ -8,3 +8,4 @@
 9、quartz
 10、rsocket
 11、spring-boot-starter-reactor-netty
+12、使用https时prelogin等ajax请求不可用
