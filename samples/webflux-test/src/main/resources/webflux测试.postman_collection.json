@@ -1,0 +1,119 @@
+{
+	"info": {
+		"_postman_id": "d94f419b-b65b-4b8c-a56a-de02fe771be2",
+		"name": "webflux测试",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "查询",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7701/city/Almere",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7701",
+					"path": [
+						"city",
+						"Almere"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"abc\",\r\n    \"countrycode\":\"AUT\",\r\n    \"district\":\"123\",\r\n    \"population\":23\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7701/city",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7701",
+					"path": [
+						"city"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":4084,\r\n    \"name\":\"abc\",\r\n    \"countrycode\":\"AUT\",\r\n    \"district\":\"1223\",\r\n    \"population\":23\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7701/city",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7701",
+					"path": [
+						"city"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":4084,\r\n    \"name\":\"abc\",\r\n    \"countrycode\":\"AUT\",\r\n    \"district\":\"1223\",\r\n    \"population\":23\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7701/city?id=4084",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7701",
+					"path": [
+						"city"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "4084"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

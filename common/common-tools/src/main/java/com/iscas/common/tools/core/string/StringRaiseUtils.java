@@ -3,6 +3,8 @@ package com.iscas.common.tools.core.string;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 /**
  *
  * 字符串扩展工具
@@ -99,4 +101,43 @@ public class StringRaiseUtils {
         }
         return result;
     }
+
+    /**
+     * 比较多个字符串equals，只要一个满足，返回true
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/22
+     * @param str 待比较字符串
+     * @param strs 比较的字符串
+     * @throws
+     * @return boolean
+     */
+    public static boolean multiEqualsOr(String str, String ... strs) {
+        for (String s : strs) {
+            if (Objects.equals(str, s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 比较多个字符串equals，只有都满足，返回true
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/22
+     * @param str 待比较字符串
+     * @param strs 比较的字符串
+     * @throws
+     * @return boolean
+     */
+    public static boolean multiEqualsAnd(String str, String ... strs) {
+        for (String s : strs) {
+            if (!Objects.equals(str, s)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

@@ -5,6 +5,7 @@ package com.iscas.templet.view.table;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Author: zhuquanwen
@@ -24,5 +25,5 @@ public class ComboboxData<T> implements Serializable {
     /** data*/
     protected T data;
 
-    protected Object children;
+    protected List<ComboboxData<T>> children;
 }

@@ -43,4 +43,6 @@ include 'samples:graalvm-native-image-test'
 findProject(':samples:graalvm-native-image-test')?.name = 'graalvm-native-image-test'
 include 'special:common-zeromq-tools'
 findProject(':special:common-zeromq-tools')?.name = 'common-zeromq-tools'
+include 'samples:webflux-test'
+findProject(':samples:webflux-test')?.name = 'webflux-test'
 
