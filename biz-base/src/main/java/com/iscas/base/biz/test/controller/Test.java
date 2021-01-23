@@ -57,7 +57,7 @@ public class Test {
     @PostMapping("/b/{name:.+}")
     public void testb(HttpServletRequest request, HttpServletResponse response, @PathVariable String name) throws Exception {
         String filePath = "E:/aaa.xlsx";
-        FileDownloadUtils.downExcelStream(request, response,new FileInputStream(filePath), "a.xlsx");
+        FileDownloadUtils.downByStream(request, response,new FileInputStream(filePath), "a.xlsx");
     }
 
 }

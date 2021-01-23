@@ -90,50 +90,6 @@ public class FileDownloadUtils {
         downFile(request, response, file, name );
     }
 
-
-    /**
-     * http下载文件Java1.8-版本{@link FileDownloadUtils#downFile(HttpServletRequest, HttpServletResponse, File, String)}
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/14
-     * @param request {@link HttpServletRequest}请求
-     * @param response {@link HttpServletResponse}响应
-     * @param file 要下载的文件
-     * @param name 文件名称
-     * @throws Exception
-     * @return void
-     */
-    @Deprecated
-    public static void downFileLessJava8(HttpServletRequest request, HttpServletResponse response, File file,
-                                String name) throws Exception{
-        Long fileLength = file.length();// 文件的长度
-        if (fileLength != 0) {
-            response.reset();
-            response.setContentType("application/force-download;charset=utf-8");
-            String fileName = transFileName(name, request);
-            response.setHeader(
-                    "Content-disposition",
-                    "attachment; filename="
-                            +fileName);
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            try(
-                    FileInputStream fis = new FileInputStream(file);
-                    BufferedInputStream bis = new BufferedInputStream(fis);
-                    // 输出流
-                    BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-            ){
-                byte[] buff = new byte[2048];
-                int bytesread;
-                // 写文件
-                while (-1 != (bytesread = bis.read(buff, 0, buff.length))) {
-                    bos.write(buff, 0, bytesread);
-                }
-            }
-        }
-    }
-
-
-
     /**
      * http下载文件
      * @version 1.0
@@ -166,50 +122,6 @@ public class FileDownloadUtils {
             ){
 //               bis.transferTo(bos);
                 IOUtils.transferTo(bis, bos);
-            }
-        }
-    }
-    /**
-     * 限流下载文件，需要传入maxRate kb/s  最大下载速率 Java1.8-版本{@link FileDownloadUtils#downFileWithLimiter(HttpServletRequest, HttpServletResponse, String, String, int)}
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/16
-     * @param request {@link HttpServletRequest} 请求
-     * @param response {@link HttpServletResponse} 响应
-     * @param path 文件位置
-     * @param name 文件名称
-     * @param maxRate 最大下载速率 kb/s
-     * @throws Exception
-     * @return void
-     */
-    @Deprecated
-    public static void downFileWithLimiterLessJava8(HttpServletRequest request, HttpServletResponse response, String path,
-                                           String name, int maxRate) throws Exception{
-        Long fileLength = new File(path).length();// 文件的长度
-        if (fileLength != 0) {
-            response.reset();
-            response.setContentType("application/force-download;charset=utf-8");
-            String fileName = transFileName(name, request);
-            response.setHeader(
-                    "Content-disposition",
-                    "attachment; filename="
-                            +fileName);
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            BandWidthLimiter bandwidthLimiter = new BandWidthLimiter(maxRate);
-            try(
-                    FileInputStream fis = new FileInputStream(path);
-//                    LimiterInputStream limiterInput = new LimiterInputStream(fis,bandwidthLimiter);
-                    BufferedInputStream bis = new BufferedInputStream(fis);
-                    // 输出流
-                    BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-                    OutputStream os = new LimiterOutputStream(bos,bandwidthLimiter);
-            ){
-                byte[] buff = new byte[2048];
-                int bytesread;
-                // 写文件
-                while (-1 != (bytesread = bis.read(buff, 0, buff.length))) {
-                    os.write(buff, 0, bytesread);
-                }
             }
         }
     }
@@ -269,62 +181,7 @@ public class FileDownloadUtils {
         BandWidthLimiter.maxBandWith = maxRate;
     }
 
-    /**
-     * <p>按照最大下载带宽自动平均分布下载速率<p/> <br/>
-     * {@link FileDownloadUtils#downFileWithLimiter(HttpServletRequest, HttpServletResponse, String, String)}
-     * <p>设置一个服务最大下载带宽,按照当前正在下载的人的数量平均分配下载速率<p/>
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
-     * @param request {@link HttpServletRequest} 请求
-     * @param response {@link HttpServletResponse} 响应
-     * @param path 文件位置
-     * @param name 文件名称
-     * @throws Exception
-     * @return void
-     * @see #setMaxRate(int)
-     */
-    @Deprecated
-    public static void downFileWithLimiterLessJava8(HttpServletRequest request, HttpServletResponse response, String path,
-                                           String name) throws Exception{
 
-        int onlineNumber = onlineDownloadNumber.incrementAndGet();
-        int maxRate = BandWidthLimiter.maxBandWith/onlineNumber;
-        Long fileLength = new File(path).length();// 文件的长度
-        if (fileLength != 0) {
-            response.reset();
-            response.setContentType("application/force-download;charset=utf-8");
-            String fileName = transFileName(name, request);
-            response.setHeader(
-                    "Content-disposition",
-                    "attachment; filename="
-                            +fileName);
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            BandWidthLimiter bandwidthLimiter = new BandWidthLimiter(maxRate);
-            try{
-                try(
-                        FileInputStream fis = new FileInputStream(path);
-//                    LimiterInputStream limiterInput = new LimiterInputStream(fis,bandwidthLimiter);
-                        BufferedInputStream bis = new BufferedInputStream(fis);
-                        // 输出流
-                        BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-                        OutputStream os = new LimiterOutputStream(bos,bandwidthLimiter);
-                ){
-
-                    byte[] buff = new byte[2048];
-                    int bytesread;
-                    // 写文件
-                    while (-1 != (bytesread = bis.read(buff, 0, buff.length))) {
-                        os.write(buff, 0, bytesread);
-                    }
-                }
-            }catch(Exception e){
-                throw e;
-            }finally{
-                onlineDownloadNumber.decrementAndGet();
-            }
-        }
-    }
 
     /**
      * <p>按照最大下载带宽自动平均分布下载速率<p/> <br/>
@@ -377,109 +234,7 @@ public class FileDownloadUtils {
     }
 
     /**
-     * 通过文件位置下载EXCEL文件
-     * {@link FileDownloadUtils#downExcelFile(HttpServletRequest, HttpServletResponse, String, String)}
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
-     * @param request {@link HttpServletRequest} 请求
-     * @param response {@link HttpServletResponse} 响应
-     * @param path 文件位置
-     * @param name 文件名称
-     * @throws Exception
-     * @return void
-     */
-    @Deprecated
-    public static void downExcelFileLessJava8(HttpServletRequest request, HttpServletResponse response, String path,
-                                     String name) throws Exception {
-
-        Long fileLength = new File(path).length();// 文件的长度
-        if (fileLength != 0) {
-            setResponseHeader(request,response,name);
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            try(
-                    FileInputStream fis = new FileInputStream(path);
-                    BufferedInputStream bis = new BufferedInputStream(fis);
-                    // 输出流
-                    BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-            ){
-
-                byte[] buff = new byte[2048];
-                int bytesread;
-                // 写文件
-                while (-1 != (bytesread = bis.read(buff, 0, buff.length))) {
-                    bos.write(buff, 0, bytesread);
-                }
-            }
-        }
-    }
-
-
-    /**
-     * 通过文件位置下载EXCEL文件
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
-     * @param request {@link HttpServletRequest} 请求
-     * @param response {@link HttpServletResponse} 响应
-     * @param path 文件位置
-     * @param name 文件名称
-     * @throws Exception
-     * @return void
-     */
-    public static void downExcelFile(HttpServletRequest request, HttpServletResponse response, String path,
-                                              String name) throws Exception {
-
-        Long fileLength = new File(path).length();// 文件的长度
-        if (fileLength != 0) {
-            setResponseHeader(request,response,name);
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            try(
-                    FileInputStream fis = new FileInputStream(path);
-                    BufferedInputStream bis = new BufferedInputStream(fis);
-                    // 输出流
-                    BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-            ){
-//                bis.transferTo(bos);
-                IOUtils.transferTo(bis, bos);
-            }
-        }
-    }
-
-    /**
-     * 通过输入流下载EXCEL文件 适用Java1.8 -
-     * {@link FileDownloadUtils#downExcelStream(HttpServletRequest, HttpServletResponse, InputStream, String)}
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
-     * @param request {@link HttpServletRequest} 请求
-     * @param response {@link HttpServletResponse} 响应
-     * @param inputStream {@link InputStream} 输入流
-     * @param name 文件名称
-     * @throws Exception
-     * @return void
-     */
-    @Deprecated
-    public static void downExcelStreamLessJava8(HttpServletRequest request, HttpServletResponse response, InputStream inputStream,
-                                       String name) throws Exception {
-        setResponseHeader(request,response,name);
-        try(
-                BufferedInputStream bis = new BufferedInputStream(inputStream);
-                // 输出流
-                BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-        ){
-
-            byte[] buff = new byte[2048];
-            int bytesread;
-            // 写文件
-            while (-1 != (bytesread = bis.read(buff, 0, buff.length))) {
-                bos.write(buff, 0, bytesread);
-            }
-        }
-    }
-
-    /**
-     * 通过输入流下载EXCEL文件
+     * 通过输入流下载文件
      * @version 1.0
      * @since jdk11
      * @date 2018/7/13
@@ -490,8 +245,8 @@ public class FileDownloadUtils {
      * @throws Exception
      * @return void
      */
-    public static void downExcelStream(HttpServletRequest request, HttpServletResponse response, InputStream inputStream,
-                                       String name) throws Exception {
+    public static void downByStream(HttpServletRequest request, HttpServletResponse response, InputStream inputStream,
+                                    String name) throws Exception {
         setResponseHeader(request,response,name);
         try(
                 BufferedInputStream bis = new BufferedInputStream(inputStream);
