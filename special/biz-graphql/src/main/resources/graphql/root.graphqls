@@ -10,6 +10,18 @@ type Query {
     ####### Book相关 #########
     findAllBooks: [Book]!
     countBooks: Long!
+    findBookById(id:Long!): Book
+
+    #分页#
+    books(first: Int, after: String): BookConnection @connection(for: "Book")
+
+    #### 测试枚举 ####
+    testEnum(country: CountryEnum!): String!
+
+    ### 测试接口 ####
+    getAnimal(name:String!): Animal!
+    animals: [Animal]
+
 }
 
 type Mutation {
@@ -19,4 +31,10 @@ type Mutation {
     saveBook(input: BookInput!) : Book!
     deleteBook(id: ID!) : Boolean
     updateBookPageCount(pageCount: Int!, id:Long!) : Book!
+
+    #### user相关 ####
+    createUser(name: String!, authData:AuthData!): CreateUserResult!
+
+    ### 使用user验证登录 ###
+    login(authData: AuthData!): LoginResult!
 }
