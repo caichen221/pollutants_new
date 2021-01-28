@@ -3,11 +3,11 @@ dependencies {
 
     compile ('org.springframework.boot:spring-boot-starter-web')
     compile ('org.springframework.boot:spring-boot-starter-data-jpa')
-    testCompile ('org.springframework.boot:spring-boot-starter-data-test')
+    testCompile ('org.springframework.boot:spring-boot-starter-test')
 
-    compile 'com.graphql-java:graphql-java-tools:5.4.1'
+    compile "com.graphql-java-kickstart:graphql-java-tools:${graphqlJavaToolsVersion}"
     compile "mysql:mysql-connector-java:${mysqlVersion}"
-    compile 'com.graphql-java-kickstart:graphql-spring-boot-starter:5.3.1'
-    compile 'com.graphql-java-kickstart:graphiql-spring-boot-starter:5.3.1'
+    compile "com.graphql-java-kickstart:graphql-spring-boot-starter:${graphqlStarterVersion}"
+    compile "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlStarterVersion}"
 
 }
