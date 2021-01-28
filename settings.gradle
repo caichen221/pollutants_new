@@ -51,4 +51,5 @@ include 'samples:springboot-filter-listener-samples'
 findProject(':samples:springboot-filter-listener-samples')?.name = 'springboot-filter-listener-samples'
 include 'special:biz-graphql'
 findProject(':special:biz-graphql')?.name = 'biz-graphql'
+include 'micro-service-istio'
 

@@ -1,6 +1,5 @@
 package com.iscas.biz.graphql.resolve;
 
-
 import com.coxautodev.graphql.tools.GraphQLResolver;
 import com.iscas.biz.graphql.emum.CountryEnum;
 import com.iscas.biz.graphql.entity.Author;
@@ -8,8 +7,6 @@ import com.iscas.biz.graphql.entity.Book;
 import com.iscas.biz.graphql.repo.AuthorRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-
 
 @Component
 @AllArgsConstructor
