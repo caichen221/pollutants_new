@@ -12,8 +12,8 @@ import java.io.*;
  * @date 2019/7/11 8:47
  * @since jdk1.8
  */
-public class SerializableUtils {
-    private SerializableUtils() {}
+public class JdkSerializableUtils {
+    private JdkSerializableUtils() {}
 
     /**
      * 序列化

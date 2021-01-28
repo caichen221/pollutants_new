@@ -87,6 +87,10 @@ dependencies {
     // https://mvnrepository.com/artifact/com.alibaba/easyexcel
     compile group: 'com.alibaba', name: 'easyexcel', version: "${easyexcelVersion}"
 
+    // https://mvnrepository.com/artifact/com.esotericsoftware/kryo
+    compile group: 'com.esotericsoftware', name: 'kryo', version: '5.0.3'
+
+
 
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'

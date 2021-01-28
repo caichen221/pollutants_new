@@ -1,6 +1,6 @@
 package com.iscas.common.tools.core.io.obj;
 
-import com.iscas.common.tools.core.io.serial.SerializableUtils;
+import com.iscas.common.tools.core.io.serial.JdkSerializableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @since jdk1.8
  */
 @RunWith(JUnit4.class)
-public class SerializableUtilsTests {
+public class JdkSerializableUtilsTests {
     static class A implements Serializable {
         private String name;
         private Integer age;
@@ -58,8 +58,8 @@ public class SerializableUtilsTests {
     @Test
     public void test() throws IOException, ClassNotFoundException {
         A a = new A("zhangsan", 18);
-        byte[] serialize = SerializableUtils.serialize(a);
-        A newA = SerializableUtils.deserialize(serialize);
+        byte[] serialize = JdkSerializableUtils.serialize(a);
+        A newA = JdkSerializableUtils.deserialize(serialize);
         System.out.println(a);
         System.out.println(newA);
 
