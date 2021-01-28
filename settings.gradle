@@ -52,4 +52,8 @@ findProject(':samples:springboot-filter-listener-samples')?.name = 'springboot-f
 include 'special:biz-graphql'
 findProject(':special:biz-graphql')?.name = 'biz-graphql'
 include 'micro-service-istio'
+include 'micro-service-istio:msi-api'
+findProject(':micro-service-istio:msi-api')?.name = 'msi-api'
+include 'micro-service-istio:msi-api'
+findProject(':micro-service-istio:msi-api')?.name = 'msi-api'
 

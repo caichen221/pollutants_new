@@ -1,0 +1,29 @@
+
+apply plugin: "com.google.protobuf"
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protocVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${protocGenGrpcJavaVersion}"
+        }
+    }
+
+//    generatedFilesBaseDir = "src"
+    generateProtoTasks.generatedFilesBaseDir = "src"
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                setOutputSubDir 'java'
+//                outputSubDir = "java"
+            }
+        }
+    }
+
+}
+
+dependencies {
+    compile group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
+}
