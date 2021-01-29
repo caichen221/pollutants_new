@@ -35,6 +35,20 @@ public class JdkSerializableUtils {
     }
 
     /**
+     * 序列化
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param obj 对象
+     * @param objectOutputStream 输出流
+     * @throws
+     * @return byte[]
+     */
+    public static void serialize(Serializable obj, ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(obj);
+    }
+
+    /**
      * 反序列化
      * @version 1.0
      * @since jdk1.8
@@ -46,8 +60,22 @@ public class JdkSerializableUtils {
     public static <T extends Serializable> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         //反序列化
         //直接读取直接，用对象输入流直接读取出来
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        @Cleanup ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        @Cleanup ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        //读取后转成对应对象
+        return (T)objectInputStream.readObject();
+    }
+
+    /**
+     * 反序列化
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/1/6
+     * @param objectInputStream 输入流
+     * @throws
+     * @return T
+     */
+    public static <T extends Serializable> T deserialize(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
         //读取后转成对应对象
         return (T)objectInputStream.readObject();
     }
