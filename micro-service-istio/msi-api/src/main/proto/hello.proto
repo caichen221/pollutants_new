@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-option java_package = "com.iscas.msi.api";
+option java_package = "com.iscas.msi.api.grpc.hello";
 option java_outer_classname = "HelloWorldService";
 
-package com.iscas.msi.api;
+package com.iscas.msi.api.grpc.hello;
 
 service HelloWorld {
     rpc SayHello (HelloRequest) returns (HelloResponse) {}

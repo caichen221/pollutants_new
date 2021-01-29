@@ -1,0 +1,3 @@
+server.port=7879
+grpc.server.host=${GRPC_SERVER_HOST}
+grpc.server.port=${GRPC_SERVER_PORT}

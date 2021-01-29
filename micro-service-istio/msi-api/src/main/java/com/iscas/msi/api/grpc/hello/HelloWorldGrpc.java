@@ -1,4 +1,4 @@
-package com.iscas.msi.api;
+package com.iscas.msi.api.grpc.hello;
 
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
 import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
@@ -24,20 +24,20 @@ public final class HelloWorldGrpc {
 
   private HelloWorldGrpc() {}
 
-  public static final String SERVICE_NAME = "com.iscas.msi.api.HelloWorld";
+  public static final String SERVICE_NAME = "com.iscas.msi.api.grpc.hello.HelloWorld";
 
   // Static method descriptors that strictly reflect the proto.
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.iscas.msi.api.HelloWorldService.HelloRequest,
-      com.iscas.msi.api.HelloWorldService.HelloResponse> METHOD_SAY_HELLO =
-      io.grpc.MethodDescriptor.<com.iscas.msi.api.HelloWorldService.HelloRequest, com.iscas.msi.api.HelloWorldService.HelloResponse>newBuilder()
+  public static final io.grpc.MethodDescriptor<com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest,
+      com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse> METHOD_SAY_HELLO =
+      io.grpc.MethodDescriptor.<com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest, com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "com.iscas.msi.api.HelloWorld", "SayHello"))
+              "com.iscas.msi.api.grpc.hello.HelloWorld", "SayHello"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.iscas.msi.api.HelloWorldService.HelloRequest.getDefaultInstance()))
+              com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.iscas.msi.api.HelloWorldService.HelloResponse.getDefaultInstance()))
+              com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse.getDefaultInstance()))
           .build();
 
   /**
@@ -69,8 +69,8 @@ public final class HelloWorldGrpc {
 
     /**
      */
-    public void sayHello(com.iscas.msi.api.HelloWorldService.HelloRequest request,
-        io.grpc.stub.StreamObserver<com.iscas.msi.api.HelloWorldService.HelloResponse> responseObserver) {
+    public void sayHello(com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest request,
+        io.grpc.stub.StreamObserver<com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_SAY_HELLO, responseObserver);
     }
 
@@ -80,8 +80,8 @@ public final class HelloWorldGrpc {
             METHOD_SAY_HELLO,
             asyncUnaryCall(
               new MethodHandlers<
-                com.iscas.msi.api.HelloWorldService.HelloRequest,
-                com.iscas.msi.api.HelloWorldService.HelloResponse>(
+                com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest,
+                com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse>(
                   this, METHODID_SAY_HELLO)))
           .build();
     }
@@ -107,8 +107,8 @@ public final class HelloWorldGrpc {
 
     /**
      */
-    public void sayHello(com.iscas.msi.api.HelloWorldService.HelloRequest request,
-        io.grpc.stub.StreamObserver<com.iscas.msi.api.HelloWorldService.HelloResponse> responseObserver) {
+    public void sayHello(com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest request,
+        io.grpc.stub.StreamObserver<com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_SAY_HELLO, getCallOptions()), request, responseObserver);
     }
@@ -134,7 +134,7 @@ public final class HelloWorldGrpc {
 
     /**
      */
-    public com.iscas.msi.api.HelloWorldService.HelloResponse sayHello(com.iscas.msi.api.HelloWorldService.HelloRequest request) {
+    public com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse sayHello(com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest request) {
       return blockingUnaryCall(
           getChannel(), METHOD_SAY_HELLO, getCallOptions(), request);
     }
@@ -160,8 +160,8 @@ public final class HelloWorldGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.iscas.msi.api.HelloWorldService.HelloResponse> sayHello(
-        com.iscas.msi.api.HelloWorldService.HelloRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse> sayHello(
+        com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_SAY_HELLO, getCallOptions()), request);
     }
@@ -187,8 +187,8 @@ public final class HelloWorldGrpc {
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
         case METHODID_SAY_HELLO:
-          serviceImpl.sayHello((com.iscas.msi.api.HelloWorldService.HelloRequest) request,
-              (io.grpc.stub.StreamObserver<com.iscas.msi.api.HelloWorldService.HelloResponse>) responseObserver);
+          serviceImpl.sayHello((com.iscas.msi.api.grpc.hello.HelloWorldService.HelloRequest) request,
+              (io.grpc.stub.StreamObserver<com.iscas.msi.api.grpc.hello.HelloWorldService.HelloResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -209,7 +209,7 @@ public final class HelloWorldGrpc {
   private static final class HelloWorldDescriptorSupplier implements io.grpc.protobuf.ProtoFileDescriptorSupplier {
     @java.lang.Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
-      return com.iscas.msi.api.HelloWorldService.getDescriptor();
+      return com.iscas.msi.api.grpc.hello.HelloWorldService.getDescriptor();
     }
   }
 

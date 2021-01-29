@@ -93,7 +93,7 @@ dependencies {
 
 
 
-    testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    testCompile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
     testCompile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 

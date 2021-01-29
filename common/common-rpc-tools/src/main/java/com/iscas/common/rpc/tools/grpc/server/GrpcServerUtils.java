@@ -64,8 +64,10 @@ public class GrpcServerUtils {
      * @throws
      * @return void
      */
-    public static void shutdown(Server server) throws InterruptedException {
-        server.shutdown();
+    public static void shutdown(Server server) {
+        if (server != null) {
+            server.shutdown();
+        }
     }
 
     /**
