@@ -58,4 +58,6 @@ include 'micro-service-istio:msi-server-samples'
 findProject(':micro-service-istio:msi-server-samples')?.name = 'msi-server-samples'
 include 'micro-service-istio:msi-client-samples'
 findProject(':micro-service-istio:msi-client-samples')?.name = 'msi-client-samples'
+include 'samples:quasar-samples'
+findProject(':samples:quasar-samples')?.name = 'quasar-samples'
 
