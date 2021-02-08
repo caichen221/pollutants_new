@@ -48,7 +48,36 @@ public enum  TableFieldType {
     /**按钮 */
     button,
     /**表头下拉*/
-    headerSelect;
+    headerSelect,
+    /**可编辑的下拉菜单*/
+    selectCanEdit,
+    /**级联选择下拉菜单*/
+    selectCascader,
+    /**年*/
+    year,
+    /**月*/
+    month,
+    /**年月日范围*/
+    daterange,
+    /**年月日时间范围*/
+    datetimerange,
+    /**（特殊-label在上，input框在下）*/
+    verticaltext,
+    /**（特殊-宽度100%的文本输入框）*/
+    fulltext,
+    /**（特殊-宽度100%的多行文本输入框）*/
+    bigtextarea
+    ;
+
+
+
+    //table-view中内置的搜索或使用InputListView表单控件的type类型有：text（输入框）textarea（文本框）email（email）
+    //number（数字）select（下拉框）
+    //multiSelect（多选下拉框）select-canedit（可编辑的下拉菜单）
+    //select-cascader（级联选择下拉菜单）
+    //Checkbox/year（年）month（月）date（日期）
+    //datetime（年月日时间）daterange（年月日范围）
+    //datetimerange（年月日时间范围）verticaltext（特殊-label在上，input框在下）fulltext（特殊-宽度100%的文本输入框）bigtextarea（特殊-宽度100%的多行文本输入框）
 
 
 	public static TableFieldType analyzeFieldType(String type){
