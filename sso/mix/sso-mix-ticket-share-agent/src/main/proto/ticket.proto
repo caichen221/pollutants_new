@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "resEntity.proto";
+import "ticketEntity.proto";
+option java_package = "com.iscas.sso.mix.ticket.share.agent.service";
+option java_outer_classname = "TicketService";
+
+package com.iscas.sso.mix.ticket.share.agent.service;
+
+service Ticket {
+    rpc storeTicket (com.iscas.sso.mix.ticket.share.agent.model.TkEntity) returns (com.iscas.sso.mix.ticket.share.agent.model.ResEntity) {}
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.iscas.sso.mix.ticket.share.agent.model";
+option java_outer_classname = "TicketEntity";
+
+package com.iscas.sso.mix.ticket.share.agent.model;
+
+message TkEntity {
+    string ticket = 1; //ticket
+    string domain = 2; //域名
+    uint32 expire = 3; //过期时间，单位分钟
+}
