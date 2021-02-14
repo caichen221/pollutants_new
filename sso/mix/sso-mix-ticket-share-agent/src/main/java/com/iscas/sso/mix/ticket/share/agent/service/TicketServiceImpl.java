@@ -15,7 +15,7 @@ public class TicketServiceImpl extends TicketGrpc.TicketImplBase {
 
     @Override
     public void storeTicket(TicketEntity.TkEntity request, StreamObserver<ResponseEntity.ResEntity> responseObserver) {
-        ResponseEntity.ResEntity resEntity = ResponseEntity.ResEntity.newBuilder().build();
+        ResponseEntity.ResEntity resEntity = ResponseEntity.ResEntity.newBuilder().setMessage("111").build();
         responseObserver.onNext(resEntity);
         responseObserver.onCompleted();
     }
