@@ -15,7 +15,7 @@ public final class ResponseEntity {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   public interface ResEntityOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.iscas.sso.mix.ticket.share.agent.model.ResEntity)
+      // @@protoc_insertion_point(interface_extends:model.ResEntity)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -69,11 +69,11 @@ public final class ResponseEntity {
     long getTookInMillis();
   }
   /**
-   * Protobuf type {@code com.iscas.sso.mix.ticket.share.agent.model.ResEntity}
+   * Protobuf type {@code model.ResEntity}
    */
   public  static final class ResEntity extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.iscas.sso.mix.ticket.share.agent.model.ResEntity)
+      // @@protoc_insertion_point(message_implements:model.ResEntity)
       ResEntityOrBuilder {
     // Use ResEntity.newBuilder() to construct.
     private ResEntity(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -160,12 +160,12 @@ public final class ResponseEntity {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_descriptor;
+      return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_model_ResEntity_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_fieldAccessorTable
+      return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_model_ResEntity_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity.class, com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity.Builder.class);
     }
@@ -515,20 +515,20 @@ public final class ResponseEntity {
       return builder;
     }
     /**
-     * Protobuf type {@code com.iscas.sso.mix.ticket.share.agent.model.ResEntity}
+     * Protobuf type {@code model.ResEntity}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.iscas.sso.mix.ticket.share.agent.model.ResEntity)
+        // @@protoc_insertion_point(builder_implements:model.ResEntity)
         com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntityOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_descriptor;
+        return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_model_ResEntity_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_fieldAccessorTable
+        return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_model_ResEntity_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity.class, com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity.Builder.class);
       }
@@ -567,7 +567,7 @@ public final class ResponseEntity {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_descriptor;
+        return com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.internal_static_model_ResEntity_descriptor;
       }
 
       public com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity getDefaultInstanceForType() {
@@ -1017,10 +1017,10 @@ public final class ResponseEntity {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.iscas.sso.mix.ticket.share.agent.model.ResEntity)
+      // @@protoc_insertion_point(builder_scope:model.ResEntity)
     }
 
-    // @@protoc_insertion_point(class_scope:com.iscas.sso.mix.ticket.share.agent.model.ResEntity)
+    // @@protoc_insertion_point(class_scope:model.ResEntity)
     private static final com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity();
@@ -1056,10 +1056,10 @@ public final class ResponseEntity {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_descriptor;
+    internal_static_model_ResEntity_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_fieldAccessorTable;
+      internal_static_model_ResEntity_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1069,13 +1069,12 @@ public final class ResponseEntity {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017resEntity.proto\022*com.iscas.sso.mix.tic" +
-      "ket.share.agent.model\"s\n\tResEntity\022\016\n\006st" +
-      "atus\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022\014\n\004desc\030\003 \001(" +
-      "\t\022\r\n\005value\030\004 \001(\t\022\022\n\nrequestURL\030\005 \001(\t\022\024\n\014" +
-      "tookInMillis\030\006 \001(\004B<\n*com.iscas.sso.mix." +
-      "ticket.share.agent.modelB\016ResponseEntity" +
-      "b\006proto3"
+      "\n\017resEntity.proto\022\005model\"s\n\tResEntity\022\016\n" +
+      "\006status\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022\014\n\004desc\030\003" +
+      " \001(\t\022\r\n\005value\030\004 \001(\t\022\022\n\nrequestURL\030\005 \001(\t\022" +
+      "\024\n\014tookInMillis\030\006 \001(\004B<\n*com.iscas.sso.m" +
+      "ix.ticket.share.agent.modelB\016ResponseEnt" +
+      "ityb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1089,11 +1088,11 @@ public final class ResponseEntity {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_descriptor =
+    internal_static_model_ResEntity_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_fieldAccessorTable = new
+    internal_static_model_ResEntity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_iscas_sso_mix_ticket_share_agent_model_ResEntity_descriptor,
+        internal_static_model_ResEntity_descriptor,
         new java.lang.String[] { "Status", "Message", "Desc", "Value", "RequestURL", "TookInMillis", });
   }
 

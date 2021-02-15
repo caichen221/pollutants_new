@@ -24,7 +24,7 @@ public final class TicketGrpc {
 
   private TicketGrpc() {}
 
-  public static final String SERVICE_NAME = "com.iscas.sso.mix.ticket.share.agent.service.Ticket";
+  public static final String SERVICE_NAME = "service.Ticket";
 
   // Static method descriptors that strictly reflect the proto.
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
@@ -33,7 +33,19 @@ public final class TicketGrpc {
       io.grpc.MethodDescriptor.<com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity, com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "com.iscas.sso.mix.ticket.share.agent.service.Ticket", "storeTicket"))
+              "service.Ticket", "storeTicket"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity,
+      com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity> METHOD_GET_TICKET =
+      io.grpc.MethodDescriptor.<com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity, com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "service.Ticket", "getTicket"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -74,6 +86,13 @@ public final class TicketGrpc {
       asyncUnimplementedUnaryCall(METHOD_STORE_TICKET, responseObserver);
     }
 
+    /**
+     */
+    public void getTicket(com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity request,
+        io.grpc.stub.StreamObserver<com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_GET_TICKET, responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -83,6 +102,13 @@ public final class TicketGrpc {
                 com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity,
                 com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity>(
                   this, METHODID_STORE_TICKET)))
+          .addMethod(
+            METHOD_GET_TICKET,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity,
+                com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity>(
+                  this, METHODID_GET_TICKET)))
           .build();
     }
   }
@@ -112,6 +138,14 @@ public final class TicketGrpc {
       asyncUnaryCall(
           getChannel().newCall(METHOD_STORE_TICKET, getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getTicket(com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity request,
+        io.grpc.stub.StreamObserver<com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_GET_TICKET, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -137,6 +171,13 @@ public final class TicketGrpc {
     public com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity storeTicket(com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity request) {
       return blockingUnaryCall(
           getChannel(), METHOD_STORE_TICKET, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity getTicket(com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_GET_TICKET, getCallOptions(), request);
     }
   }
 
@@ -165,9 +206,18 @@ public final class TicketGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_STORE_TICKET, getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity> getTicket(
+        com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_GET_TICKET, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_STORE_TICKET = 0;
+  private static final int METHODID_GET_TICKET = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -188,6 +238,10 @@ public final class TicketGrpc {
       switch (methodId) {
         case METHODID_STORE_TICKET:
           serviceImpl.storeTicket((com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity) request,
+              (io.grpc.stub.StreamObserver<com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity>) responseObserver);
+          break;
+        case METHODID_GET_TICKET:
+          serviceImpl.getTicket((com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity) request,
               (io.grpc.stub.StreamObserver<com.iscas.sso.mix.ticket.share.agent.model.ResponseEntity.ResEntity>) responseObserver);
           break;
         default:
@@ -224,6 +278,7 @@ public final class TicketGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new TicketDescriptorSupplier())
               .addMethod(METHOD_STORE_TICKET)
+              .addMethod(METHOD_GET_TICKET)
               .build();
         }
       }

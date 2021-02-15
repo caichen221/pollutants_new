@@ -15,7 +15,7 @@ public final class TicketEntity {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   public interface TkEntityOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.iscas.sso.mix.ticket.share.agent.model.TkEntity)
+      // @@protoc_insertion_point(interface_extends:model.TkEntity)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -64,11 +64,11 @@ public final class TicketEntity {
     int getExpire();
   }
   /**
-   * Protobuf type {@code com.iscas.sso.mix.ticket.share.agent.model.TkEntity}
+   * Protobuf type {@code model.TkEntity}
    */
   public  static final class TkEntity extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.iscas.sso.mix.ticket.share.agent.model.TkEntity)
+      // @@protoc_insertion_point(message_implements:model.TkEntity)
       TkEntityOrBuilder {
     // Use TkEntity.newBuilder() to construct.
     private TkEntity(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -135,12 +135,12 @@ public final class TicketEntity {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_descriptor;
+      return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_model_TkEntity_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_fieldAccessorTable
+      return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_model_TkEntity_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity.class, com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity.Builder.class);
     }
@@ -401,20 +401,20 @@ public final class TicketEntity {
       return builder;
     }
     /**
-     * Protobuf type {@code com.iscas.sso.mix.ticket.share.agent.model.TkEntity}
+     * Protobuf type {@code model.TkEntity}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.iscas.sso.mix.ticket.share.agent.model.TkEntity)
+        // @@protoc_insertion_point(builder_implements:model.TkEntity)
         com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntityOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_descriptor;
+        return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_model_TkEntity_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_fieldAccessorTable
+        return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_model_TkEntity_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity.class, com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity.Builder.class);
       }
@@ -447,7 +447,7 @@ public final class TicketEntity {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_descriptor;
+        return com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.internal_static_model_TkEntity_descriptor;
       }
 
       public com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity getDefaultInstanceForType() {
@@ -771,10 +771,10 @@ public final class TicketEntity {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.iscas.sso.mix.ticket.share.agent.model.TkEntity)
+      // @@protoc_insertion_point(builder_scope:model.TkEntity)
     }
 
-    // @@protoc_insertion_point(class_scope:com.iscas.sso.mix.ticket.share.agent.model.TkEntity)
+    // @@protoc_insertion_point(class_scope:model.TkEntity)
     private static final com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new com.iscas.sso.mix.ticket.share.agent.model.TicketEntity.TkEntity();
@@ -810,10 +810,10 @@ public final class TicketEntity {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_descriptor;
+    internal_static_model_TkEntity_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_fieldAccessorTable;
+      internal_static_model_TkEntity_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -823,11 +823,10 @@ public final class TicketEntity {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022ticketEntity.proto\022*com.iscas.sso.mix." +
-      "ticket.share.agent.model\":\n\010TkEntity\022\016\n\006" +
-      "ticket\030\001 \001(\t\022\016\n\006domain\030\002 \001(\t\022\016\n\006expire\030\003" +
-      " \001(\rB:\n*com.iscas.sso.mix.ticket.share.a" +
-      "gent.modelB\014TicketEntityb\006proto3"
+      "\n\022ticketEntity.proto\022\005model\":\n\010TkEntity\022" +
+      "\016\n\006ticket\030\001 \001(\t\022\016\n\006domain\030\002 \001(\t\022\016\n\006expir" +
+      "e\030\003 \001(\rB:\n*com.iscas.sso.mix.ticket.shar" +
+      "e.agent.modelB\014TicketEntityb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -841,11 +840,11 @@ public final class TicketEntity {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_descriptor =
+    internal_static_model_TkEntity_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_fieldAccessorTable = new
+    internal_static_model_TkEntity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_iscas_sso_mix_ticket_share_agent_model_TkEntity_descriptor,
+        internal_static_model_TkEntity_descriptor,
         new java.lang.String[] { "Ticket", "Domain", "Expire", });
   }
 

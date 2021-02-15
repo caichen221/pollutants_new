@@ -17,7 +17,7 @@ import org.junit.runners.JUnit4;
  * @since jdk1.8
  */
 @RunWith(JUnit4.class)
-public class ClientTests {
+public class GrpcClientTests {
     @Test
     public void test() {
         //客户端调用
@@ -27,7 +27,10 @@ public class ClientTests {
                 .setExpire(11)
                 .setTicket("1111").build();
         ResponseEntity.ResEntity resEntity = ticketBlockingStub.storeTicket(tkEntity);
-        System.out.println(resEntity);
+        TicketEntity.TkEntity tkEntity2 = TicketEntity.TkEntity.newBuilder().build();
+        ResponseEntity.ResEntity ticket = ticketBlockingStub.getTicket(tkEntity2);
+        System.out.println(ticket);
+        System.out.println(ticket.getMessage());
         managedChannel.shutdown();
     }
 }

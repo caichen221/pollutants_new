@@ -79,4 +79,6 @@ include 'sso:mix:sso-mix-frontend-samples'
 findProject(':sso:mix:frontend-samples')?.name = 'frontend-samples'
 include 'sso:mix:sso-mix-backend-samples'
 findProject(':sso:mix:sso-mix-backend-samples')?.name = 'sso-mix-backend-samples'
+include 'samples:undertow-samples'
+findProject(':samples:undertow-samples')?.name = 'undertow-samples'
 

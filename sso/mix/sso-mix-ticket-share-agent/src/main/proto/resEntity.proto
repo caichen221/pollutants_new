@@ -3,7 +3,8 @@ syntax = "proto3";
 option java_package = "com.iscas.sso.mix.ticket.share.agent.model";
 option java_outer_classname = "ResponseEntity";
 
-package com.iscas.sso.mix.ticket.share.agent.model;
+//package com.iscas.sso.mix.ticket.share.agent.model;
+package model;
 
 message ResEntity {
     uint32 status = 1;

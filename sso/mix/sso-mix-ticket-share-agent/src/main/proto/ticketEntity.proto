@@ -3,7 +3,8 @@ syntax = "proto3";
 option java_package = "com.iscas.sso.mix.ticket.share.agent.model";
 option java_outer_classname = "TicketEntity";
 
-package com.iscas.sso.mix.ticket.share.agent.model;
+//package com.iscas.sso.mix.ticket.share.agent.model;
+package model;
 
 message TkEntity {
     string ticket = 1; //ticket

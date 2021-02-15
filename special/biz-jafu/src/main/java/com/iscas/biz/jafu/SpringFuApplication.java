@@ -16,6 +16,12 @@ import static org.springframework.fu.jafu.webmvc.WebMvcServerDsl.webMvc;
 /**
  * jafu启动类
  *
+ * 官方网址：https://spring.io/blog/2018/10/02/the-evolution-of-spring-fu
+ *
+ * github：https://github.com/spring-projects-experimental/spring-fu
+ *
+ * 官方示例github：https://github.com/spring-projects-experimental/spring-fu/tree/master/samples
+ *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/1/5 21:26

@@ -23,14 +23,13 @@ public final class TicketService {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014ticket.proto\022,com.iscas.sso.mix.ticket" +
-      ".share.agent.service\032\017resEntity.proto\032\022t" +
-      "icketEntity.proto2\206\001\n\006Ticket\022|\n\013storeTic" +
-      "ket\0224.com.iscas.sso.mix.ticket.share.age" +
-      "nt.model.TkEntity\0325.com.iscas.sso.mix.ti" +
-      "cket.share.agent.model.ResEntity\"\000B=\n,co" +
-      "m.iscas.sso.mix.ticket.share.agent.servi" +
-      "ceB\rTicketServiceb\006proto3"
+      "\n\014ticket.proto\022\007service\032\017resEntity.proto" +
+      "\032\022ticketEntity.proto2n\n\006Ticket\0222\n\013storeT" +
+      "icket\022\017.model.TkEntity\032\020.model.ResEntity" +
+      "\"\000\0220\n\tgetTicket\022\017.model.TkEntity\032\020.model" +
+      ".ResEntity\"\000B=\n,com.iscas.sso.mix.ticket" +
+      ".share.agent.serviceB\rTicketServiceb\006pro" +
+      "to3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
