@@ -132,11 +132,11 @@ log-expansion在springboot的MAVEN项目中配置方式说明：
 
 9、注册监听
    @SpringBootApplication
-   public class App extends SpringBootServletInitializer {
+   public class com.iscas.sso.mix.frontend.samples.App extends SpringBootServletInitializer {
 
        //Jar包运行
        public static void main(String[] args) {
-           SpringApplication springApplication = new SpringApplication(App.class);
+           SpringApplication springApplication = new SpringApplication(com.iscas.sso.mix.frontend.samples.App.class);
            springApplication.addListeners(new MyApplicationBeforeStartListener());
            springApplication.run(args);
        }
@@ -145,7 +145,7 @@ log-expansion在springboot的MAVEN项目中配置方式说明：
        @Override
        protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
            builder.application().addListeners(new MyApplicationBeforeStartListener());
-           return builder.sources(App.class);
+           return builder.sources(com.iscas.sso.mix.frontend.samples.App.class);
        }
    }
 

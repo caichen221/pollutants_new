@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="jquery-3.5.1.min.js"></script>
+    <script src="config.js"></script>
+    <script>
+
+        function login() {
+            //暂时只做一个最简单的登录
+            $.ajax({
+                url: loginServerUrl + "/login",
+                data: JSON.stringify({"username": $("#username").val(), "password": $("#password").val()}),
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                    let ticket = data.value;
+                    $.ajax({
+                        url: backendDemoUrl + "/sso_mix_verify",
+                        type: "GET",
+                        contentType: "application/json",
+                        dataType: "json",
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("Authorization", data.value);
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            localStorage.setItem('ISCAS-SSO-MIX-TOKEN' + ";" + backendDemoUrl, data.value);
+                            $.ajax({
+                                url: ticketShareAgentUrl + "/storeTicket",
+                                async: false, //同步
+                                data: JSON.stringify({"ticket": ticket}),
+                                type: "PUT",
+                                crossDomain: true,
+                                contentType: "application/json",
+                                // beforeSend:beforeSend, //发送请求
+                                dataType: "json"
+
+                            });
+                            alert("登录成功,假装进入了主页面");
+                        },
+                        error: function(res) {
+                            console.log(res);
+                            // alert("");
+                        }
+                    });
+                },
+                error: function(res) {
+                    console.log(res);
+                    // alert("");
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    用户名：<input type="text" id = "username" value=""/><br/>
+    密码：<input type="password" id = "password" value=""/><br/>
+    <input type="submit" value="登录" onclick="login();"/>
+</body>
+</html>

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "resEntity.proto";
+import "user.proto";
+option java_package = "com.iscas.sso.mix.auth.service";
+option java_outer_classname = "AuthService";
+
+//package com.iscas.sso.mix.ticket.share.agent.service;
+package service;
+
+service Auth {
+    rpc login (model.User) returns (model.ResEntity) {}
+    rpc verify (model.User) returns (model.ResEntity) {}
+}

@@ -1,6 +1,7 @@
 package com.iscas.sso.mix.ticket.share.agent;
 
 import com.iscas.common.rpc.tools.grpc.server.GrpcServerUtils;
+import com.iscas.sso.mix.ticket.share.agent.filter.CustomCrosFilter;
 import com.iscas.sso.mix.ticket.share.agent.handler.TicketHandler;
 import com.iscas.sso.mix.ticket.share.agent.service.TicketCommonService;
 import com.iscas.sso.mix.ticket.share.agent.service.TicketServiceImpl;
@@ -17,7 +18,9 @@ import org.springframework.fu.jafu.BeanDefinitionDsl;
 import org.springframework.fu.jafu.JafuApplication;
 import org.springframework.fu.jafu.webmvc.WebMvcServerDsl;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
+import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.IOException;
@@ -94,6 +97,7 @@ public class Main {
     // 声明bean
     public static BeanDefinitionDsl initBeans(BeanDefinitionDsl beanDefinitionDsl) {
         beanDefinitionDsl
+                .bean(CustomCrosFilter.class)
                 .bean(TicketHandler.class)
                 .bean(TicketCommonService.class);
 //                .bean(TestService.class)
