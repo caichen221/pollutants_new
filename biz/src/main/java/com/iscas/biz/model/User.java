@@ -3,9 +3,9 @@ package com.iscas.biz.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.Serializable;
-
 /**
  * <p>
  * 
@@ -17,6 +17,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Configuration(proxyBeanMethods = false)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,6 +62,5 @@ public class User implements Serializable {
      * 所属单位(或组织)
      */
     private String unit;
-
 
 }
