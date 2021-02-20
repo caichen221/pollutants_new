@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iscas.biz.mapper.common.OprationMapper">
+  <resultMap id="BaseResultMap" type="com.iscas.biz.domain.common.Opration">
+    <id column="op_id" jdbcType="INTEGER" property="opId" />
+    <result column="op_name" jdbcType="VARCHAR" property="opName" />
+    <result column="op_create_time" jdbcType="TIMESTAMP" property="opCreateTime" />
+    <result column="op_update_time" jdbcType="TIMESTAMP" property="opUpdateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    op_id, op_name, op_create_time, op_update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.iscas.biz.domain.common.OprationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from opration
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from opration
+    where op_id = #{opId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from opration
+    where op_id = #{opId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.iscas.biz.domain.common.OprationExample">
+    delete from opration
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.iscas.biz.domain.common.Opration">
+    insert into opration (op_id, op_name, op_create_time, 
+      op_update_time)
+    values (#{opId,jdbcType=INTEGER}, #{opName,jdbcType=VARCHAR}, #{opCreateTime,jdbcType=TIMESTAMP}, 
+      #{opUpdateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.iscas.biz.domain.common.Opration">
+    insert into opration
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="opId != null">
+        op_id,
+      </if>
+      <if test="opName != null">
+        op_name,
+      </if>
+      <if test="opCreateTime != null">
+        op_create_time,
+      </if>
+      <if test="opUpdateTime != null">
+        op_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="opId != null">
+        #{opId,jdbcType=INTEGER},
+      </if>
+      <if test="opName != null">
+        #{opName,jdbcType=VARCHAR},
+      </if>
+      <if test="opCreateTime != null">
+        #{opCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="opUpdateTime != null">
+        #{opUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.iscas.biz.domain.common.OprationExample" resultType="java.lang.Long">
+    select count(*) from opration
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update opration
+    <set>
+      <if test="record.opId != null">
+        op_id = #{record.opId,jdbcType=INTEGER},
+      </if>
+      <if test="record.opName != null">
+        op_name = #{record.opName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.opCreateTime != null">
+        op_create_time = #{record.opCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.opUpdateTime != null">
+        op_update_time = #{record.opUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update opration
+    set op_id = #{record.opId,jdbcType=INTEGER},
+      op_name = #{record.opName,jdbcType=VARCHAR},
+      op_create_time = #{record.opCreateTime,jdbcType=TIMESTAMP},
+      op_update_time = #{record.opUpdateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.iscas.biz.domain.common.Opration">
+    update opration
+    <set>
+      <if test="opName != null">
+        op_name = #{opName,jdbcType=VARCHAR},
+      </if>
+      <if test="opCreateTime != null">
+        op_create_time = #{opCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="opUpdateTime != null">
+        op_update_time = #{opUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where op_id = #{opId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iscas.biz.domain.common.Opration">
+    update opration
+    set op_name = #{opName,jdbcType=VARCHAR},
+      op_create_time = #{opCreateTime,jdbcType=TIMESTAMP},
+      op_update_time = #{opUpdateTime,jdbcType=TIMESTAMP}
+    where op_id = #{opId,jdbcType=INTEGER}
+  </update>
+</mapper>

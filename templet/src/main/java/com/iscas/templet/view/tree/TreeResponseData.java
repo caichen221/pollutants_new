@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
  **/
 @Data
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class TreeResponseData<T> implements Serializable ,Cloneable{
     /*显示名称*/
     protected String label;
@@ -31,7 +33,7 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
     /*是否选中*/
     protected Boolean selected = false;
     /*子节点*/
-    protected List<TreeResponseData<T>> children;
+    protected List<TreeResponseData<T>> children = new ArrayList<>();
     /**前台Path*/
     protected String path;
 

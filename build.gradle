@@ -49,7 +49,12 @@ subprojects  {
 ////        compile.exclude group: 'ch.qos.logback'
 ////        compile.exclude group: 'org.slf4j', module:'slf4j-api'
 //    }
-
+//    processResources {
+//
+//        from('src/main/java') {
+//            include '**/*'
+//        }
+//    }
     repositories {
         maven { url "${nexusUrl}" }
         maven {url "${aliyunUrl}"}

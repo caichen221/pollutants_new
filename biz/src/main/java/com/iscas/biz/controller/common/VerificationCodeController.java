@@ -1,4 +1,4 @@
-package com.iscas.base.biz.controller.common;
+package com.iscas.biz.controller.common;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
@@ -6,10 +6,12 @@ import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +31,7 @@ import java.util.Objects;
  * @since jdk1.8
  */
 @RestController
-@Api(description = "验证码控制器")
+@Api(tags = "验证码控制器")
 @Slf4j
 @ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled", matchIfMissing = false)
 public class VerificationCodeController extends BaseController {
@@ -39,6 +41,7 @@ public class VerificationCodeController extends BaseController {
     /**
      * 获取验证码
      * */
+    @ApiOperation(value="[验证码]获取验证码", notes="create by:朱全文 2020-02-21")
     @GetMapping("/verification/code")
     public void getKaptchaImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setDateHeader("Expires", 0);
@@ -59,13 +62,19 @@ public class VerificationCodeController extends BaseController {
             out.flush();
         } finally {
             // 关闭输出流
-            out.close();
+//            out.close();
         }
     }
 
     /**
      * 校验验证码
      * */
+    @ApiOperation(value="[验证码] 校验验证码", notes="create by:朱全文 2020-02-21")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "code", value = "验证码", required = true, dataType = "String")
+            }
+    )
     @GetMapping("/verification/code/verify")
     public ResponseEntity verify(String code) throws Exception {
         ResponseEntity response = getResponse();

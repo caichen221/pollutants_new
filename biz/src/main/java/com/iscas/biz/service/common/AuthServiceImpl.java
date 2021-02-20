@@ -6,7 +6,6 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
