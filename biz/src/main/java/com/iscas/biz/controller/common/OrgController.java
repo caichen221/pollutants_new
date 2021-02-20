@@ -2,15 +2,20 @@ package com.iscas.biz.controller.common;
 
 import com.iscas.biz.domain.common.Org;
 import com.iscas.biz.service.common.OrgService;
+import com.iscas.common.tools.assertion.AssertObjUtils;
+import com.iscas.templet.common.BaseController;
+import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
 import com.iscas.templet.view.tree.TreeResponseData;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * 组织机构管理
@@ -23,16 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "组织机构管理")
 @RestController
 @RequestMapping("/org")
-public class OrgController {
-    @Autowired
-    private OrgService orgService;
+public class OrgController extends BaseController {
+    private final OrgService orgService;
+
+    public OrgController(OrgService orgService) {
+        this.orgService = orgService;
+    }
 
     @ApiOperation(value="[组织机构]获取组织机构树", notes="create by:朱全文 2021-02-20")
-//    @ApiImplicitParams(
-//            {
-//                    @ApiImplicitParam(name = "user", value = "用户名密码等信息", required = true, dataType = "Map")
-//            }
-//    )
     @GetMapping
     public TreeResponse get() throws BaseException {
         TreeResponse treeResponse = new TreeResponse();
@@ -41,4 +44,48 @@ public class OrgController {
         treeResponse.setValue(treeResponseData);
         return treeResponse;
     }
+
+    @ApiOperation(value="[组织机构]新增组织机构节点", notes="create by:朱全文 2021-02-20")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "org", value = "组织机构数据", required = true, dataType = "Org")
+            }
+    )
+    @PostMapping("/node")
+    public ResponseEntity addNode(@Valid @RequestBody Org org) throws BaseException {
+        ResponseEntity response = getResponse();
+        int result = orgService.addOrg(org);
+        response.setValue(result);
+        return response;
+    }
+
+    @ApiOperation(value="[组织机构]修改组织机构节点", notes="create by:朱全文 2021-02-20")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "org", value = "组织机构数据", required = true, dataType = "Org")
+            }
+    )
+    @PutMapping("/node")
+    public ResponseEntity editNode(@Valid @RequestBody Org org) throws BaseException {
+        ResponseEntity response = getResponse();
+        int result = orgService.editOrg(org);
+        response.setValue(result);
+        return response;
+    }
+
+    @ApiOperation(value="[组织机构]删除组织机构节点", notes="create by:朱全文 2021-02-20")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "orgId", value = "组织机构数据", required = true, dataType = "Integer")
+            }
+    )
+    @DeleteMapping("/node/{orgId:[0-9]+}")
+    public ResponseEntity editNode(@PathVariable Integer orgId) throws BaseException {
+        ResponseEntity response = getResponse();
+        int result = orgService.deleteOrg(orgId);
+        response.setValue(result);
+        return response;
+    }
+
+
 }

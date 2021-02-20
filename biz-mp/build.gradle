@@ -47,7 +47,7 @@ dependencies {
     // https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core
     compile group: 'cn.smallbun.screw', name: 'screw-core', version: "${screwCoreVersion}"
 
-    compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: "1.4.0"
+    compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: "${mybatisGeneratorVersion}"
 
 }
 

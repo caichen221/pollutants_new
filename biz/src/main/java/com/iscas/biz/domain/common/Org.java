@@ -1,65 +1,35 @@
 package com.iscas.biz.domain.common;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@Data
+@Accessors(chain = true)
+@ApiModel("组织结构")
 public class Org {
+
+    @ApiModelProperty("ID")
     private Integer orgId;
 
+    @ApiModelProperty("名称")
+    @NotNull(message = "组织结构名称不能为空")
     private String orgName;
 
+    @ApiModelProperty("父ID")
     private Integer orgPid;
 
+    @ApiModelProperty("创建时间")
     private Date orgCreateTime;
 
+    @ApiModelProperty("修改时间")
     private Date orgUpdateTime;
 
+    @ApiModelProperty("描述")
     private String orgDesc;
 
-    public Integer getOrgId() {
-        return orgId;
-    }
-
-    public void setOrgId(Integer orgId) {
-        this.orgId = orgId;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName == null ? null : orgName.trim();
-    }
-
-    public Integer getOrgPid() {
-        return orgPid;
-    }
-
-    public void setOrgPid(Integer orgPid) {
-        this.orgPid = orgPid;
-    }
-
-    public Date getOrgCreateTime() {
-        return orgCreateTime;
-    }
-
-    public void setOrgCreateTime(Date orgCreateTime) {
-        this.orgCreateTime = orgCreateTime;
-    }
-
-    public Date getOrgUpdateTime() {
-        return orgUpdateTime;
-    }
-
-    public void setOrgUpdateTime(Date orgUpdateTime) {
-        this.orgUpdateTime = orgUpdateTime;
-    }
-
-    public String getOrgDesc() {
-        return orgDesc;
-    }
-
-    public void setOrgDesc(String orgDesc) {
-        this.orgDesc = orgDesc == null ? null : orgDesc.trim();
-    }
 }

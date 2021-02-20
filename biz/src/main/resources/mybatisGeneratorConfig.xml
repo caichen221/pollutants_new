@@ -51,17 +51,17 @@
         <!-- 数据表 根据数据库中的表来生成  -->
 
         <table tableName="menu"/>
-        <table tableName="opration"/>
-        <table tableName="org"/>
-        <table tableName="resource"/>
-        <table tableName="role"/>
-        <table tableName="user"/>
+<!--        <table tableName="opration"/>-->
+<!--        <table tableName="org"/>-->
+<!--        <table tableName="resource"/>-->
+<!--        <table tableName="role"/>-->
+<!--        <table tableName="user"/>-->
         <table tableName="menu_opration"/>
-        <table tableName="opration_resource"/>
-        <table tableName="org_role"/>
-        <table tableName="org_user"/>
-        <table tableName="role_menu"/>
-        <table tableName="user_role"/>
+<!--        <table tableName="opration_resource"/>-->
+<!--        <table tableName="org_role"/>-->
+<!--        <table tableName="org_user"/>-->
+<!--        <table tableName="role_menu"/>-->
+<!--        <table tableName="user_role"/>-->
 
         <!-- 数据表更详细的属性参见官方文档，也可参照https://www.jianshu.com/p/e09d2370b796，里注释掉-->
         <!-- <table schema="DB2ADMIN" tableName="ALLTYPES" domainObjectName="Customer" >
