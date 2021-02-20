@@ -218,23 +218,17 @@ public class TableDefinitionService {
 		return getTableHeader(tableIdentity, true);
 	}
 
-	/**
-	 * 获取表格数据，不带表头
-	 * @param tableIdentity
-	 * @param request 前台构造的查询条件
-	 * @param dynamicParam 通过session传入的动态条件
-	 * @return
-	 */
-	public TableResponse getData(String tableIdentity, TableSearchRequest request, Map<String,Object> dynamicParam)
-		throws ValidDataException {
+
+	public TableResponse getData(String tableIdentity, TableSearchRequest request, Map<String,Object> dynamicParam,
+								 String dynamicSql) throws ValidDataException {
 		TableResponse tableResponse = new TableResponse();
 		long start = System.currentTimeMillis();
 		try {
 			//查询表格定义
 			TableDefinition tableDefinition =
-				tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName(), tableIdentity);
+					tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName(), tableIdentity);
 			List<ColumnDefinition> columnDefinitions =
-				tableDefinitionMapper.getHeaderByIdentify(tableDefinitionConfig.getHeaderDefinitionTableName(), tableIdentity);
+					tableDefinitionMapper.getHeaderByIdentify(tableDefinitionConfig.getHeaderDefinitionTableName(), tableIdentity);
 			if (null == tableDefinition) {
 //				tableResponse.setMessage(String.format("table definition not exist for [%s]", tableIdentity));
 //				tableResponse.setDesc(String.format("[%s]的表格定义不存在！", tableIdentity));
@@ -252,7 +246,7 @@ public class TableDefinitionService {
 			StringBuffer where = new StringBuffer();
 			if (paramMap == null) {
 				paramMap = new HashMap<>();
-			} 
+			}
 			Map<String, Object> tmpMap = new HashMap<>();
 			for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
 				if(entry.getValue() == null){//查询条件为空的忽略
@@ -267,14 +261,14 @@ public class TableDefinitionService {
 				if(values.size() == 0){//参数为空忽略
 					continue;
 				}
-				
+
 				//查找对应的列定义
 				ColumnDefinition columnDefinition = null;
 				for (ColumnDefinition tmp : columnDefinitions) {
 					if (entry.getKey().equalsIgnoreCase(tmp.getField())) {
 						if(!tmp.isSearch()) {
 							ValidDataException validDataException = new ValidDataException(
-								String.format("[%s]列的属性search!=true，不允许检索！", tmp.getField()));
+									String.format("[%s]列的属性search!=true，不允许检索！", tmp.getField()));
 							validDataException.setMsgDetail(String.format("search!=true for field [%s]", tmp.getField()));
 							throw validDataException;
 						}
@@ -282,11 +276,11 @@ public class TableDefinitionService {
 						break;
 					}
 				}
-				
+
 				//是否找到列定义
 				if(null == columnDefinition){
 					ValidDataException validDataException = new ValidDataException(
-						String.format("找不到[%s]列的定义！", entry.getKey()));
+							String.format("找不到[%s]列的定义！", entry.getKey()));
 					validDataException.setMsgDetail(String.format("can not find definition for field [%s]", entry.getKey()));
 					throw validDataException;
 				}
@@ -295,13 +289,13 @@ public class TableDefinitionService {
 				TableSearchType searchType = TableSearchType.analyzeSearchType(columnDefinition.getSearchType());
 				if (searchType == null) {
 					ValidDataException validDataException = new ValidDataException(
-						String.format("[%s]列的searchType属性配置信息错误！", columnDefinition.getField()));
+							String.format("[%s]列的searchType属性配置信息错误！", columnDefinition.getField()));
 					validDataException.setMsgDetail(String
-						.format("invalidate search type config [%s] for field [%s]", columnDefinition.getSearchType(),
-							columnDefinition.getField()));
+							.format("invalidate search type config [%s] for field [%s]", columnDefinition.getSearchType(),
+									columnDefinition.getField()));
 					throw validDataException;
 				}
-				
+
 				switch (searchType) {
 					case exact:
 						if( StringUtils.isEmpty(values.get(0)) ){
@@ -341,7 +335,7 @@ public class TableDefinitionService {
 								where.append(String.format(" AND "));
 							}
 							where.append(String.format(" %s>=#{param.%s} AND %s<=#{param.%s}", entry.getKey(),
-								entry.getKey() + "Min", entry.getKey(), entry.getKey() + "Max"));
+									entry.getKey() + "Min", entry.getKey(), entry.getKey() + "Max"));
 						} else if (values.get(0) != null) {
 							tmpMap.put(entry.getKey() + "Min", values.get(0));
 							if (where.length() > 0) {
@@ -375,7 +369,7 @@ public class TableDefinitionService {
 
 			//拼接不带分页sql
 			String sql = tableDefinition.getSql().replace("{", "{param.");
-			String countSql=null, dataSql = null;
+			String countSql = null, dataSql = null;
 
 			//构建下拉列表查询条件
 			Map<String, List> optionsFilter = request.getOptionsFilter();
@@ -407,7 +401,6 @@ public class TableDefinitionService {
 						orCondition.append(" AND ").append(sb.toString());
 					}
 				});
-
 			}
 			if (orCondition.length() != 0) {
 				if (where.length() == 0) {
@@ -450,7 +443,7 @@ public class TableDefinitionService {
 					dataSql = String.format(dataSql + " ORDER BY %s %s ", request.getSortField(), request.getSortOrder().name().toUpperCase());
 				}
 				dataSql = String.format(dataSql + " LIMIT %d,%d;", (request.getPageSize() * (request.getPageNumber() - 1)),
-					request.getPageSize());
+						request.getPageSize());
 				log.debug("datasong get data sql : " + sql);
 				List<Map<String, Object>> datas = tableDefinitionMapper.getDataBySql(dataSql, paramMap);
 				tableResponseData.setData(datas);
@@ -463,6 +456,18 @@ public class TableDefinitionService {
 			tableResponse.setTookInMillis(System.currentTimeMillis() - start);
 		}
 		return tableResponse;
+	}
+
+	/**
+	 * 获取表格数据，不带表头
+	 * @param tableIdentity
+	 * @param request 前台构造的查询条件
+	 * @param dynamicParam 通过session传入的动态条件
+	 * @return
+	 */
+	public TableResponse getData(String tableIdentity, TableSearchRequest request, Map<String,Object> dynamicParam)
+		throws ValidDataException {
+		return getData(tableIdentity, request, dynamicParam, null);
 	}
 
 	/**
