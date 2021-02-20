@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/assert")
 public class AssertController {
+
     @GetMapping("/test")
     public String test() {
         String str = null;
