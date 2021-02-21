@@ -50,13 +50,13 @@
 
         <!-- 数据表 根据数据库中的表来生成  -->
 
-        <table tableName="menu"/>
+        <!--<table tableName="menu"/>-->
 <!--        <table tableName="opration"/>-->
 <!--        <table tableName="org"/>-->
 <!--        <table tableName="resource"/>-->
-<!--        <table tableName="role"/>-->
+        <table tableName="role"/>
 <!--        <table tableName="user"/>-->
-        <table tableName="menu_opration"/>
+       <!-- <table tableName="menu_opration"/>-->
 <!--        <table tableName="opration_resource"/>-->
 <!--        <table tableName="org_role"/>-->
 <!--        <table tableName="org_user"/>-->

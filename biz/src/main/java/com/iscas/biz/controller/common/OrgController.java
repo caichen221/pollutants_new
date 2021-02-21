@@ -2,7 +2,6 @@ package com.iscas.biz.controller.common;
 
 import com.iscas.biz.domain.common.Org;
 import com.iscas.biz.service.common.OrgService;
-import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -15,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
+import java.util.List;
 
 /**
  * 组织机构管理
@@ -76,16 +75,31 @@ public class OrgController extends BaseController {
     @ApiOperation(value="[组织机构]删除组织机构节点", notes="create by:朱全文 2021-02-20")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "orgId", value = "组织机构数据", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "orgId", value = "组织机构Id", required = true, dataType = "Integer")
             }
     )
     @DeleteMapping("/node/{orgId:[0-9]+}")
-    public ResponseEntity editNode(@PathVariable Integer orgId) throws BaseException {
+    public ResponseEntity deleteNode(@PathVariable Integer orgId) throws BaseException {
         ResponseEntity response = getResponse();
         int result = orgService.deleteOrg(orgId);
         response.setValue(result);
         return response;
     }
+
+//    @ApiOperation(value="[组织机构]为组织机构配置角色-2021-02-21", notes="create by:朱全文")
+//    @ApiImplicitParams(
+//            {
+//                    @ApiImplicitParam(name = "orgId", value = "组织机构Id", required = true, dataType = "Integer"),
+//                    @ApiImplicitParam(name = "roleIds", value = "角色Ids", required = true, dataType = "List")
+//            }
+//    )
+//    @DeleteMapping("/{orgId:[0-9]+}/relation/role")
+//    public ResponseEntity relationRole(@PathVariable Integer orgId, @RequestBody List<Integer> roleIds) throws BaseException {
+//        ResponseEntity response = getResponse();
+//        int result = orgService.deleteOrg(orgId, roleIds);
+//        response.setValue(result);
+//        return response;
+//    }
 
 
 }

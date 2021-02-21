@@ -14,7 +14,7 @@ public interface OrgMapper {
 
     int deleteByPrimaryKey(Integer orgId);
 
-    int insert(Org record);
+    Integer insert(Org record);
 
     int insertSelective(Org record);
 

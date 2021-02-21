@@ -9,6 +9,8 @@ public class Role {
 
     private Date roleCreateTime;
 
+    private Date roleUpdateTime;
+
     public Integer getRoleId() {
         return roleId;
     }
@@ -31,5 +33,13 @@ public class Role {
 
     public void setRoleCreateTime(Date roleCreateTime) {
         this.roleCreateTime = roleCreateTime;
+    }
+
+    public Date getRoleUpdateTime() {
+        return roleUpdateTime;
+    }
+
+    public void setRoleUpdateTime(Date roleUpdateTime) {
+        this.roleUpdateTime = roleUpdateTime;
     }
 }

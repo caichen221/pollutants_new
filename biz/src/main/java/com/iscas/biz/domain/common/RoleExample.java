@@ -294,6 +294,66 @@ public class RoleExample {
             addCriterion("role_create_time not between", value1, value2, "roleCreateTime");
             return (Criteria) this;
         }
+
+        public Criteria andRoleUpdateTimeIsNull() {
+            addCriterion("role_update_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeIsNotNull() {
+            addCriterion("role_update_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeEqualTo(Date value) {
+            addCriterion("role_update_time =", value, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeNotEqualTo(Date value) {
+            addCriterion("role_update_time <>", value, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeGreaterThan(Date value) {
+            addCriterion("role_update_time >", value, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("role_update_time >=", value, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeLessThan(Date value) {
+            addCriterion("role_update_time <", value, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("role_update_time <=", value, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeIn(List<Date> values) {
+            addCriterion("role_update_time in", values, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeNotIn(List<Date> values) {
+            addCriterion("role_update_time not in", values, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeBetween(Date value1, Date value2) {
+            addCriterion("role_update_time between", value1, value2, "roleUpdateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andRoleUpdateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("role_update_time not between", value1, value2, "roleUpdateTime");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

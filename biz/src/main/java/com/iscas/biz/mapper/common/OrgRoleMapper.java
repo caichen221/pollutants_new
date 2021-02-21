@@ -4,7 +4,9 @@ import com.iscas.biz.domain.common.OrgRoleExample;
 import com.iscas.biz.domain.common.OrgRoleKey;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface OrgRoleMapper {
     long countByExample(OrgRoleExample example);
 

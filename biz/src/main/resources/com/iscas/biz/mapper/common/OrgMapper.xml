@@ -123,11 +123,11 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.iscas.biz.domain.common.Org">
-    insert into org (org_id, org_name, org_pid, 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="orgId" keyColumn="org_id" parameterType="com.iscas.biz.domain.common.Org">
+    insert into org (org_id, org_name, org_pid,
       org_create_time, org_update_time, org_desc
       )
-    values (#{orgId,jdbcType=INTEGER}, #{orgName,jdbcType=VARCHAR}, #{orgPid,jdbcType=INTEGER}, 
+    values (#{orgId,jdbcType=INTEGER}, #{orgName,jdbcType=VARCHAR}, #{orgPid,jdbcType=INTEGER},
       #{orgCreateTime,jdbcType=TIMESTAMP}, #{orgUpdateTime,jdbcType=TIMESTAMP}, #{orgDesc,jdbcType=LONGVARCHAR}
       )
   </insert>

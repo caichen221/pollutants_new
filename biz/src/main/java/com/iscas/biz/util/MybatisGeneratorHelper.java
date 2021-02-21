@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public class MybatisGeneratorHelper {
     //生成的mapper可能有重复值，注意处理
-//    public static void main(String[] args) throws InterruptedException, SQLException, InvalidConfigurationException, XMLParserException, IOException {
-//        MybatisGeneratorUtils.generate("mybatisGeneratorConfig.xml");
-//    }
+    public static void main(String[] args) throws InterruptedException, SQLException, InvalidConfigurationException, XMLParserException, IOException {
+        MybatisGeneratorUtils.generate("mybatisGeneratorConfig.xml");
+    }
 }

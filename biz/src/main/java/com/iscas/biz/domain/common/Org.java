@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -31,5 +33,11 @@ public class Org {
 
     @ApiModelProperty("描述")
     private String orgDesc;
+
+    @ApiModelProperty("角色(显示)")
+    private List<String> roleNames = new ArrayList<>();
+
+    @ApiModelProperty("角色ID(不显示)")
+    private List<Integer> roleIds = new ArrayList<>();
 
 }
