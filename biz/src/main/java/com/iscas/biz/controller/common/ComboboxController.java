@@ -1,6 +1,8 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.domain.common.Org;
+import com.iscas.biz.service.common.OprationService;
 import com.iscas.biz.service.common.OrgService;
 import com.iscas.biz.service.common.RoleService;
 import com.iscas.templet.common.BaseController;
@@ -29,10 +31,12 @@ import java.util.List;
 public class ComboboxController extends BaseController {
     private final RoleService roleService;
     private final OrgService orgService;
+    private final OprationService oprationService;
 
-    public ComboboxController(RoleService roleService, OrgService orgService) {
+    public ComboboxController(RoleService roleService, OrgService orgService, OprationService oprationService) {
         this.roleService = roleService;
         this.orgService = orgService;
+        this.oprationService = oprationService;
     }
 
     @ApiOperation(value="获取角色下拉列表", notes="获取角色下拉列表")
@@ -49,6 +53,15 @@ public class ComboboxController extends BaseController {
     public ResponseEntity orgTree() {
         ResponseEntity response = getResponse();
         TreeResponseData<Org> tree = orgService.getTree();
+        response.setValue(tree);
+        return response;
+    }
+
+    @ApiOperation(value="获取操作下拉列表-2021-02-22 create by 朱全文", notes="")
+    @GetMapping("/opration")
+    public ResponseEntity opration() {
+        ResponseEntity response = getResponse();
+        List<ComboboxData<Opration>> tree = oprationService.combobox();
         response.setValue(tree);
         return response;
     }

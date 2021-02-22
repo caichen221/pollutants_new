@@ -2,9 +2,7 @@ package com.iscas.biz.service.common;
 
 import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.biz.domain.common.*;
-import com.iscas.biz.mapper.common.MenuMapper;
-import com.iscas.biz.mapper.common.RoleMapper;
-import com.iscas.biz.mapper.common.RoleMenuMapper;
+import com.iscas.biz.mapper.common.*;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.ValidatePropDistinctUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
@@ -29,12 +27,17 @@ public class MenuService {
     private final RoleMapper roleMapper;
     private final MenuMapper menuMapper;
     private final RoleMenuMapper roleMenuMapper;
+    private final OprationMapper oprationMapper;
+    private final MenuOprationMapper menuOprationMapper;
 
 
-    public MenuService(RoleMapper roleMapper, MenuMapper menuMapper, RoleMenuMapper roleMenuMapper) {
+    public MenuService(RoleMapper roleMapper, MenuMapper menuMapper, RoleMenuMapper roleMenuMapper,
+                       OprationMapper oprationMapper, MenuOprationMapper menuOprationMapper) {
         this.roleMapper = roleMapper;
         this.menuMapper = menuMapper;
         this.roleMenuMapper = roleMenuMapper;
+        this.oprationMapper = oprationMapper;
+        this.menuOprationMapper = menuOprationMapper;
     }
 
     public TreeResponseData<Menu> getTree() {
@@ -83,6 +86,21 @@ public class MenuService {
             }
         }
 
+        List<Map> menuOprationMaps = menuMapper.selectMenuOpration();
+        Map<Integer, List<Map>> menuOprationMap = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(menuOprationMaps)) {
+            for (Map oprationMap : menuOprationMaps) {
+                Integer menuId = (Integer) oprationMap.get("menu_id");
+                List<Map> maps = menuOprationMap.get(menuId);
+                if (maps == null) {
+                    maps = new ArrayList<>();
+                    menuOprationMap.put(menuId, maps);
+                }
+                menuOprationMap.get(menuId).add(oprationMap);
+            }
+        }
+
+
         Map<Integer, List<TreeResponseData<Menu>>> childOrgs = new HashMap<>();
         for (Menu menu : menus) {
             Integer menuId = menu.getMenuId();
@@ -93,6 +111,7 @@ public class MenuService {
             }
             TreeResponseData<Menu> treeResponseData = new TreeResponseData<>();
             List<Role> rs = menuRoleMap.get(menuId);
+            List<Map> menuOprations = menuOprationMap.get(menuId);
             treeResponseData.setLabel(menu.getMenuName())
                     .setId(menu.getMenuId())
                     .setData(menu);
@@ -103,6 +122,14 @@ public class MenuService {
                     roleNamesJoiner.add(r.getRoleName());
                 }
                 menu.setRoleNames(roleNamesJoiner.toString());
+            }
+            if (CollectionUtils.isNotEmpty(menuOprations)) {
+                StringJoiner opNameJoiner = new StringJoiner(",");
+                for (Map menuOpration : menuOprations) {
+                    menu.getOprationIds().add((Integer) menuOpration.get("op_id"));
+                    opNameJoiner.add((String) menuOpration.get("op_name"));
+                }
+                menu.setOprationNames(opNameJoiner.toString());
             }
 
             childOrgs.get(menuPid).add(treeResponseData);
@@ -119,15 +146,13 @@ public class MenuService {
                 .setMenuUpdateTime(date);
         int result = menuMapper.insert(menu);
         List<Integer> roleIds = menu.getRoleIds();
+        List<Integer> opIds = menu.getOprationIds();
         //配置角色
-        if (CollectionUtils.isNotEmpty(roleIds)) {
-            for (Integer roleId : roleIds) {
-                RoleMenuKey roleMenuKey = new RoleMenuKey();
-                roleMenuKey.setMenuId(menu.getMenuId());
-                roleMenuKey.setRoleId(roleId);
-                roleMenuMapper.insert(roleMenuKey);
-            }
-        }
+        insertRoleIds(roleIds, menu);
+
+        //配置权限标识
+        insertOprations(opIds, menu);
+
         return result;
     }
 
@@ -137,11 +162,24 @@ public class MenuService {
         Date date = new Date();
         menu.setMenuUpdateTime(date);
         int result = menuMapper.updateByPrimaryKey(menu);
+
         //配置角色
         List<Integer> roleIds = menu.getRoleIds();
         RoleMenuExample roleMenuExample = new RoleMenuExample();
         roleMenuExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
         roleMenuMapper.deleteByExample(roleMenuExample);
+        insertRoleIds(roleIds, menu);
+
+        //配置权限标识
+        List<Integer> opIds = menu.getOprationIds();
+        MenuOprationExample menuOprationExample = new MenuOprationExample();
+        menuOprationExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
+        menuOprationMapper.deleteByExample(menuOprationExample);
+        insertOprations(opIds, menu);
+
+        return result;
+    }
+    private void insertRoleIds(List<Integer> roleIds, Menu menu) {
         if (CollectionUtils.isNotEmpty(roleIds)) {
             for (Integer roleId : roleIds) {
                 RoleMenuKey roleMenuKey = new RoleMenuKey();
@@ -150,7 +188,17 @@ public class MenuService {
                 roleMenuMapper.insert(roleMenuKey);
             }
         }
-        return result;
+    }
+
+    private void insertOprations(List<Integer> opIds, Menu menu) {
+        if (CollectionUtils.isNotEmpty(opIds)) {
+            for (Integer opId : opIds) {
+                MenuOprationKey menuOprationKey = new MenuOprationKey();
+                menuOprationKey.setMenuId(menu.getMenuId());
+                menuOprationKey.setOpId(opId);
+                menuOprationMapper.insert(menuOprationKey);
+            }
+        }
     }
 
     public int deleteMenu(Integer menuId) {

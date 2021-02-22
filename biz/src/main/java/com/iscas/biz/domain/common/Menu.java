@@ -36,4 +36,11 @@ public class Menu {
 
     @ApiModelProperty("角色名称，显示")
     private String roleNames;
+
+    @ApiModelProperty("权限标识ID,不显示")
+    private List<Integer> oprationIds = new ArrayList<>();
+
+    @ApiModelProperty("权限标识名称，显示")
+    private String oprationNames;
+
 }

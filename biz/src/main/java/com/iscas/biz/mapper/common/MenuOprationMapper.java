@@ -4,7 +4,9 @@ import com.iscas.biz.domain.common.MenuOprationExample;
 import com.iscas.biz.domain.common.MenuOprationKey;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface MenuOprationMapper {
     long countByExample(MenuOprationExample example);
 
