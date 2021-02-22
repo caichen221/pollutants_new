@@ -32,8 +32,8 @@ public class Swagger3Config {
                 .enable(swaggerEnable)
                 .select()
                 // 自行修改为自己的包路径
-//                .apis(RequestHandlerSelectors.basePackage("com.iscas.biz.test.controller"))
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .apis(RequestHandlerSelectors.basePackage("com.iscas.biz"))
+//                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.any())
                 .build();
     }
