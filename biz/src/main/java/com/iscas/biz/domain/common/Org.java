@@ -35,7 +35,7 @@ public class Org {
     private String orgDesc;
 
     @ApiModelProperty("角色(显示)")
-    private List<String> roleNames = new ArrayList<>();
+    private String roleNames;
 
     @ApiModelProperty("角色ID(不显示)")
     private List<Integer> roleIds = new ArrayList<>();

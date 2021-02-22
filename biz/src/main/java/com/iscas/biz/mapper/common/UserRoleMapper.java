@@ -4,7 +4,9 @@ import com.iscas.biz.domain.common.UserRoleExample;
 import com.iscas.biz.domain.common.UserRoleKey;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserRoleMapper {
     long countByExample(UserRoleExample example);
 

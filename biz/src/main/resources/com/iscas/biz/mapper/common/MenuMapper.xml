@@ -2,14 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iscas.biz.mapper.common.MenuMapper">
   <resultMap id="BaseResultMap" type="com.iscas.biz.domain.common.Menu">
-    <result column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="prefix_url" jdbcType="VARCHAR" property="prefixUrl" />
-    <result column="pid" jdbcType="INTEGER" property="pid" />
-    <result column="server_id" jdbcType="INTEGER" property="serverId" />
-    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="subsystem" jdbcType="VARCHAR" property="subsystem" />
-    <result column="level" jdbcType="INTEGER" property="level" />
+    <id column="menu_id" jdbcType="INTEGER" property="menuId" />
+    <result column="menu_pid" jdbcType="INTEGER" property="menuPid" />
+    <result column="menu_page" jdbcType="VARCHAR" property="menuPage" />
+    <result column="menu_create_time" jdbcType="TIMESTAMP" property="menuCreateTime" />
+    <result column="menu_update_time" jdbcType="TIMESTAMP" property="menuUpdateTime" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, prefix_url, pid, server_id, createtime, subsystem, level
+    menu_id, menu_pid, menu_page, menu_create_time, menu_update_time, menu_name
   </sql>
   <select id="selectByExample" parameterType="com.iscas.biz.domain.common.MenuExample" resultMap="BaseResultMap">
     select
@@ -86,72 +84,70 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from menu
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from menu
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </delete>
   <delete id="deleteByExample" parameterType="com.iscas.biz.domain.common.MenuExample">
     delete from menu
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.iscas.biz.domain.common.Menu">
-    insert into menu (id, name, prefix_url, 
-      pid, server_id, createtime, 
-      subsystem, level)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{prefixUrl,jdbcType=VARCHAR}, 
-      #{pid,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{subsystem,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER})
+  <insert id="insert" useGeneratedKeys="true" keyColumn="menu_id" keyProperty="menuId" parameterType="com.iscas.biz.domain.common.Menu">
+    insert into menu (menu_id, menu_pid, menu_page, 
+      menu_create_time, menu_update_time, menu_name
+      )
+    values (#{menuId,jdbcType=INTEGER}, #{menuPid,jdbcType=INTEGER}, #{menuPage,jdbcType=VARCHAR}, 
+      #{menuCreateTime,jdbcType=TIMESTAMP}, #{menuUpdateTime,jdbcType=TIMESTAMP}, #{menuName,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.iscas.biz.domain.common.Menu">
     insert into menu
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="menuId != null">
+        menu_id,
       </if>
-      <if test="name != null">
-        name,
+      <if test="menuPid != null">
+        menu_pid,
       </if>
-      <if test="prefixUrl != null">
-        prefix_url,
+      <if test="menuPage != null">
+        menu_page,
       </if>
-      <if test="pid != null">
-        pid,
+      <if test="menuCreateTime != null">
+        menu_create_time,
       </if>
-      <if test="serverId != null">
-        server_id,
+      <if test="menuUpdateTime != null">
+        menu_update_time,
       </if>
-      <if test="createtime != null">
-        createtime,
-      </if>
-      <if test="subsystem != null">
-        subsystem,
-      </if>
-      <if test="level != null">
-        level,
+      <if test="menuName != null">
+        menu_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="menuId != null">
+        #{menuId,jdbcType=INTEGER},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="menuPid != null">
+        #{menuPid,jdbcType=INTEGER},
       </if>
-      <if test="prefixUrl != null">
-        #{prefixUrl,jdbcType=VARCHAR},
+      <if test="menuPage != null">
+        #{menuPage,jdbcType=VARCHAR},
       </if>
-      <if test="pid != null">
-        #{pid,jdbcType=INTEGER},
+      <if test="menuCreateTime != null">
+        #{menuCreateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="serverId != null">
-        #{serverId,jdbcType=INTEGER},
+      <if test="menuUpdateTime != null">
+        #{menuUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="subsystem != null">
-        #{subsystem,jdbcType=VARCHAR},
-      </if>
-      <if test="level != null">
-        #{level,jdbcType=INTEGER},
+      <if test="menuName != null">
+        #{menuName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -164,29 +160,23 @@
   <update id="updateByExampleSelective" parameterType="map">
     update menu
     <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+      <if test="record.menuId != null">
+        menu_id = #{record.menuId,jdbcType=INTEGER},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.menuPid != null">
+        menu_pid = #{record.menuPid,jdbcType=INTEGER},
       </if>
-      <if test="record.prefixUrl != null">
-        prefix_url = #{record.prefixUrl,jdbcType=VARCHAR},
+      <if test="record.menuPage != null">
+        menu_page = #{record.menuPage,jdbcType=VARCHAR},
       </if>
-      <if test="record.pid != null">
-        pid = #{record.pid,jdbcType=INTEGER},
+      <if test="record.menuCreateTime != null">
+        menu_create_time = #{record.menuCreateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.serverId != null">
-        server_id = #{record.serverId,jdbcType=INTEGER},
+      <if test="record.menuUpdateTime != null">
+        menu_update_time = #{record.menuUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.createtime != null">
-        createtime = #{record.createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.subsystem != null">
-        subsystem = #{record.subsystem,jdbcType=VARCHAR},
-      </if>
-      <if test="record.level != null">
-        level = #{record.level,jdbcType=INTEGER},
+      <if test="record.menuName != null">
+        menu_name = #{record.menuName,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -195,17 +185,44 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update menu
-    set id = #{record.id,jdbcType=INTEGER},
-      name = #{record.name,jdbcType=VARCHAR},
-      prefix_url = #{record.prefixUrl,jdbcType=VARCHAR},
-      pid = #{record.pid,jdbcType=INTEGER},
-      server_id = #{record.serverId,jdbcType=INTEGER},
-      createtime = #{record.createtime,jdbcType=TIMESTAMP},
-      subsystem = #{record.subsystem,jdbcType=VARCHAR},
-      level = #{record.level,jdbcType=INTEGER}
+    set menu_id = #{record.menuId,jdbcType=INTEGER},
+      menu_pid = #{record.menuPid,jdbcType=INTEGER},
+      menu_page = #{record.menuPage,jdbcType=VARCHAR},
+      menu_create_time = #{record.menuCreateTime,jdbcType=TIMESTAMP},
+      menu_update_time = #{record.menuUpdateTime,jdbcType=TIMESTAMP},
+      menu_name = #{record.menuName,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-
+  <update id="updateByPrimaryKeySelective" parameterType="com.iscas.biz.domain.common.Menu">
+    update menu
+    <set>
+      <if test="menuPid != null">
+        menu_pid = #{menuPid,jdbcType=INTEGER},
+      </if>
+      <if test="menuPage != null">
+        menu_page = #{menuPage,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCreateTime != null">
+        menu_create_time = #{menuCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="menuUpdateTime != null">
+        menu_update_time = #{menuUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="menuName != null">
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iscas.biz.domain.common.Menu">
+    update menu
+    set menu_pid = #{menuPid,jdbcType=INTEGER},
+      menu_page = #{menuPage,jdbcType=VARCHAR},
+      menu_create_time = #{menuCreateTime,jdbcType=TIMESTAMP},
+      menu_update_time = #{menuUpdateTime,jdbcType=TIMESTAMP},
+      menu_name = #{menuName,jdbcType=VARCHAR}
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </update>
 </mapper>

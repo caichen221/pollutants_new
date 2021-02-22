@@ -1,85 +1,39 @@
 package com.iscas.biz.domain.common;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+@Data
+@Accessors(chain = true)
+@ApiModel("菜单")
 public class Menu {
-    private Integer id;
+    @ApiModelProperty("ID")
+    private Integer menuId;
 
-    private String name;
+    @ApiModelProperty("上级菜单")
+    private Integer menuPid;
 
-    private String prefixUrl;
+    @ApiModelProperty("菜单路径")
+    private String menuPage;
 
-    private Integer pid;
+    @ApiModelProperty("菜单创建时间")
+    private Date menuCreateTime;
 
-    private Integer serverId;
+    @ApiModelProperty("菜单修改时间")
+    private Date menuUpdateTime;
 
-    private Date createtime;
+    @ApiModelProperty("菜单名称")
+    private String menuName;
 
-    private String subsystem;
+    @ApiModelProperty("角色ID（多选）不显示")
+    private List<Integer> roleIds = new ArrayList<>();
 
-    private Integer level;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPrefixUrl() {
-        return prefixUrl;
-    }
-
-    public void setPrefixUrl(String prefixUrl) {
-        this.prefixUrl = prefixUrl == null ? null : prefixUrl.trim();
-    }
-
-    public Integer getPid() {
-        return pid;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
-    }
-
-    public Integer getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(Integer serverId) {
-        this.serverId = serverId;
-    }
-
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
-
-    public String getSubsystem() {
-        return subsystem;
-    }
-
-    public void setSubsystem(String subsystem) {
-        this.subsystem = subsystem == null ? null : subsystem.trim();
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
+    @ApiModelProperty("角色名称，显示")
+    private String roleNames;
 }

@@ -14,7 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 组织机构管理
@@ -85,21 +84,5 @@ public class OrgController extends BaseController {
         response.setValue(result);
         return response;
     }
-
-//    @ApiOperation(value="[组织机构]为组织机构配置角色-2021-02-21", notes="create by:朱全文")
-//    @ApiImplicitParams(
-//            {
-//                    @ApiImplicitParam(name = "orgId", value = "组织机构Id", required = true, dataType = "Integer"),
-//                    @ApiImplicitParam(name = "roleIds", value = "角色Ids", required = true, dataType = "List")
-//            }
-//    )
-//    @DeleteMapping("/{orgId:[0-9]+}/relation/role")
-//    public ResponseEntity relationRole(@PathVariable Integer orgId, @RequestBody List<Integer> roleIds) throws BaseException {
-//        ResponseEntity response = getResponse();
-//        int result = orgService.deleteOrg(orgId, roleIds);
-//        response.setValue(result);
-//        return response;
-//    }
-
 
 }

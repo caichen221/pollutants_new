@@ -4,7 +4,9 @@ import com.iscas.biz.domain.common.RoleMenuExample;
 import com.iscas.biz.domain.common.RoleMenuKey;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface RoleMenuMapper {
     long countByExample(RoleMenuExample example);
 

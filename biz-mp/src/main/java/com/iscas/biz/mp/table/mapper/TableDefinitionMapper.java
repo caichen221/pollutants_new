@@ -35,7 +35,7 @@ public interface TableDefinitionMapper {
 
 
 	@Insert("${sql}")//需要用replace
-	@Options( useGeneratedKeys=true, keyProperty= "param.id")
+	@Options(useGeneratedKeys=true, keyProperty= "param.id")
 //	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int saveData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
