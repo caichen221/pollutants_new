@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+@ApiModel("菜单")
 @Data
 @Accessors(chain = true)
-@ApiModel("菜单")
 public class Menu {
     @ApiModelProperty("ID")
     private Integer menuId;
