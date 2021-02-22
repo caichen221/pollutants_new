@@ -1,7 +1,5 @@
 package com.iscas.biz.config.log;
 
-import java.util.Map;
-
 /**
  *
  *
@@ -11,5 +9,5 @@ import java.util.Map;
  * @since jdk1.8
  */
 public interface IStoreLogService {
-    void store(Map<String, Object> logInfo);
+    void store(LogInfo logInfo);
 }

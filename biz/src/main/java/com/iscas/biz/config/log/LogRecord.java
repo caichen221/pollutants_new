@@ -16,4 +16,5 @@ import java.lang.annotation.*;
 public @interface LogRecord {
     LogType type() default LogType.UNKONW;
     String desc();
+    OperateType operateType();
 }

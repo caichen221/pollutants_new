@@ -29,4 +29,8 @@ public enum LogType {
     public int getIntVal() {
         return intVal;
     }
+
+    public String getValue() {
+        return value;
+    }
 }
