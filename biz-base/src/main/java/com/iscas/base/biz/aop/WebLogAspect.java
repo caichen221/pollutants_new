@@ -43,8 +43,9 @@ public class WebLogAspect {
     @AfterReturning(returning = "ret", pointcut = "webLog()")
     public void doAfterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
-        logger.debug(new StringBuilder().append("Response:").append(ret.toString()).toString());
+        if (ret != null) {
+            logger.debug(new StringBuilder().append("Response:").append(ret.toString()).toString());
+        }
     }
-
 
 }

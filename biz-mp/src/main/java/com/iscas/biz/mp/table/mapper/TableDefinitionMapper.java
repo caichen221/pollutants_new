@@ -49,6 +49,12 @@ public interface TableDefinitionMapper {
 	int deleteData(@Param("tableName") String tableName, @Param("primaryKey") String primaryKey, @Param("value") Object value);
 
 
+	@Delete("<script>delete from ${tableName} where  ${primaryKey} in <foreach collection=\"ids\" index=\"index\" item=\"item\" open=\"(\" close=\")\" separator=\",\">  " +
+			"     #{item}       " +
+			"        </foreach></script>  ")
+	int batchDeleteData(@Param("tableName") String tableName, @Param("primaryKey") String primaryKey, @Param("ids") List<Object> ids);
+
+
 	@Select("SELECT COUNT(${field}) AS COUNT from (${selectSql}) t where t.${field} = #{fieldValue}")
 	int getCountByField(@Param("selectSql") String selectSql, @Param("field") String field, @Param("fieldValue") Object fieldValue);
 }

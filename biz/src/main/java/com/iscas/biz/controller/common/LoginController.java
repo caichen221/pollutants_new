@@ -1,16 +1,17 @@
-package com.iscas.base.biz.controller.common;
+package com.iscas.biz.controller.common;
 
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
-import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.LoginCacheUtils;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,16 +32,20 @@ import java.util.Map;
  * @since jdk1.8
  */
 @RestController
-@Api(description = "登陆控制器")
+@Api(tags = "登陆控制器")
 public class LoginController extends BaseController implements Constants {
 
 
-    @Autowired
-    private TokenProps tokenProps;
+    private final TokenProps tokenProps;
 
-    @Autowired
-    private AbstractAuthService authService;
+    private final AbstractAuthService authService;
 
+    public LoginController(TokenProps tokenProps, AbstractAuthService authService) {
+        this.tokenProps = tokenProps;
+        this.authService = authService;
+    }
+
+    @ApiOperation(value="[登录控制器]用户登出", notes="create by:朱全文 2020-02-21")
     @GetMapping(value = "/logout", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity logout(HttpServletRequest request){
         ResponseEntity responseEntity = new ResponseEntity(200, "注销成功");
@@ -49,6 +54,7 @@ public class LoginController extends BaseController implements Constants {
         return responseEntity;
     }
 
+    @ApiOperation(value="[登录控制器]登录前置", notes="create by:朱全文 2020-02-21")
     @GetMapping(value = "/prelogin", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Map> preLogin(){
         ResponseEntity<Map> responseEntity = new ResponseEntity<>();
@@ -61,6 +67,12 @@ public class LoginController extends BaseController implements Constants {
         return responseEntity;
     }
 
+    @ApiOperation(value="[登录控制器]登录", notes="create by:朱全文 2020-02-21")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "user", value = "用户名密码等信息", required = true, dataType = "Map")
+            }
+    )
     @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity login(HttpServletResponse response, @RequestBody Map<String,String> user) throws Exception {
         ResponseEntity responseEntity = new ResponseEntity();
