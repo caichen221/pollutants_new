@@ -9,10 +9,13 @@ import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
+import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.model.User;
 import com.iscas.common.tools.core.security.AesUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
+import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
 import com.iscas.common.tools.xml.Dom4jUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.common.ResponseEntity;
@@ -21,24 +24,18 @@ import com.iscas.templet.exception.LoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 用户认证鉴权service
@@ -51,32 +48,34 @@ import java.util.UUID;
 @Service()
 @Slf4j
 public class AuthServiceImpl extends AbstractAuthService {
-  @Autowired
-  private IAuthCacheService authCacheService;
-  @Autowired
-  private ResourceMapper resourceMapper;
+  private final IAuthCacheService authCacheService;
+  private final ResourceMapper resourceMapper;
+  private final RoleMapper roleMapper;
+  private final MenuMapper menuMapper;
 
-//    @Autowired
+    public AuthServiceImpl(IAuthCacheService authCacheService, ResourceMapper resourceMapper,
+                           RoleMapper roleMapper, MenuMapper menuMapper) {
+        this.authCacheService = authCacheService;
+        this.resourceMapper = resourceMapper;
+        this.roleMapper = roleMapper;
+        this.menuMapper = menuMapper;
+    }
+
+    //    @Autowired
 //    private UserService userService;
     @Cacheable(value = "auth", key="'url_map'")
     @Override
-    public Map<String, Url> getUrls() throws IOException, AuthConfigException {
-        log.debug("------读取auth信息------");
-//        Map<String, Url> result = new HashMap<>(2 << 6);
-//        //读取
-//        Resource resource = new ClassPathResource(AUTH_CONFIG_XML_NAME);
-//        try(
-//                InputStream inputStream = resource.getInputStream();
-//        ) {
-//            Document document = Dom4jUtils.getXMLByInputStream(inputStream);
-//            Element rootElement = document.getRootElement();
-//
-//            //获取URLs
-//            result = getUrlMap(rootElement);
-//
-//            return result;
-//        }
+    public Map<String, Url> getUrls() {
+        log.debug("------读取url信息------");
         List<com.iscas.biz.domain.common.Resource> resources = resourceMapper.selectByExample(null);
+        if (CollectionUtils.isNotEmpty(resources)) {
+            return resources.stream().map(LambdaExceptionUtils.lambdaWrapper(resource -> {
+                Url url = new Url();
+                url.setKey(String.valueOf(resource.getResourceId()))
+                .setName(resource.getResourceUrl());
+                return url;
+            })).collect(Collectors.toMap(Url::getKey, url -> url));
+        }
         return new HashMap<>();
     }
 
@@ -109,123 +108,91 @@ public class AuthServiceImpl extends AbstractAuthService {
     @Cacheable(value = "auth", key="'role_map'")
     @Override
     public Map<String, Role> getAuth() throws IOException, AuthConfigException {
-        log.debug("------读取auth配置------");
+        log.debug("------读取角色信息------");
         Map<String, Role> result = new HashMap<>(2 << 6);
-        //读取
-        Resource resource = new ClassPathResource(AUTH_CONFIG_XML_NAME);
-        try(
-                InputStream inputStream = resource.getInputStream();
-        )
-        {
-            Document document = Dom4jUtils.getXMLByInputStream(inputStream);
-            Element rootElement = document.getRootElement();
-            //获取menus
-            Map<String, Menu> menuMap = getMenuMap(rootElement);
-            //获取URLs
-            Map<String, Url> urlMap = getUrlMap(rootElement);
-            //获取roles节点
-            Element rolesElement = Dom4jUtils.getChildElement(rootElement, "roles");
-            //获得role节点列表
-            List<Element> roleElements = rolesElement.elements("role");
-            if(!CollectionUtils.isEmpty(roleElements)){
-                for (Element roleElement: roleElements) {
-                    Role role = new Role();
-                    String roleKey = roleElement.attributeValue("key");
-                    String roleName = roleElement.attributeValue("name");
-                    role.setKey(roleKey);
-                    role.setName(roleName);
-                    //将配置的menus注入
-                    insertMenus(roleElement,menuMap, role);
-                    //将配置的url注入
-                    insertUrls(roleElement, urlMap, role);
-                    result.put(roleKey, role);
+        List<com.iscas.biz.domain.common.Role> commonRoles = roleMapper.selectByExample(null);
+        Map<String, Url> urls = getUrls();
+        List<Map> menuRoles = menuMapper.selectMenuRole();
+        List<Map> roleResources = roleMapper.selectRoleResource();
+
+        Map<Integer, List<Menu>> menuRoleMap = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(menuRoles)) {
+            for (Map menuRole : menuRoles) {
+                int roleId = (int) menuRole.get("role_id");
+                int menuId = (int) menuRole.get("menu_id");
+                String menuName = (String) menuRole.get("menu_name");
+                List<Menu> maps = menuRoleMap.get(roleId);
+                if (maps == null) {
+                    maps = new ArrayList<>();
+                    menuRoleMap.put(roleId, maps);
                 }
-            }
-        }
-        return result;
-    }
-
-
-
-
-    private Map<String, Menu> getMenuMap(Element rootElement){
-        Map<String, Menu> menuMap = new HashMap<>(2 << 4);
-        Element menusElement = Dom4jUtils.getChildElement(rootElement, "menus");
-        List<Element> menuElements = menusElement.elements("menu");
-        if(!CollectionUtils.isEmpty(menuElements)){
-            for (Element menuElement : menuElements) {
                 Menu menu = new Menu();
-                String menuKey = menuElement.attributeValue("key");
-                String menuName = menuElement.getTextTrim();
-                menu.setKey(menuKey);
+                menu.setKey(String.valueOf(menuId));
                 menu.setName(menuName);
-                menuMap.put(menuKey, menu);
+                maps.add(menu);
             }
         }
-        return menuMap;
-    }
-
-    private Map<String, Url> getUrlMap(Element rootElement){
-        Map<String, Url> urlMap = new HashMap<>(2 << 6);
-        Element urlsElement = Dom4jUtils.getChildElement(rootElement, "urls");
-        List<Element> urlElements = urlsElement.elements("url");
-        if(!CollectionUtils.isEmpty(urlElements)){
-            for (Element urlElement : urlElements) {
-                Url url = new Url();
-                String urlKey = urlElement.attributeValue("key");
-                String urlName = urlElement.getTextTrim();
-                url.setKey(urlKey);
-                url.setName(urlName);
-                urlMap.put(urlKey, url);
-            }
-        }
-        return urlMap;
-    }
-
-    private void insertMenus(Element roleElement, Map<String, Menu> menuMap, Role role) throws AuthConfigException {
-        //注入menus
-        //获取ref-menus节点
-        Element refMenusElement = roleElement.element("ref-menus");
-        if(refMenusElement != null){
-            //获取 ref-menus 的text
-            String menuKeys = refMenusElement.getTextTrim();
-            if(StringUtils.isNotBlank(menuKeys)){
-                //逗号分割每个menu,并从上面的menuMap中查到对应的值，注入Role
-                String[] menuKeyArray = StringUtils.split(menuKeys,",");
-                for (String menuKey: menuKeyArray) {
-                    Menu menu = menuMap.get(menuKey);
-                    if(menu == null){
-                        throw new AuthConfigException("读取权限配置文件出错",
-                                String.format("读取权限配置文件出错, 未找到role:%s下的ref-menus中的:%s对应的menu配置",role.getKey(),menuKey));
-                    }else{
-                        role.addMenu(menu);
-                    }
+        Map<Integer, List<Url>> urlRoleMap = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(roleResources)) {
+            for (Map roleResource : roleResources) {
+                int roleId = (int) roleResource.get("role_id");
+                int resourceId = (int) roleResource.get("resource_id");
+                Url url = urls.get(String.valueOf(resourceId));
+                List<Url> maps = urlRoleMap.get(roleId);
+                if (maps == null) {
+                    maps = new ArrayList<>();
+                    urlRoleMap.put(roleId, maps);
+                }
+                if (url != null) {
+                    maps.add(url);
                 }
             }
         }
-    }
 
-    private void insertUrls(Element roleElement, Map<String, Url> urlMap, Role role) throws AuthConfigException {
-        //注入menus
-        //获取ref-menus节点
-        Element refUrlsElement = roleElement.element("ref-urls");
-        if(refUrlsElement != null){
-            //获取 ref-urls 的text
-            String urlKeys = refUrlsElement.getTextTrim();
-            if(StringUtils.isNotBlank(urlKeys)){
-                //逗号分割每个url,并从上面的urlMap中查到对应的值，注入Role
-                String[] urlKeyArray = StringUtils.split(urlKeys,",");
-                for (String urlKey: urlKeyArray) {
-                    Url url = urlMap.get(urlKey);
-                    if(url == null){
-                        throw new AuthConfigException("读取权限配置文件出错",
-                                String.format("读取权限配置文件出错, 未找到url:%s下的ref-urls中的:%s对应的menu配置",role.getKey(),urlKey));
-                    }else{
-                        role.addUrl(url);
-                    }
-                }
-            }
+
+        if (CollectionUtils.isNotEmpty(commonRoles)) {
+            result = commonRoles.stream().map(LambdaExceptionUtils.lambdaWrapper(r -> {
+                Role role = new Role();
+                role.setKey(String.valueOf(r.getRoleId()));
+                role.setName(r.getRoleName());
+                role.setMenus(menuRoleMap.get(r.getRoleId()));
+                role.setUrls(urlRoleMap.get(r.getRoleId()));
+                return role;
+            })).collect(Collectors.toMap(Role::getKey, r -> r));
         }
+
+//        //读取
+//        Resource resource = new ClassPathResource(AUTH_CONFIG_XML_NAME);
+//        try(
+//                InputStream inputStream = resource.getInputStream();
+//        )
+//        {
+//            Document document = Dom4jUtils.getXMLByInputStream(inputStream);
+//            Element rootElement = document.getRootElement();
+//            //获取menus
+//            Map<String, Menu> menuMap = getMenuMap(rootElement);
+//            //获取URLs
+//            Map<String, Url> urlMap = getUrlMap(rootElement);
+//            //获取roles节点
+//            Element rolesElement = Dom4jUtils.getChildElement(rootElement, "roles");
+//            //获得role节点列表
+//            List<Element> roleElements = rolesElement.elements("role");
+//            if(!CollectionUtils.isEmpty(roleElements)){
+//                for (Element roleElement: roleElements) {
+//                    Role role = new Role();
+//                    String roleKey = roleElement.attributeValue("key");
+//                    String roleName = roleElement.attributeValue("name");
+//                    role.setKey(roleKey);
+//                    role.setName(roleName);
+//                    //将配置的menus注入
+//                    insertMenus(roleElement,menuMap, role);
+//                    //将配置的url注入
+//                    insertUrls(roleElement, urlMap, role);
+//                    result.put(roleKey, role);
+//                }
+//            }
+//        }
+        return result;
     }
 
     @Override

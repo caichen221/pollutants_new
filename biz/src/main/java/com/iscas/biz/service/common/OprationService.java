@@ -34,7 +34,7 @@ public class OprationService {
             comboboxDatas = oprations.stream().map(opration -> {
                 ComboboxData<Opration> comboboxData = new ComboboxData<>();
                 comboboxData.setLabel(opration.getOpName());
-                comboboxData.setValue(opration.getOpName());
+                comboboxData.setValue(opration.getOpId());
                 comboboxData.setData(opration);
                 return comboboxData;
             }).collect(Collectors.toList());

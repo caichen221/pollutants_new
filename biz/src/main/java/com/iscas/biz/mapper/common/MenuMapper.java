@@ -35,4 +35,7 @@ public interface MenuMapper {
 
     @Select("select t1.menu_id, t2.op_id, t3.op_name from menu t1, menu_opration t2, opration t3 where t1.menu_id = t2.menu_id and t2.op_id = t3.op_id")
     List<Map> selectMenuOpration();
+
+    @Select("select t1.role_id, t3.* from role t1, role_menu t2, menu t3 where t1.role_id = t2.role_id and t2.menu_id = t3.menu_id")
+    List<Map> selectMenuRole();
 }

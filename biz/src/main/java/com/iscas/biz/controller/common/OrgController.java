@@ -11,9 +11,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 组织机构管理
@@ -74,14 +76,16 @@ public class OrgController extends BaseController {
     @ApiOperation(value="[组织机构]删除组织机构节点", notes="create by:朱全文 2021-02-20")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "orgId", value = "组织机构Id", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "orgIds", value = "组织机构Id", required = true, dataType = "List")
             }
     )
-    @DeleteMapping("/node/{orgId:[0-9]+}")
-    public ResponseEntity deleteNode(@PathVariable Integer orgId) throws BaseException {
+    @PostMapping("/node/del")
+    @Transactional
+    public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) throws BaseException {
         ResponseEntity response = getResponse();
-        int result = orgService.deleteOrg(orgId);
-        response.setValue(result);
+        for (Integer orgId : orgIds) {
+            orgService.deleteOrg(orgId);
+        }
         return response;
     }
 
