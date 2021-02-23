@@ -6,8 +6,10 @@ import com.iscas.biz.mapper.common.OrgUserMapper;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mapper.common.UserRoleMapper;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
+import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableResponse;
 import com.iscas.templet.view.table.TableResponseData;
@@ -241,5 +243,18 @@ public class UserService {
                 orgUserMapper.insert(orgUserKey);
             }
         }
+    }
+
+    public void changePwd(Integer userId, Map<String, Object> data) throws NoSuchAlgorithmException, BaseException {
+        User user = userMapper.selectByPrimaryKey(userId);
+        AssertObjUtils.assertNotNull(user, "此用户不存在");
+        String oldPwd = (String) data.get("oldPwd");
+        String newPwd = (String) data.get("newPwd");
+        boolean b = MD5Utils.saltVerify(oldPwd, user.getUserPwd());
+        if (!b) {
+            throw new BaseException("旧密码验证失败");
+        }
+        user.setUserPwd(MD5Utils.saltMD5(newPwd));
+        userMapper.updatePwd(user);
     }
 }

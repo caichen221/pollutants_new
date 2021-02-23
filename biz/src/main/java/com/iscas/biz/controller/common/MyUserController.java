@@ -3,6 +3,7 @@ package com.iscas.biz.controller.common;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.UserService;
 import com.iscas.common.tools.core.security.MD5Utils;
+import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.ValidDataException;
@@ -31,7 +32,7 @@ import java.util.Map;
 @Api(tags = "用户管理")
 @RestController
 @RequestMapping("/user")
-public class MyUserController {
+public class MyUserController extends BaseController {
 
     private String tableIdentity = "user";
     private final TableDefinitionService tableDefinitionService;
@@ -95,6 +96,20 @@ public class MyUserController {
     public ResponseEntity editData(@RequestBody Map<String,Object> data)
             throws ValidDataException {
         return userService.edit(data);
+    }
 
+    @ApiOperation(value="修改密码-2021-02-23", notes="更新-create by 朱全文")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "Integer"),
+                    @ApiImplicitParam(name = "data", value = "修改的数据(未变动的数据也传)", required = true, dataType = "Map")
+            }
+    )
+    @PutMapping("/pwd/{userId:[0-9]+}")
+    public ResponseEntity changePwd(@PathVariable Integer userId, @RequestBody Map<String,Object> data)
+            throws BaseException, NoSuchAlgorithmException {
+        ResponseEntity response = getResponse();
+        userService.changePwd(userId, data);
+        return response;
     }
 }
