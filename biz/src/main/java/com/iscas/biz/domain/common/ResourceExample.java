@@ -105,323 +105,253 @@ public class ResourceExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andIdIsNull() {
-            addCriterion("id is null");
+        public Criteria andResourceIdIsNull() {
+            addCriterion("resource_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andIdIsNotNull() {
-            addCriterion("id is not null");
+        public Criteria andResourceIdIsNotNull() {
+            addCriterion("resource_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(Integer value) {
-            addCriterion("id =", value, "id");
+        public Criteria andResourceIdEqualTo(Integer value) {
+            addCriterion("resource_id =", value, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(Integer value) {
-            addCriterion("id <>", value, "id");
+        public Criteria andResourceIdNotEqualTo(Integer value) {
+            addCriterion("resource_id <>", value, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(Integer value) {
-            addCriterion("id >", value, "id");
+        public Criteria andResourceIdGreaterThan(Integer value) {
+            addCriterion("resource_id >", value, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("id >=", value, "id");
+        public Criteria andResourceIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("resource_id >=", value, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(Integer value) {
-            addCriterion("id <", value, "id");
+        public Criteria andResourceIdLessThan(Integer value) {
+            addCriterion("resource_id <", value, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(Integer value) {
-            addCriterion("id <=", value, "id");
+        public Criteria andResourceIdLessThanOrEqualTo(Integer value) {
+            addCriterion("resource_id <=", value, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<Integer> values) {
-            addCriterion("id in", values, "id");
+        public Criteria andResourceIdIn(List<Integer> values) {
+            addCriterion("resource_id in", values, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<Integer> values) {
-            addCriterion("id not in", values, "id");
+        public Criteria andResourceIdNotIn(List<Integer> values) {
+            addCriterion("resource_id not in", values, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(Integer value1, Integer value2) {
-            addCriterion("id between", value1, value2, "id");
+        public Criteria andResourceIdBetween(Integer value1, Integer value2) {
+            addCriterion("resource_id between", value1, value2, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("id not between", value1, value2, "id");
+        public Criteria andResourceIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("resource_id not between", value1, value2, "resourceId");
             return (Criteria) this;
         }
 
-        public Criteria andUrlIsNull() {
-            addCriterion("url is null");
+        public Criteria andResourceUrlIsNull() {
+            addCriterion("resource_url is null");
             return (Criteria) this;
         }
 
-        public Criteria andUrlIsNotNull() {
-            addCriterion("url is not null");
+        public Criteria andResourceUrlIsNotNull() {
+            addCriterion("resource_url is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUrlEqualTo(String value) {
-            addCriterion("url =", value, "url");
+        public Criteria andResourceUrlEqualTo(String value) {
+            addCriterion("resource_url =", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlNotEqualTo(String value) {
-            addCriterion("url <>", value, "url");
+        public Criteria andResourceUrlNotEqualTo(String value) {
+            addCriterion("resource_url <>", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlGreaterThan(String value) {
-            addCriterion("url >", value, "url");
+        public Criteria andResourceUrlGreaterThan(String value) {
+            addCriterion("resource_url >", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlGreaterThanOrEqualTo(String value) {
-            addCriterion("url >=", value, "url");
+        public Criteria andResourceUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("resource_url >=", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlLessThan(String value) {
-            addCriterion("url <", value, "url");
+        public Criteria andResourceUrlLessThan(String value) {
+            addCriterion("resource_url <", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlLessThanOrEqualTo(String value) {
-            addCriterion("url <=", value, "url");
+        public Criteria andResourceUrlLessThanOrEqualTo(String value) {
+            addCriterion("resource_url <=", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlLike(String value) {
-            addCriterion("url like", value, "url");
+        public Criteria andResourceUrlLike(String value) {
+            addCriterion("resource_url like", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlNotLike(String value) {
-            addCriterion("url not like", value, "url");
+        public Criteria andResourceUrlNotLike(String value) {
+            addCriterion("resource_url not like", value, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlIn(List<String> values) {
-            addCriterion("url in", values, "url");
+        public Criteria andResourceUrlIn(List<String> values) {
+            addCriterion("resource_url in", values, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlNotIn(List<String> values) {
-            addCriterion("url not in", values, "url");
+        public Criteria andResourceUrlNotIn(List<String> values) {
+            addCriterion("resource_url not in", values, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlBetween(String value1, String value2) {
-            addCriterion("url between", value1, value2, "url");
+        public Criteria andResourceUrlBetween(String value1, String value2) {
+            addCriterion("resource_url between", value1, value2, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andUrlNotBetween(String value1, String value2) {
-            addCriterion("url not between", value1, value2, "url");
+        public Criteria andResourceUrlNotBetween(String value1, String value2) {
+            addCriterion("resource_url not between", value1, value2, "resourceUrl");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdIsNull() {
-            addCriterion("server_id is null");
+        public Criteria andResourceCreateTimeIsNull() {
+            addCriterion("resource_create_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdIsNotNull() {
-            addCriterion("server_id is not null");
+        public Criteria andResourceCreateTimeIsNotNull() {
+            addCriterion("resource_create_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdEqualTo(Integer value) {
-            addCriterion("server_id =", value, "serverId");
+        public Criteria andResourceCreateTimeEqualTo(Date value) {
+            addCriterion("resource_create_time =", value, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdNotEqualTo(Integer value) {
-            addCriterion("server_id <>", value, "serverId");
+        public Criteria andResourceCreateTimeNotEqualTo(Date value) {
+            addCriterion("resource_create_time <>", value, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdGreaterThan(Integer value) {
-            addCriterion("server_id >", value, "serverId");
+        public Criteria andResourceCreateTimeGreaterThan(Date value) {
+            addCriterion("resource_create_time >", value, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("server_id >=", value, "serverId");
+        public Criteria andResourceCreateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("resource_create_time >=", value, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdLessThan(Integer value) {
-            addCriterion("server_id <", value, "serverId");
+        public Criteria andResourceCreateTimeLessThan(Date value) {
+            addCriterion("resource_create_time <", value, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdLessThanOrEqualTo(Integer value) {
-            addCriterion("server_id <=", value, "serverId");
+        public Criteria andResourceCreateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("resource_create_time <=", value, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdIn(List<Integer> values) {
-            addCriterion("server_id in", values, "serverId");
+        public Criteria andResourceCreateTimeIn(List<Date> values) {
+            addCriterion("resource_create_time in", values, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdNotIn(List<Integer> values) {
-            addCriterion("server_id not in", values, "serverId");
+        public Criteria andResourceCreateTimeNotIn(List<Date> values) {
+            addCriterion("resource_create_time not in", values, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdBetween(Integer value1, Integer value2) {
-            addCriterion("server_id between", value1, value2, "serverId");
+        public Criteria andResourceCreateTimeBetween(Date value1, Date value2) {
+            addCriterion("resource_create_time between", value1, value2, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andServerIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("server_id not between", value1, value2, "serverId");
+        public Criteria andResourceCreateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("resource_create_time not between", value1, value2, "resourceCreateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameIsNull() {
-            addCriterion("name is null");
+        public Criteria andResourceUpdateTimeIsNull() {
+            addCriterion("resource_update_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andNameIsNotNull() {
-            addCriterion("name is not null");
+        public Criteria andResourceUpdateTimeIsNotNull() {
+            addCriterion("resource_update_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andNameEqualTo(String value) {
-            addCriterion("name =", value, "name");
+        public Criteria andResourceUpdateTimeEqualTo(Date value) {
+            addCriterion("resource_update_time =", value, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotEqualTo(String value) {
-            addCriterion("name <>", value, "name");
+        public Criteria andResourceUpdateTimeNotEqualTo(Date value) {
+            addCriterion("resource_update_time <>", value, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameGreaterThan(String value) {
-            addCriterion("name >", value, "name");
+        public Criteria andResourceUpdateTimeGreaterThan(Date value) {
+            addCriterion("resource_update_time >", value, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameGreaterThanOrEqualTo(String value) {
-            addCriterion("name >=", value, "name");
+        public Criteria andResourceUpdateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("resource_update_time >=", value, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameLessThan(String value) {
-            addCriterion("name <", value, "name");
+        public Criteria andResourceUpdateTimeLessThan(Date value) {
+            addCriterion("resource_update_time <", value, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameLessThanOrEqualTo(String value) {
-            addCriterion("name <=", value, "name");
+        public Criteria andResourceUpdateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("resource_update_time <=", value, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameLike(String value) {
-            addCriterion("name like", value, "name");
+        public Criteria andResourceUpdateTimeIn(List<Date> values) {
+            addCriterion("resource_update_time in", values, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotLike(String value) {
-            addCriterion("name not like", value, "name");
+        public Criteria andResourceUpdateTimeNotIn(List<Date> values) {
+            addCriterion("resource_update_time not in", values, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameIn(List<String> values) {
-            addCriterion("name in", values, "name");
+        public Criteria andResourceUpdateTimeBetween(Date value1, Date value2) {
+            addCriterion("resource_update_time between", value1, value2, "resourceUpdateTime");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotIn(List<String> values) {
-            addCriterion("name not in", values, "name");
-            return (Criteria) this;
-        }
-
-        public Criteria andNameBetween(String value1, String value2) {
-            addCriterion("name between", value1, value2, "name");
-            return (Criteria) this;
-        }
-
-        public Criteria andNameNotBetween(String value1, String value2) {
-            addCriterion("name not between", value1, value2, "name");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeIsNull() {
-            addCriterion("createtime is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeIsNotNull() {
-            addCriterion("createtime is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeEqualTo(Date value) {
-            addCriterion("createtime =", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeNotEqualTo(Date value) {
-            addCriterion("createtime <>", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeGreaterThan(Date value) {
-            addCriterion("createtime >", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeGreaterThanOrEqualTo(Date value) {
-            addCriterion("createtime >=", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeLessThan(Date value) {
-            addCriterion("createtime <", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeLessThanOrEqualTo(Date value) {
-            addCriterion("createtime <=", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeIn(List<Date> values) {
-            addCriterion("createtime in", values, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeNotIn(List<Date> values) {
-            addCriterion("createtime not in", values, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeBetween(Date value1, Date value2) {
-            addCriterion("createtime between", value1, value2, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeNotBetween(Date value1, Date value2) {
-            addCriterion("createtime not between", value1, value2, "createtime");
+        public Criteria andResourceUpdateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("resource_update_time not between", value1, value2, "resourceUpdateTime");
             return (Criteria) this;
         }
     }

@@ -53,9 +53,9 @@
         <!--<table tableName="menu"/>-->
 <!--        <table tableName="opration"/>-->
 <!--        <table tableName="org"/>-->
-<!--        <table tableName="resource"/>-->
+        <table tableName="resource"/>
         <!--<table tableName="role"/>-->
-        <table tableName="user"/>
+        <!--<table tableName="user"/>-->
        <!-- <table tableName="menu_opration"/>-->
 <!--        <table tableName="opration_resource"/>-->
 <!--        <table tableName="org_role"/>-->

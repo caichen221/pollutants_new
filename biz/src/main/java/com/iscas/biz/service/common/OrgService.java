@@ -44,6 +44,7 @@ public class OrgService {
         List<Org> orgs = orgMapper.selectByExample(null);
         TreeResponseData<Org> root = new TreeResponseData<>();
         root.setId("root");
+        root.setValue("root");
         root.setLabel("组织机构");
         if (CollectionUtils.isNotEmpty(orgs)) {
             Map<Integer, List<TreeResponseData<Org>>> childOrgs = getChildOrgs(orgs);
@@ -98,6 +99,7 @@ public class OrgService {
             List<Role> rs = orgRoleMap.get(orgId);
             comboboxData.setLabel(org.getOrgName())
                     .setId(orgId)
+                    .setValue(orgId)
                     .setData(org);
             if (CollectionUtils.isNotEmpty(rs)) {
                 StringJoiner roleNamesJoiner = new StringJoiner(",");

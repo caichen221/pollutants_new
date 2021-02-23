@@ -44,6 +44,7 @@ public class MenuService {
         List<Menu> menus = menuMapper.selectByExample(null);
         TreeResponseData<Menu> root = new TreeResponseData<>();
         root.setId("root");
+        root.setValue("root");
         root.setLabel("菜单");
         if (CollectionUtils.isNotEmpty(menus)) {
             Map<Integer, List<TreeResponseData<Menu>>> childOrgs = getChildMenus(menus);
@@ -114,6 +115,7 @@ public class MenuService {
             List<Map> menuOprations = menuOprationMap.get(menuId);
             treeResponseData.setLabel(menu.getMenuName())
                     .setId(menu.getMenuId())
+                    .setValue(menu.getMenuId())
                     .setData(menu);
             if (CollectionUtils.isNotEmpty(rs)) {
                 StringJoiner roleNamesJoiner = new StringJoiner(",");

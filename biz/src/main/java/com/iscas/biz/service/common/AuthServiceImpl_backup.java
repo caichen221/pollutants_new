@@ -9,7 +9,6 @@ import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
-import com.iscas.biz.mapper.common.ResourceMapper;
 import com.iscas.biz.model.User;
 import com.iscas.common.tools.core.security.AesUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
@@ -50,34 +49,30 @@ import java.util.UUID;
  */
 @Service()
 @Slf4j
-public class AuthServiceImpl extends AbstractAuthService {
+public class AuthServiceImpl_backup extends AbstractAuthService {
   @Autowired
   private IAuthCacheService authCacheService;
-  @Autowired
-  private ResourceMapper resourceMapper;
 
 //    @Autowired
 //    private UserService userService;
     @Cacheable(value = "auth", key="'url_map'")
     @Override
     public Map<String, Url> getUrls() throws IOException, AuthConfigException {
-        log.debug("------读取auth信息------");
-//        Map<String, Url> result = new HashMap<>(2 << 6);
-//        //读取
-//        Resource resource = new ClassPathResource(AUTH_CONFIG_XML_NAME);
-//        try(
-//                InputStream inputStream = resource.getInputStream();
-//        ) {
-//            Document document = Dom4jUtils.getXMLByInputStream(inputStream);
-//            Element rootElement = document.getRootElement();
-//
-//            //获取URLs
-//            result = getUrlMap(rootElement);
-//
-//            return result;
-//        }
-        List<com.iscas.biz.domain.common.Resource> resources = resourceMapper.selectByExample(null);
-        return null;
+        log.debug("------读取auth配置------");
+        Map<String, Url> result = new HashMap<>(2 << 6);
+        //读取
+        Resource resource = new ClassPathResource(AUTH_CONFIG_XML_NAME);
+        try(
+                InputStream inputStream = resource.getInputStream();
+        ) {
+            Document document = Dom4jUtils.getXMLByInputStream(inputStream);
+            Element rootElement = document.getRootElement();
+
+            //获取URLs
+            result = getUrlMap(rootElement);
+
+            return result;
+        }
     }
 
     @Override
