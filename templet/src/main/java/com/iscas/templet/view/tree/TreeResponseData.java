@@ -26,6 +26,10 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
     protected String label;
     /*对应ID*/
     protected Object id;
+
+    /**value与ID一致*/
+    protected Object value;
+
     /*是否展开*/
     protected Boolean expanded = false;
     /*是否可选*/
