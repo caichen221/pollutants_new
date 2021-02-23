@@ -11,9 +11,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 菜单管理
@@ -74,14 +76,16 @@ public class MenuController extends BaseController {
     @ApiOperation(value="[菜单管理]删除菜单节点-2021-02-22", notes="create by:朱全文")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "menuId", value = "菜单Id", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "menuIds", value = "菜单Ids", required = true, dataType = "List")
             }
     )
-    @DeleteMapping("/node/{menuId:[0-9]+}")
-    public ResponseEntity deleteNode(@PathVariable Integer menuId) throws BaseException {
+    @PostMapping("/node/del")
+//    @Transactional
+    public ResponseEntity deleteNode(@RequestBody List<Integer> menuIds) throws BaseException {
         ResponseEntity response = getResponse();
-        int result = menuService.deleteMenu(menuId);
-        response.setValue(result);
+        for (Integer menuId : menuIds) {
+            int result = menuService.deleteMenu(menuId);
+        }
         return response;
     }
 }
