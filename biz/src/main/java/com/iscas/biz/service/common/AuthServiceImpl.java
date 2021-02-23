@@ -77,7 +77,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 //            return result;
 //        }
         List<com.iscas.biz.domain.common.Resource> resources = resourceMapper.selectByExample(null);
-        return null;
+        return new HashMap<>();
     }
 
     @Override
