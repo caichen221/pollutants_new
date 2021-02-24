@@ -6,16 +6,14 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
-import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
 import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mapper.common.UserMapper;
-import com.iscas.biz.model.User;
 import com.iscas.common.tools.core.security.AesUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
@@ -82,11 +80,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 
     @Override
     public String getRoles(String username) {
-//        QueryWrapper<User> queryWrapper = new QueryWrapper<User>();
-//        queryWrapper.eq("username", username);
-//        User user = userService.getOne(queryWrapper);
-//        return user.getRole();
-        List<Map> userRoleMaps = userMapper.selectUserRole();
+        List<Map> userRoleMaps = userMapper.selectUserRoleByUsername(username);
         StringJoiner sj = new StringJoiner(",");
         if (CollectionUtils.isNotEmpty(userRoleMaps)) {
             for (Map userRoleMap : userRoleMaps) {
@@ -157,7 +151,6 @@ public class AuthServiceImpl extends AbstractAuthService {
             }
         }
 
-
         if (CollectionUtils.isNotEmpty(commonRoles)) {
             result = commonRoles.stream().map(LambdaExceptionUtils.lambdaWrapper(r -> {
                 Role role = new Role();
@@ -188,9 +181,8 @@ public class AuthServiceImpl extends AbstractAuthService {
             e.printStackTrace();
             throw new LoginException("非法登陆",e.getMessage());
         }
-//        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("username",username);
-        User dbUser = null;
+//        User dbUser = null;
+        User dbUser = userMapper.selectByUserName(username);
 //        User dbUser = userService.getOne(queryWrapper);
 
         if (dbUser == null) {
@@ -199,7 +191,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             //加盐校验用户密码
             boolean verify = false;
             try {
-                verify = MD5Utils.saltVerify(pwd, dbUser.getPassword());
+                verify = MD5Utils.saltVerify(pwd, dbUser.getUserPwd());
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new LoginException("校验密码出错");
@@ -227,16 +219,36 @@ public class AuthServiceImpl extends AbstractAuthService {
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
                 String roleKey = getRoles(username);
                 Map<String, Role> auth = getAuth();
-                Role role = auth.get(roleKey);
+                List<Role> roles = new ArrayList<>();
+                if (roleKey != null) {
+                    for (String s : roleKey.split(",")) {
+                        Role role = auth.get(s);
+                        if (role != null) {
+                            roles.add(role);
+                        }
+                    }
+                }
+
                 Map map = new HashMap<>(2 << 2);
-//                map.put("permission", dbUser.getRole());
+                List<Integer> menus = new ArrayList<>();
+                List<Menu> menuList = new ArrayList<>();
+                for (Role role : roles) {
+                    menuList.addAll(role.getMenus());
+                }
+                if (CollectionUtils.isNotEmpty(menuList)) {
+                    menus = menuList.stream().map(ml -> Integer.valueOf(ml.getKey())).distinct().collect(Collectors.toList());
+                }
+                map.put("menu", menus);
                 map.put(Constants.TOKEN_KEY, token);
-//                map.put("role", dbUser.getRole());
-                map.put("userId", dbUser.getId());
-                map.put("username", dbUser.getUsername());
+
+//                map.put("role", role);
+//                map.put("roleId", map.get("orgId"));
+                map.put("userId", dbUser.getUserId());
+                map.put("username", dbUser.getUserName());
+                map.put("userRealName", dbUser.getUserRealName());
 
                 responseEntity.setValue(map);
-                dbUser.setPassword(null);
+                dbUser.setUserPwd(null);
                 //创建一个虚拟session
                 CustomSession.setAttribute(sessionId, SESSION_USER, dbUser);
 
@@ -277,5 +289,4 @@ public class AuthServiceImpl extends AbstractAuthService {
             }
         }
     }
-
 }

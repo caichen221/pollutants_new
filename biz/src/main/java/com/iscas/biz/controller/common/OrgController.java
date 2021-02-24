@@ -80,7 +80,7 @@ public class OrgController extends BaseController {
             }
     )
     @PostMapping("/node/del")
-    @Transactional
+//    @Transactional
     public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) throws BaseException {
         ResponseEntity response = getResponse();
         for (Integer orgId : orgIds) {

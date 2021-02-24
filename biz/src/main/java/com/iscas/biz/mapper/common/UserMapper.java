@@ -21,4 +21,8 @@ public interface UserMapper {
 
     @Select("select t1.user_id, t1.user_name, t2.role_id, t3.role_name from user t1, user_role t2, role t3 where t1.user_id = t2.user_id and t2.role_id = t3.  role_id and t1.user_name =#{username}")
     List<Map> selectUserRoleByUsername(String username);
+
+    @Select("select * from user t where t.user_name = #{username}")
+    User selectByUserName(String username);
+
 }
