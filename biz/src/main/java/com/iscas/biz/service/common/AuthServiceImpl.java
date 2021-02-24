@@ -6,26 +6,25 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
 import com.iscas.biz.mapper.common.RoleMapper;
+import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.model.User;
 import com.iscas.common.tools.core.security.AesUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
-import com.iscas.common.tools.xml.Dom4jUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.AuthConfigException;
 import com.iscas.templet.exception.LoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Element;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -48,17 +47,19 @@ import java.util.stream.Collectors;
 @Service()
 @Slf4j
 public class AuthServiceImpl extends AbstractAuthService {
-  private final IAuthCacheService authCacheService;
-  private final ResourceMapper resourceMapper;
-  private final RoleMapper roleMapper;
-  private final MenuMapper menuMapper;
+    private final IAuthCacheService authCacheService;
+    private final ResourceMapper resourceMapper;
+    private final RoleMapper roleMapper;
+    private final MenuMapper menuMapper;
+    private final UserMapper userMapper;
 
     public AuthServiceImpl(IAuthCacheService authCacheService, ResourceMapper resourceMapper,
-                           RoleMapper roleMapper, MenuMapper menuMapper) {
+                           RoleMapper roleMapper, MenuMapper menuMapper, UserMapper userMapper) {
         this.authCacheService = authCacheService;
         this.resourceMapper = resourceMapper;
         this.roleMapper = roleMapper;
         this.menuMapper = menuMapper;
+        this.userMapper = userMapper;
     }
 
     //    @Autowired
@@ -85,8 +86,15 @@ public class AuthServiceImpl extends AbstractAuthService {
 //        queryWrapper.eq("username", username);
 //        User user = userService.getOne(queryWrapper);
 //        return user.getRole();
-
-        return null;
+        List<Map> userRoleMaps = userMapper.selectUserRole();
+        StringJoiner sj = new StringJoiner(",");
+        if (CollectionUtils.isNotEmpty(userRoleMaps)) {
+            for (Map userRoleMap : userRoleMaps) {
+                Integer roleId = (Integer) userRoleMap.get("role_id");
+                sj.add(String.valueOf(roleId));
+            }
+        }
+        return sj.toString();
     }
 
     @Override
@@ -160,38 +168,6 @@ public class AuthServiceImpl extends AbstractAuthService {
                 return role;
             })).collect(Collectors.toMap(Role::getKey, r -> r));
         }
-
-//        //读取
-//        Resource resource = new ClassPathResource(AUTH_CONFIG_XML_NAME);
-//        try(
-//                InputStream inputStream = resource.getInputStream();
-//        )
-//        {
-//            Document document = Dom4jUtils.getXMLByInputStream(inputStream);
-//            Element rootElement = document.getRootElement();
-//            //获取menus
-//            Map<String, Menu> menuMap = getMenuMap(rootElement);
-//            //获取URLs
-//            Map<String, Url> urlMap = getUrlMap(rootElement);
-//            //获取roles节点
-//            Element rolesElement = Dom4jUtils.getChildElement(rootElement, "roles");
-//            //获得role节点列表
-//            List<Element> roleElements = rolesElement.elements("role");
-//            if(!CollectionUtils.isEmpty(roleElements)){
-//                for (Element roleElement: roleElements) {
-//                    Role role = new Role();
-//                    String roleKey = roleElement.attributeValue("key");
-//                    String roleName = roleElement.attributeValue("name");
-//                    role.setKey(roleKey);
-//                    role.setName(roleName);
-//                    //将配置的menus注入
-//                    insertMenus(roleElement,menuMap, role);
-//                    //将配置的url注入
-//                    insertUrls(roleElement, urlMap, role);
-//                    result.put(roleKey, role);
-//                }
-//            }
-//        }
         return result;
     }
 
