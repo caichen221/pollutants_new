@@ -237,6 +237,9 @@ public class UserService {
     private void insertOrgUser(List<Integer> orgIds, int userId) {
         if (CollectionUtils.isNotEmpty(orgIds)) {
             for (Integer orgId : orgIds) {
+                if (Objects.equals(-1, orgId)) {
+                    continue;
+                }
                 OrgUserKey orgUserKey = new OrgUserKey();
                 orgUserKey.setUserId(userId);
                 orgUserKey.setOrgId(orgId);

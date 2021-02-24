@@ -43,7 +43,7 @@ public class MenuService {
     public TreeResponseData<Menu> getTree() {
         List<Menu> menus = menuMapper.selectByExample(null);
         TreeResponseData<Menu> root = new TreeResponseData<>();
-        root.setId("root");
+        root.setId("-1");
         root.setValue("root");
         root.setLabel("菜单");
         if (CollectionUtils.isNotEmpty(menus)) {

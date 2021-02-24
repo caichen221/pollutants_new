@@ -43,7 +43,7 @@ public class OrgService {
     public TreeResponseData<Org> getTree() {
         List<Org> orgs = orgMapper.selectByExample(null);
         TreeResponseData<Org> root = new TreeResponseData<>();
-        root.setId("root");
+        root.setId("-1");
         root.setValue("root");
         root.setLabel("组织机构");
         if (CollectionUtils.isNotEmpty(orgs)) {
