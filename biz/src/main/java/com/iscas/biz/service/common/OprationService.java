@@ -4,7 +4,6 @@ import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.mapper.common.OprationMapper;
 import com.iscas.templet.view.table.ComboboxData;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -2,7 +2,6 @@ package com.iscas.biz.controller.common;
 
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.UserService;
-import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -12,12 +11,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

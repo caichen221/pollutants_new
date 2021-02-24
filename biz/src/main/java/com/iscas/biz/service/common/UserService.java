@@ -190,8 +190,8 @@ public class UserService {
         Map<String, Object> forceItem = new HashMap<>();
         forceItem.put("user_pwd", MD5Utils.saltMD5(userDefaultPwd));
 
-        List<Integer> roleIds = (List<Integer>) data.remove("user_role_edit");
-        List<Integer> orgsIds = (List<Integer>) data.remove("user_org_edit");
+        List<Integer> roleIds = (List<Integer>) data.remove("user_role");
+        List<Integer> orgsIds = (List<Integer>) data.remove("user_org");
         ResponseEntity responseEntity = tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
         //新增用户-角色
         int userId = ((BigInteger) data.get("id")).intValue();
@@ -203,8 +203,8 @@ public class UserService {
     }
 
     public ResponseEntity edit(Map<String, Object> data) throws ValidDataException {
-        List<Integer> roleIds = (List<Integer>) data.remove("user_role_edit");
-        List<Integer> orgIds = (List<Integer>) data.remove("user_org_edit");
+        List<Integer> roleIds = (List<Integer>) data.remove("user_role");
+        List<Integer> orgIds = (List<Integer>) data.remove("user_org");
         ResponseEntity responseEntity = tableDefinitionService.saveData(tableIdentity, data, false, null, null);
         //删除原有的此user相关的 user_role中数据，插入新的
         int userId = (int) data.get("user_id");

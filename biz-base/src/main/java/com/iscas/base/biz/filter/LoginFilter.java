@@ -11,6 +11,7 @@ import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -61,9 +62,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             e.printStackTrace();
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :获取角色信息失败", e);
-//            OutputUtils.output(response, 401, "获取角色信息失败",
-//                    "获取角色信息失败");
-//            return;
+
             throw new AuthorizationRuntimeException("获取角色信息失败", "获取角色信息失败");
         }
 
@@ -101,9 +100,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             if(authCacheService.get(token) == null){
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :token有误或已被注销");
-//                OutputUtils.output(response, 401, "身份认证信息有误",
-//                        "token有误或已被注销");
-//                return;
                 throw new AuthorizationRuntimeException("身份认证信息有误", "token有误或已被注销");
             }
             //如果token不为null,校验token
@@ -114,9 +110,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 e.printStackTrace();
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :校验token出错");
-//                OutputUtils.output(response, 401, "校验token出错",
-//                        "校验token出错");
-//                return;
                 throw new AuthorizationRuntimeException("校验身份信息出错", "校验token出错");
             }
             String roleKey = authService.getRoles(username);
@@ -124,32 +117,23 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 //            User user = userService.findByUsername(username);
 
             //如果是超级管理员角色super,直接跳过认证，认为他具有所有权限
-            if(StringUtils.equalsIgnoreCase("super", roleKey)){
+            if(roleKey != null && ArrayUtils.contains(roleKey.split(","),Constants.SUPER_ROLE_KEY)){
                 filterChain.doFilter(request, response);
                 return;
             }
 
-
             if (roleKey == null) {
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :token中携带的用户或其角色信息不存在");
-//                OutputUtils.output(response, 401, "token中携带的用户或其角色信息不存在",
-//                        "token中携带的用户或其角色信息不存在");
-//                return;
                 throw new AuthorizationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
             }
             String[] roleKeys = StringUtils.split(roleKey, ",");
-
             for (String key : roleKeys) {
                 role = roleMap.get(key);
                 if (role == null) {
                     log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                             " :未获取到用户角色信息");
-//                    OutputUtils.output(response, 401, "未获取到用户角色信息",
-//                            "未获取到用户角色对应的信息");
-//                    return;
                     throw new AuthorizationRuntimeException("未获取到用户角色信息", "未获取到用户角色信息");
-
                 }
 
                 List<Url> urlsx = role.getUrls();
@@ -163,9 +147,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 
             //失败了返回信息
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() + " :鉴权失败");
-//            OutputUtils.output(response, 403, "鉴权失败",
-//                    "鉴权失败");
-//            return;
             throw new AuthorizationRuntimeException("鉴权失败");
         }
         filterChain.doFilter(request, response);
