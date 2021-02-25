@@ -115,7 +115,7 @@ public class VerificationCodeController extends BaseController {
             response.setValue(false);
         } else {
             // 校验验证码的正确与否
-            boolean result = Objects.equals(code, storeCode);
+            boolean result = StringUtils.equalsAnyIgnoreCase(code, storeCode + "");
 //            if (result) {
 //                //将验证码从session中删掉
 //                SpringUtils.getSession().removeAttribute(Constants.KAPTCHA_SESSION_KEY);

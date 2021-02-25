@@ -4,10 +4,17 @@ import com.iscas.biz.model.common.LogTreeDataDTO;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
 import com.iscas.templet.view.tree.TreeResponseData;
+import lombok.Cleanup;
+import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 系统日志控制器
@@ -30,11 +37,13 @@ public class SystemLogService {
         }
         TreeResponse treeResponse = new TreeResponse();
         TreeResponseData<LogTreeDataDTO> root = new TreeResponseData<>();
-        root.setValue(file.getAbsolutePath());
+        String absolutePath = file.getAbsolutePath();
+        absolutePath = absolutePath.replace("\\", "/");
+        root.setValue(absolutePath);
         root.setId(file.getAbsolutePath());
         root.setLabel("系统日志");
         LogTreeDataDTO logTreeDataDTO = new LogTreeDataDTO();
-        logTreeDataDTO.setFilePath(file.getAbsolutePath());
+        logTreeDataDTO.setFilePath(absolutePath);
         logTreeDataDTO.setFile(false);
         logTreeDataDTO.setFileName(file.getName());
         cascadeGetTree(root, file);
@@ -47,6 +56,7 @@ public class SystemLogService {
             for (File file1 : files) {
                 String name = file1.getName();
                 String absolutePath = file1.getAbsolutePath();
+                absolutePath = absolutePath.replace("\\", "/");
                 boolean isDir = file1.isDirectory();
                 LogTreeDataDTO logTreeDataDTO = new LogTreeDataDTO();
                 logTreeDataDTO.setFilePath(absolutePath)
@@ -63,5 +73,27 @@ public class SystemLogService {
                 }
             }
         }
+    }
+
+
+    public List<String> viewLog(String filePath, int lines) throws BaseException, IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new BaseException(String.format("日志文件:[%s]不存在", filePath));
+        }
+        if (file.isDirectory()) {
+            throw new BaseException(String.format("[%s]不是一个文件", filePath));
+        }
+        List<String> logDatas = new ArrayList<>();
+        @Cleanup ReversedLinesFileReader reversedLinesFileReader = new ReversedLinesFileReader(file, Charset.forName("utf-8"));
+        for (int i = 0; i < lines; i++) {
+            String line = reversedLinesFileReader.readLine();
+            if (line == null) {
+                break;
+            }
+            logDatas.add(line);
+        }
+        Collections.reverse(logDatas);
+        return logDatas;
     }
 }
