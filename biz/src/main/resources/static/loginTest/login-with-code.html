@@ -29,6 +29,10 @@
                     aesKey = resData.encryKey;
                     key = resData.key;
                     console.log("加密码:" + aesKey);
+
+                    //获取验证码
+                    $1("imgCode").src = "http://localhost:7901/demo/verification/code?key=" + key + "&m=" + Math.random();
+
                 }
             }
         }
@@ -49,7 +53,7 @@
             //验证验证码
             var xhr = new XMLHttpRequest();
             xhr.withCredentials = true;
-            xhr.open('get', 'http://localhost:7901/demo/verification/code/verify?code=' + $1("code").value);
+            xhr.open('get', 'http://localhost:7901/demo/verification/code/verify?code=' + $1("code").value + '&key=' + key);
             xhr.setRequestHeader("Content-type", "application/json;charset=utf-8");
             //发送请求
             xhr.send();
@@ -114,7 +118,7 @@
 <body>
 用户名:<input type="text" value="" id="user"/> <br/>
 密码:<input type="text" id="pwd" /><br/>
-验证码:<img src="http://localhost:7901/demo/verification/code" onclick="this.src=this.src+'?m='+Math.random();"/>
+验证码:<img id = "imgCode" onclick="javascript:getAesKey();"/>
         <input type="text", id = "code"/><br/>
 <input type="button" value="提交" onclick="tosubmit();"/>
 </body>

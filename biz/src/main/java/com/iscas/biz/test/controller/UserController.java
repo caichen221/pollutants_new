@@ -1,12 +1,10 @@
 package com.iscas.biz.controller;
 
 
-import com.iscas.biz.model.User;
+import com.iscas.biz.domain.common.User;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * <p>

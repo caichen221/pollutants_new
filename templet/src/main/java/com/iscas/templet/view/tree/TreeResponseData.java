@@ -41,6 +41,9 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
     /**前台Path*/
     protected String path;
 
+    /**是否为叶子节点*/
+    protected boolean isLeaf = false;
+
     /*当前节点对应的值(实体对象值)*/
     protected T data;
 
