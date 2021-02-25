@@ -11,6 +11,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,6 +82,11 @@ public class OrgController extends BaseController {
             }
     )
     @PostMapping("/node/del")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
 //    @Transactional
     public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) throws BaseException {
         ResponseEntity response = getResponse();

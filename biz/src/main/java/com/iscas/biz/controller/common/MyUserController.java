@@ -1,5 +1,7 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.domain.common.User;
+import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.UserService;
 import com.iscas.templet.common.BaseController;
@@ -11,6 +13,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,10 +38,12 @@ public class MyUserController extends BaseController {
     private String tableIdentity = "user";
     private final TableDefinitionService tableDefinitionService;
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public MyUserController(TableDefinitionService tableDefinitionService, UserService userService) {
+    public MyUserController(TableDefinitionService tableDefinitionService, UserService userService, UserMapper userMapper) {
         this.tableDefinitionService = tableDefinitionService;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @ApiOperation(value="获取表头", notes="不带数据，带下拉列表")
@@ -68,6 +74,7 @@ public class MyUserController extends BaseController {
     @PostMapping("/del")
     public ResponseEntity deleteData(@RequestBody List<Object> ids)
             throws ValidDataException {
+        userService.deleteCache(ids);
         return tableDefinitionService.batchDeleteData(tableIdentity, ids);
     }
 
@@ -80,6 +87,7 @@ public class MyUserController extends BaseController {
     @PostMapping("/data")
     public ResponseEntity saveData(@RequestBody Map<String,Object> data)
             throws ValidDataException, NoSuchAlgorithmException {
+        userService.deleteOneUserCache((String) data.get("user_name"));
         return userService.add(data);
     }
 
@@ -92,6 +100,12 @@ public class MyUserController extends BaseController {
     @PutMapping("/data")
     public ResponseEntity editData(@RequestBody Map<String,Object> data)
             throws ValidDataException {
+        //先删除缓存
+        Integer userId = (Integer) data.get("user_id");
+        if (userId != null) {
+            User user = userMapper.selectByPrimaryKey(userId);
+            if (user != null) userService.deleteOneUserCache(user.getUserName());
+        }
         return userService.edit(data);
     }
 

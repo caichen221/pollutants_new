@@ -98,7 +98,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.iscas.biz.domain.common.Role">
+  <insert id="insert" parameterType="com.iscas.biz.domain.common.Role" useGeneratedKeys="true" keyProperty="roleId" keyColumn="role_id">
     insert into role (role_id, role_name, role_create_time, 
       role_update_time)
     values (#{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{roleCreateTime,jdbcType=TIMESTAMP}, 

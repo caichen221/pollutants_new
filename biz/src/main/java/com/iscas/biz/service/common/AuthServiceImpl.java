@@ -78,18 +78,47 @@ public class AuthServiceImpl extends AbstractAuthService {
         return new HashMap<>();
     }
 
+    @Cacheable(value = "auth", key = "'menus'")
     @Override
-    public String getRoles(String username) {
+    public List<Menu> getMenus() {
+        List<Menu> menus = new ArrayList<>();
+        List<com.iscas.biz.domain.common.Menu> dbMenus = menuMapper.selectByExample(null);
+        if (CollectionUtils.isNotEmpty(dbMenus)) {
+            menus = dbMenus.stream().map(LambdaExceptionUtils.lambdaWrapper(m -> {
+                Menu menu = new Menu();
+                menu.setName(m.getMenuName());
+                menu.setKey(String.valueOf(m.getMenuId()));
+                return menu;
+            })).collect(Collectors.toList());
+        }
+        return menus;
+    }
+
+
+    @Cacheable(value = "auth", key = "'username:'.concat(#username)")
+    @Override
+    public List<Role> getRoles(String username) {
+        List<Role> roles = new ArrayList<>();
         List<Map> userRoleMaps = userMapper.selectUserRoleByUsername(username);
-        StringJoiner sj = new StringJoiner(",");
         if (CollectionUtils.isNotEmpty(userRoleMaps)) {
             for (Map userRoleMap : userRoleMaps) {
                 Integer roleId = (Integer) userRoleMap.get("role_id");
-                sj.add(String.valueOf(roleId));
+                String roleName = (String) userRoleMap.get("role_name");
+                Map<String, Role> auth = getAuth();
+                Role role = auth.get(String.valueOf(roleId));
+                if (role != null) roles.add(role);
+
+//                Role role = new Role();
+//                role.setName(roleName);
+//                role.setKey(String.valueOf(roleId));
+//                roles.add(role);
             }
         }
-        return sj.toString();
+        return roles;
     }
+
+
+
 
     @Override
     public void invalidToken(HttpServletRequest request) {
@@ -109,7 +138,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 
     @Cacheable(value = "auth", key="'role_map'")
     @Override
-    public Map<String, Role> getAuth() throws IOException, AuthConfigException {
+    public Map<String, Role> getAuth() {
         log.debug("------读取角色信息------");
         Map<String, Role> result = new HashMap<>(2 << 6);
         List<com.iscas.biz.domain.common.Role> commonRoles = roleMapper.selectByExample(null);
@@ -217,26 +246,32 @@ public class AuthServiceImpl extends AbstractAuthService {
                 authCacheService.set("user-token" + username, token);
 
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
-                String roleKey = getRoles(username);
-                Map<String, Role> auth = getAuth();
-                List<Role> roles = new ArrayList<>();
-                if (roleKey != null) {
-                    for (String s : roleKey.split(",")) {
-                        Role role = auth.get(s);
-                        if (role != null) {
-                            roles.add(role);
-                        }
-                    }
-                }
+                List<Role> roles = getRoles(username);
+//                Map<String, Role> auth = getAuth();
+//                List<Role> roles = new ArrayList<>();
+//                if (roleKey != null) {
+//                    for (String s : roleKey.split(",")) {
+//                        Role role = auth.get(s);
+//                        if (role != null) {
+//                            roles.add(role);
+//                        }
+//                    }
+//                }
 
                 Map map = new HashMap<>(2 << 2);
-                List<Integer> menus = new ArrayList<>();
+                List<String> menus = new ArrayList<>();
                 List<Menu> menuList = new ArrayList<>();
                 for (Role role : roles) {
-                    menuList.addAll(role.getMenus());
+                    if (Objects.equals(role.getName(), Constants.SUPER_ROLE_KEY)) {
+                        //超级管理员角色
+                        List<Menu> dbMenus = getMenus();
+                        if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
+                    } else {
+                        menuList.addAll(role.getMenus());
+                    }
                 }
                 if (CollectionUtils.isNotEmpty(menuList)) {
-                    menus = menuList.stream().map(ml -> Integer.valueOf(ml.getKey())).distinct().collect(Collectors.toList());
+                    menus = menuList.stream().map(ml -> ml.getName()).distinct().collect(Collectors.toList());
                 }
                 map.put("menu", menus);
                 map.put(Constants.TOKEN_KEY, token);
@@ -280,10 +315,12 @@ public class AuthServiceImpl extends AbstractAuthService {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 throw new LoginException("登录时创建token异常", e);
-            } catch (AuthConfigException e) {
-                e.printStackTrace();
-                throw new LoginException("读取权限配置信息出错", e);
-            } catch (IOException e) {
+            }
+//            catch (AuthConfigException e) {
+//                e.printStackTrace();
+//                throw new LoginException("读取权限配置信息出错", e);
+//            }
+            catch (IOException e) {
                 e.printStackTrace();
                 throw new LoginException("登录异常", e);
             }

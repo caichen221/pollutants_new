@@ -24,4 +24,11 @@
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 
+  <select id="selectUserByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+    select * from user where user_id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id, jdbcType=INTEGER}
+    </foreach>
+  </select>
+
 </mapper>

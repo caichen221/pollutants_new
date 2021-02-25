@@ -1,15 +1,14 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.service.common.SpringService;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
-import com.iscas.templet.exception.ValidTokenException;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
-import com.iscas.base.biz.util.CaffCacheUtils;
+import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.common.web.tools.cookie.CookieUtils;
+import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.ValidTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -52,7 +52,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String contextPath = request.getContextPath();
-        Role role = null;
         Map<String, Url> urlMap = null;
         Map<String, Role> roleMap = null;
         try {
@@ -112,30 +111,33 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                         " :校验token出错");
                 throw new AuthorizationRuntimeException("校验身份信息出错", "校验token出错");
             }
-            String roleKey = authService.getRoles(username);
+            List<Role> roles = authService.getRoles(username);
+
 //            boolean userFlag = authService.validUsername(username);
 //            User user = userService.findByUsername(username);
 
             //如果是超级管理员角色super,直接跳过认证，认为他具有所有权限
-            if(roleKey != null && ArrayUtils.contains(roleKey.split(","),Constants.SUPER_ROLE_KEY)){
-                filterChain.doFilter(request, response);
-                return;
+            if(roles != null){
+                for (Role role1 : roles) {
+                    String name = role1.getName();
+                    if (Objects.equals(name, Constants.SUPER_ROLE_KEY)) {
+                        filterChain.doFilter(request, response);
+                        return;
+                    }
+                }
             }
 
-            if (roleKey == null) {
+            if (roles == null) {
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :token中携带的用户或其角色信息不存在");
                 throw new AuthorizationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
             }
-            String[] roleKeys = StringUtils.split(roleKey, ",");
-            for (String key : roleKeys) {
-                role = roleMap.get(key);
-                if (role == null) {
-                    log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-                            " :未获取到用户角色信息");
-                    throw new AuthorizationRuntimeException("未获取到用户角色信息", "未获取到用户角色信息");
-                }
-
+            for (Role role : roles) {
+//                if (role == null) {
+//                    log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
+//                            " :未获取到用户角色信息");
+//                    throw new AuthorizationRuntimeException("未获取到用户角色信息", "未获取到用户角色信息");
+//                }
                 List<Url> urlsx = role.getUrls();
                 for (Url url : urlsx) {
                     if (pathMatcher.match(contextPath + url.getName(), request.getRequestURI())) {

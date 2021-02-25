@@ -14,14 +14,16 @@ import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableResponse;
 import com.iscas.templet.view.table.TableResponseData;
 import com.iscas.templet.view.table.TableSearchRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 @Service
+@Slf4j
 public class UserService {
     @Value("${user_default_pwd:123456}")
     private String userDefaultPwd;
@@ -259,5 +262,22 @@ public class UserService {
         }
         user.setUserPwd(MD5Utils.saltMD5(newPwd));
         userMapper.updatePwd(user);
+    }
+
+
+    public void deleteCache(List<Object> ids) {
+        List<User> users = userMapper.selectUserByIds(ids);
+        if (users != null) {
+            for (User user : users) {
+                deleteOneUserCache(user.getUserName());
+            }
+        }
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'username:'.concat(#username)")
+    })
+    public void deleteOneUserCache(String username) {
+        log.debug("删除用户:{}的权限相关缓存", username);
     }
 }

@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +62,11 @@ public class RoleController extends BaseController {
             }
     )
     @PostMapping("/del")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public ResponseEntity deleteData(@RequestBody List<Object> ids)
             throws ValidDataException {
         return tableDefinitionService.batchDeleteData(tableIdentity, ids);
@@ -72,6 +79,11 @@ public class RoleController extends BaseController {
             }
     )
     @PostMapping("/data")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public ResponseEntity saveData(@RequestBody Map<String,Object> data)
             throws ValidDataException {
         return tableDefinitionService.saveData(tableIdentity, data, false);
@@ -84,6 +96,11 @@ public class RoleController extends BaseController {
             }
     )
     @PutMapping("/data")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public ResponseEntity editData(@RequestBody Map<String,Object> data)
             throws ValidDataException {
         //修改时间

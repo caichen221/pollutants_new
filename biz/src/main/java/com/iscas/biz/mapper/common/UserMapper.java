@@ -1,6 +1,9 @@
 package com.iscas.biz.mapper.common;
 
 import com.iscas.biz.domain.common.User;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +28,9 @@ public interface UserMapper {
     @Select("select * from user t where t.user_name = #{username}")
     User selectByUserName(String username);
 
+    @Insert("insert into user (user_name, user_pwd) values (#{user.userName}, #{user.userPwd})")
+    @Options(useGeneratedKeys=true, keyProperty= "user.userId")
+    int insertUser(@Param("user") User user);
+
+    List<User> selectUserByIds(List<Object> ids);
 }

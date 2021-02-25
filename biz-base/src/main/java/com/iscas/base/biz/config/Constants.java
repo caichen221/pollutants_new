@@ -27,6 +27,9 @@ public interface Constants {
     /**超级管理员角色*/
     String SUPER_ROLE_KEY = "super";
 
+    /**超级管理员用户*/
+    String SUPER_USER_KEY = "admin";
+
     /**管理员角色*/
     String MANAGER_ROLE_KEY = "manager";
 
