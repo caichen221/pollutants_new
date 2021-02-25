@@ -91,7 +91,7 @@ public class SystemLogService {
             if (line == null) {
                 break;
             }
-            logDatas.add(line);
+            logDatas.add(line.replace("\t", "    "));
         }
         Collections.reverse(logDatas);
         return logDatas;
