@@ -43,4 +43,11 @@ public class WsData {
         return wsData1;
     }
 
+    public static com.iscas.biz.model.common.WsData convert(WsData wsData) {
+        com.iscas.biz.model.common.WsData wsData1 = new com.iscas.biz.model.common.WsData(wsData.getMsgId(),
+                com.iscas.biz.model.common.WsData.MsgTypeEnum.valueOf(wsData.getType()), wsData.getUserIdentify(), wsData.persistent, wsData.getData());
+       wsData1.setDestination(wsData.getDestination());
+        return wsData1;
+    }
+
 }

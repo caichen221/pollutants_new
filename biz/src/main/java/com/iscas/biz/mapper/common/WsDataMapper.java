@@ -2,7 +2,11 @@ package com.iscas.biz.mapper.common;
 
 import com.iscas.biz.domain.common.WsData;
 import com.iscas.biz.domain.common.WsDataExample;
+
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -35,4 +39,7 @@ public interface WsDataMapper {
     int updateByPrimaryKeyWithBLOBs(WsData record);
 
     int updateByPrimaryKey(WsData record);
+
+    @Delete("delete from ws_data where create_time < #{time,jdbcType=TIMESTAMP}")
+    int deleteByTime(Date time);
 }

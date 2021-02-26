@@ -1,11 +1,15 @@
 package com.iscas.biz.service.common;
 
+import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
+import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * websocket消息
@@ -55,4 +59,22 @@ public class WsService {
         wsDataMapper.insert(dbWsData);
     }
 
+    public void retry(Integer id) {
+        com.iscas.biz.domain.common.WsData wsData = wsDataMapper.selectByPrimaryKey(id);
+        WsData wsData1 = com.iscas.biz.domain.common.WsData.convert(wsData);
+        p2p(wsData1);
+    }
+
+    @Async("wsExecutor")
+    public void ack(String msgId) {
+        WsDataExample dataExample = new WsDataExample();
+        dataExample.createCriteria().andMsgIdEqualTo(msgId);
+        List<com.iscas.biz.domain.common.WsData> wsDatas = wsDataMapper.selectByExample(dataExample);
+        if (wsDatas != null) {
+            for (com.iscas.biz.domain.common.WsData wsData : wsDatas) {
+                wsData.setAck(true);
+                wsDataMapper.updateByPrimaryKey(wsData);
+            }
+        }
+    }
 }
