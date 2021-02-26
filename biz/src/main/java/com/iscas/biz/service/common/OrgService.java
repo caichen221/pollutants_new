@@ -43,7 +43,7 @@ public class OrgService {
     }
 
     public TreeResponseData<Org> getTree() {
-        List<Org> orgs = orgMapper.selectByExample(null);
+        List<Org> orgs = orgMapper.selectByExampleWithBLOBs(null);
         TreeResponseData<Org> root = new TreeResponseData<>();
         root.setId("-1");
         root.setValue("root");
