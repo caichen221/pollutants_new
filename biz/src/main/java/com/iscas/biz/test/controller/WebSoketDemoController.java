@@ -1,5 +1,7 @@
 package com.iscas.biz.test.controller;
 
+import com.iscas.biz.model.common.WsData;
+import com.iscas.biz.service.common.WsService;
 import com.iscas.templet.common.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,21 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 如有要看例子，请打开注释
  *
  **/
-//@RestController
+@RestController
 @Slf4j
 public class WebSoketDemoController {
 
-    //spring提供的发送消息模板
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
     @Autowired
     private SimpUserRegistry userRegistry;
+    @Autowired
+    private WsService wsService;
 
 
     /**
@@ -40,7 +41,9 @@ public class WebSoketDemoController {
             log.info("用户" + i++ + "---" + user);
         }
         //发送消息给指定用户
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/message","服务器主动推的数据");
+        WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, principal.getName(),
+                false, "服务器推送得数据");
+        wsService.p2p(wsData);
     }
 
 
@@ -55,7 +58,9 @@ public class WebSoketDemoController {
             log.info("用户" + i++ + "---" + user);
         }
         //发送消息给指定用户
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/message","服务器主动推的数据");
+        WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, principal.getName(),
+                false, "服务器推送得数据");
+        wsService.p2p(wsData);
     }
 
 
@@ -70,7 +75,9 @@ public class WebSoketDemoController {
             log.info("用户" + i++ + "---" + user);
         }
         //发送消息给指定用户
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/message","服务器主动推的数据");
+        WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, principal.getName(),
+                false, "服务器推送得数据");
+        wsService.p2p(wsData);
     }
 
     /**
@@ -84,7 +91,9 @@ public class WebSoketDemoController {
             log.info("用户" + i++ + "---" + user);
         }
         //发送消息给指定用户
-        messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/message","服务器主动推的数据");
+        WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, principal.getName(),
+                false, "服务器推送得数据");
+        wsService.p2p(wsData);
     }
 
     /**

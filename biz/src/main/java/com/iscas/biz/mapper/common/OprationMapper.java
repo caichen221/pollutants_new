@@ -2,9 +2,12 @@ package com.iscas.biz.mapper.common;
 
 import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.domain.common.OprationExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface OprationMapper {
     long countByExample(OprationExample example);
 

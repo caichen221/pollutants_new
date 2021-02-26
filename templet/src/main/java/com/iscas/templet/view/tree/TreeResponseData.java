@@ -26,6 +26,10 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
     protected String label;
     /*对应ID*/
     protected Object id;
+
+    /**value与ID一致*/
+    protected Object value;
+
     /*是否展开*/
     protected Boolean expanded = false;
     /*是否可选*/
@@ -36,6 +40,9 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
     protected List<TreeResponseData<T>> children = new ArrayList<>();
     /**前台Path*/
     protected String path;
+
+    /**是否为叶子节点*/
+    protected boolean isLeaf = false;
 
     /*当前节点对应的值(实体对象值)*/
     protected T data;

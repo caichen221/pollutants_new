@@ -1,7 +1,6 @@
 package com.iscas.biz.controller.common;
 
 import com.iscas.biz.mp.table.service.TableDefinitionService;
-import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -11,11 +10,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +62,11 @@ public class RoleController extends BaseController {
             }
     )
     @PostMapping("/del")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public ResponseEntity deleteData(@RequestBody List<Object> ids)
             throws ValidDataException {
         return tableDefinitionService.batchDeleteData(tableIdentity, ids);
@@ -75,6 +79,11 @@ public class RoleController extends BaseController {
             }
     )
     @PostMapping("/data")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public ResponseEntity saveData(@RequestBody Map<String,Object> data)
             throws ValidDataException {
         return tableDefinitionService.saveData(tableIdentity, data, false);
@@ -87,15 +96,17 @@ public class RoleController extends BaseController {
             }
     )
     @PutMapping("/data")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public ResponseEntity editData(@RequestBody Map<String,Object> data)
             throws ValidDataException {
         //修改时间
-        Map<String, Object> forceItem = new HashMap<>();
-
-        forceItem.put("role_update_time", DateSafeUtils.format(new Date(), DateSafeUtils.PATTERN));
-        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
+//        Map<String, Object> forceItem = new HashMap<>();
+//
+//        forceItem.put("role_update_time", DateSafeUtils.format(new Date(), DateSafeUtils.PATTERN));
+        return tableDefinitionService.saveData(tableIdentity, data, false, null, null);
     }
-
-
-
 }

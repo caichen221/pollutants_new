@@ -11,6 +11,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -75,31 +78,22 @@ public class OrgController extends BaseController {
     @ApiOperation(value="[组织机构]删除组织机构节点", notes="create by:朱全文 2021-02-20")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "orgId", value = "组织机构Id", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "orgIds", value = "组织机构Id", required = true, dataType = "List")
             }
     )
-    @DeleteMapping("/node/{orgId:[0-9]+}")
-    public ResponseEntity deleteNode(@PathVariable Integer orgId) throws BaseException {
+    @PostMapping("/node/del")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
+//    @Transactional
+    public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) throws BaseException {
         ResponseEntity response = getResponse();
-        int result = orgService.deleteOrg(orgId);
-        response.setValue(result);
+        for (Integer orgId : orgIds) {
+            orgService.deleteOrg(orgId);
+        }
         return response;
     }
-
-//    @ApiOperation(value="[组织机构]为组织机构配置角色-2021-02-21", notes="create by:朱全文")
-//    @ApiImplicitParams(
-//            {
-//                    @ApiImplicitParam(name = "orgId", value = "组织机构Id", required = true, dataType = "Integer"),
-//                    @ApiImplicitParam(name = "roleIds", value = "角色Ids", required = true, dataType = "List")
-//            }
-//    )
-//    @DeleteMapping("/{orgId:[0-9]+}/relation/role")
-//    public ResponseEntity relationRole(@PathVariable Integer orgId, @RequestBody List<Integer> roleIds) throws BaseException {
-//        ResponseEntity response = getResponse();
-//        int result = orgService.deleteOrg(orgId, roleIds);
-//        response.setValue(result);
-//        return response;
-//    }
-
 
 }

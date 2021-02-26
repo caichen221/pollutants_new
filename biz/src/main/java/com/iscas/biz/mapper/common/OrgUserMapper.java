@@ -4,7 +4,9 @@ import com.iscas.biz.domain.common.OrgUserExample;
 import com.iscas.biz.domain.common.OrgUserKey;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface OrgUserMapper {
     long countByExample(OrgUserExample example);
 

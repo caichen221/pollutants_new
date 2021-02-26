@@ -2,6 +2,7 @@ package com.iscas.base.biz.service;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.templet.exception.AuthConfigException;
 import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.exception.ValidTokenException;
@@ -16,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,9 +29,10 @@ import java.util.Map;
  * @since jdk1.8
  */
 public abstract class AbstractAuthService implements Constants {
-    public abstract Map<String, Role> getAuth() throws IOException, AuthConfigException;
-    public abstract Map<String, Url> getUrls() throws IOException, AuthConfigException;
-    public abstract String getRoles(String username);
+    public abstract Map<String, Role> getAuth() ;
+    public abstract Map<String, Url> getUrls() ;
+    public abstract List<Role> getRoles(String username) ;
+    public abstract List<Menu> getMenus();
 
     public abstract void loginHandler(HttpServletResponse response, Map<String,String> user,
                                       ResponseEntity responseEntity, int expire, int cookieExpire) throws LoginException;

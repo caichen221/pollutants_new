@@ -11,16 +11,12 @@ import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.ValidatePropDistinctUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
-import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.ValidDataException;
-import com.iscas.templet.view.table.ComboboxData;
 import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,9 +43,10 @@ public class OrgService {
     }
 
     public TreeResponseData<Org> getTree() {
-        List<Org> orgs = orgMapper.selectByExample(null);
+        List<Org> orgs = orgMapper.selectByExampleWithBLOBs(null);
         TreeResponseData<Org> root = new TreeResponseData<>();
-        root.setId("root");
+        root.setId("-1");
+        root.setValue("root");
         root.setLabel("组织机构");
         if (CollectionUtils.isNotEmpty(orgs)) {
             Map<Integer, List<TreeResponseData<Org>>> childOrgs = getChildOrgs(orgs);
@@ -104,20 +101,27 @@ public class OrgService {
             List<Role> rs = orgRoleMap.get(orgId);
             comboboxData.setLabel(org.getOrgName())
                     .setId(orgId)
+                    .setValue(orgId)
                     .setData(org);
             if (CollectionUtils.isNotEmpty(rs)) {
+                StringJoiner roleNamesJoiner = new StringJoiner(",");
                 for (Role r : rs) {
                     org.getRoleIds().add(r.getRoleId());
-                    org.getRoleNames().add(r.getRoleName());
+                    roleNamesJoiner.add(r.getRoleName());
                 }
+                org.setRoleNames(roleNamesJoiner.toString());
             }
-
             childOrgs.get(orgPid).add(comboboxData);
         }
         return childOrgs;
     }
 
 //    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public int addOrg(Org org) throws ValidDataException {
         AssertObjUtils.assertNull(org.getOrgId(), "请求参数有误，orgId必须为空");
         ValidatePropDistinctUtils.validateFromMysql(SpringService.getBean(DynamicMapper.class), "org", "org_name", org.getOrgName());
@@ -138,6 +142,12 @@ public class OrgService {
         return result;
     }
 
+    //    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
     public int editOrg(Org org) {
         AssertObjUtils.assertNotNull(org.getOrgId(), "请求参数有误，orgId不能为空");
         Date date = new Date();

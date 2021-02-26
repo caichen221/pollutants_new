@@ -2,11 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iscas.biz.mapper.common.ResourceMapper">
   <resultMap id="BaseResultMap" type="com.iscas.biz.domain.common.Resource">
-    <result column="id" jdbcType="INTEGER" property="id" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="server_id" jdbcType="INTEGER" property="serverId" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <id column="resource_id" jdbcType="INTEGER" property="resourceId" />
+    <result column="resource_url" jdbcType="VARCHAR" property="resourceUrl" />
+    <result column="resource_create_time" jdbcType="TIMESTAMP" property="resourceCreateTime" />
+    <result column="resource_update_time" jdbcType="TIMESTAMP" property="resourceUpdateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iscas.biz.domain.common.Resource">
+    <result column="resource_desc" jdbcType="LONGVARCHAR" property="resourceDesc" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,8 +69,27 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, url, server_id, name, createtime
+    resource_id, resource_url, resource_create_time, resource_update_time
   </sql>
+  <sql id="Blob_Column_List">
+    resource_desc
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.iscas.biz.domain.common.ResourceExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from resource
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.iscas.biz.domain.common.ResourceExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -83,6 +104,18 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from resource
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from resource
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </delete>
   <delete id="deleteByExample" parameterType="com.iscas.biz.domain.common.ResourceExample">
     delete from resource
     <if test="_parameter != null">
@@ -90,45 +123,45 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.iscas.biz.domain.common.Resource">
-    insert into resource (id, url, server_id, 
-      name, createtime)
-    values (#{id,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER}, 
-      #{name,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP})
+    insert into resource (resource_id, resource_url, resource_create_time, 
+      resource_update_time, resource_desc)
+    values (#{resourceId,jdbcType=INTEGER}, #{resourceUrl,jdbcType=VARCHAR}, #{resourceCreateTime,jdbcType=TIMESTAMP}, 
+      #{resourceUpdateTime,jdbcType=TIMESTAMP}, #{resourceDesc,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.iscas.biz.domain.common.Resource">
     insert into resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="resourceId != null">
+        resource_id,
       </if>
-      <if test="url != null">
-        url,
+      <if test="resourceUrl != null">
+        resource_url,
       </if>
-      <if test="serverId != null">
-        server_id,
+      <if test="resourceCreateTime != null">
+        resource_create_time,
       </if>
-      <if test="name != null">
-        name,
+      <if test="resourceUpdateTime != null">
+        resource_update_time,
       </if>
-      <if test="createtime != null">
-        createtime,
+      <if test="resourceDesc != null">
+        resource_desc,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="resourceId != null">
+        #{resourceId,jdbcType=INTEGER},
       </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
+      <if test="resourceUrl != null">
+        #{resourceUrl,jdbcType=VARCHAR},
       </if>
-      <if test="serverId != null">
-        #{serverId,jdbcType=INTEGER},
+      <if test="resourceCreateTime != null">
+        #{resourceCreateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="resourceUpdateTime != null">
+        #{resourceUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
+      <if test="resourceDesc != null">
+        #{resourceDesc,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -141,35 +174,78 @@
   <update id="updateByExampleSelective" parameterType="map">
     update resource
     <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+      <if test="record.resourceId != null">
+        resource_id = #{record.resourceId,jdbcType=INTEGER},
       </if>
-      <if test="record.url != null">
-        url = #{record.url,jdbcType=VARCHAR},
+      <if test="record.resourceUrl != null">
+        resource_url = #{record.resourceUrl,jdbcType=VARCHAR},
       </if>
-      <if test="record.serverId != null">
-        server_id = #{record.serverId,jdbcType=INTEGER},
+      <if test="record.resourceCreateTime != null">
+        resource_create_time = #{record.resourceCreateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.resourceUpdateTime != null">
+        resource_update_time = #{record.resourceUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.createtime != null">
-        createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      <if test="record.resourceDesc != null">
+        resource_desc = #{record.resourceDesc,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map">
+  <update id="updateByExampleWithBLOBs" parameterType="map">
     update resource
-    set id = #{record.id,jdbcType=INTEGER},
-      url = #{record.url,jdbcType=VARCHAR},
-      server_id = #{record.serverId,jdbcType=INTEGER},
-      name = #{record.name,jdbcType=VARCHAR},
-      createtime = #{record.createtime,jdbcType=TIMESTAMP}
+    set resource_id = #{record.resourceId,jdbcType=INTEGER},
+      resource_url = #{record.resourceUrl,jdbcType=VARCHAR},
+      resource_create_time = #{record.resourceCreateTime,jdbcType=TIMESTAMP},
+      resource_update_time = #{record.resourceUpdateTime,jdbcType=TIMESTAMP},
+      resource_desc = #{record.resourceDesc,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update resource
+    set resource_id = #{record.resourceId,jdbcType=INTEGER},
+      resource_url = #{record.resourceUrl,jdbcType=VARCHAR},
+      resource_create_time = #{record.resourceCreateTime,jdbcType=TIMESTAMP},
+      resource_update_time = #{record.resourceUpdateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.iscas.biz.domain.common.Resource">
+    update resource
+    <set>
+      <if test="resourceUrl != null">
+        resource_url = #{resourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceCreateTime != null">
+        resource_create_time = #{resourceCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceUpdateTime != null">
+        resource_update_time = #{resourceUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceDesc != null">
+        resource_desc = #{resourceDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.iscas.biz.domain.common.Resource">
+    update resource
+    set resource_url = #{resourceUrl,jdbcType=VARCHAR},
+      resource_create_time = #{resourceCreateTime,jdbcType=TIMESTAMP},
+      resource_update_time = #{resourceUpdateTime,jdbcType=TIMESTAMP},
+      resource_desc = #{resourceDesc,jdbcType=LONGVARCHAR}
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iscas.biz.domain.common.Resource">
+    update resource
+    set resource_url = #{resourceUrl,jdbcType=VARCHAR},
+      resource_create_time = #{resourceCreateTime,jdbcType=TIMESTAMP},
+      resource_update_time = #{resourceUpdateTime,jdbcType=TIMESTAMP}
+    where resource_id = #{resourceId,jdbcType=INTEGER}
   </update>
 </mapper>

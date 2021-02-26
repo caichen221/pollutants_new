@@ -72,12 +72,20 @@ public class TableDefinitionService {
 				throw new BaseException(String.format("[%s]的表头定义不存在！", tableIdentity), String.format("column definition not exist for [%s]", tableIdentity));
 			}
 
-			TableHeaderResponseData tableHeaderResponseData = new TableHeaderResponseData();
-			tableHeaderResponseData.setCols(analyzeTableField(columnDefinitions, withOption));
-
 			//添加表格定义
 			TableDefinition tableDefinition =
 					tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName(), tableIdentity);
+			String primaryKey = tableDefinition.getPrimaryKey();
+			if (StringUtils.isEmpty(primaryKey)) {
+				primaryKey = tableDefinitionConfig.getPrimaryKey();
+				if (StringUtils.isEmpty(primaryKey)) {
+					primaryKey = "id";
+				}
+			}
+
+			TableHeaderResponseData tableHeaderResponseData = new TableHeaderResponseData();
+			tableHeaderResponseData.setCols(analyzeTableField(columnDefinitions, withOption));
+
 			TableSetting tableSetting = convertToTableSetting(tableDefinition);
 			tableHeaderResponseData.setSetting(tableSetting);
 			tableHeaderResponse.setValue(tableHeaderResponseData);
@@ -162,8 +170,14 @@ public class TableDefinitionService {
 					valueMap = JsonUtils.fromJson(columnDefinition.getRefValue(),new TypeReference<HashMap<Integer, String>>(){});
 				}else if(!StringUtils.isEmpty(columnDefinition.getRefTable()) &&
 					!StringUtils.isEmpty(columnDefinition.getRefTable())){
+//					List<Map<Object,Object>> refValues = tableDefinitionMapper.getRefTable(columnDefinition.getRefTable(),
+//						"id", columnDefinition.getRefColumn());
+//					valueMap = new LinkedHashMap<>();
+//					for(Map<Object,Object> tmpItem : refValues){
+//						valueMap.put(tmpItem.get("id"),tmpItem.get("value"));
+//					}
 					List<Map<Object,Object>> refValues = tableDefinitionMapper.getRefTable(columnDefinition.getRefTable(),
-						"id", columnDefinition.getRefColumn());
+							"id", columnDefinition.getRefColumn());
 					valueMap = new LinkedHashMap<>();
 					for(Map<Object,Object> tmpItem : refValues){
 						valueMap.put(tmpItem.get("id"),tmpItem.get("value"));
@@ -410,6 +424,15 @@ public class TableDefinitionService {
 				}
 			}
 
+			//添加动态sql add by zqw 2021-02-22
+			if (org.apache.commons.lang3.StringUtils.isNotEmpty(dynamicSql)) {
+				if (where.length() == 0) {
+					where.append(dynamicSql);
+				} else {
+					where.append(" AND ").append(dynamicSql);
+				}
+			}
+
 			if (where.length() != 0) {
 				if (MapUtils.isNotEmpty(dynamicParam)) {
 					for (Map.Entry<String,Object> entry: dynamicParam.entrySet()) {
@@ -599,7 +622,8 @@ public class TableDefinitionService {
 			sql.INSERT_INTO(tableDefinition.getTableName());
 
 			SQL updateSql = new SQL();
-			updateSql.UPDATE("@@" + tableDefinition.getTableName() + "@@");
+//			updateSql.UPDATE("@@" + tableDefinition.getTableName() + "@@");
+			updateSql.UPDATE(tableDefinition.getTableName());
 
 			for (ColumnDefinition columnDefinition : columnDefinitions) {
 				//如果是强制编辑的列，跳过
@@ -705,19 +729,20 @@ public class TableDefinitionService {
 
 
 			String sqlString = sql.toString();
-			String updateString = updateSql.toString();
+//			String updateString = updateSql.toString();
 
 			//修改replace into 的方式 udpate by zqw 20210221
 			//replace into 在修改的时候默认值会恢复到默认值，修改为on duplicate key
 //			sqlString = sqlString.replace("INSERT INTO", "REPLACE INTO");
 
-			updateString = updateString.replaceAll("@@.+@@", "").replace("SET ", " ");
-			sqlString += " on duplicate key " + updateString;
+//			updateString = updateString.replaceAll("@@.+@@", "").replace("SET ", " ");
+//			sqlString += " on duplicate key " + updateString;
 
 			if (item.get(tableDefinition.getPrimaryKey() == null ? "id" : tableDefinition.getPrimaryKey()) == null) {
 				tableDefinitionMapper.saveData(sqlString, item);
 			} else {
-				tableDefinitionMapper.updateData(sqlString, item);
+				updateSql.WHERE(String.format("%s = #{param.%s}", primaryKey, primaryKey));
+				tableDefinitionMapper.updateData(updateSql.toString(), item);
 			}
 			responseEntity.setValue(item.get(primaryKey));
 		}catch (BaseException e){
