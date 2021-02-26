@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CronTaskRegister implements DisposableBean {
 
     private final Map<Runnable, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(16);
+    private final Map<String, Runnable> scheduledTaskIds = new ConcurrentHashMap<>(16);
 
     @Autowired
     private TaskScheduler taskScheduler;
@@ -31,26 +32,31 @@ public class CronTaskRegister implements DisposableBean {
 
     /**
      * 新增定时任务
+     *
      * @param task
      * @param cronExpression
      */
-    public void addCronTask(Runnable task, String cronExpression) {
-        addCronTask(new CronTask(task, cronExpression));
+    public void addCronTask(String taskId, Runnable task, String cronExpression) {
+        addCronTask(taskId, new CronTask(task, cronExpression));
     }
 
-    public void addCronTask(CronTask cronTask) {
+    public void addCronTask(String taskId, CronTask cronTask) {
         if (cronTask != null) {
-            Runnable task = cronTask.getRunnable();
-            if (this.scheduledTasks.containsKey(task)) {
-                removeCronTask(task);
+            Runnable newTask = cronTask.getRunnable();
+            if (scheduledTaskIds.containsKey(taskId)){
+                //清理旧任务
+                Runnable oldTask = scheduledTaskIds.get(taskId);
+                removeCronTask(oldTask);
             }
-
-            this.scheduledTasks.put(task, scheduleCronTask(cronTask));
+            //记录并调度新任务
+            this.scheduledTaskIds.put(taskId,newTask);
+            this.scheduledTasks.put(newTask, scheduleCronTask(cronTask));
         }
     }
 
     /**
      * 移除定时任务
+     *
      * @param task
      */
     public void removeCronTask(Runnable task) {

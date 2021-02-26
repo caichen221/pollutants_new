@@ -29,7 +29,7 @@ public class TestStartedFilter2 extends AbstractStartedFilter {
         CronTaskRegister cronTaskRegister = applicationContext.getBean(CronTaskRegister.class);
         SchedulingRunnable task = new SchedulingRunnable("TestTask", "test", null);
         //每30S执行一次任务
-        cronTaskRegister.addCronTask(task, "0/10 * * * * ?");
+        cronTaskRegister.addCronTask("testStartedFilter2_task",task, "0/10 * * * * ?");
     }
 
     @Override

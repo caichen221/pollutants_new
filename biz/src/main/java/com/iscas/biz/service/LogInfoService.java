@@ -10,4 +10,6 @@ import com.iscas.biz.config.log.LogInfo;
  * @since jdk1.8
  */
 public interface LogInfoService extends IService<LogInfo> {
+
+    void deleteDataByTime(String holdPeriod);
 }

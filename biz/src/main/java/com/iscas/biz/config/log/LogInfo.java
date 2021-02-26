@@ -27,7 +27,7 @@ public class LogInfo {
     /**
      * 请求地址
      */
-    private String url;
+    private String requestUrl;
     /**
      * 操作类型
      */
@@ -39,7 +39,7 @@ public class LogInfo {
     /**
      * 描述
      */
-    private String description;
+    private String logDesc;
     /**
      * 操作时间
      */
@@ -47,5 +47,5 @@ public class LogInfo {
     /**
      * 响应时间
      */
-    private long tookInMillis;
+    private long requestTookTime;
 }

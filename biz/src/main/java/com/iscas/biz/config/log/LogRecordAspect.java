@@ -57,7 +57,7 @@ public class LogRecordAspect implements Constants {
                 .setOperateType(logRecord.operateType().getValue())
                 .setOperateTime(DateTimeUtils.getDateStr(new Date()))
                 .setOperateUser(StringUtils.isNotBlank(username) ? username : "unknown")
-                .setUrl(request.getRequestURI());
+                .setRequestUrl(request.getRequestURI());
 
         long start = System.currentTimeMillis();
         try {
@@ -70,7 +70,7 @@ public class LogRecordAspect implements Constants {
             return new Object();
         } finally {
             try {
-                logInfo.setDescription(desc.append(logRecord.desc()).toString()).setTookInMillis(System.currentTimeMillis() - start);
+                logInfo.setLogDesc(desc.append(logRecord.desc()).toString()).setRequestTookTime(System.currentTimeMillis() - start);
                 storeLog.store(logInfo);
             } catch (Throwable e) {
                 log.error("记录日志出错, error：{}", e.getMessage());
