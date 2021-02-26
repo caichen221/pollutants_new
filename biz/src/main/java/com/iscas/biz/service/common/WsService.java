@@ -5,6 +5,7 @@ import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @Service
+@Slf4j
 public class WsService {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -46,14 +48,14 @@ public class WsService {
      * 点对点消息
      * */
     public void p2p(WsData wsData) {
-        messagingTemplate.convertAndSendToUser(wsData.getUserIdentity(), wsData.getDestination(), wsData);
         //如果需要持久化，存储
         if (wsData.isPersistent()) {
             storeToDb(wsData);
         }
+        messagingTemplate.convertAndSendToUser(wsData.getUserIdentity(), wsData.getDestination(), wsData);
     }
 
-    @Async("wsExecutor")
+//    @Async("wsExecutor")
     public void storeToDb(WsData wsData) {
         com.iscas.biz.domain.common.WsData dbWsData = com.iscas.biz.domain.common.WsData.convert(wsData);
         wsDataMapper.insert(dbWsData);
@@ -73,7 +75,12 @@ public class WsService {
         if (wsDatas != null) {
             for (com.iscas.biz.domain.common.WsData wsData : wsDatas) {
                 wsData.setAck(true);
-                wsDataMapper.updateByPrimaryKey(wsData);
+                try {
+                    wsDataMapper.updateByPrimaryKey(wsData);
+                } catch (Exception e) {
+                    log.warn("消息:{}不存在", msgId);
+//                    e.printStackTrace();
+                }
             }
         }
     }
