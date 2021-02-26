@@ -92,7 +92,7 @@ public class WebSoketDemoController {
         }
         //发送消息给指定用户
         WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, principal.getName(),
-                false, "服务器推送得数据");
+                true, "服务器推送得数据");
         wsService.p2p(wsData);
     }
 
@@ -100,7 +100,7 @@ public class WebSoketDemoController {
      * 接收HttpSession数据
      * */
     @MessageMapping(value = "/httpsession")
-    public void httpsession( StompHeaderAccessor accessor) {
+    public void httpsession(StompHeaderAccessor accessor) {
         String name = (String) accessor.getSessionAttributes().get("name");
         System.out.println(1111);
     }
