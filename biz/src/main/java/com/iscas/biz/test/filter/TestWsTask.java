@@ -32,7 +32,7 @@ public class TestWsTask {
                 "admin", false, "测试广播数据");
         wsService.broadCast("/topic/message", wsData);
 
-        WsData wsData2 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.SYSTEM,
+        WsData wsData2 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS,
                 "admin", false, "测试点对点数据，不做持久化" + System.currentTimeMillis());
         wsService.p2p(wsData2);
 
@@ -42,7 +42,7 @@ public class TestWsTask {
         long l = wsDataMapper.countByExample(wsDataExample);
         if (l < 200) {
             //如果库里有一些未回复的数据，就不再生成了，防止库爆了
-            WsData wsData3 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.SYSTEM,
+            WsData wsData3 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS,
                     "admin", true, "测试点对点数据，持久化" + System.currentTimeMillis());
             wsService.p2p(wsData3);
         }
