@@ -6,11 +6,13 @@ import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.base.biz.util.DateTimeUtils;
-import com.iscas.biz.config.log.LogInfo;
+import com.iscas.base.biz.util.JWTUtils;
+import com.iscas.biz.model.LogInfo;
 import com.iscas.biz.mapper.LogInfoMapper;
 import com.iscas.biz.model.Param;
 import com.iscas.biz.service.LogInfoService;
 import com.iscas.biz.service.ParamService;
+import com.iscas.templet.exception.AuthorizationRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,12 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("param_key", "sys.log.holdPeriod");
         Param param = paramService.getOne(wrapper);
+        String username;
+        try{
+            username = JWTUtils.getLoginUsername();
+        }catch (AuthorizationRuntimeException e){
+            username = "unknown";
+        }
         if (param == null) {
             Param data = new Param()
                     .setParamName("系统监控-访问日志-保留时长")
@@ -70,8 +78,7 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
                     .setParamValue(holdPeriod)
                     .setParamType("系统类")
                     .setParamDesc("根据该参数清除之前的访问日志数据")
-                    //TODO JWTUtils.getLoginUsername()
-                    .setCreateBy("TEST")
+                    .setCreateBy(username)
                     .setCreateTime(DateTimeUtils.getDateStr(new Date()));
             paramService.save(data);
         } else {
@@ -81,8 +88,7 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
             }
             Param updateParam = new Param()
                     .setParamValue(holdPeriod)
-                    //JWTUtils.getLoginUsername()
-                    .setUpdateBy("test")
+                    .setUpdateBy(username)
                     .setUpdateTime(DateTimeUtils.getDateStr(new Date()));
             paramService.update(updateParam, wrapper);
         }

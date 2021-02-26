@@ -7,6 +7,7 @@ import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.biz.model.LogInfo;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

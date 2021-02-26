@@ -1,5 +1,6 @@
 package com.iscas.biz.config.log;
 
+import com.iscas.biz.model.LogInfo;
 import com.iscas.biz.service.LogInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

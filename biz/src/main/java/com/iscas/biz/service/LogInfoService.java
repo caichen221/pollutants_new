@@ -1,7 +1,7 @@
 package com.iscas.biz.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.iscas.biz.config.log.LogInfo;
+import com.iscas.biz.model.LogInfo;
 
 /**
  * @author lirenshen

@@ -1,5 +1,7 @@
 package com.iscas.biz.config.log;
 
+import com.iscas.biz.model.LogInfo;
+
 /**
  *
  *

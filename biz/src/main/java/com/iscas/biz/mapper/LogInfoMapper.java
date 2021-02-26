@@ -1,7 +1,7 @@
 package com.iscas.biz.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.iscas.biz.config.log.LogInfo;
+import com.iscas.biz.model.LogInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
