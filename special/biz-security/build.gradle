@@ -1,0 +1,8 @@
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-security"
+    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compile 'javax:javaee-api:7.0'
+}
