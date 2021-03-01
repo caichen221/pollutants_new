@@ -1,7 +1,7 @@
 package com.iscas.biz.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.iscas.biz.model.Dict;
+import com.iscas.biz.model.DictData;
 
 /**
  * @author lirenshen
@@ -9,5 +9,5 @@ import com.iscas.biz.model.Dict;
  * @date 2021/2/25 16:12
  * @since jdk1.8
  */
-public interface DictMapper extends BaseMapper<Dict> {
+public interface DictDataMapper extends BaseMapper<DictData> {
 }

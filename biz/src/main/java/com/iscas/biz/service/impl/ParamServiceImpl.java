@@ -3,6 +3,7 @@ package com.iscas.biz.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.mapper.ParamMapper;
@@ -34,7 +35,7 @@ public class ParamServiceImpl extends ServiceImpl<ParamMapper, Param> implements
      * 根据ids删除对应的参数，系统类参数不允许删除
      */
     @Override
-    public boolean deleteData(List<Object> ids) {
+    public boolean deleteByIds(List<Object> ids) {
         //系统类的参数不允许删除
         UpdateWrapper<Param> wrapper = new UpdateWrapper();
         wrapper.in("id", ids);
@@ -43,7 +44,7 @@ public class ParamServiceImpl extends ServiceImpl<ParamMapper, Param> implements
         List<String> keys = Optional.ofNullable(paramList)
                 .map(params -> params.stream().map(Param::getParamKey).collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
-        CacheUtils.evictCache("param", keys);
+        CacheUtils.evictCache(Constants.CACHE_PARAM_NAME, keys);
         return this.remove(wrapper);
     }
 
@@ -51,7 +52,7 @@ public class ParamServiceImpl extends ServiceImpl<ParamMapper, Param> implements
      * 根据 参数的键 获取 参数的值
      */
     @Override
-    @Cacheable(value = "param", key = "#paramKey", condition = "#result!=\"\"")
+    @Cacheable(value = Constants.CACHE_PARAM_NAME, key = "#paramKey", condition = "#result!=\"\"")
     public String getParamValue(String paramKey) {
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("param_key", paramKey);

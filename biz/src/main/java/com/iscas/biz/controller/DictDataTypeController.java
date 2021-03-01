@@ -1,8 +1,11 @@
 package com.iscas.biz.controller;
 
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
+import com.iscas.biz.model.DictDataType;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
+import com.iscas.biz.service.DictDataTypeService;
 import com.iscas.biz.service.ParamService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -26,20 +29,18 @@ import java.util.Map;
 /**
  * @author lirenshen
  * @vesion 1.0
- * @date 2021/2/26 14:37
+ * @date 2021/3/1 16:51
  * @since jdk1.8
  */
 @RestController
-@RequestMapping("/param")
-@Api(tags = "参数管理")
-public class ParamController extends BaseController {
-
-
-    private final static String tableIdentity = "param";
+@RequestMapping("/dictDataType")
+@Api(tags = "字典数据")
+public class DictDataTypeController extends BaseController {
+    private final static String tableIdentity = "dict_data_type";
     @Autowired
     private TableDefinitionService tableDefinitionService;
     @Autowired
-    private ParamService paramService;
+    private DictDataTypeService dictDataTypeService;
 
     @ApiOperation(value = "获取表头", notes = "不带数据，带下拉列表")
     @GetMapping(value = "/getHeader", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -59,7 +60,7 @@ public class ParamController extends BaseController {
         return tableDefinitionService.getData(tableIdentity, request, null);
     }
 
-    @ApiOperation(value = "删除参数数据", notes = "根据主键删除数据")
+    @ApiOperation(value = "删除字典类型数据", notes = "根据主键删除数据")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "ids", value = "id的集合", required = true, dataType = "List")
@@ -68,12 +69,13 @@ public class ParamController extends BaseController {
     @PostMapping("/del")
     public ResponseEntity deleteData(@RequestBody List<Object> ids) {
         ResponseEntity responseEntity = getResponse();
-        boolean ret = paramService.deleteByIds(ids);
+
+        boolean ret = dictDataTypeService.deleteByIds(ids);
         responseEntity.setValue(ret);
         return responseEntity;
     }
 
-    @ApiOperation(value = "新增参数数据", notes = "插入")
+    @ApiOperation(value = "新增缓存类型数据", notes = "插入")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "data", value = "新增的数据", required = true, dataType = "Map")
@@ -86,14 +88,14 @@ public class ParamController extends BaseController {
         return tableDefinitionService.saveData(tableIdentity, data, false);
     }
 
-    @ApiOperation(value = "修改参数数据", notes = "更新")
+    @ApiOperation(value = "修改缓存类型数据", notes = "更新")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "data", value = "修改的数据(未变动的数据也传)", required = true, dataType = "Map")
             }
     )
     @PutMapping("/data")
-    @CacheEvict(value = "param", key = "#data.get(\"param_key\")")
+    @CacheEvict(value = Constants.CACHE_DICT_NAME, key = "#data.get(\"dict_data_type\")")
     public ResponseEntity editData(@RequestBody Map<String, Object> data)
             throws ValidDataException {
         data.put("update_by", getUsername());
@@ -105,7 +107,7 @@ public class ParamController extends BaseController {
     @ApiOperation(value = "测试", notes = "getParamValue")
     public ResponseEntity getParamValue(@PathVariable String key){
         ResponseEntity response = getResponse();
-        paramService.getParamValue(key);
+        dictDataTypeService.getDictValue(key);
         return response;
 
     }

@@ -1,8 +1,10 @@
 package com.iscas.biz.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.iscas.biz.model.Dict;
+import com.iscas.biz.model.DictData;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author lirenshen
@@ -10,6 +12,8 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2021/2/25 16:12
  * @since jdk1.8
  */
-@Mapper
-public interface DictService extends IService<Dict> {
+public interface DictDataService extends IService<DictData> {
+
+    boolean deleteByIds(List<Object> ids);
+
 }
