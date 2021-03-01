@@ -13,7 +13,7 @@ import java.util.Optional;
  * @date 2021/3/1 10:41
  * @since jdk1.8
  */
-public class CacheUtils {
+public class CacheUtils<V> {
     public static final CacheManager cacheManager = SpringService.getBean(CacheManager.class);
 
 
