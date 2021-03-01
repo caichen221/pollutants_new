@@ -38,6 +38,10 @@ public class WsData<T> {
     @JsonIgnore
     private String destination = "/queue/message";
 
+    /**是否已接收*/
+    @JsonIgnore
+    private boolean ack;
+
     public enum MsgTypeEnum {
         SYSTEM,//系统通知（显示在上方消息通知内）
         BUSINESS; //业务消息

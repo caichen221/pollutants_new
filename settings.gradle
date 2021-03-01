@@ -81,4 +81,8 @@ include 'sso:mix:sso-mix-backend-samples'
 findProject(':sso:mix:sso-mix-backend-samples')?.name = 'sso-mix-backend-samples'
 include 'samples:undertow-samples'
 findProject(':samples:undertow-samples')?.name = 'undertow-samples'
+include 'sso:oauth2'
+findProject(':sso:oauth2')?.name = 'oauth2'
+include 'special:biz-security'
+findProject(':special:biz-security')?.name = 'biz-security'
 
