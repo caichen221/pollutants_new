@@ -55,7 +55,7 @@ public class DictDataTypeServiceImpl extends ServiceImpl<DictDataTypeMapper, Dic
                     .ifPresent(dict -> {
                         //清理缓存
                         CacheUtils.evictCache(Constants.CACHE_DICT_NAME, Arrays.asList(dictDataType));
-                        //删除字典数据表
+                        //删除字典数据类型表
                         UpdateWrapper<DictDataType> deleteWrapper = new UpdateWrapper();
                         deleteWrapper.in("id", ids);
                         dictDataTypeMapper.delete(deleteWrapper);

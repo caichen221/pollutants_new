@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class DictDataServiceImpl extends ServiceImpl<DictDataMapper, DictData> implements DictDataService {
-   @Autowired
-   private DictDataMapper dictDataMapper;
-   @Autowired
-   private DictDataTypeMapper dictDataTypeMapper;
+    @Autowired
+    private DictDataMapper dictDataMapper;
+    @Autowired
+    private DictDataTypeMapper dictDataTypeMapper;
 
     @Override
     public boolean deleteByIds(List<Object> ids) {
@@ -42,13 +42,14 @@ public class DictDataServiceImpl extends ServiceImpl<DictDataMapper, DictData> i
         wrapper.ne("dict_data_type", "系统类");
         List<DictData> paramList = dictDataMapper.selectList(wrapper);
         List<String> dictDataTypes = Optional.ofNullable(paramList)
+                .filter(params -> params.size() > 0)
                 .map(params -> params.stream().map(DictData::getDictDataType).collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
         //清理缓存
         CacheUtils.evictCache(Constants.CACHE_DICT_NAME, dictDataTypes);
-        //删除字典表
-        dictDataMapper.delete(wrapper);
         //删除字典数据表
+        dictDataMapper.delete(wrapper);
+        //删除字典数据类型表
         UpdateWrapper<DictDataType> deleteDictDataTypeWrapper = new UpdateWrapper();
         deleteDictDataTypeWrapper.in("dict_data_type", dictDataTypes);
         dictDataTypeMapper.delete(deleteDictDataTypeWrapper);
