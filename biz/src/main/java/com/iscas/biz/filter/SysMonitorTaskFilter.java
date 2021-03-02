@@ -5,43 +5,46 @@ import com.iscas.base.biz.filter.started.StartedFilterComponent;
 import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
 import com.iscas.biz.schedule.ClearWsDataTask;
+import com.iscas.biz.schedule.SysMonitorTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
 /**
- * @author zhuquanwen
+ * @author lirenshen
  * @vesion 1.0
- * @date 2021/2/26 15:04
+ * @date 2021/3/2 13:57
  * @since jdk1.8
  */
-@StartedFilterComponent(order = 0x7fffffff)
+@StartedFilterComponent(order = 3)
 @Slf4j
-public class ClearWsDataFilter extends AbstractStartedFilter {
+public class SysMonitorTaskFilter extends AbstractStartedFilter {
 
     private final CronTaskRegister cronTaskRegister;
-    private final ClearWsDataTask clearWsDataTask;
+    private final SysMonitorTask sysMonitorTask;
 
 
-    public ClearWsDataFilter(CronTaskRegister cronTaskRegister, ClearWsDataTask clearWsDataTask) {
+    public SysMonitorTaskFilter(CronTaskRegister cronTaskRegister, SysMonitorTask sysMonitorTask) {
         this.cronTaskRegister = cronTaskRegister;
-        this.clearWsDataTask = clearWsDataTask;
+        this.sysMonitorTask = sysMonitorTask;
     }
 
     @Override
     public void doFilterInternal(ApplicationContext applicationContext) {
-        beginClear();
+
+        startSysMonitorTask();
         super.doFilterInternal(applicationContext);
     }
 
-    private void beginClear() {
-        clearWsDataTask.clear();
-        SchedulingRunnable task = new SchedulingRunnable("ClearWsDataTask", "clear", "0 0 */1 * * ?");
+    private void startSysMonitorTask() {
+        SchedulingRunnable task = new SchedulingRunnable("sysMonitorTask", "monitor", null);
         //每天执行一次任务
-        cronTaskRegister.addCronTask("clear_wsData_task", task, "0 0 0 * * ?");
+        cronTaskRegister.addCronTask("sys_monitor_task", task, "0/10 * * * * ?");
+
+
     }
 
     @Override
     public String getName() {
-        return "清理websocket消息任务";
+        return "启动系统监控定时任务";
     }
 }
