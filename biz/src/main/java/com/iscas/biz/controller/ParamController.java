@@ -103,12 +103,14 @@ public class ParamController extends BaseController {
 
     @GetMapping("/getParamValue/{key}")
     @ApiOperation(value = "测试", notes = "getParamValue")
-    public ResponseEntity getParamValue(@PathVariable String key){
+    public ResponseEntity getParamValue(@PathVariable String key) {
         ResponseEntity response = getResponse();
-        paramService.getParamValue(key);
+        String value = paramService.getParamValue(key);
+        response.setValue(value);
         return response;
 
     }
+
     private String getUsername() {
         String username;
         try {

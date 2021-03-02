@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.util.CacheUtils;
+import com.iscas.biz.mapper.DictDataMapper;
 import com.iscas.biz.mapper.DictDataTypeMapper;
+import com.iscas.biz.model.DictData;
 import com.iscas.biz.model.DictDataType;
 import com.iscas.biz.service.DictDataTypeService;
 import org.apache.commons.lang3.StringUtils;
@@ -25,32 +27,41 @@ import java.util.*;
 public class DictDataTypeServiceImpl extends ServiceImpl<DictDataTypeMapper, DictDataType> implements DictDataTypeService {
 
     @Autowired
+    private DictDataMapper dictDataMapper;
+    @Autowired
     private DictDataTypeMapper dictDataTypeMapper;
 
     /**
-     * 通过ids删除枚举项，枚举数据，系统类枚举不允许删除
+     * 通过ids删除枚举数据，ids属于同一个枚举项，系统类枚举不允许删除
      */
     @Override
     public boolean deleteByIds(List<Object> ids) {
 
         QueryWrapper<DictDataType> wrapper = new QueryWrapper<>();
         wrapper.in("id", ids);
-        wrapper.ne("dict_type", "系统类");
         List<DictDataType> dictList = dictDataTypeMapper.selectList(wrapper);
-        //检查要删除的字典是否是系统类
+
         String dictDataType = Optional.ofNullable(dictList)
+                .filter(dicts -> dicts.size() > 0)
                 .map(dicts -> dicts.stream().findAny().get().getDictDataType())
                 .orElse("");
-        if (StringUtils.isNotBlank(dictDataType) && !dictDataType.equals("系统类")) {
-            //清理缓存
-            CacheUtils.evictCache(Constants.CACHE_DICT_NAME, Arrays.asList(dictDataType));
-            //删除字典数据表
-            UpdateWrapper<DictDataType> deleteWrapper = new UpdateWrapper();
-            deleteWrapper.in("id", ids);
-            dictDataTypeMapper.delete(deleteWrapper);
-            return true;
+        if (StringUtils.isNotBlank(dictDataType)) {
+            //检查要删除的字典是否是系统类
+            QueryWrapper dictDataWrapper = new QueryWrapper();
+            dictDataWrapper.eq("dict_data_type", dictDataType);
+            DictData dictData = dictDataMapper.selectOne(dictDataWrapper);
+            Optional.ofNullable(dictData)
+                    .filter(dict -> !dict.getDictType().equals("系统类"))
+                    .ifPresent(dict -> {
+                        //清理缓存
+                        CacheUtils.evictCache(Constants.CACHE_DICT_NAME, Arrays.asList(dictDataType));
+                        //删除字典数据表
+                        UpdateWrapper<DictDataType> deleteWrapper = new UpdateWrapper();
+                        deleteWrapper.in("id", ids);
+                        dictDataTypeMapper.delete(deleteWrapper);
+                    });
         }
-        return false;
+        return true;
     }
 
     /**
