@@ -2,9 +2,12 @@ package com.iscas.biz.schedule;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
+import com.iscas.base.biz.util.DateTimeUtils;
+import com.iscas.biz.model.monitor.jvm.*;
 import com.iscas.biz.model.monitor.sys.*;
 import com.iscas.biz.service.MonitorService;
 import com.iscas.biz.util.MathUtils;
+import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +20,7 @@ import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
 
+import java.lang.management.MemoryUsage;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BinaryOperator;
@@ -30,7 +34,7 @@ import java.util.stream.IntStream;
  * @since jdk1.8
  */
 @Component
-public class SysMonitorTask {
+public class MonitorTask {
     private static final String winPath = "C:\\Users\\x\\Desktop\\clientInfo.txt";
     private static final String linuxPath = "/opt/tmp/clientInfo.txt";
     //上次收集数据时间
@@ -48,8 +52,81 @@ public class SysMonitorTask {
      */
     public void monitor() {
 
+        //****要缓存的数据汇总****
+        Map<Class, Object> data = new ConcurrentHashMap<>();
+        Map<Class, Object> extraData = new ConcurrentHashMap<>();
         //计算统计时间间隔
         long range = getRange();
+        //系统监控
+        sysMonitor(range, data, extraData);
+        //JVM监控
+        jvmMonitor(range, data, extraData);
+
+        //将采集数据存入缓存
+        monitorService.saveData(data, extraData);
+    }
+
+    private void jvmMonitor(long range, Map<Class, Object> data, Map<Class, Object> extraData) {
+        if (range <= 0L) {
+            return;
+        }
+        //采集数据
+        MemoryUsage heapMemoryUsage = JvmMemoryUtils.getHeapMemoryUsage();
+        MemoryUsage nonHeapMemoryUsage = JvmMemoryUtils.getNonHeapMemoryUsage();
+        MemoryUsage edenSpaceMemoryUsage = JvmMemoryUtils.getAndResetEdenSpaceMemoryPeakUsage();
+        MemoryUsage survivorSpaceMemoryUsage = JvmMemoryUtils.getAndResetSurvivorSpaceMemoryPeakUsage();
+        MemoryUsage oldGenMemoryUsage = JvmMemoryUtils.getAndResetOldGenMemoryPeakUsage();
+        MemoryUsage metaSpaceMemoryUsage = JvmMemoryUtils.getAndResetMetaSpaceMemoryPeakUsage();
+        MemoryUsage compressedClassSpaceUsage = JvmMemoryUtils.getCompressedClassSpaceUsage();
+        List<MemoryUsage> codeCacheMemoryPeakUsageList = JvmMemoryUtils.getAndResetCodeCacheMemoryPeakUsage();
+        Long[] codeCacheSum = calculateCodeCacheSum(codeCacheMemoryPeakUsageList);
+        //解析数据
+        JvmMonitor monitor = new JvmMonitor();
+        monitor.setCollectTime(lastCollectTime)
+                .setHeapMemoryUseRate(getUseRate(heapMemoryUsage.getUsed(), heapMemoryUsage.getMax()))
+                .setCompressedClassSpaceUseRate(getUseRate(compressedClassSpaceUsage.getUsed(), compressedClassSpaceUsage.getMax()))
+                .setCodeCacheMemoryUseRate(getUseRate(codeCacheSum[0], codeCacheSum[1]))
+                .setNoHeapMemoryUsage(convertFileSizeMB(nonHeapMemoryUsage.getUsed(), "b"))
+                .setEdenSpaceUsage(convertFileSizeMB(edenSpaceMemoryUsage.getUsed(), "b"))
+                .setSurvivorSpaceUsage(convertFileSizeMB(survivorSpaceMemoryUsage.getUsed(), "b"))
+                .setOldGenSPaceUsage(convertFileSizeMB(oldGenMemoryUsage.getUsed(), "b"))
+                .setMetaSpaceUsage(convertFileSizeMB(metaSpaceMemoryUsage.getUsed(), "b"))
+                .setLoadedClassCount(JvmInfoUtils.getLoadedClassCount())
+                .setActiveThreadCount(JvmThreadUtils.getThreadCount());
+        data.put(JvmMonitor.class, monitor);
+
+        JvmExtraMonitor extraMonitor = new JvmExtraMonitor();
+        extraMonitor.setName(JvmInfoUtils.getName())
+                .setStartTime(DateTimeUtils.getDateStr(new Date(JvmInfoUtils.getStartTime())))
+                .setVendor(JvmInfoUtils.getVendor())
+                .setVersion(JvmInfoUtils.getVersion())
+                .setTotalHeapMemory(convertFileSizeGB(heapMemoryUsage.getMax(), "B"))
+                .setTotalOldGenMemory(convertFileSizeGB(oldGenMemoryUsage.getMax(), "B"))
+                .setTotalCompressedClassMemory(convertFileSizeGB(compressedClassSpaceUsage.getMax(), "B"))
+                .setUnLoadedClassCount(JvmInfoUtils.getUnLoadedClassCount())
+                .setPeakThreadCount(JvmThreadUtils.getPeakThreadCount())
+                .setTotalThread(JvmThreadUtils.getTotalThreadCount())
+                .setDaemonThreadCount(JvmThreadUtils.getDaemonThreadCount())
+                .setDeadLockedThreadCount(JvmThreadUtils.getDeadLockedThreadCount());
+        extraData.put(JvmExtraMonitor.class, extraMonitor);
+
+    }
+
+    private Long[] calculateCodeCacheSum(List<MemoryUsage> codeCacheMemoryPeakUsageList) {
+        //Long[0] 已使用，Long[1] 总大小
+        return codeCacheMemoryPeakUsageList.stream()
+                .map(codeCacheMemoryPeakUsage -> new Long[]{codeCacheMemoryPeakUsage.getUsed(), codeCacheMemoryPeakUsage.getMax()})
+                .reduce(new Long[]{0L, 0L}, accumulatorLongSum);
+    }
+
+    private String getUseRate(long used, long max) {
+        if (used > 0 && max > 0) {
+            return MathUtils.double2Percent((double) used / max, 2);
+        }
+        return "0.00%";
+    }
+
+    private void sysMonitor(long range, Map<Class, Object> data, Map<Class, Object> fixData) {
         //采集数据
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardware = systemInfo.getHardware();
@@ -68,39 +145,29 @@ public class SysMonitorTask {
             return;
         }
 
-        //****要缓存的数据汇总****
-        Map<Class, Object> data = new ConcurrentHashMap<>();
-        Map<Class, Object> fixData = new ConcurrentHashMap<>();
-
         //构建需要上报的系统监控数据
         SysMonitor sysMonitor = buildSysMonitor(cpu, memory, disks, diskStores, networkInterfaces);
         //系统监控的动态数据
         data.put(SysMonitor.class, sysMonitor);
 
-        //JVM的监控数据
-
         if (isFirst) {
             //一些只需要启动后初始化一次的数据，存入内存缓存
             isFirst = false;
-            SysFixMonitor sysFixMonitor = buildFixSysMonitor(cpu, memory, disks);
-            fixData.put(SysFixMonitor.class, sysFixMonitor);
+            SysExtraMonitor sysExtraMonitor = buildExtraSysMonitor(cpu, memory, disks);
+            fixData.put(SysExtraMonitor.class, sysExtraMonitor);
         }
 
-
-
-        //将采集数据存入缓存
-        monitorService.saveData(data, fixData);
     }
 
-    private SysFixMonitor buildFixSysMonitor(Cpu cpu, Memory memory, List<Disk> disks) {
-        SysFixMonitor sysFixMonitor = new SysFixMonitor();
+    private SysExtraMonitor buildExtraSysMonitor(Cpu cpu, Memory memory, List<Disk> disks) {
+        SysExtraMonitor sysExtraMonitor = new SysExtraMonitor();
         Long totalDisk = disks.stream().collect(Collectors.summingLong(Disk::getTotal));
 
-        sysFixMonitor.setProcessorCount(cpu.getProcessorCount())
+        sysExtraMonitor.setProcessorCount(cpu.getProcessorCount())
                 .setTotalMemory(convertFileSizeGB(memory.getTotal(), "B"))
                 .setTotalDisk(convertFileSizeGB(totalDisk, "B"));
 
-        return sysFixMonitor;
+        return sysExtraMonitor;
     }
 
     /**

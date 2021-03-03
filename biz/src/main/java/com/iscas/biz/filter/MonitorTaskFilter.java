@@ -4,8 +4,7 @@ import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
 import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
-import com.iscas.biz.schedule.ClearWsDataTask;
-import com.iscas.biz.schedule.SysMonitorTask;
+import com.iscas.biz.schedule.MonitorTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
@@ -17,15 +16,15 @@ import org.springframework.context.ApplicationContext;
  */
 @StartedFilterComponent(order = 3)
 @Slf4j
-public class SysMonitorTaskFilter extends AbstractStartedFilter {
+public class MonitorTaskFilter extends AbstractStartedFilter {
 
     private final CronTaskRegister cronTaskRegister;
-    private final SysMonitorTask sysMonitorTask;
+    private final MonitorTask monitorTask;
 
 
-    public SysMonitorTaskFilter(CronTaskRegister cronTaskRegister, SysMonitorTask sysMonitorTask) {
+    public MonitorTaskFilter(CronTaskRegister cronTaskRegister, MonitorTask monitorTask) {
         this.cronTaskRegister = cronTaskRegister;
-        this.sysMonitorTask = sysMonitorTask;
+        this.monitorTask = monitorTask;
     }
 
     @Override
@@ -36,9 +35,9 @@ public class SysMonitorTaskFilter extends AbstractStartedFilter {
     }
 
     private void startSysMonitorTask() {
-        SchedulingRunnable task = new SchedulingRunnable("sysMonitorTask", "monitor", null);
+        SchedulingRunnable task = new SchedulingRunnable("monitorTask", "monitor", null);
         //每天执行一次任务
-        cronTaskRegister.addCronTask("sys_monitor_task", task, "0/10 * * * * ?");
+        cronTaskRegister.addCronTask("monitor_task", task, "0/10 * * * * ?");
 
 
     }

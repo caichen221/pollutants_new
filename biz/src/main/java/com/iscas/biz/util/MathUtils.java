@@ -18,7 +18,7 @@ public class MathUtils {
 
     public static String double2Percent(double data, int scale) {
         String pattern = getPercentPattern(scale);
-        if (Double.isNaN(data)) {
+        if (Double.isNaN(data) || Double.isInfinite(data)) {
             return pattern;
         }
         DecimalFormat df = new DecimalFormat(pattern);

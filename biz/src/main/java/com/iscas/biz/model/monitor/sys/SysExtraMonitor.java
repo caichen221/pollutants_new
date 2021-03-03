@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class SysFixMonitor {
+public class SysExtraMonitor {
     /**
      * cpu核数
      */

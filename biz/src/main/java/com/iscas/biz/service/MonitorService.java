@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface MonitorService {
 
-    void saveData(Map<Class, Object> data, Map<Class, Object> fixData);
+    void saveData(Map<Class, Object> data, Map<Class, Object> extraData);
 
     Object getData();
 }
