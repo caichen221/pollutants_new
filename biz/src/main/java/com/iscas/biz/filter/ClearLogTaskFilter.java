@@ -2,7 +2,7 @@ package com.iscas.biz.filter;
 
 import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
-import com.iscas.biz.service.LogInfoService;
+import com.iscas.biz.service.common.LogInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

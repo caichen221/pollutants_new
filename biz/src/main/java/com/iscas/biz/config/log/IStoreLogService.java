@@ -1,6 +1,6 @@
 package com.iscas.biz.config.log;
 
-import com.iscas.biz.model.LogInfo;
+import com.iscas.biz.domain.common.LogInfo;
 
 /**
  *
