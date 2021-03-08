@@ -13,4 +13,8 @@ public interface MonitorService {
     void saveData(Map<Class, Object> data, Map<Class, Object> extraData);
 
     Object getData();
+
+    Object getPhysicalData();
+
+    Object getJvmData();
 }

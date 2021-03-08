@@ -1,7 +1,11 @@
 package com.iscas.biz.controller;
 
+import com.google.common.collect.ImmutableMap;
 import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
+import com.iscas.biz.config.log.LogRecord;
+import com.iscas.biz.config.log.LogType;
+import com.iscas.biz.config.log.OperateType;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.DictDataService;
 import com.iscas.templet.common.BaseController;
@@ -63,6 +67,7 @@ public class DictDataController extends BaseController {
             }
     )
     @PostMapping("/del")
+    @LogRecord(type = LogType.SYSTEM, desc = "删除字典数据", operateType = OperateType.delete)
     public ResponseEntity deleteData(@RequestBody List<Object> ids) {
         ResponseEntity responseEntity = getResponse();
         boolean ret = dictDataService.deleteByIds(ids);
@@ -77,10 +82,10 @@ public class DictDataController extends BaseController {
             }
     )
     @PostMapping("/data")
+    @LogRecord(type = LogType.SYSTEM, desc = "新增字典数据", operateType = OperateType.add)
     public ResponseEntity saveData(@RequestBody Map<String, Object> data) throws ValidDataException {
-        data.put("create_by", getUsername());
-        data.put("create_time", DateTimeUtils.getDateStr(new Date()));
-        return tableDefinitionService.saveData(tableIdentity, data, false);
+        ImmutableMap<String, Object> forceItem = ImmutableMap.of("create_by", getUsername(), "create_time", DateTimeUtils.getDateStr(new Date()));
+        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
     }
 
     @ApiOperation(value = "修改字典数据", notes = "更新")
@@ -90,11 +95,11 @@ public class DictDataController extends BaseController {
             }
     )
     @PutMapping("/data")
+    @LogRecord(type = LogType.SYSTEM, desc = "修改字典数据", operateType = OperateType.update)
     public ResponseEntity editData(@RequestBody Map<String, Object> data)
             throws ValidDataException {
-        data.put("update_by", getUsername());
-        data.put("update_time", DateTimeUtils.getDateStr(new Date()));
-        return tableDefinitionService.saveData(tableIdentity, data, false, null, null);
+        ImmutableMap<String, Object> forceItem = ImmutableMap.of("update_by", getUsername(), "update_time", DateTimeUtils.getDateStr(new Date()));
+        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
     }
 
     private String getUsername() {

@@ -37,23 +37,23 @@ public class JvmMonitor {
 
 
     /**
-     * 非堆内存已使用大小  单位默认为M
+     * 非堆内存已使用大小  单位默认为Mb
      */
     private String noHeapMemoryUsage;
     /**
-     * Eden区内存已使用大小
+     * Eden区内存已使用大小 单位默认为Mb
      */
     private String edenSpaceUsage;
     /**
-     * survivor区内存已使用大小
+     * survivor区内存已使用大小 单位默认为Mb
      */
     private String survivorSpaceUsage;
     /**
-     * 老年代区内存已使用大小
+     * 老年代区内存已使用大小 单位默认为Mb
      */
     private String oldGenSPaceUsage;
     /**
-     * 元空间已使用大小
+     * 元空间已使用大小 单位默认为Mb
      */
     private String metaSpaceUsage;
 

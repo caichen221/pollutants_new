@@ -91,6 +91,18 @@ public class MonitorServiceImpl implements MonitorService {
         return result;
     }
 
+    @Override
+    public Object getPhysicalData() {
+        //系统监控数据
+        return getMonitorData(SysMonitor.class, SysExtraMonitor.class);
+    }
+
+    @Override
+    public Object getJvmData() {
+        //JVM监控数据
+        return getMonitorData(JvmMonitor.class, JvmExtraMonitor.class);
+    }
+
     /**
      * 从缓存获取数据
      */
@@ -114,6 +126,30 @@ public class MonitorServiceImpl implements MonitorService {
         return monitorResult;
 
     }
+
+    /**
+     * 从缓存获取数据
+     */
+    private JSONObject getMonitorData(Class monitorClass, Class extraMonitorClass) {
+        Object monitorCache = CaffCacheUtils.get(monitorClass.getSimpleName());
+        ConcurrentHashMap<String, LinkedList<String>> monitorData = (ConcurrentHashMap<String, LinkedList<String>>) monitorCache;
+        Object extraMonitorCache = CaffCacheUtils.get(extraMonitorClass.getSimpleName());
+        ConcurrentHashMap<String, LinkedList<String>> extraMonitorData = (ConcurrentHashMap<String, LinkedList<String>>) extraMonitorCache;
+
+        JSONObject result = new JSONObject();
+        Optional.ofNullable(monitorData).ifPresent(data -> {
+            synchronized (monitorData) {
+                ConcurrentHashMap<String, LinkedList<String>> cloneData = CloneUtils.clone(monitorData);
+                result.put("data", cloneData);
+            }
+        });
+        Optional.ofNullable(extraMonitorData).ifPresent(extraData -> {
+            result.put("props", extraData);
+        });
+        return result;
+
+    }
+
 
     /**
      * 获取或初始化缓存

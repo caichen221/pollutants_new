@@ -28,12 +28,40 @@ public class MonitorController extends BaseController {
     @Autowired
     private MonitorService monitorService;
 
-    @ApiOperation(value = "获取监控数据", notes = "获取物理资源、JVM等数据")
+    @ApiOperation(value = "获取监控数据", notes = "获取总的监控数据，包括系统监控、JVM监控")
     @GetMapping(value = "/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getData() throws BaseException {
         ResponseEntity response = getResponse();
         try {
             Object result = monitorService.getData();
+            response.setValue(result);
+
+        } catch (Exception e) {
+            throw new BaseException("获取监控数据出错", e);
+        }
+        return response;
+    }
+
+    @ApiOperation(value = "获取系统监控数据", notes = "获取系统监控数据")
+    @GetMapping(value = "/system/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity getSystemData() throws BaseException {
+        ResponseEntity response = getResponse();
+        try {
+            Object result = monitorService.getPhysicalData();
+            response.setValue(result);
+
+        } catch (Exception e) {
+            throw new BaseException("获取监控数据出错", e);
+        }
+        return response;
+    }
+
+    @ApiOperation(value = "获取JVM监控数据", notes = "获取JVM监控数据")
+    @GetMapping(value = "/jvm/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity getJvmData() throws BaseException {
+        ResponseEntity response = getResponse();
+        try {
+            Object result = monitorService.getJvmData();
             response.setValue(result);
 
         } catch (Exception e) {

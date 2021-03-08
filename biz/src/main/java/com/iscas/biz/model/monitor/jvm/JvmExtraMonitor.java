@@ -35,17 +35,17 @@ public class JvmExtraMonitor {
     private String startTime;
 
     /**
-     * 堆内存大小
+     * 堆内存大小 单位默认为Gb
      */
     private String totalHeapMemory;
 
     /**
-     * 老年代大小
+     * 老年代大小 单位默认为Gb
      */
     private String totalOldGenMemory;
 
     /**
-     * 压缩类空间大小
+     * 压缩类空间大小 单位默认为Gb
      */
     private String totalCompressedClassMemory;
 
