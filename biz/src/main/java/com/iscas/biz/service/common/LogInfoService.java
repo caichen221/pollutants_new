@@ -1,7 +1,7 @@
-package com.iscas.biz.service;
+package com.iscas.biz.service.common;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.iscas.biz.model.LogInfo;
+import com.iscas.biz.domain.common.LogInfo;
 
 /**
  * @author lirenshen

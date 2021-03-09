@@ -1,4 +1,4 @@
-package com.iscas.biz.model;
+package com.iscas.biz.domain.common;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

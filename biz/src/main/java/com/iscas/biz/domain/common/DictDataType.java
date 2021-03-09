@@ -1,4 +1,4 @@
-package com.iscas.biz.model;
+package com.iscas.biz.domain.common;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,39 +8,34 @@ import lombok.experimental.Accessors;
 /**
  * @author lirenshen
  * @vesion 1.0
- * @date 2021/2/26 9:44
+ * @date 2021/3/1 15:13
  * @since jdk1.8
  */
 @Data
 @Accessors(chain = true)
-public class Param {
+public class DictDataType {
 
     /**
      * id
      */
     @TableId(type = IdType.AUTO)
     private long id;
-
     /**
-     * 参数名称
+     * 枚举类型
      */
-    private String paramName;
-
+    private String dictDataType;
     /**
      * 键
      */
-    private String paramKey;
-
+    private String dictDataKey;
     /**
      * 值
      */
-    private String paramValue;
-
+    private String dictDataValue;
     /**
-     * 参数类型
+     * 字典描述
      */
-    private String paramType;
-
+    private String dictDataDesc;
     /**
      * 创建者
      */
@@ -60,11 +55,5 @@ public class Param {
      * 更新时间
      */
     private String updateTime;
-
-    /**
-     * 描述
-     */
-    private String paramDesc;
-
 
 }

@@ -38,4 +38,11 @@ public interface Constants {
 
     /**Appliction session*/
     String APPLICATION_SESSION_KEY = "sessions";
+
+    /**参数缓存名称*/
+    String CACHE_PARAM_NAME = "param";
+
+    /**字典缓存名称*/
+    String CACHE_DICT_NAME = "dict";
+
 }

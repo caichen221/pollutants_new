@@ -1,25 +1,24 @@
-package com.iscas.biz.service.impl;
+package com.iscas.biz.service.common.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
-import com.iscas.base.biz.util.CaffCacheUtils;
+import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
-import com.iscas.biz.model.LogInfo;
-import com.iscas.biz.mapper.LogInfoMapper;
-import com.iscas.biz.model.Param;
-import com.iscas.biz.service.LogInfoService;
-import com.iscas.biz.service.ParamService;
+import com.iscas.biz.domain.common.LogInfo;
+import com.iscas.biz.domain.common.Param;
+import com.iscas.biz.mapper.common.LogInfoMapper;
+import com.iscas.biz.service.common.LogInfoService;
+import com.iscas.biz.service.common.ParamService;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
 /**
  * @author lirenshen
@@ -51,10 +50,10 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
 
     private String checkAndCachePeriod(String holdPeriod) {
         if (StringUtils.isBlank(holdPeriod)) {
-            //period为空时，尝试从缓存中获取
+            //period为空时，获取
             return getPeriodFromCache();
         } else {
-            //period不为空时，放入缓存，更新数据库
+            //period不为空时，更新
             return cachePeriod(holdPeriod);
         }
     }
@@ -66,9 +65,9 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
         wrapper.eq("param_key", "sys.log.holdPeriod");
         Param param = paramService.getOne(wrapper);
         String username;
-        try{
+        try {
             username = JWTUtils.getLoginUsername();
-        }catch (AuthorizationRuntimeException e){
+        } catch (AuthorizationRuntimeException e) {
             username = "unknown";
         }
         if (param == null) {
@@ -92,39 +91,16 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
                     .setUpdateTime(DateTimeUtils.getDateStr(new Date()));
             paramService.update(updateParam, wrapper);
         }
-
         //放入缓存
-        Object dict = CaffCacheUtils.get("param");
-        if (dict == null) {
-            synchronized ("param") {
-                dict = CaffCacheUtils.get("param");
-                if (dict == null) {
-                    dict = new ConcurrentHashMap<>();
-                    CaffCacheUtils.set("param", dict);
-                }
-            }
-        }
-        ConcurrentHashMap map = (ConcurrentHashMap<Object, Object>) dict;
-        map.put("sys.log.holdPeriod", holdPeriod);
+        CacheUtils.putCache("param", param.getParamKey(), holdPeriod);
+
         return holdPeriod;
     }
 
     private String getPeriodFromCache() {
-        String holdPeriod = "";
-        Object dict = CaffCacheUtils.get("param");
-        if (dict != null) {
-            Map<Object, Object> dictValue = (Map<Object, Object>) dict;
-            Object period = dictValue.get("sys.log.holdPeriod");
-            if (period != null) {
-                holdPeriod = period.toString();
-            }
-        }
+        String holdPeriod = paramService.getParamValue("sys.log.holdPeriod");
         //不存在时，赋值默认值，1天
-        if (StringUtils.isBlank(holdPeriod)) {
-            holdPeriod = "1d";
-        }
-        return holdPeriod;
+        return Optional.ofNullable(holdPeriod).map(period -> period.toString()).orElse("1d");
     }
-
 
 }

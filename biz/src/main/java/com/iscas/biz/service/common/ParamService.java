@@ -1,7 +1,9 @@
-package com.iscas.biz.service;
+package com.iscas.biz.service.common;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.iscas.biz.model.Param;
+import com.iscas.biz.domain.common.Param;
+
+import java.util.List;
 
 /**
  * @author lirenshen
@@ -10,4 +12,9 @@ import com.iscas.biz.model.Param;
  * @since jdk1.8
  */
 public interface ParamService extends IService<Param> {
+
+    boolean deleteByIds(List<Object> ids);
+
+    String getParamValue(String paramKey);
+
 }

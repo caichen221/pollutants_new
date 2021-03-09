@@ -74,7 +74,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-amqp"
     compile "org.springframework.boot:spring-boot-starter-reactor-netty"
 
-
+// https://mvnrepository.com/artifact/com.github.oshi/oshi-core
+    compile group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
             
 
 

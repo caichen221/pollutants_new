@@ -1,7 +1,7 @@
-package com.iscas.biz.controller;
+package com.iscas.biz.controller.common;
 
 import com.iscas.biz.mp.table.service.TableDefinitionService;
-import com.iscas.biz.service.LogInfoService;
+import com.iscas.biz.service.common.LogInfoService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
