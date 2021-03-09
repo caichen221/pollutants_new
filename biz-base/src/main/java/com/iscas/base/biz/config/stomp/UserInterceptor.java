@@ -40,7 +40,6 @@ public class UserInterceptor implements ChannelInterceptor {
         }
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-
             userAccessor.accessor(message,accessor);
 //            Object raw = message.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
 //            if (raw instanceof Map) {
@@ -75,7 +74,8 @@ public class UserInterceptor implements ChannelInterceptor {
 //            }
         } else if (StompCommand.SEND.equals(accessor.getCommand())) {
             //发送数据
-
+//            long[] heartbeat = accessor.setH
+//            System.out.println(11111);
         }
 
         return message;

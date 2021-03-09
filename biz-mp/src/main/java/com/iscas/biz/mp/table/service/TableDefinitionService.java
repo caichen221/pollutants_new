@@ -656,12 +656,14 @@ public class TableDefinitionService {
 						Object value = item.get(columnDefinition.getField());
 						String strValue = (value == null? null:value.toString());
 						if(!StringUtils.isEmpty(columnDefinition.getReg())){//正则检查
-							if(!strValue.matches(columnDefinition.getReg())){
-								ValidDataException validDataException = new ValidDataException(String.format("[%s]表格的列[%s]取值[%s]不满足正则[%s]要求！",
-									tableIdentity, columnDefinition.getField(), strValue , columnDefinition.getReg()));
-								validDataException.setMsgDetail(String.format("the value [%s] of column [%s] for tableName [%s] not meet reg [%s]",
-									strValue, columnDefinition.getField(), tableIdentity, columnDefinition.getReg()));
-								throw  validDataException;
+							if (columnDefinition.isRequired()) {
+								if(!strValue.matches(columnDefinition.getReg())){
+									ValidDataException validDataException = new ValidDataException(String.format("[%s]表格的列[%s]取值[%s]不满足正则[%s]要求！",
+											tableIdentity, columnDefinition.getField(), strValue , columnDefinition.getReg()));
+									validDataException.setMsgDetail(String.format("the value [%s] of column [%s] for tableName [%s] not meet reg [%s]",
+											strValue, columnDefinition.getField(), tableIdentity, columnDefinition.getReg()));
+									throw  validDataException;
+								}
 							}
 						}
 

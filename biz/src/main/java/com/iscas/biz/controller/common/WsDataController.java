@@ -83,5 +83,4 @@ public class WsDataController extends BaseController {
     public void pathTest(Principal principal, @DestinationVariable String msgId) {
         wsService.ack(msgId);
     }
-
 }

@@ -8,6 +8,9 @@
     <script>
         var socket = new SockJS("http://localhost:7901/demo/webSocketServer");
         var stompClient = Stomp.over(socket);
+        // stompClient.heartbeat.outgoing = 2000; // client will send heartbeats every 20000ms
+        // stompClient.heartbeat.incoming = 0;     // client does not want to receive heartbeats
+        // from the server
         window.onload = function () {
             connect();
         }
@@ -16,7 +19,6 @@
             stompClient.subscribe('/user/queue/message', function (response) {
                 console.log("/user/queue/message 你接收到的消息为:" + response);
             });
-
         }
 
         /**
@@ -68,9 +70,8 @@
         // }
 
         function connect() {
-
             stompClient.connect({
-                Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjE0MzA4Njg1LCJleHAiOjE2MTUxNzUwODUsImlhdCI6MTYxNDMwODY4NSwidXNlcm5hbWUiOiJhZG1pbiJ9.xOTtn0rb2dT7oUxdTNsML_NyXdXcmMOnJ0Yywe82Ih4"
+                Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjE1MjUzMDM2LCJleHAiOjE2MTUzMzk0MzYsImlhdCI6MTYxNTI1MzAzNiwidXNlcm5hbWUiOiJhZG1pbiJ9.sqh9N0LyUSjNnx41PU8PrFsiDJ7RRV5_LTHxsteCZsg"
                     //这里可以改成token
                     // name: 'admin' // 携带客户端信息
                 },

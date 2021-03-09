@@ -1,6 +1,5 @@
 package com.iscas.biz;
 
-
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
@@ -18,7 +17,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 
 /**
  * 启动类
@@ -49,6 +47,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
+
         SpringApplication springApplication = new SpringApplication(BizApp.class);
 //        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);

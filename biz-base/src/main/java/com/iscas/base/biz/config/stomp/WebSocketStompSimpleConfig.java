@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -46,7 +47,15 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 订阅Broker名称
-        registry.enableSimpleBroker("/queue", "/topic");
+
+        //setHeartbeatValue设置后台向前台发送的心跳，
+        //注意：setHeartbeatValue这个不能单独设置，不然不起作用，要配合后面setTaskScheduler才可以生效。
+        //对应的解决方法的网址：https://stackoverflow.com/questions/39220647/spring-stomp-over-websockets-not-scheduling-heartbeats
+        ThreadPoolTaskScheduler te = new ThreadPoolTaskScheduler();
+        te.setPoolSize(1);
+        te.setThreadNamePrefix("wss-heartbeat-thread-");
+        te.initialize();
+        registry.enableSimpleBroker("/queue", "/topic").setHeartbeatValue(new long[]{0L, 20000L}).setTaskScheduler(te);
         // 全局使用的消息前缀（客户端订阅路径上会体现出来）
         registry.setApplicationDestinationPrefixes("/app");
         // 点对点使用的订阅前缀（客户端订阅路径上会体现出来），不设置的话，默认也是/user/
