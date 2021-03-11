@@ -19,8 +19,8 @@ import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.common.ResponseEntity;
-import com.iscas.templet.exception.AuthConfigException;
 import com.iscas.templet.exception.LoginException;
+import com.iscas.templet.view.tree.TreeResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cache.annotation.Cacheable;
@@ -50,19 +50,21 @@ public class AuthServiceImpl extends AbstractAuthService {
     private final RoleMapper roleMapper;
     private final MenuMapper menuMapper;
     private final UserMapper userMapper;
+    private final MenuService menuService;
 
     public AuthServiceImpl(IAuthCacheService authCacheService, ResourceMapper resourceMapper,
-                           RoleMapper roleMapper, MenuMapper menuMapper, UserMapper userMapper) {
+                           RoleMapper roleMapper, MenuMapper menuMapper, UserMapper userMapper, MenuService menuService) {
         this.authCacheService = authCacheService;
         this.resourceMapper = resourceMapper;
         this.roleMapper = roleMapper;
         this.menuMapper = menuMapper;
         this.userMapper = userMapper;
+        this.menuService = menuService;
     }
 
     //    @Autowired
 //    private UserService userService;
-    @Cacheable(value = "auth", key="'url_map'")
+    @Cacheable(value = "auth", key = "'url_map'")
     @Override
     public Map<String, Url> getUrls() {
         log.debug("------读取url信息------");
@@ -71,7 +73,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             return resources.stream().map(LambdaExceptionUtils.lambdaWrapper(resource -> {
                 Url url = new Url();
                 url.setKey(String.valueOf(resource.getResourceId()))
-                .setName(resource.getResourceUrl());
+                        .setName(resource.getResourceUrl());
                 return url;
             })).collect(Collectors.toMap(Url::getKey, url -> url));
         }
@@ -118,8 +120,6 @@ public class AuthServiceImpl extends AbstractAuthService {
     }
 
 
-
-
     @Override
     public void invalidToken(HttpServletRequest request) {
         String token = null;
@@ -136,7 +136,7 @@ public class AuthServiceImpl extends AbstractAuthService {
         request.getSession().invalidate();
     }
 
-    @Cacheable(value = "auth", key="'role_map'")
+    @Cacheable(value = "auth", key = "'role_map'")
     @Override
     public Map<String, Role> getAuth() {
         log.debug("------读取角色信息------");
@@ -208,7 +208,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             pwd = AesUtils.aesDecrypt(pwd, loginKey);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new LoginException("非法登陆",e.getMessage());
+            throw new LoginException("非法登陆", e.getMessage());
         }
 //        User dbUser = null;
         User dbUser = userMapper.selectByUserName(username);
@@ -267,13 +267,20 @@ public class AuthServiceImpl extends AbstractAuthService {
                         List<Menu> dbMenus = getMenus();
                         if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
                     } else {
-                        menuList.addAll(role.getMenus());
+                        List<Menu> roleMenus = role.getMenus();
+                        if (roleMenus != null) menuList.addAll(roleMenus);
                     }
                 }
                 if (CollectionUtils.isNotEmpty(menuList)) {
+                    menuList.add(new Menu("-1","首页"));
                     menus = menuList.stream().map(ml -> ml.getName()).distinct().collect(Collectors.toList());
+                    //修改返回菜单的数据结构
+                    TreeResponseData<com.iscas.biz.domain.common.Menu> tree = menuService.getTree();
+                    TreeResponseData<com.iscas.biz.domain.common.Menu> finalMenus = getFinalMenus(tree, menus);
+                    map.put("menu", finalMenus);
                 }
-                map.put("menu", menus);
+
+//                map.put("menu", menus);
                 map.put(Constants.TOKEN_KEY, token);
 
 //                map.put("role", role);
@@ -326,4 +333,29 @@ public class AuthServiceImpl extends AbstractAuthService {
             }
         }
     }
+
+    private TreeResponseData<com.iscas.biz.domain.common.Menu> getFinalMenus(TreeResponseData<com.iscas.biz.domain.common.Menu> tree, List<String> menus) {
+
+        Optional.ofNullable(tree).map(t -> t.getData()).ifPresent(t -> {
+            tree.setPath(tree.getData().getMenuPage());
+        });
+
+        List<TreeResponseData<com.iscas.biz.domain.common.Menu>> children = tree.getChildren();
+        if (CollectionUtils.isEmpty(children)) {
+            return null;
+        }
+        List<TreeResponseData<com.iscas.biz.domain.common.Menu>> copyChildren = new ArrayList<>();
+        children.stream().forEach(child -> copyChildren.add(child.clone()));
+        tree.setChildren(copyChildren);
+
+        children.stream().forEach(child -> {
+            if (child == null) return;
+            if (!menus.contains(child.getData().getMenuName())) {
+                copyChildren.remove(child);
+            }
+        });
+        copyChildren.stream().forEach(child -> getFinalMenus(child, menus));
+        return tree;
+    }
+
 }

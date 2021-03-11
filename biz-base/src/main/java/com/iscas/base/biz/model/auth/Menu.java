@@ -1,6 +1,8 @@
 package com.iscas.base.biz.model.auth;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -13,6 +15,8 @@ import java.io.Serializable;
  * @since jdk1.8
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Menu implements Serializable {
     private String key;
     private String name;

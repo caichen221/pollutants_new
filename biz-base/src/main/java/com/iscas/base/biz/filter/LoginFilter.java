@@ -10,8 +10,7 @@ import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -139,12 +138,15 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 //                    throw new AuthorizationRuntimeException("未获取到用户角色信息", "未获取到用户角色信息");
 //                }
                 List<Url> urlsx = role.getUrls();
-                for (Url url : urlsx) {
-                    if (pathMatcher.match(contextPath + url.getName(), request.getRequestURI())) {
-                        filterChain.doFilter(request, response);
-                        return;
+                if (!CollectionUtils.isEmpty(urlsx)){
+                    for (Url url : urlsx) {
+                        if (pathMatcher.match(contextPath + url.getName(), request.getRequestURI())) {
+                            filterChain.doFilter(request, response);
+                            return;
+                        }
                     }
                 }
+
             }
 
             //失败了返回信息

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @ApiModel("菜单")
 @Data
 @Accessors(chain = true)
-public class Menu {
+public class Menu implements Serializable {
     @ApiModelProperty("ID")
     private Integer menuId;
 
