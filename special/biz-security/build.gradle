@@ -4,10 +4,15 @@ configurations {
     compile.exclude group: 'org.apache.tomcat.embed'
 }
 dependencies {
+    compile project(":templet")
+    compile project(":common:common-web-tools")
     compile "org.springframework.boot:spring-boot-starter-security"
     compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
     compile 'javax:javaee-api:7.0'
+//    compile 'io.jsonwebtoken:jjwt:0.9.1'
+    //jwt
+    compile group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
 }
