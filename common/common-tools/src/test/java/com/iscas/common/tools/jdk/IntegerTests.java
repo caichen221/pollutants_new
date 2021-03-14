@@ -52,8 +52,8 @@ public class IntegerTests {
         System.out.println("5、测试parseInt：" + i5);
 
         //6、测试parseInt，输入字符串、字符串起止位置，进制
-        int i6 = Integer.parseInt(integerStr, 0, 2, 10);
-        System.out.println("6、测试parseInt：" + i6);
+//        int i6 = Integer.parseInt(integerStr, 0, 2, 10);
+//        System.out.println("6、测试parseInt：" + i6);
 
         //7、bitCount实现的功能是计算一个int类型的数值在二进制下“1”的数量。
         int i7 = Integer.bitCount(integer);

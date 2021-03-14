@@ -3,7 +3,6 @@ package com.iscas.common.tools.junit5;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.springframework.test.context.ActiveProfiles;
 
 /**
  * //Assumptions测试

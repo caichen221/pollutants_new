@@ -2,7 +2,11 @@ package com.iscas.templet.common;
 
 /**
  * Created by ZQM on 2016/5/18.
+ *
+ * 未用到，未来版本会删除
+ *
  */
+@Deprecated
 public enum Status {
 	/**
 	 * The client SHOULD continue with its request. This interim response is used to inform the client that the

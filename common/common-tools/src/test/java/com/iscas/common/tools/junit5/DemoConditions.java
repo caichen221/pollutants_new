@@ -12,7 +12,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @vesion 1.0

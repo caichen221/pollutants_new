@@ -7,6 +7,6 @@ package com.iscas.templet.view.table;
  * @date 2019/4/3 9:47
  * @since jdk1.8
  */
-public enum  HttpMethod {
-    GET,POST,PUT,DELETE;
+public enum HttpMethod {
+    GET,POST,PUT,DELETE,OPTIONS,HEAD,PATCH;
 }

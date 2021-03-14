@@ -2,6 +2,8 @@ package com.iscas.biz.security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
  *
@@ -11,9 +13,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since jdk1.8
  */
 @SpringBootApplication
-public class BizSecurity {
+public class BizSecurity extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(BizSecurity.class);
         springApplication.run(args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(BizSecurity.class);
     }
 }
