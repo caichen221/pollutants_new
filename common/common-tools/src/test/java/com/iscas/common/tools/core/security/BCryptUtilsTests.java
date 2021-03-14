@@ -1,5 +1,6 @@
 package com.iscas.common.tools.core.security;
 
+import cn.hutool.crypto.digest.BCrypt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
