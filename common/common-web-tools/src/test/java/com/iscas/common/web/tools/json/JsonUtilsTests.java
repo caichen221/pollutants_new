@@ -140,4 +140,5 @@ public class JsonUtilsTests {
             this.desc = desc;
         }
     }
+
 }

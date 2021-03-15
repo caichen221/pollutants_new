@@ -41,7 +41,7 @@ public class JsonTests {
      * */
     @Test
     public void testSimpleJsonArray() {
-        var jsonArray = JsonUtils.createJsonArray();
+        JsonArray jsonArray = JsonUtils.createJsonArray();
         jsonArray.add("a").add("b");
         System.out.println(jsonArray.toList());
         System.out.println(jsonArray.toJson());
@@ -53,7 +53,7 @@ public class JsonTests {
      */
     @Test
     public void testNested1() {
-        var jsonObejct = JsonUtils.createJsonObject();
+        JsonObject jsonObejct = JsonUtils.createJsonObject();
         Map map = new HashMap();
         map.put("name", "zhangsan");
         map.put("age", 18);
@@ -67,13 +67,13 @@ public class JsonTests {
      */
     @Test
     public void testNested2() {
-        var jsonObejct = JsonUtils.createJsonObject();
+        JsonObject jsonObject = JsonUtils.createJsonObject();
         Map map = new HashMap();
         map.put("name", "zhangsan");
         map.put("age", 18);
         map.put("number", Arrays.asList(1,2,2,4));
-        jsonObejct.set("person", map);
-        System.out.println(jsonObejct.toJson());
+        jsonObject.set("person", map);
+        System.out.println(jsonObject.toJson());
     }
 
     /**
@@ -82,7 +82,7 @@ public class JsonTests {
      */
     @Test
     public void testNested3() {
-        var jsonObejct = JsonUtils.createJsonObject();
+        JsonObject jsonObejct = JsonUtils.createJsonObject();
         Map map = new HashMap();
         map.put("name", "zhangsan");
         map.put("age", 18);
@@ -99,15 +99,15 @@ public class JsonTests {
      */
     @Test
     public void testNested4() {
-        var jsonArray = JsonUtils.createJsonArray();
-        var jsonObejct = JsonUtils.createJsonObject();
+        JsonArray jsonArray = JsonUtils.createJsonArray();
+        JsonObject jsonObejct = JsonUtils.createJsonObject();
         Map map = new HashMap();
         map.put("name", "zhangsan");
         map.put("age", 18);
         map.put("number", Arrays.asList(1,2,2,4));
         jsonObejct.set("person1", map)
                 .set("person2", getSimpleJsonObject());
-        var jsonArray2 = JsonUtils.createJsonArray();
+        JsonArray jsonArray2 = JsonUtils.createJsonArray();
         jsonArray2.add("3").add("5").add("6");
         jsonArray.add(jsonObejct).add(jsonArray2);
         System.out.println(jsonArray.toJson());
