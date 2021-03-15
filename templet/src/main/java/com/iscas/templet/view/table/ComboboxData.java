@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,4 +29,19 @@ public class ComboboxData<T> implements Serializable {
     protected T data;
 
     protected List<ComboboxData<T>> children;
+
+    /**
+     * 通过字符串数组生成通用得下拉列表
+     * */
+    public static List<ComboboxData> commonCombobox(String[] args) {
+        List<ComboboxData> comboboxDatas = new ArrayList<>();
+        for (String protocol : args) {
+            ComboboxData comboboxData = new ComboboxData();
+            comboboxData.setLabel(protocol);
+            comboboxData.setValue(protocol);
+            comboboxDatas.add(comboboxData);
+        }
+        return comboboxDatas;
+    }
+
 }
