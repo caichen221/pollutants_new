@@ -1,5 +1,6 @@
 package com.iscas.base.biz.controller.common;
 
+import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.base.biz.util.SpringUtils;
@@ -26,6 +27,7 @@ public class ErrorPageController {
         ResponseEntity responseEntity = new ResponseEntity();
 //        responseEntity.setStatus(401);
         responseEntity.setMessage("未登录");
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -35,6 +37,7 @@ public class ErrorPageController {
         ResponseEntity responseEntity = new ResponseEntity();
 //        responseEntity.setStatus(403);
         responseEntity.setMessage("没有权限");
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -43,6 +46,7 @@ public class ErrorPageController {
     public ResponseEntity to404(){
         ResponseEntity responseEntity = new ResponseEntity();
 //        responseEntity.setStatus(404);
+        AuthContextHolder.removeContext();
         responseEntity.setMessage("找不到资源");
         return responseEntity;
     }
@@ -53,6 +57,7 @@ public class ErrorPageController {
         ResponseEntity responseEntity = new ResponseEntity();
 //        responseEntity.setStatus(502);
         responseEntity.setMessage("网关错误");
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
     @RequestMapping(value = "/400", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
@@ -61,12 +66,13 @@ public class ErrorPageController {
         ResponseEntity responseEntity = new ResponseEntity();
 //        responseEntity.setStatus(400);
         responseEntity.setMessage("请求无效");
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
     @RequestMapping(value = "/500", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500() throws Exception {
-
+        AuthContextHolder.removeContext();
         HttpServletRequest request = SpringUtils.getRequest();
         Object attribute = request.getAttribute("javax.servlet.error.exception");
         //如果是文件太大了异常 抛处错误给前台

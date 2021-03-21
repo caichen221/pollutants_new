@@ -18,4 +18,8 @@ public class AuthContextHolder {
     public static AuthContext getContext() {
         return context.get();
     }
+
+    public static void removeContext() {
+        context.remove();
+    }
 }

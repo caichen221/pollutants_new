@@ -2,6 +2,7 @@ package com.iscas.base.biz.controller.common;
 
 import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.config.cros.CrosProps;
+import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.common.tools.assertion.AssertRuntimeException;
 import com.iscas.templet.exception.*;
 import com.iscas.base.biz.util.SpringUtils;
@@ -76,6 +77,7 @@ public class ExceptionAdivisor {
         log.error("请求参数有误",e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -98,6 +100,7 @@ public class ExceptionAdivisor {
         log.error("请求参数有误",e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -114,6 +117,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -130,6 +134,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -141,6 +146,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -153,6 +159,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -165,6 +172,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -177,6 +185,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -189,6 +198,7 @@ public class ExceptionAdivisor {
         log.error("异常", e);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
@@ -200,6 +210,7 @@ public class ExceptionAdivisor {
         log.error("异常", throwable);
         setResponseCros();
         setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
         return responseEntity;
     }
 
