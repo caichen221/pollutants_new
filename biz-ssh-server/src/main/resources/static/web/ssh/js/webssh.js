@@ -55,8 +55,14 @@ function subscribe(connectionId, options) {
         console.log("你接收到的消息为:" + response);
         options.onData(response.body);
     });
+    stompClient.subscribe('/user/queue/ping/' + connectionId, function (response) {
+        console.log("你接收到的心跳消息为:" + response);
+        stompClient.send("/app/pong", {}, connectionId);
+        // options.onData(response.body);
+    });
 
 }
+
 
 
 WSSHClient.prototype.send = function (data) {

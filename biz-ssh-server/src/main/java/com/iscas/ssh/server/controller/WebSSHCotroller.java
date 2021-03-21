@@ -58,4 +58,17 @@ public class WebSSHCotroller extends BaseController {
         return response;
     }
 
+    @MessageMapping("/pong")
+    @ApiOperation(value="心跳的响应-2021-01-12", notes="create by:朱全文")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "connectionId", value = "连接ID", required = true, dataType = "String")
+            }
+    )
+    public ResponseEntity command(Principal user, String connectionId) throws IOException, JSchException {
+        ResponseEntity response = getResponse();
+        sshService.pong(connectionId);
+        return response;
+    }
+
 }

@@ -15,8 +15,9 @@ import org.springframework.web.socket.WebSocketSession;
  */
 @Data
 public class SSHConnection {
-    private WebSocketSession webSocketSession;
+//    private WebSocketSession webSocketSession;
     private String connectionId;
     private JSch jSch;
     private Channel channel;
+    private long lastHeartbeatTime;
 }

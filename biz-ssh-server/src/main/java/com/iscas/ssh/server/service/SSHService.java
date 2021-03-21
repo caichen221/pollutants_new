@@ -8,8 +8,10 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,11 +20,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * 处理SSH连接的业务
@@ -36,7 +37,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class SSHService {
     //存放ssh连接信息的map
-    private static Map<String, Object> sshMap = new ConcurrentHashMap<>();
+    private static Map<String, SSHConnection> sshMap = new ConcurrentHashMap<>();
 
     //连接ID对应的用户
     private static Map<String, String> connectionUserMap = new ConcurrentHashMap<>();
@@ -44,12 +45,65 @@ public class SSHService {
     //线程池
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
+    public static ScheduledExecutorService ses = Executors.newScheduledThreadPool(2);
+
     private int connectionTimeout = 30;
 
     private int channelTimeout = 3;
 
+
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private SimpUserRegistry userRegistry;
+
+    /**
+     * 发送心跳
+     * */
+    public void sendHeartbeat() {
+        ses.scheduleAtFixedRate(() -> {
+            if (MapUtils.isNotEmpty(sshMap)) {
+                for (Map.Entry<String, SSHConnection> entry : sshMap.entrySet()) {
+                    SSHConnection sshConnection = entry.getValue();
+                    String connectionId = sshConnection.getConnectionId();
+                    String username = connectionUserMap.get(connectionId);
+                    //如果用户连接丢失，直接断掉
+                    if (userRegistry.getUser(username) == null) {
+                        close(connectionId);
+                    } else {
+                        //发送心跳
+                        messagingTemplate.convertAndSendToUser(username, "/queue/ping/".concat(connectionId), "ping");
+                    }
+                }
+            }
+        }, 2, 15, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 处理丢掉的连接
+     * */
+    public void clearLostConnection() {
+        ses.scheduleAtFixedRate(() -> {
+            if (MapUtils.isNotEmpty(sshMap)) {
+                for (Map.Entry<String, SSHConnection> entry : sshMap.entrySet()) {
+                    SSHConnection sshConnection = entry.getValue();
+                    String connectionId = sshConnection.getConnectionId();
+                    String username = connectionUserMap.get(connectionId);
+                    //如果用户连接丢失，直接断掉
+                    if (userRegistry.getUser(username) == null) {
+                        close(connectionId);
+                    } else {
+                        //处理30S还未收到心跳返回的连接
+                        long lastHeartbeatTime = sshConnection.getLastHeartbeatTime();
+                        if (new Date().getTime() - lastHeartbeatTime > 30000) {
+                            close(connectionId);
+                        }
+                    }
+                }
+            }
+        }, 15, 15, TimeUnit.SECONDS);
+    }
+
 
     /**
      * 初始化连接
@@ -233,4 +287,15 @@ public class SSHService {
             pw.flush();
         }
     }
+
+    /**
+     * 心跳的pong信息
+     * */
+    public void pong(String connectionId) {
+        SSHConnection sshConnection = sshMap.get(connectionId);
+        if (sshConnection != null) {
+            sshConnection.setLastHeartbeatTime(new Date().getTime());
+        }
+    }
+
 }
