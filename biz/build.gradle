@@ -25,7 +25,7 @@ dependencies {
     compile project(":biz-base")
     compile project(":common:common-tools")
 
-    /*compile project(":biz-ssh-server")*/
+    compile project(":biz-ssh-server")
 //    compile project(":special:biz-neo4j")
 
 

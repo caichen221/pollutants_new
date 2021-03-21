@@ -1,11 +1,13 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.model.auth.AuthContext;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
@@ -51,6 +53,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String contextPath = request.getContextPath();
+        AuthContext authContext = new AuthContext();
         Map<String, Url> urlMap = null;
         Map<String, Role> roleMap = null;
         try {
@@ -60,7 +63,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             e.printStackTrace();
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :获取角色信息失败", e);
-
             throw new AuthorizationRuntimeException("获取角色信息失败", "获取角色信息失败");
         }
 
@@ -92,7 +94,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 //                return;
                 throw new AuthorizationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
             }
-
+            authContext.setToken(token);
             IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
 //            if(CaffCacheUtils.get(token) == null){
             if(authCacheService.get(token) == null){
@@ -104,6 +106,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             String username = null;
             try {
                 username = authService.verifyToken(token);
+                authContext.setUsername(username);
             } catch (ValidTokenException e) {
                 e.printStackTrace();
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
@@ -111,6 +114,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 throw new AuthorizationRuntimeException("校验身份信息出错", "校验token出错");
             }
             List<Role> roles = authService.getRoles(username);
+            authContext.setRoles(roles);
 
 //            boolean userFlag = authService.validUsername(username);
 //            User user = userService.findByUsername(username);
@@ -120,6 +124,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 for (Role role1 : roles) {
                     String name = role1.getName();
                     if (Objects.equals(name, Constants.SUPER_ROLE_KEY)) {
+                        authContext.setSuper(true);
                         filterChain.doFilter(request, response);
                         return;
                     }
@@ -152,7 +157,10 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             //失败了返回信息
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() + " :鉴权失败");
             throw new AuthorizationRuntimeException("鉴权失败");
+        } else {
+            authContext.setNeedPermission(false);
         }
+        AuthContextHolder.setContext(authContext);
         filterChain.doFilter(request, response);
     }
 }

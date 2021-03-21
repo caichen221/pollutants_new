@@ -4,6 +4,7 @@ import com.iscas.biz.security.util.OutputUtils;
 import com.iscas.common.web.tools.json.JsonUtils;
 import com.iscas.templet.common.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
