@@ -1,6 +1,7 @@
 package com.iscas.base.biz.controller.fileserver;
 
 import com.iscas.base.biz.service.fileserver.FileServerService;
+import com.iscas.datasong.lib.request.SearchDataRequest;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -29,8 +30,6 @@ import java.util.Map;
 @RequestMapping("/file")
 @Api(description="文件上传")
 public class FileServerController extends BaseController {
-
-
     @Autowired
     private FileServerService fileServerService;
 
@@ -43,7 +42,6 @@ public class FileServerController extends BaseController {
     @PostMapping("/upload")
     public ResponseEntity upload(@RequestParam("file") MultipartFile[] files) throws BaseException {
         ResponseEntity response = getResponse();
-
         if (ArrayUtils.isEmpty(files)) {
             throw new BaseException("上传的数据为空");
         }
@@ -53,7 +51,6 @@ public class FileServerController extends BaseController {
         } catch (IOException e) {
             throw new BaseException("文件上传出错", e);
         }
-
         return response;
     }
 
@@ -70,7 +67,4 @@ public class FileServerController extends BaseController {
         }
         fileServerService.download(path);
     }
-
-
-
 }
