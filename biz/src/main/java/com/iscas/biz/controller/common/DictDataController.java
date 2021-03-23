@@ -8,6 +8,7 @@ import com.iscas.biz.config.log.LogType;
 import com.iscas.biz.config.log.OperateType;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.DictDataService;
+import com.iscas.datasong.lib.response.data.SearchDataResponse;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
@@ -36,6 +37,7 @@ import java.util.Map;
 @RequestMapping("/dictData")
 @Api(tags = "字典管理")
 public class DictDataController extends BaseController {
+
     private final static String tableIdentity = "dict_data";
     @Autowired
     private TableDefinitionService tableDefinitionService;
