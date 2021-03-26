@@ -79,6 +79,9 @@ dependencies {
 
     //datasong-client-plus
     compile ("com.iscas.datasong:datasong-client-plus:0.1.6")
+
+    compile 'com.corundumstudio.socketio:netty-socketio:1.7.18'
+
 //            {
 //                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
 //                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'

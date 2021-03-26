@@ -81,7 +81,7 @@ public class JvmMemoryUtils {
      * 获取堆内存情况
      */
     public static MemoryUsage getHeapMemoryUsage() {
-        return Optional.of(memoryMXBean)
+        return Optional.ofNullable(memoryMXBean)
                 .map(MemoryMXBean::getHeapMemoryUsage)
                 .orElse(EMPTY);
     }
@@ -90,7 +90,7 @@ public class JvmMemoryUtils {
      * 获取堆外内存情况
      */
     public static MemoryUsage getNonHeapMemoryUsage() {
-        return Optional.of(memoryMXBean)
+        return Optional.ofNullable(memoryMXBean)
                 .map(MemoryMXBean::getNonHeapMemoryUsage)
                 .orElse(EMPTY);
     }
@@ -184,7 +184,7 @@ public class JvmMemoryUtils {
     }
 
     private static MemoryUsage getMemoryPoolUsage(MemoryPoolMXBean memoryPoolMXBean) {
-        return Optional.of(memoryPoolMXBean)
+        return Optional.ofNullable(memoryPoolMXBean)
                 .map(MemoryPoolMXBean::getUsage)
                 .orElse(EMPTY);
     }

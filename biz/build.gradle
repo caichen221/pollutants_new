@@ -40,8 +40,6 @@ dependencies {
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
-    compile 'com.corundumstudio.socketio:netty-socketio:1.7.7'
-
 }
 
 //打入本地maven库配置
