@@ -93,4 +93,6 @@ include 'sso:oauth2:client-pwd:authentication-server'
 findProject(':sso:oauth2:client-pwd:authentication-server')?.name = 'authentication-server'
 include 'sso:oauth2:oauth-code:uaa'
 findProject(':sso:oauth2:oauth-code:uaa')?.name = 'uaa'
+include 'sso:oauth2:oauth-code:resource-demo1'
+findProject(':sso:oauth2:oauth-code:resource-demo1')?.name = 'resource-demo1'
 

@@ -3,10 +3,10 @@ configurations {
     compile.exclude group: 'org.apache.tomcat'
     compile.exclude group: 'org.apache.tomcat.embed'
 }
+
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-security"
     compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     compile 'javax:javaee-api:7.0'
     compile 'org.springframework.security.oauth:spring-security-oauth2:2.3.8.RELEASE'
