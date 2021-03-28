@@ -80,7 +80,13 @@ dependencies {
     //datasong-client-plus
     compile ("com.iscas.datasong:datasong-client-plus:0.1.6")
 
-    compile 'com.corundumstudio.socketio:netty-socketio:1.7.18'
+    compile "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
+
+    compile "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:2.1.5"
+
+
+
+
 
 //            {
 //                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
