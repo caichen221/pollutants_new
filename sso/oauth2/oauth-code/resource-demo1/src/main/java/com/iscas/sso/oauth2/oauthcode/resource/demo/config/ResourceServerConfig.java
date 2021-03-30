@@ -45,9 +45,25 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/**").access("#oauth2.hasScope('all')")
-                .and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.authorizeRequests()
+//                .antMatchers("/**").access("#oauth2.hasScope('all')")
+//                .and().csrf().disable()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭session
+                .and()
+
+                .authorizeRequests()
+                .antMatchers("/decision/**","/govern/**").hasAnyRole("USER","ADMIN")//对decision和govern 下的接口 需要 USER 或者 ADMIN 权限
+                .antMatchers("/admin/login").permitAll()///admin/login 不限定
+                .antMatchers("/admin/**").hasRole("ADMIN")//对admin下的接口 需要ADMIN权限
+                .antMatchers("/admin2/**").hasRole("AAA")//对admin2下的接口 需要AAA权限
+                .antMatchers("/oauth/**").permitAll()//不拦截 oauth 开放的资源
+                .antMatchers("/admin3/**").permitAll()//不拦截 admin3 开放的资源
+                .anyRequest().access("#oauth2.hasScope('all')")
+        ;
+
+
     }
 }

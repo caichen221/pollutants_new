@@ -128,8 +128,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler); // 无权访问 JSON 格式的数据
 
-
-
     }
 
     @Override
