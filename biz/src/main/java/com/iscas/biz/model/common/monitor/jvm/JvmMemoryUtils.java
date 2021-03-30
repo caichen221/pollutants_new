@@ -31,26 +31,26 @@ public class JvmMemoryUtils {
                         .forEach(mxBean -> {
                             String poolName = mxBean.getName();
 
-                            //TODO JDK11 等的适配
+                            //暂时适配了JDK8和JDK11，本地没有安装其他版本JDK
                             /**
                              * Code Cache :
                              *      JDK11: CodeHeap 'non-nmethods'、CodeHeap 'profiled nmethods'、CodeHeap 'non-profiled nmethods'
-                             *      JDK8:
+                             *      JDK8:  Code Cache
                              * Metaspace :
-                             *      JDK11: CodeHeap 'Metaspace'
-                             *      JDK8:
+                             *      JDK11: Metaspace
+                             *      JDK8:  Metaspace
                              * Eden Space :
                              *      JDK11: G1 Eden Space
-                             *       JDK8:
+                             *       JDK8: PS Eden Space
                              * Survivor Space :
                              *      JDK11: G1 Survivor Space
-                             *       JDK8:
+                             *       JDK8: PS Survivor Space
                              * Old Space :
                              *      JDK11: G1 Old Gen
-                             *       JDK8:
+                             *       JDK8: PS Old Gen
                              * Compressed Class Space :
                              *      JDK11: Compressed Class Space
-                             *       JDK8:
+                             *       JDK8: Compressed Class Space
                              */
                             // 官方JVM(HotSpot)提供的MemoryPoolMXBean
                             // JDK1.7/1.8 Eden区内存池名称： "Eden Space" 或  "PS Eden Space"、 “G1 Eden Space”(和垃圾收集器有关)
@@ -68,7 +68,7 @@ public class JvmMemoryUtils {
                                 oldGen = mxBean;
                             } else if (poolName.endsWith("Metaspace")) {
                                 metaSpace = mxBean;
-                            } else if (poolName.startsWith("CodeHeap")) {
+                            } else if (poolName.startsWith("CodeHeap") || poolName.startsWith("Code Cache")) {
                                 codeCache.add(mxBean);
                             } else if (poolName.startsWith("Compressed Class Space")) {
                                 compressedClassSpace = mxBean;
