@@ -20,3 +20,7 @@ http://localhost:8654/uaa/oauth/token?client_id=client&client_secret=123456&redi
     "expires_in": 3220,
     "scope": "all"
 }
+
+5、访问资源服务时使用access_token
+    在header中携带Authorization : beaber xxx
+    xxx是access_token

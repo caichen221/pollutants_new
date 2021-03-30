@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/3/26 14:28
  * @since jdk1.8
  */
-@Configuration
+//@Configuration
 @ConditionalOnExpression("'${elastic.zookeeper.server-lists}'.length() >0")
 public class ElasticJobConfig {
 

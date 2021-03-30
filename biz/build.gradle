@@ -16,6 +16,13 @@ bootJar {
 //    launchScript()
 }
 
+bootWar {
+    manifest {
+        attributes 'Start-Class': 'com.iscas.biz.BizApp'
+    }
+//    launchScript()
+}
+
 bootRun {
     main = 'com.iscas.biz.BizApp'
 }

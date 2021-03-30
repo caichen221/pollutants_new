@@ -11,6 +11,7 @@ import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.iscas.base.biz.service.common.SpringService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +23,8 @@ import org.springframework.stereotype.Component;
  * @date 2021/3/26 14:28
  * @since jdk1.8
  */
+@ConditionalOnBean(ZookeeperRegistryCenter.class)
 @Component
-@ConditionalOnClass(ZookeeperRegistryCenter.class)
 public class ElasticJobHandler {
 
     @Autowired

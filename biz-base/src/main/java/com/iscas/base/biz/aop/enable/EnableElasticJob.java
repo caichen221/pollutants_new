@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * <p>elasticJob服务器开关</>
+ * <p>socketIo服务器开关</>
  *
  * @author zhuquanwen
  * @vesion 1.0

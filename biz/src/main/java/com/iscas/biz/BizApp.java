@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableHealthCheck //开启健康检测 readiness liveness
 @EnableDatasongClientPlus //是否开启Datasongclient客户端，如果关闭请把biz-base模块下com.iscas.base.biz.test.datasongplus下所有内容注释或删掉
 @EnableSocketio //是否开启Socketio的支持
+@EnableElasticJob
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
