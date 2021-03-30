@@ -1,0 +1,22 @@
+1、获取授权码
+http://localhost:8654/uaa/oauth/authorize?client_id=client&response_type=code&scope=all&redirect_uri=http://www.baidu.com
+提示未登陆
+2、登陆
+http://localhost:8654/uaa/login
+获取到token
+3、使用浏览器打开（不是ajax）
+http://localhost:8654/uaa/oauth/authorize?client_id=client&response_type=code&scope=all&redirect_uri=http://www.baidu.com&Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjE2OTI2MDM0LCJleHAiOjE2MTY5MjYzMzQsImlhdCI6MTYxNjkyNjAzNCwidXNlcm5hbWUiOiJhZG1pbiJ9.jqanDJmsf1aFuTsMP3vpf-hkrzs0QT_WcwdsLPBGsyg
+重定向到地址https://www.baidu.com/?code=wpiLIp
+code就是授权码
+
+4、获取token
+POST请求
+http://localhost:8654/uaa/oauth/token?client_id=client&client_secret=123456&redirect_uri=http://www.baidu.com&scope=all&code=wpiLIp&grant_type=authorization_code
+返回
+{
+    "access_token": "224e0f88-8752-46ec-881e-2df5ef841688",
+    "token_type": "bearer",
+    "refresh_token": "d0796054-71bc-4a74-9d90-829fafbb73fb",
+    "expires_in": 3220,
+    "scope": "all"
+}

@@ -9,7 +9,6 @@ configurations {
     compile.exclude group: 'org.apache.tomcat.embed'
 }
 
-
 bootJar {
     manifest {
         attributes 'Start-Class': 'com.iscas.biz.BizApp'
@@ -39,8 +38,6 @@ dependencies {
 //    compile project(":biz-jpa")
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-
-    compile 'com.corundumstudio.socketio:netty-socketio:1.7.7'
 
 }
 

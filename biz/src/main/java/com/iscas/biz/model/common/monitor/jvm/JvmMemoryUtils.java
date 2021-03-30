@@ -184,7 +184,7 @@ public class JvmMemoryUtils {
     }
 
     private static MemoryUsage getMemoryPoolUsage(MemoryPoolMXBean memoryPoolMXBean) {
-        return Optional.of(memoryPoolMXBean)
+        return Optional.ofNullable(memoryPoolMXBean)
                 .map(MemoryPoolMXBean::getUsage)
                 .orElse(EMPTY);
     }

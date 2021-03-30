@@ -76,7 +76,23 @@ dependencies {
 
 // https://mvnrepository.com/artifact/com.github.oshi/oshi-core
     compile group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
-            
+
+    //datasong-client-plus
+    compile ("com.iscas.datasong:datasong-client-plus:0.1.6")
+
+    compile "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
+
+    compile "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:2.1.5"
+
+
+
+
+
+//            {
+//                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+//                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+//            }
+//    compile group: 'com.iscas.datasong', name: 'datasong-client', version: "0.1.2"
 
 
     //knife4j,替代swagger

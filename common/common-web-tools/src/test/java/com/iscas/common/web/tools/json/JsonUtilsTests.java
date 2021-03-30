@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  *
@@ -39,6 +40,11 @@ public class JsonUtilsTests {
             "\t}\n" +
             "}";
 
+    @Test
+    public void test0() {
+        Map map = JsonUtils.fromJson(json2, Map.class);
+        System.out.println(map);
+    }
 
     @Test
     public void test1() {
