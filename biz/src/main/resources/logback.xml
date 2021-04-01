@@ -145,6 +145,9 @@
     <logger name="org.neo4j.driver" level="INFO" />
     <logger name="org.apache.zookeeper" level="INFO" />
     <logger name="org.apache.curator.framework.recipes.cache" level="INFO" />
+    <logger name="oshi.util.platform.windows" level="INFO" />
+    <logger name="org.quartz.core" level="INFO" />
+    <logger name="org.quartz.simpl" level="INFO" />
     <logger name="root" level="DEBUG" />
 
 

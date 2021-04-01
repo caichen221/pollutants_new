@@ -82,7 +82,7 @@ dependencies {
 
     compile "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
 
-    compile "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:2.1.5"
+    compile "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:${elasticJobVersion}"
 
     // mysql连接
     compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"

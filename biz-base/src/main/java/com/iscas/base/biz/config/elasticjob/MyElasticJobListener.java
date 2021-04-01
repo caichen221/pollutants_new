@@ -34,7 +34,7 @@ public class MyElasticJobListener extends AbstractDistributeOnceElasticJobListen
      */
     @Override
     public void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts) {
-        log.debug("任务:{}开始，任务分片数：{}，任务分片：{}，参数：{}", shardingContexts.getJobName(),
+        log.info("任务:{}开始，任务分片数：{}，任务分片：{}，参数：{}", shardingContexts.getJobName(),
                 shardingContexts.getShardingTotalCount(), shardingContexts.getShardingItemParameters(),
                 shardingContexts.getJobParameter());
     }
@@ -45,7 +45,7 @@ public class MyElasticJobListener extends AbstractDistributeOnceElasticJobListen
      */
     @Override
     public void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts) {
-        log.debug("任务:{}结束，任务分片数：{}，任务分片：{}，参数：{}", shardingContexts.getJobName(),
+        log.info("任务:{}结束，任务分片数：{}，任务分片：{}，参数：{}", shardingContexts.getJobName(),
                 shardingContexts.getShardingTotalCount(), shardingContexts.getShardingItemParameters(),
                 shardingContexts.getJobParameter());
     }

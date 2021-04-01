@@ -5,7 +5,6 @@ import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
@@ -32,7 +31,7 @@ public class ElasticJobHandler {
 
     @Autowired
     private ElasticJobListener elasticJobListener;
-    @Autowired
+    @Autowired(required = false)
     private JobEventConfiguration jobEventConfiguration;
 
     /**
@@ -65,10 +64,11 @@ public class ElasticJobHandler {
     public void addJob(String jobName, String cron, Integer shardingTotalCount, String jobParameter, String shardingItemParameters, Class<? extends SimpleJob> clazz) {
         LiteJobConfiguration jobConfig = simpleJobConfigBuilder(jobName, clazz, shardingTotalCount, cron, jobParameter, shardingItemParameters)
                 .overwrite(true).build();
-//        new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, elasticJobListener).init();
-        new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, jobEventConfiguration, elasticJobListener).init();
-//        SpringJobScheduler jobScheduler=new SpringJobScheduler(simpleJob, regCenter, liteJobConfiguration,jobEventRdbConfiguration);
-//        jobScheduler.init();
+        if (jobEventConfiguration == null) {
+            new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, elasticJobListener).init();
+        } else {
+            new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, jobEventConfiguration, elasticJobListener).init();
+        }
     }
 
 

@@ -91,4 +91,6 @@ include 'sso:oauth2:oauth-code:uaa'
 findProject(':sso:oauth2:oauth-code:uaa')?.name = 'uaa'
 include 'sso:oauth2:oauth-code:resource-demo1'
 findProject(':sso:oauth2:oauth-code:resource-demo1')?.name = 'resource-demo1'
+include 'special:elastic-job-lite-console'
+findProject(':special:elastic-job-lite-console')?.name = 'elastic-job-lite-console'
 

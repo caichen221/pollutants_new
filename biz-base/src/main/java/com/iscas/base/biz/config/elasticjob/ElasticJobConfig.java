@@ -1,19 +1,15 @@
 package com.iscas.base.biz.config.elasticjob;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.iscas.base.biz.service.common.SpringService;
-import com.mysql.cj.jdbc.MysqlDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 
@@ -27,6 +23,13 @@ import javax.sql.DataSource;
  * <p>参考：https://blog.csdn.net/oppo5630/article/details/79963490</p>
  * <p>参考：https://developer.51cto.com/art/202101/643302.htm?mobile</p>
  *
+ * <p>监控页面elasticJob-console的使用：</p>
+ * <p>1、在special下打开模块elastic-job-liete-console模块</p>
+ * <p>2、运行ConsoleBootstrap类的主函数</p>
+ * <p>3、进入http://localhost:8899</p>
+ * <p>4、全局配置-注册中心配置，添加zookeeper相关信息</p>
+ * <p>5、全局配置-时间追踪数据源配置，添加数据源mysql相关配置</p>
+ * <p>6、可以通过监控或修改定时任务了</p>
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -38,7 +41,9 @@ import javax.sql.DataSource;
 @Import(ElasticDataSourceConfig.class)
 @Lazy(value = false)
 public class ElasticJobConfig {
-    @Resource(name = "elasticDatasource")
+
+    @Autowired(required = false)
+    @Qualifier("elasticDatasource")
     private DataSource dataSource;
 
     /**
@@ -66,6 +71,7 @@ public class ElasticJobConfig {
      * @return
      */
     @Bean
+    @ConditionalOnElasticJobWithDatasource
     public JobEventConfiguration jobEventConfiguration() {
         return new JobEventRdbConfiguration(dataSource);
     }

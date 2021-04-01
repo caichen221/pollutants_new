@@ -19,4 +19,6 @@ import java.lang.annotation.*;
 @Documented
 @Import(ElasticJobConfig.class)
 public @interface EnableElasticJob {
+    //是否使用datasource记录操作日志
+    boolean withDatasource() default false;
 }

@@ -1,6 +1,5 @@
 package com.iscas.base.biz.config.elasticjob;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,7 @@ import javax.sql.DataSource;
  * @date 2021/4/1 13:36
  * @since jdk1.8
  */
+@ConditionalOnElasticJobWithDatasource
 public class ElasticDataSourceConfig {
     @Bean("elasticDatasource")
     @ConfigurationProperties(prefix = "spring.datasource.druid.mysql1")
