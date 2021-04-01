@@ -61,7 +61,7 @@ public class ElasticJobConfig {
      */
     @Bean
     public ElasticJobListener elasticJobListener() {
-        return new MyElasticJobListener(100, 100);
+        return new MyElasticJobListener(200, 200);
     }
 
 

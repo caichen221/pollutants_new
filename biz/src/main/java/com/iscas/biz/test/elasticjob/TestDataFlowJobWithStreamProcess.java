@@ -50,10 +50,12 @@ public class TestDataFlowJobWithStreamProcess implements DataflowJob<String> {
 //        ));
         if (testCount.get() == null) {
             testCount.set(0);
+            return null;
         }
         testCount.set(testCount.get() + 1);
         log.debug("测试流式定时任务拉取数据，配置为流式，第{}次：", testCount.get());
         if (testCount.get() >= 10) {
+            testCount.set(0);
             return null;
         }
         return Arrays.asList(RandomStringUtils.randomStr(5), RandomStringUtils.randomStr(5),
