@@ -6,6 +6,7 @@ import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * @since jdk1.8
  */
 //@Configuration
+@Lazy(false)
 public class SocketioConfig {
     @Value("${socket.io.port:8974}")
     private int socketIoPort;

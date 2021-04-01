@@ -24,7 +24,7 @@ public class StartJobFilter extends AbstractStartedFilter {
 
     @Override
     public void doFilterInternal(ApplicationContext applicationContext) {
-        elasticJobHandler.addJob("2222", "0/2 * * * * ?", 1, "test parameter", "0=a", MyJob2.class);
+        elasticJobHandler.addJob("2222", "0/2 * * * * ?", 2, "test parameter", "0=a,1=b", MyJob2.class);
         super.doFilterInternal(applicationContext);
     }
 

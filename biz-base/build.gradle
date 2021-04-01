@@ -84,6 +84,13 @@ dependencies {
 
     compile "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:2.1.5"
 
+    // mysql连接
+    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+
+//    compile group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
+
+    //elasticJob记录日志使用druid会一直抛出一个SQL错误，改为dbcp2记录
+    implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: "${dbcp2Version}"
 
 
 

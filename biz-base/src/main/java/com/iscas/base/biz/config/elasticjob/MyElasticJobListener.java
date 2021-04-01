@@ -2,6 +2,7 @@ package com.iscas.base.biz.config.elasticjob;
 
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @since jdk1.8
  */
 //@Component
+@Slf4j
 public class MyElasticJobListener extends AbstractDistributeOnceElasticJobListener {
 
 
@@ -32,7 +34,9 @@ public class MyElasticJobListener extends AbstractDistributeOnceElasticJobListen
      */
     @Override
     public void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts) {
-        System.out.println("任务开始");
+        log.debug("任务:{}开始，任务分片数：{}，任务分片：{}，参数：{}", shardingContexts.getJobName(),
+                shardingContexts.getShardingTotalCount(), shardingContexts.getShardingItemParameters(),
+                shardingContexts.getJobParameter());
     }
 
     /**
@@ -41,6 +45,8 @@ public class MyElasticJobListener extends AbstractDistributeOnceElasticJobListen
      */
     @Override
     public void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts) {
-        System.err.println("任务结束");
+        log.debug("任务:{}结束，任务分片数：{}，任务分片：{}，参数：{}", shardingContexts.getJobName(),
+                shardingContexts.getShardingTotalCount(), shardingContexts.getShardingItemParameters(),
+                shardingContexts.getJobParameter());
     }
 }

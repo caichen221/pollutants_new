@@ -23,11 +23,11 @@ public class TestEsJobController {
     }
 
 
-    /**
-     * 动态添加任务逻辑,使用方式2
-     */
-    @RequestMapping("/test2")
-    public void test2() {
-        elasticJobHandler.addJob2("111", "0/2 * * * * ?", 1, "test parameter", "0=a", MyJob2.class);
-    }
+//    /**
+//     * 动态添加任务逻辑,使用方式2
+//     */
+//    @RequestMapping("/test2")
+//    public void test2() {
+//        elasticJobHandler.addJob2("111", "0/2 * * * * ?", 1, "test parameter", "0=a", MyJob2.class);
+//    }
 }

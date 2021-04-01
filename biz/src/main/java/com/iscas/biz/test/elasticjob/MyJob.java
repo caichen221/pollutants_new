@@ -5,6 +5,9 @@
 //import com.dangdang.elasticjob.lite.annotation.ElasticSimpleJob;
 //import org.springframework.stereotype.Component;
 //
+
+import com.dangdang.elasticjob.lite.annotation.ElasticSimpleJob;
+
 //@ElasticSimpleJob(cron = "0/2 * * * * ?",
 //        jobName = "firstJob",
 //        shardingTotalCount = 2,
