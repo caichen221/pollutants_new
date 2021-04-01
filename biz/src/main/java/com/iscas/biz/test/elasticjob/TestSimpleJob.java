@@ -5,15 +5,16 @@ import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
 import org.springframework.stereotype.Component;
 
-//@ElasticSimpleJob(cron = "0/2 * * * * ?",
-//        jobName = "firstJob",
-//        shardingTotalCount = 2,
-//        jobParameter = "测试参数",
-//        shardingItemParameters = "0=A,1=B",
-//        dataSource = "datasource")
+/**
+ * 测试普通定时任务
+ * @author zhuquanwen
+ * @vesion 1.0
+ * @date 2021/3/26
+ * @since jdk1.8
+ */
 @Component
 @ConditionalOnElasticJob
-public class MyJob2 implements SimpleJob {
+public class TestSimpleJob implements SimpleJob {
 
     @Override
     public void execute(ShardingContext shardingContext) {

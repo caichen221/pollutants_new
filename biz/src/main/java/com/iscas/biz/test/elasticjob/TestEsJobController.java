@@ -6,6 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/**
+ * 测试启动定时任务的controller
+ * @author zhuquanwen
+ * @vesion 1.0
+ * @date 2021/3/26
+ * @since jdk1.8
+ */
 @RestController
 @RequestMapping("/testEsJob")
 @ConditionalOnElasticJob()
@@ -15,11 +23,11 @@ public class TestEsJobController {
 
 
     /**
-     * 动态添加任务逻辑,使用方式1
+     * 动态添加任务逻辑
      */
     @RequestMapping("/test1")
     public void test1() {
-        elasticJobHandler.addJob("111", "0/2 * * * * ?", 1, "test parameter", "0=a", MyJob2.class);
+        elasticJobHandler.addSimpleJob("111", "0/2 * * * * ?", 1, "test parameter", "0=a", TestSimpleJob.class);
     }
 
 
