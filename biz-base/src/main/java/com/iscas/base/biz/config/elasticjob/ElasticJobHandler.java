@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/3/26 14:28
  * @since jdk1.8
  */
-@ConditionalOnBean(ZookeeperRegistryCenter.class)
+@ConditionalOnElasticJob()
 @Component
 public class ElasticJobHandler {
 

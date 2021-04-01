@@ -2,10 +2,7 @@ package com.iscas.biz.test.elasticjob;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.elasticjob.lite.annotation.ElasticSimpleJob;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
 import org.springframework.stereotype.Component;
 
 //@ElasticSimpleJob(cron = "0/2 * * * * ?",
@@ -15,7 +12,7 @@ import org.springframework.stereotype.Component;
 //        shardingItemParameters = "0=A,1=B",
 //        dataSource = "datasource")
 @Component
-@ConditionalOnBean(ZookeeperRegistryCenter.class)
+@ConditionalOnElasticJob
 public class MyJob2 implements SimpleJob {
 
     @Override
