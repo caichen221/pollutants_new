@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.security.Principal;
  * @since jdk1.8
  */
 @RestController
+@RequestMapping("/ssh/connect")
 @Api(tags = "SSH连接控制器")
 public class WebSSHCotroller extends BaseController {
     @Autowired
@@ -70,5 +72,16 @@ public class WebSSHCotroller extends BaseController {
         sshService.pong(connectionId);
         return response;
     }
+
+
+//    @ApiOperation(value = "获取远程服务器的文件列表-2021-03-31", notes = "create by zqw")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "connectionId", value = "连接ID", required = true, dataType = "String"),
+//            @ApiImplicitParam(name = "dir", value="目录，如果不传，默认使用/", required = false, dataType = "String")
+//
+//    })
+//    public ResponseEntity getFileList() {
+//
+//    }
 
 }
