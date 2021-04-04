@@ -88,6 +88,7 @@ public class WebSSHCotroller extends BaseController {
         ResponseEntity response = getResponse();
         try {
             List<SftpFile> sftpFiles = sshService.listDir(connectionId, dir);
+            response.setValue(sftpFiles);
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {

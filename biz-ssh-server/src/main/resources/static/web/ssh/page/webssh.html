@@ -25,39 +25,21 @@
         .icon-download{
             background:url('download.png') no-repeat center center;
         }
+        tr.on td{
+            background-color: #4482cc; / 背景颜色/
+        }
     </style>
     <script>
     let terminalIndex = 1;
     let map = new Map();
     $(function() {
         $('#w').window('close');
+        $('#w2').window('close');
+
+
         $('#searchbox').searchbox({
             searcher:function(value,name){
-                var pp = $('#tabs').tabs('getSelected');
-                var title = pp.panel('options').title;
-                var connectionId = map.get(title);
-                if (connectionId != null) {
-                    $.ajax({
-                        url: "http://localhost:7901/demo/ssh/connect/list?connectionId=" + connectionId + "&dir=" + value,
-                        data: null,
-                        type: "GET",
-                        dataType: "json",
-                        success: function(data) {
-                            for(var i=0;i<data.length;i++){
-                                let n = data[i].name;
-                                let s = data[i].size;
-                                let f = data[i].file;
-                                let p = data[i].path;
-                                var html = "<tr>" +
-                                    "<td>"+n+"</td>" +
-                                    "<td>"+s+"</td>" +
-                                    "</tr>"
-                                $("#files").append(html);
-                            }
-
-                        }
-                    });
-                }
+                search(value);
             },
         });
 
@@ -73,6 +55,104 @@
             }
         });
     })
+
+    function back() {
+        let value = $("#searchbox").val();
+        if (value == "/" || value.indexOf("/") < 0) {
+            value = "/";
+        } else {
+            value = value.substring(0, value.lastIndexOf("/"));
+            value = value == "" ? "/" : value;
+        }
+        $('#searchbox').searchbox('setValue', value);
+        search(value);
+
+    }
+
+    function refresh() {
+        let value = $("#searchbox").val();
+        search(value);
+    }
+
+    function search(value) {
+        var pp = $('#tabs').tabs('getSelected');
+        var title = pp.panel('options').title;
+        var connectionId = map.get(title);
+        clearFiles();
+        if (connectionId != null) {
+            $.ajax({
+                url: "http://localhost:7901/demo/ssh/connect/list?connectionId=" + connectionId + "&dir=" + value,
+                data: null,
+                type: "GET",
+                dataType: "json",
+                success: function(res) {
+                    let data = res.value;
+                    for(var i=0;i<data.length;i++){
+                        let n = data[i].name;
+                        let s = data[i].size;
+                        let f = data[i].file;
+                        let p = data[i].path;
+                        let imgSrc = 'folder.png';
+                        if (f == true) {
+                            imgSrc = 'file.png';
+                        }
+                        var html = "<tr>" +
+                            "<td><img src='"+imgSrc+"'/></td>" +
+                            "<td><span>"+n+"</span></td>" +
+                            "<td class = 'pathclass' style='display: none;'>"+p+"</td>" +
+                            "<td>"+s+"</td>" +
+                            "</tr>"
+                        $("#files").append(html);
+                        $("#files tr").click(function(){
+                            var trs = $("#files").find('tr'); //获取所有tr
+                            if(trs.hasClass('on')){ //判断这些tr 有没有Class ‘on’’
+                                trs.removeClass('on');//把class on 移除
+                            }
+                            $(this).addClass('on');//点击的tr 添加 on class 用于改变样式
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    function upload() {
+        let pathNode = $("#files").find('.on').find(".pathclass");
+        if (pathNode == null || pathNode.length == 0) {
+            alert("未选择文件夹");
+        }
+        $('#w2').window('open');
+    }
+
+    function download() {
+        let pathNode = $("#files").find('.on').find(".pathclass");
+        if (pathNode == null || pathNode.length == 0) {
+            alert("未选择文件");
+        }
+        var pp = $('#tabs').tabs('getSelected');
+        var title = pp.panel('options').title;
+        var connectionId = map.get(title);
+        window.open('http://localhost:7901/demo/ssh/connect/download?connectionId=' + connectionId + '&path=' + pathNode.text());
+    }
+
+    function toUpload(e) {
+        let pathNode = $("#files").find('.on').find(".pathclass");
+        var pp = $('#tabs').tabs('getSelected');
+        var title = pp.panel('options').title;
+        var connectionId = map.get(title);
+
+        $('#fileForm').form('submit',{
+            url: "http://localhost:7901/demo/ssh/connect/upload?connectionId=" + connectionId + "&dest=" + pathNode.text(),
+            onSubmit: function(){
+
+            },
+            success: function(result){
+                alert("上传成功");
+                $('#w2').window('close');
+            }
+        });
+    }
+
     function toConnect() {
         $('#w').window('open');
     }
@@ -88,7 +168,7 @@
             closable:true
         });
 
-        let connectionId = "xxxx";
+        let connectionId = randomString(6);
         map.put(ip + "-" + terminalIndex, connectionId);
         connect(terminalId, connectionId);
 
@@ -164,51 +244,7 @@
         });
     }
 
-    function Map() {
-        var struct = function (key, value) {
-            this.key = key;
-            this.value = value;
-        }
-        var put = function (key, value) {
-            for (var i = 0; i < this.arr.length; i++) {
-                if (this.arr[i].key === key) {
-                    this.arr[i].value = value;
-                    return;
-                }
-            }
-            this.arr[this.arr.length] = new struct(key, value);
-        }
-        var get = function (key) {
-            for (var i = 0; i < this.arr.length; i++) {
-                if (this.arr[i].key === key) {
-                    return this.arr[i].value;
-                }
-            }
-            return null;
-        }
-        var remove = function (key) {
-            var v;
-            for (var i = 0; i < this.arr.length; i++) {
-                v = this.arr.pop();
-                if (v.key === key) {
-                    continue;
-                }
-                this.arr.unshift(v);
-            }
-        }
-        var size = function () {
-            return this.arr.length;
-        }
-        var isEmpty = function () {
-            return this.arr.length <= 0;
-        }
-        this.arr = new Array();
-        this.get = get;
-        this.put = put;
-        this.remove = remove;
-        this.size = size;
-        this.isEmpty = isEmpty;
-    }
+
     </script>
 
 </head>
@@ -230,10 +266,10 @@
 
         <div data-options="region:'west',title:'',split:true" style="width:250px;">
             <div class="easyui-panel" style="padding-left:5px;width: 100%;">
-                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-back'"></a>
-                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-upload'"></a>
-                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-download'"></a>
-                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-reload'"></a>
+                <a href="javascript:back();" class="easyui-linkbutton" data-options="iconCls:'icon-back'"></a>
+                <a href="javascript:upload();" class="easyui-linkbutton" data-options="iconCls:'icon-upload'"></a>
+                <a href="javascript:download();" class="easyui-linkbutton" data-options="iconCls:'icon-download'"></a>
+                <a href="javascript:refresh();" class="easyui-linkbutton" data-options="iconCls:'icon-reload'"></a>
             </div>
             <div>
                 <input id = "searchbox" class="easyui-searchbox" style="width: 100%;" data-options="" value="/"/>
@@ -281,6 +317,12 @@
             </table>
         </form>
         <input  type ="button" onclick="javascript:submitConnect();" style="margin-left: 100px; height: 30px; width: 60px;font-size: 16px;" name="connect"  value="连接"></input>
+    </div>
+
+    <div id="w2" class="easyui-window" title="文件上传" data-options="iconCls:'icon-save',minimizable:false" style="width:300px;height:120px;padding:10px;">
+        <form enctype="multipart/form-data" method="post" id = "fileForm">
+            <input name="files" class="easyui-filebox" data-options="buttonText:'选择文件', onChange:toUpload" style="width:250px"/>
+        </form>
     </div>
 </body>
 

@@ -12,7 +12,7 @@ WSSHClient.prototype.connect = function (options) {
         stompClient = Stomp.over(socket);
         var connectionId = options.connectInfo.connectionId;
         stompClient.connect({
-           Authorization: "这是一个随机数"
+           Authorization: "ssh:这是一个随机数"
         },
         function connectCallback(frame) {
            // 连接成功时（服务器响应 CONNECTED 帧）的回调方法
@@ -80,3 +80,58 @@ WSSHClient.prototype.sendClientData = function (connectionId, data) {
 }
 
 var client = new WSSHClient();
+
+function randomString(e) {
+    e = e || 32;
+    var t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678",
+        a = t.length,
+        n = "";
+    for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+    return n
+}
+
+function Map() {
+    var struct = function (key, value) {
+        this.key = key;
+        this.value = value;
+    }
+    var put = function (key, value) {
+        for (var i = 0; i < this.arr.length; i++) {
+            if (this.arr[i].key === key) {
+                this.arr[i].value = value;
+                return;
+            }
+        }
+        this.arr[this.arr.length] = new struct(key, value);
+    }
+    var get = function (key) {
+        for (var i = 0; i < this.arr.length; i++) {
+            if (this.arr[i].key === key) {
+                return this.arr[i].value;
+            }
+        }
+        return null;
+    }
+    var remove = function (key) {
+        var v;
+        for (var i = 0; i < this.arr.length; i++) {
+            v = this.arr.pop();
+            if (v.key === key) {
+                continue;
+            }
+            this.arr.unshift(v);
+        }
+    }
+    var size = function () {
+        return this.arr.length;
+    }
+    var isEmpty = function () {
+        return this.arr.length <= 0;
+    }
+    this.arr = new Array();
+    this.get = get;
+    this.put = put;
+    this.remove = remove;
+    this.size = size;
+    this.isEmpty = isEmpty;
+}

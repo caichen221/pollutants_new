@@ -117,6 +117,7 @@ public class SSHService {
         SSHConnection sshConnection = new SSHConnection();
         sshConnection.setJSch(jSch);
         sshConnection.setConnectionId(connectionId);
+        sshConnection.setLastHeartbeatTime(System.currentTimeMillis());
 //        将这个ssh连接信息放入map中
         sshMap.put(connectionId, sshConnection);
         connectionUserMap.put(connectionId, user.getName());
@@ -153,6 +154,8 @@ public class SSHService {
                     log.error("webssh连接异常", e.getMessage());
                     close(connectionId);
                 }
+            } else {
+                sendMessage(connectionId, "连接已断开");
             }
         } else {
             log.error("不支持的操作");
@@ -323,7 +326,7 @@ public class SSHService {
                     if (StringUtils.equals(filename, ".") || StringUtils.equals(filename, "..")) {
                         continue;
                     }
-                    String path = dir + "/" + filename;
+                    String path = Objects.equals(dir, "/") ? dir + filename : dir + "/" + filename;
                     SftpFile sftpFile = new SftpFile();
                     sftpFile.setName(filename);
                     sftpFile.setPath(path);
@@ -342,6 +345,17 @@ public class SSHService {
                 }
             }
         }
+        Collections.sort(sftpFiles, new Comparator<SftpFile>() {
+            @Override
+            public int compare(SftpFile o1, SftpFile o2) {
+                boolean file1 = o1.isFile();
+                boolean file2 = o2.isFile();
+                if (file1 && !file2) {
+                    return 1;
+                }
+                return -1;
+            }
+        });
         return sftpFiles;
 
     }
