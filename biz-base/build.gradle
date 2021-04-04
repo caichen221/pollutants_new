@@ -78,7 +78,9 @@ dependencies {
     compile group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
 
     //datasong-client-plus
-    compile ("com.iscas.datasong:datasong-client-plus:0.1.6")
+    compile ("com.iscas.datasong:datasong-client-plus:${datasongClientPlusVersion}") {
+        exclude module: 'templet'
+    }
 
     compile "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
 
