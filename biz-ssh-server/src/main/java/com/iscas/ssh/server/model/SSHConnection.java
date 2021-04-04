@@ -2,6 +2,7 @@ package com.iscas.ssh.server.model;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import lombok.Data;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -20,4 +21,5 @@ public class SSHConnection {
     private JSch jSch;
     private Channel channel;
     private long lastHeartbeatTime;
+    private Session session;
 }

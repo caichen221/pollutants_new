@@ -1,28 +1,29 @@
 package com.iscas.ssh.server.service;
 
+import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.common.web.tools.file.FileDownloadUtils;
 import com.iscas.ssh.server.constant.CommonConstants;
 import com.iscas.ssh.server.model.SSHConnection;
+import com.iscas.ssh.server.model.SftpFile;
+import com.iscas.ssh.server.model.UploadProgress;
 import com.iscas.ssh.server.model.WebSSHData;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.iscas.templet.exception.BaseException;
+import com.jcraft.jsch.*;
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -56,6 +57,9 @@ public class SSHService {
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     private SimpUserRegistry userRegistry;
+
+    /**订阅上传进度条地址*/
+    private static final String UPLOAD_PROGRESS_DEST = "/queue/upload/progress";
 
     /**
      * 发送心跳
@@ -193,6 +197,7 @@ public class SSHService {
         //获取jsch的会话
         session = sshConnection.getJSch().getSession(webSSHData.getUsername(), webSSHData.getHost(), webSSHData.getPort());
         session.setConfig(config);
+        sshConnection.setSession(session);
 
         //设置密码
         session.setPassword(webSSHData.getPassword());
@@ -296,6 +301,143 @@ public class SSHService {
         if (sshConnection != null) {
             sshConnection.setLastHeartbeatTime(new Date().getTime());
         }
+    }
+
+
+    public List<SftpFile> listDir(String connectionId, String dir) throws JSchException, BaseException, SftpException {
+        SSHConnection sshConnection = sshMap.get(connectionId);
+        List<SftpFile> sftpFiles = new ArrayList<>();
+        if (sshConnection != null) {
+            Session session = sshConnection.getSession();
+            ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
+            try {
+                sftp.connect(channelTimeout * 1000);
+                if (isFile(sftp, dir)) {
+                    throw new BaseException(String.format("%s是一个文件，不是目录", dir));
+                }
+                Vector ls = sftp.ls(dir);
+                Iterator iterator = ls.iterator();
+                while (iterator.hasNext()) {
+                    ChannelSftp.LsEntry next = (ChannelSftp.LsEntry) iterator.next();
+                    String filename = next.getFilename();
+                    if (StringUtils.equals(filename, ".") || StringUtils.equals(filename, "..")) {
+                        continue;
+                    }
+                    String path = dir + "/" + filename;
+                    SftpFile sftpFile = new SftpFile();
+                    sftpFile.setName(filename);
+                    sftpFile.setPath(path);
+                    if (isFile(sftp, path)) {
+                        sftpFile.setFile(true);
+                        SftpATTRS attrs = next.getAttrs();
+                        sftpFile.setSize(attrs.getSize() / 1024);
+                    } else {
+                        sftpFile.setFile(false);
+                    }
+                    sftpFiles.add(sftpFile);
+                }
+            } finally {
+                if (sftp != null) {
+                    sftp.disconnect();
+                }
+            }
+        }
+        return sftpFiles;
+
+    }
+
+
+
+    /**
+     * 下载文件
+     * */
+    public void download(String connectionId, String path) throws Exception {
+        SSHConnection sshConnection = sshMap.get(connectionId);
+        if (sshConnection != null) {
+            Session session = sshConnection.getSession();
+            ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
+            try {
+                sftp.connect(channelTimeout * 1000);
+                if (!isFile(sftp, path)) {
+                   throw new BaseException(String.format("%s是一个目录，不支持目录下载", path));
+                }
+                String filename = StringUtils.substringAfterLast(path, "/");
+                @Cleanup InputStream is = sftp.get(path);
+                HttpServletRequest request = SpringUtils.getRequest();
+                HttpServletResponse response = SpringUtils.getResponse();
+//                FileDownloadUtils.setResponseHeader(request, response, filename);
+                FileDownloadUtils.downByStream(request, response, is, filename);
+            } finally {
+                if (sftp != null) {
+                    sftp.disconnect();
+                }
+            }
+        } else {
+            throw new BaseException("SSH连接不存在");
+        }
+    }
+
+    /**
+     * 文件上传
+     * */
+    public void upload(String connectionId, MultipartFile[] files, String dest) throws BaseException, JSchException, IOException, SftpException {
+        SSHConnection sshConnection = sshMap.get(connectionId);
+        if (sshConnection != null) {
+            String user = connectionUserMap.get(sshConnection.getConnectionId());
+            if (user == null) {
+                throw new BaseException("websocket连接不存在，无法上传");
+            }
+            Session session = sshConnection.getSession();
+            ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
+            try {
+                sftp.connect(channelTimeout * 1000);
+                int total = files.length;
+                int[] current = new int[1];
+                String id = UUID.randomUUID().toString();
+                copy(sftp, files, dest, current, total, id, user);
+            } finally {
+                if (sftp != null) {
+                    sftp.disconnect();
+                }
+            }
+        } else {
+            throw new BaseException("ssh连接不存在");
+        }
+    }
+
+    private void copy(ChannelSftp sftp, MultipartFile[] files, String dest, int[] current, int total, String id, String user)
+            throws BaseException, IOException, SftpException {
+        try {
+            sftp.cd(dest);
+        } catch (SftpException e) {
+            throw new BaseException(String.format("进入目录服务目录：%s错误", dest), e);
+        }
+        for (MultipartFile file : files) {
+            @Cleanup InputStream is = file.getInputStream();
+            @Cleanup BufferedInputStream bis = new BufferedInputStream(is);
+            sftp.put(bis, file.getOriginalFilename());
+            messagingTemplate.convertAndSendToUser(user, UPLOAD_PROGRESS_DEST,
+                    new UploadProgress(id, total, ++current[0]));
+        }
+
+    }
+
+    /**
+     * 判断远程服务器的路径是否为文件
+     * */
+    private boolean isFile(ChannelSftp sftp, String dir) throws SftpException {
+        boolean isFile = true;
+        Vector ls = sftp.ls(dir);
+        Iterator iterator = ls.iterator();
+        while (iterator.hasNext()) {
+            ChannelSftp.LsEntry next = (ChannelSftp.LsEntry) iterator.next();
+            String filename = next.getFilename();
+            if (Objects.equals(".", filename)) {
+                isFile = false;
+                break;
+            }
+        }
+        return isFile;
     }
 
 }

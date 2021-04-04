@@ -3,20 +3,109 @@
     <meta charset="UTF-8">
     <title>WebSSH</title>
     <link rel="stylesheet" href="../css/xterm.css" />
-    <script src="../js/jquery-3.4.1.min.js"></script>
+    <!--<script src="../js/jquery-3.4.1.min.js"></script>-->
+
     <script src="../js/xterm.js" charset="utf-8"></script>
     <!--<script src="../js/fit.min.js" charset="utf-8"></script>-->
     <script src="../js/stomp.min.js"></script>
     <script src="../js/sockjs.min.js"></script>
+
+    <link href="../easyui/themes/default/easyui.css" rel="stylesheet" />
+    <link href="../easyui/themes/icon.css" rel="stylesheet" />--图片样式
+    <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
+    <script src="../easyui/jquery.min.js"></script>
+    <script src="../easyui/jquery.easyui.min.js"></script>
+    <script src="../easyui/locale/easyui-lang-zh_CN.js"></script>--使用语言
+
     <script src="../js/webssh.js" charset="utf-8"></script>
-
-
+    <style>
+        .icon-upload{
+            background:url('upload.png') no-repeat center center;
+        }
+        .icon-download{
+            background:url('download.png') no-repeat center center;
+        }
+    </style>
     <script>
-    function connect() {
-        var ip = document.getElementById('ip').value;
-        var port = document.getElementById('port').value;
-        var username = document.getElementById('username').value;
-        var pwd = document.getElementById('pwd').value;
+    let terminalIndex = 1;
+    let map = new Map();
+    $(function() {
+        $('#w').window('close');
+        $('#searchbox').searchbox({
+            searcher:function(value,name){
+                var pp = $('#tabs').tabs('getSelected');
+                var title = pp.panel('options').title;
+                var connectionId = map.get(title);
+                if (connectionId != null) {
+                    $.ajax({
+                        url: "http://localhost:7901/demo/ssh/connect/list?connectionId=" + connectionId + "&dir=" + value,
+                        data: null,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            for(var i=0;i<data.length;i++){
+                                let n = data[i].name;
+                                let s = data[i].size;
+                                let f = data[i].file;
+                                let p = data[i].path;
+                                var html = "<tr>" +
+                                    "<td>"+n+"</td>" +
+                                    "<td>"+s+"</td>" +
+                                    "</tr>"
+                                $("#files").append(html);
+                            }
+
+                        }
+                    });
+                }
+            },
+        });
+
+        $('#tabs').tabs({
+            onBeforeClose:function(title){
+                clearFiles();
+            },
+            onUnselect:function(title){
+                clearFiles();
+            },
+            onClose:function(title){
+                clearFiles();
+            }
+        });
+    })
+    function toConnect() {
+        $('#w').window('open');
+    }
+    function submitConnect() {
+        let ip = document.getElementById('ip').value;
+        $('#w').window('close');
+        let terminalId = "terminal" + terminalIndex++;
+        let tabHtml = '<div id="terminal" style="width: 100%;height: 100%;" ></div>';
+        tabHtml = tabHtml.replace("terminal", terminalId)
+        $('#tabs').tabs('add',{
+            title: ip + "-" + terminalIndex,
+            content:tabHtml,
+            closable:true
+        });
+
+        let connectionId = "xxxx";
+        map.put(ip + "-" + terminalIndex, connectionId);
+        connect(terminalId, connectionId);
+
+    }
+
+
+    function clearFiles() {
+        console.log("clear");
+        $("#searchbox").attr("value", "/");
+        $("#files").html("");
+    }
+
+    function connect(terminalId, connectionId) {
+        let ip = document.getElementById('ip').value;
+        let port = document.getElementById('port').value;
+        let username = document.getElementById('username').value;
+        let pwd = document.getElementById('pwd').value;
 
         openTerminal( {
             operate:'connect',
@@ -24,10 +113,9 @@
             port: port,//端口号
             username: username,//用户名
             password: pwd,  //密码
-            connectionId: 'xxxx'
+            connectionId: connectionId,
+            terminalId: terminalId
         });
-        document.getElementById("terminal").style.display = "block";
-        document.getElementById("input").style.display = "none";
 
     }
 
@@ -35,13 +123,14 @@
         var client = new WSSHClient();
         var term = new Terminal({
             cols: 97,
-            rows: 37,
+            rows: 50,
             cursorBlink: true, // 光标闪烁
             cursorStyle: "block", // 光标样式  null | 'block' | 'underline' | 'bar'
             scrollback: 800, //回滚
             tabStopWidth: 8, //制表宽度
             screenKeys: true
         });
+        let terminalId = options.terminalId;
         // term.on('resize', size => {
         //     socket.send('resize', [size.cols, size.rows]);
         // })
@@ -50,7 +139,7 @@
             //键盘输入时的回调函数
             client.sendClientData(options.connectionId, data);
         });
-        term.open(document.getElementById('terminal'));
+        term.open(document.getElementById(terminalId));
         //在页面上显示连接中...
         term.write('Connecting...');
         //执行连接操作
@@ -74,19 +163,143 @@
             }
         });
     }
+
+    function Map() {
+        var struct = function (key, value) {
+            this.key = key;
+            this.value = value;
+        }
+        var put = function (key, value) {
+            for (var i = 0; i < this.arr.length; i++) {
+                if (this.arr[i].key === key) {
+                    this.arr[i].value = value;
+                    return;
+                }
+            }
+            this.arr[this.arr.length] = new struct(key, value);
+        }
+        var get = function (key) {
+            for (var i = 0; i < this.arr.length; i++) {
+                if (this.arr[i].key === key) {
+                    return this.arr[i].value;
+                }
+            }
+            return null;
+        }
+        var remove = function (key) {
+            var v;
+            for (var i = 0; i < this.arr.length; i++) {
+                v = this.arr.pop();
+                if (v.key === key) {
+                    continue;
+                }
+                this.arr.unshift(v);
+            }
+        }
+        var size = function () {
+            return this.arr.length;
+        }
+        var isEmpty = function () {
+            return this.arr.length <= 0;
+        }
+        this.arr = new Array();
+        this.get = get;
+        this.put = put;
+        this.remove = remove;
+        this.size = size;
+        this.isEmpty = isEmpty;
+    }
     </script>
 
 </head>
-<body>
-<div id="terminal" style="width: 100%;height: 100%; display: none;" ></div>
 
-<div id = "input" style="display:block;">
-    IP：<input id = "ip" value="localhost"/><br/>
-    端口：<input id="port" value="22"/><br/>
-    用户名：<input id="username" value="root"/><br/>
-    密码：<input id="pwd" value=""/><br/>
-    <input type="submit" value="连接" onclick="connect();"/>
-</div>
+<body class="easyui-layout">
 
+    <div data-options="region:'north',title:'SSH远程连接工具',split:true" style="height:75px;" collapsible = "false" border="false" split = "false">
+
+        <div class="easyui-panel" style="padding:5px;width: 100%;">
+            <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="menu:'#mm1',iconCls:'icon-add'">新建连接</a>
+        </div>
+
+
+    </div>
+
+<!--        <div data-options="region:'south',title:'South Title',split:true" style="height:100px;"></div>-->
+
+<!--        <div data-options="region:'east',iconCls:'icon-reload',title:'East',split:true" style="width:100px;"></div>-->
+
+        <div data-options="region:'west',title:'',split:true" style="width:250px;">
+            <div class="easyui-panel" style="padding-left:5px;width: 100%;">
+                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-back'"></a>
+                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-upload'"></a>
+                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-download'"></a>
+                <a href="javascript:toConnect();" class="easyui-linkbutton" data-options="iconCls:'icon-reload'"></a>
+            </div>
+            <div>
+                <input id = "searchbox" class="easyui-searchbox" style="width: 100%;" data-options="" value="/"/>
+<!--                <input id = "searchbox"  style="width: 100%;" value="/"/>-->
+            </div>
+            <div style="padding-top: 10px;">
+                <table id = "files" border="0">
+                    <tr>
+
+                    </tr>
+                </table>
+            </div>
+            <!--<div class="easyui-panel" style="padding:5px;width: 100%;">
+                <input class="easyui-searchbox" data-options="prompt:'服务器的路径',searcher:doSearch" style="width:100%;height: 30px;"></input>
+            </div>-->
+        </div>
+
+        <div data-options="region:'center',title:''" style="padding:0px;background:#000000;">
+
+            <div id="tabs" class="easyui-tabs" style="width:100%;height:100%;">
+
+            </div>
+        </div>
+
+    <div id="w" class="easyui-window" title="新建连接" data-options="iconCls:'icon-save',minimizable:false,tools:'#tt'" style="width:300px;height:300px;padding:10px;">
+        <form id="ff" method="post">
+            <table cellpadding="5">
+                <tr>
+                    <td>Ip:</td>
+                    <td><input id = "ip" class="easyui-textbox" type="text" name="ip" data-options="required:true" value="192.168.100.97"></input></td>
+                </tr>
+                <tr>
+                    <td>端口:</td>
+                    <td><input id="port" class="easyui-textbox" type="text" name="port" data-options="required:true" value="22"></input></td>
+                </tr>
+                <tr>
+                    <td>用户名:</td>
+                    <td><input id="username" class="easyui-textbox" type="text" name="username" data-options="required:true" value="root"></input></td>
+                </tr>
+                <tr>
+                    <td>密码:</td>
+                    <td><input id="pwd" class="easyui-passwordbox" name="password" data-options="required:true" value="root"></input></td>
+                </tr>
+
+            </table>
+        </form>
+        <input  type ="button" onclick="javascript:submitConnect();" style="margin-left: 100px; height: 30px; width: 60px;font-size: 16px;" name="connect"  value="连接"></input>
+    </div>
 </body>
+
+<!--<body>-->
+
+<!--<div class="div_admin_left">-->
+
+<!--</div>-->
+<!--<div class="div_admin_right">-->
+<!--    <div id="terminal" style="width: 100%;height: 100%; display: none;" ></div>-->
+
+<!--    <div id = "input" style="display:block;">-->
+<!--        IP：<input id = "ip" value="localhost"/><br/>-->
+<!--        端口：<input id="port" value="22"/><br/>-->
+<!--        用户名：<input id="username" value="root"/><br/>-->
+<!--        密码：<input id="pwd" value=""/><br/>-->
+<!--        <input type="submit" value="连接" onclick="connect();"/>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
 </html>
