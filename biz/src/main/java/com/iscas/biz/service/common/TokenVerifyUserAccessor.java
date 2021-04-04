@@ -34,23 +34,31 @@ public class TokenVerifyUserAccessor implements UserAccessor {
             if (name instanceof List) {
                 // 设置当前访问器的认证用户
                 String token = ((List) name).get(0).toString();
-                String username = null;
-                try {
-                    Map<String, Claim> claimMap = JWTUtils.verifyToken(token);
-                    username = claimMap.get("username").asString();
-                    if (username == null) {
-                        throw new RuntimeException("websocket认证失败");
+                //todo 暂时先这样通过前缀判断是否为ssh的websocket//todo 暂时先这样通过前缀判断是否为ssh的websocket
+                if (token != null && token.startsWith("ssh:")) {
+                    User user = new User();
+                    user.setUsername(token);
+                    accessor.setUser(user);
+                } else {
+                    String username = null;
+                    try {
+                        Map<String, Claim> claimMap = JWTUtils.verifyToken(token);
+                        username = claimMap.get("username").asString();
+                        if (username == null) {
+                            throw new RuntimeException("websocket认证失败");
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("websocket认证失败", e);
+                    } catch (ValidTokenException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("websocket认证失败", e);
                     }
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("websocket认证失败", e);
-                } catch (ValidTokenException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("websocket认证失败", e);
+                    User user = new User();
+                    user.setUsername(username);
+                    accessor.setUser(user);
                 }
-                User user = new User();
-                user.setUsername(username);
-                accessor.setUser(user);
+
             }
         }
     }
