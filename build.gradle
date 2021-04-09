@@ -37,7 +37,7 @@ subprojects  {
     group = 'com.iscas'
     //版本号定义规则：开发中： <版本号(x.x.x)>-<当天日期>-<当天更新的小序号>
     //发布版本：x.x.x-RELEASE
-    version = '1.0.2-RELEASE'
+    version = '1.0.3-20210408-1'
     sourceCompatibility = "${javaVersion}".toFloat()
     targetCompatibility = "${javaVersion}".toFloat()
 
@@ -110,9 +110,9 @@ subprojects  {
             maven {
 
                 if (project.version.endsWith('-SNAPSHOT')) {
-                    url = "http://192.168.100.97:8081/repository/maven-snapshots/"
+                    url = "http://172.16.10.190:8081/repository/maven-snapshots/"
                 } else {
-                    url = "http://192.168.100.97:8081/repository/maven-releases/"
+                    url = "http://172.16.10.190:8081/repository/maven-releases/"
                 }
 
                 credentials {
