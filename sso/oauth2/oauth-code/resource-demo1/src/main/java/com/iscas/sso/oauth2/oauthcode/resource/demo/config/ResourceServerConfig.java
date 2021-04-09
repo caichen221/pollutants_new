@@ -61,9 +61,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/admin2/**").hasRole("AAA")//对admin2下的接口 需要AAA权限
                 .antMatchers("/oauth/**").permitAll()//不拦截 oauth 开放的资源
                 .antMatchers("/admin3/**").permitAll()//不拦截 admin3 开放的资源
-                .anyRequest().access("#oauth2.hasScope('all')")
+                .antMatchers("/admin4/**").authenticated()//admin4必须经过认证
+                .anyRequest().access("#oauth2.hasScope('all')");
+
         ;
-
-
     }
 }

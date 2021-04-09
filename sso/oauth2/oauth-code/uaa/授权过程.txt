@@ -1,3 +1,4 @@
+一、授权码模式：
 1、获取授权码
 http://localhost:8654/uaa/oauth/authorize?client_id=client&response_type=code&scope=all&redirect_uri=http://www.baidu.com
 提示未登陆
@@ -22,5 +23,26 @@ http://localhost:8654/uaa/oauth/token?client_id=client&client_secret=123456&redi
 }
 
 5、访问资源服务时使用access_token
-    在header中携带Authorization : beaber xxx
+    在header中携带Authorization : bearer xxx
     xxx是access_token
+
+二、客户端模式
+1、获取授权码
+POST请求
+http://localhost:8654/uaa/oauth/token?grant_type=client_credentials&scope=all&client_id=client&client_secret=123456
+2、访问资源服务时使用access_token
+    在header中携带Authorization : bearer xxx
+    xxx是access_token
+
+三、密码模式
+1、获取授权码
+POST请求
+http://localhost:8654/uaa/oauth/token?username=admin&password=admin&grant_type=password&scope=all&client_id=client&client_secret=123456
+2、访问资源服务时使用access_token
+    在header中携带Authorization : bearer xxx
+    xxx是access_token
+
+四、刷新授权码
+1、刷新授权码
+POST请求
+http://localhost:8654/uaa/oauth/token?grant_type=refresh_token&refresh_token=2ee4a4cd-8d3c-4b79-bbf0-a6b46956b0b4&client_id=client&client_secret=123456
