@@ -9,6 +9,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 
 /**
@@ -24,22 +27,37 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     public static final String RESOURCE_ID = "resource1";
+    private final static String SIGNING_KEY = "iscas";
 
 
     //令牌解析服务
+//    @Bean
+//    public ResourceServerTokenServices tokenServices() {
+//        RemoteTokenServices tokenServices = new RemoteTokenServices();
+//        tokenServices.setCheckTokenEndpointUrl("http://localhost:8654/uaa/oauth/check_token");
+//        tokenServices.setClientId("client");
+//        tokenServices.setClientSecret("123456");
+//        return tokenServices;
+//    }
+
     @Bean
-    public ResourceServerTokenServices tokenServices() {
-        RemoteTokenServices tokenServices = new RemoteTokenServices();
-        tokenServices.setCheckTokenEndpointUrl("http://localhost:8654/uaa/oauth/check_token");
-        tokenServices.setClientId("client");
-        tokenServices.setClientSecret("123456");
-        return tokenServices;
+    public JwtAccessTokenConverter accessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+
+        converter.setSigningKey(SIGNING_KEY);
+        return converter;
+    }
+
+    @Bean
+    public TokenStore tokenStore() {
+        return new JwtTokenStore(accessTokenConverter());
     }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.resourceId(RESOURCE_ID)
-                .tokenServices(tokenServices()) //验证令牌的服务
+//                .tokenServices(tokenServices()) //验证令牌的服务，如果使用tokenService就不用下面的tokenStore了
+                .tokenStore(tokenStore()) //将上面的验证令牌方式去掉，配置这个tokenStore()，就不用远程校验了
                 .stateless(true);
     }
 

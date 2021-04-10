@@ -15,12 +15,13 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 /**
  *
@@ -47,11 +48,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
 
+    private final static String SIGNING_KEY = "iscas";
 
+    //使用数据库存储令牌
+    //    @Bean
+    //    public TokenStore tokenStore() {
+    ////        return new InMemoryTokenStore(); //使用内存中的 token store
+    //        return new JdbcTokenStore(dataSource); ///使用Jdbctoken store
+    //    }
+
+    //将数据库存储令牌方式改为JWT-2021-04-10
     @Bean
     public TokenStore tokenStore() {
-//        return new InMemoryTokenStore(); //使用内存中的 token store
-        return new JdbcTokenStore(dataSource); ///使用Jdbctoken store
+        return new JwtTokenStore(accessTokenConverter());
     }
 
     @Bean
@@ -60,10 +69,22 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         tokenServices.setClientDetailsService(clientDetailsService);
         tokenServices.setSupportRefreshToken(true); //是否刷新令牌
         tokenServices.setTokenStore(tokenStore());
-        tokenServices.setTokenStore(tokenStore());
+
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter()));
+        tokenServices.setTokenEnhancer(tokenEnhancerChain);
+
         tokenServices.setAccessTokenValiditySeconds(7200);
         tokenServices.setRefreshTokenValiditySeconds(259200);
         return tokenServices;
+    }
+
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+
+        converter.setSigningKey(SIGNING_KEY);
+        return converter;
     }
 
     @Bean
