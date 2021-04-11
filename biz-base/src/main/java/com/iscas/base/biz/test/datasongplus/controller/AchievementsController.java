@@ -1,5 +1,6 @@
 package com.iscas.base.biz.test.datasongplus.controller;
 
+import com.iscas.base.biz.config.datasongplus.ConditionalDatasongPlus;
 import com.iscas.base.biz.test.datasongplus.domain.Achievements;
 import com.iscas.base.biz.test.datasongplus.service.AchievementsService;
 import com.iscas.templet.common.BaseController;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/test/achievenments")
+@ConditionalDatasongPlus
 //@Api(tags = "测试使用datasong-client-plus")
 public class AchievementsController extends BaseController {
     @Autowired

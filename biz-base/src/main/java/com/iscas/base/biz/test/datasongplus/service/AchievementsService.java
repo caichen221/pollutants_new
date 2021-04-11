@@ -1,5 +1,6 @@
 package com.iscas.base.biz.test.datasongplus.service;
 
+import com.iscas.base.biz.config.datasongplus.ConditionalDatasongPlus;
 import com.iscas.base.biz.test.datasongplus.domain.Achievements;
 import com.iscas.base.biz.test.datasongplus.repository.AchievementsRepository;
 import com.iscas.datasong.client.plus.model.Page;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @Service
+@ConditionalDatasongPlus
 public class AchievementsService {
     @Autowired
     AchievementsRepository achievementsRepository;

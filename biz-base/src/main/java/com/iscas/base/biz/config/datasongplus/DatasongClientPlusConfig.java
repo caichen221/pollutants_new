@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
 
 /**
  *
@@ -21,19 +24,22 @@ import org.springframework.context.annotation.Bean;
  * @since jdk1.8
  */
 @Slf4j
+@Lazy(value = false)
 //@Configuration
 @EnableConfigurationProperties(DatasongPlusProps.class)
 //@ConditionalOnClass(DatasongPlusProps.class)
 @ConditionalOnProperty(prefix = "datasong.client.plus",matchIfMissing = true,value = "enabled")
-public class DatasongClientPlusConfig {
-    @Value("${Global.DbServer}")
-    private String dbServer;
-    @Value("${Global.DbName}")
-    private String dbName;
-    @Value("${datasong.client.plus.repository.packages}")
-    private String[] packages;
-    @Autowired
-    private DatasongPlusProps datasongPlusProps;
+public class DatasongClientPlusConfig implements EnvironmentAware {
+    private Environment environment;
+
+//    @Value("${Global.DbServer}")
+//    private String dbServer;
+//    @Value("${Global.DbName}")
+//    private String dbName;
+//    @Value("${datasong.client.plus.repository.packages}")
+//    private String[] packages;
+//    @Autowired
+//    private DatasongPlusProps datasongPlusProps;
 
     //todo 旧的配置方式
 //    @Bean
@@ -62,7 +68,9 @@ public class DatasongClientPlusConfig {
     public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(){
         log.info("------------配置datasong-client-plus----------------");
 
-        String dbName = this.dbName;
+        String dbName = environment.getProperty("datasong.client.plus.dbname");
+        String dbServer = environment.getProperty("datasong.client.plus.dbserver");
+        String packages = environment.getProperty("datasong.client.plus.repository.packages");
         String ip = "172.16.10.180";
         String port = "15680";
         String s = StringUtils.substringAfter(dbServer, "http://");
@@ -74,8 +82,13 @@ public class DatasongClientPlusConfig {
         detProps.setIp(ip);
         detProps.setPort(port);
         detProps.setProxyType(DetProps.ProxyType.CGLIB);
-        detProps.setRepositoryPackages(packages);
+        detProps.setRepositoryPackages(packages.split(","));
         log.info("------------配置datasong-client-plus结束----------------");
         return new MyBeanDefinitionRegistryPostProcessor(detProps);
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 }
