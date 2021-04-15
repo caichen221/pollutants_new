@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.MybatisGeneralUtils;
 import org.apache.ibatis.session.ResultContext;
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/t/batch")
+@ConditionalOnMybatis
 public class TestBatchController {
 
     @Autowired

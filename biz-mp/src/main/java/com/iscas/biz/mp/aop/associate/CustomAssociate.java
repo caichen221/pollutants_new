@@ -12,6 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
+@Deprecated
 public @interface CustomAssociate {
     /**表1的名称(别名)*/
     String table1();

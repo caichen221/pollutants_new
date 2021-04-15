@@ -2,6 +2,7 @@ package com.iscas.biz.mp.test.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.mapper.TestMapper;
 import com.iscas.biz.mp.test.model.Test;
 import com.iscas.templet.common.BaseController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/testPage")
+@ConditionalOnMybatis
 public class TestController extends BaseController {
     @Autowired
     private TestMapper testMapper;

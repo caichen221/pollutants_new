@@ -2,6 +2,7 @@ package com.iscas.biz.mp.table.service;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.mapper.TableDefinitionMapper;
 import com.iscas.biz.mp.table.model.ColumnDefinition;
 import com.iscas.biz.mp.table.model.TableDefinition;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@ConditionalOnMybatis
 public class TableDefinitionService {
 //	@Value("${iscas.table.table-definition-table}")
 //	private String tableDefinitionConfig.getTableDefinitionTableName();

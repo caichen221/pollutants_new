@@ -2,6 +2,7 @@ package com.iscas.biz.mp.table.controller;
 
 
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/table")
 //@Api(description = "表格控制器")
+@ConditionalOnMybatis
 public class TableDefinitionController extends BaseController {
     @Autowired
 	private TableDefinitionService tableDefinitionService;

@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @RestController
+@ConditionalOnMybatis
 public class TestSearchLargeData {
 
     @Autowired

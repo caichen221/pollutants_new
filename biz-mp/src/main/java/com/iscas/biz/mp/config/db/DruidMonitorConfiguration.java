@@ -2,6 +2,7 @@ package com.iscas.biz.mp.config.db;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * @since jdk1.8
  */
 //@Configuration
+@ConditionalOnMybatis
 public class DruidMonitorConfiguration {
     /**
      * 注册一个StatViewServlet

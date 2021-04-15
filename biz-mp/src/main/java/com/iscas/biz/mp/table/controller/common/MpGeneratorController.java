@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.table.controller.common;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.service.common.MpGenerator;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/mp")
+@ConditionalOnMybatis
 public class MpGeneratorController extends BaseController {
     @Autowired
     private MpGenerator mpGenerator;

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class MpGenerator {
     @Value("${spring.datasource.druid.url}")
     private String dbUrl;

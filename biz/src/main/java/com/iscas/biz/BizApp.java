@@ -4,6 +4,7 @@ import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
+import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
@@ -46,6 +47,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableDatasongClientPlus //是否开启Datasongclient客户端，如果关闭请把biz-base模块下com.iscas.base.biz.test.datasongplus下所有内容注释或删掉
 //@EnableSocketio //是否开启Socketio的支持
 //@EnableElasticJob(withDatasource = true)
+//@EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

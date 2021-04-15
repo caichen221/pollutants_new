@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -47,7 +48,8 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 @Slf4j
-@Configuration
+//@Configuration
+@ConditionalOnMybatis
 public class DruidConfiguration implements EnvironmentAware {
 
     @Value("${mybatis-plus.global-config.db-config.id-type}")

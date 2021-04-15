@@ -1,6 +1,7 @@
 package com.iscas.biz.schedule;
 
 import com.iscas.biz.mapper.common.WsDataMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.convert.DurationUnit;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Component("ClearWsDataTask")
 @Lazy(value = false)
 @Slf4j
+@ConditionalOnMybatis
 public class ClearWsDataTask {
 
     @DurationUnit(ChronoUnit.HOURS)

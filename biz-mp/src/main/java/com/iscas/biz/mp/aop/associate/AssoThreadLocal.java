@@ -7,6 +7,7 @@ package com.iscas.biz.mp.aop.associate;
  * @date 2018/9/4 14:53
  * @since jdk1.8
  */
+@Deprecated
 public class AssoThreadLocal {
     private AssoThreadLocal() {
 

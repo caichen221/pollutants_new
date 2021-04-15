@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.test.controller;
 
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.service.impl.MapResultService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * */
 @RestController
 @RequestMapping("/map")
+@ConditionalOnMybatis
 public class MapResultDemoController extends BaseController {
     @Autowired
     private MapResultService mapResultService;

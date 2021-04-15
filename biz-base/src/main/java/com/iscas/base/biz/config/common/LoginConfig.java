@@ -12,11 +12,11 @@ import org.springframework.core.Ordered;
 
 @Slf4j
 public class LoginConfig /*extends AdviceModeImportSelector<EnableAuth>*/ {
-    @Autowired
+    @Autowired(required = false)
     private AbstractAuthService authService;
 
     @Bean
-    public LoginFilter loginFilter(AbstractAuthService authService) throws Exception {
+    public LoginFilter loginFilter(@Autowired(required = false) AbstractAuthService authService) throws Exception {
         return new LoginFilter(authService);
     }
 

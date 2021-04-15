@@ -7,6 +7,7 @@ import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mapper.common.UserRoleMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.BaseRuntimeException;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @StartedFilterComponent(order = 1)
 @Slf4j
+@ConditionalOnMybatis
 public class InitUserRoleFilter extends AbstractStartedFilter {
 
     @Override

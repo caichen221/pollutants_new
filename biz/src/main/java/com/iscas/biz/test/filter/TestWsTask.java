@@ -1,5 +1,6 @@
 package com.iscas.biz.test.filter;
 
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
@@ -16,11 +17,19 @@ import java.util.UUID;
 @Slf4j
 public class TestWsTask {
     private final WsService wsService;
-    private final WsDataMapper wsDataMapper;
+//    private final WsDataMapper wsDataMapper;
 
-    public TestWsTask(WsService wsService, WsDataMapper wsDataMapper) {
+    private WsDataMapper getWsDataMapper() {
+        try {
+            return SpringService.getBean(WsDataMapper.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public TestWsTask(WsService wsService/*, WsDataMapper wsDataMapper*/) {
         this.wsService = wsService;
-        this.wsDataMapper = wsDataMapper;
+//        this.wsDataMapper = wsDataMapper;
     }
 
     /**
@@ -39,13 +48,21 @@ public class TestWsTask {
         //
         WsDataExample wsDataExample = new WsDataExample();
         wsDataExample.createCriteria().andAckEqualTo(false);
-        long l = wsDataMapper.countByExample(wsDataExample);
-        if (l < 200) {
+        if (getWsDataMapper() != null) {
+            long l = getWsDataMapper().countByExample(wsDataExample);
+            if (l < 200) {
+                //如果库里有一些未回复的数据，就不再生成了，防止库爆了
+                WsData wsData3 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS,
+                        "admin", true, "测试点对点数据，持久化" + System.currentTimeMillis());
+                wsService.p2p(wsData3);
+            }
+        } else {
             //如果库里有一些未回复的数据，就不再生成了，防止库爆了
             WsData wsData3 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS,
                     "admin", true, "测试点对点数据，持久化" + System.currentTimeMillis());
             wsService.p2p(wsData3);
         }
+
 
     }
 }

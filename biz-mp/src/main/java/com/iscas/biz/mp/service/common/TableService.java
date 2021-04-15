@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.service.common;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.TableMapMapper;
 import com.iscas.biz.mp.model.DynamicSql;
 import com.iscas.templet.exception.ValidDataException;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional(rollbackFor = Throwable.class)
+@ConditionalOnMybatis
 public class TableService extends BaseTableService {
     @Autowired
     private TableMapMapper tableMapMapper;

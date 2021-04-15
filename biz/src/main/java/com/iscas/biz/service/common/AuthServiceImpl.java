@@ -14,6 +14,7 @@ import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
 import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mapper.common.UserMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.common.tools.core.security.AesUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
  */
 @Service()
 @Slf4j
+@ConditionalOnMybatis
 public class AuthServiceImpl extends AbstractAuthService {
     private final IAuthCacheService authCacheService;
     private final ResourceMapper resourceMapper;

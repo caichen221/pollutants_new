@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.test.controller;
 
 import com.iscas.biz.mp.aop.associate.*;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.service.common.TableAssoService;
 import com.iscas.biz.mp.service.common.TableService;
 import com.iscas.templet.common.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/asso")
+@ConditionalOnMybatis
 public class TestCustomAssociateController {
     @Autowired
     private TableAssoService tableAssoService;

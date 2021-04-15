@@ -2,6 +2,7 @@ package com.iscas.biz.mp.test.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.mapper.ParentMapper;
 import com.iscas.biz.mp.test.model.Parent;
 import com.iscas.biz.mp.test.service.IParentService;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class ParentServiceImpl implements IParentService {
     @Autowired
     private ParentMapper parentMapper;

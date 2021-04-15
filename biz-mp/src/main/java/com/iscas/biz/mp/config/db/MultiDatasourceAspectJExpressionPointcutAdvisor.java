@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.config.db;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +25,9 @@ import java.util.Arrays;
  * @since jdk1.8
  * 多数据源切换的切面
  */
-@Configuration
+//@Configuration
 @Slf4j
+@ConditionalOnMybatis
 public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefinitionRegistryPostProcessor, EnvironmentAware, Ordered {
 
     private Environment env;

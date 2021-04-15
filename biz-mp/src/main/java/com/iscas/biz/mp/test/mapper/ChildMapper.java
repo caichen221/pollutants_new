@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.test.mapper;
 
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.model.Child;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;

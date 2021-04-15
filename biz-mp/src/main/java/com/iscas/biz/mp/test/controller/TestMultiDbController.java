@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.model.TestEntity;
 import com.iscas.biz.mp.test.service.mysql1.TestService1;
 import com.iscas.biz.mp.test.service.mysql2.TestService2;
@@ -18,6 +19,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @RestController
+@ConditionalOnMybatis
 public class TestMultiDbController {
     @Autowired
     private TestService1 testService1;

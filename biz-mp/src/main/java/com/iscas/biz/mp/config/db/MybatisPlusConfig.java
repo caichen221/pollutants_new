@@ -3,13 +3,16 @@ package com.iscas.biz.mp.config.db;
 
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-@Configuration
+@ConditionalOnMybatis
+//@Configuration
+
 //@MapperScan({"com.iscas.biz.test.mapper*","com.iscas.base.mp.table.mapper*",
 //        "com.iscas.base.mp.test.mapper*","com.iscas.biz.mp.mapper*"})//这个注解，作用相当于下面的@Bean MapperScannerConfigurer，2者配置1份即可
 public  class MybatisPlusConfig implements EnvironmentAware {

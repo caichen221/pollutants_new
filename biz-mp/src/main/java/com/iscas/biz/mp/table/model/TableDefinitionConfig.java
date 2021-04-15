@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.table.model;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Data
+@ConditionalOnMybatis
 public class TableDefinitionConfig {
 	@Value("${iscas.table.table-definition-table}")
 	private String tableDefinitionTableName;

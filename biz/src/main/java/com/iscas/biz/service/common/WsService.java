@@ -1,5 +1,6 @@
 package com.iscas.biz.service.common;
 
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
@@ -23,14 +24,21 @@ import java.util.List;
 @Service
 @Slf4j
 public class WsService {
+    private WsDataMapper getWsDataMapper() {
+        try {
+            return SpringService.getBean(WsDataMapper.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    private final WsDataMapper wsDataMapper;
+//    private final WsDataMapper wsDataMapper;
 
-    public WsService(SimpMessagingTemplate messagingTemplate, WsDataMapper wsDataMapper) {
+    public WsService(SimpMessagingTemplate messagingTemplate/*, WsDataMapper wsDataMapper*/) {
         this.messagingTemplate = messagingTemplate;
-        this.wsDataMapper = wsDataMapper;
+//        this.wsDataMapper = wsDataMapper;
     }
 
     /**
@@ -49,7 +57,7 @@ public class WsService {
      * */
     public void p2p(WsData wsData) {
         //如果需要持久化，存储
-        if (wsData.isPersistent()) {
+        if (wsData.isPersistent() && getWsDataMapper() != null) {
             storeToDb(wsData);
         }
         messagingTemplate.convertAndSendToUser(wsData.getUserIdentity(), wsData.getDestination(), wsData);
@@ -58,25 +66,28 @@ public class WsService {
 //    @Async("wsExecutor")
     public void storeToDb(WsData wsData) {
         com.iscas.biz.domain.common.WsData dbWsData = com.iscas.biz.domain.common.WsData.convert(wsData);
-        wsDataMapper.insert(dbWsData);
+        getWsDataMapper().insert(dbWsData);
     }
 
     public void retry(Integer id) {
-        com.iscas.biz.domain.common.WsData wsData = wsDataMapper.selectByPrimaryKey(id);
+        com.iscas.biz.domain.common.WsData wsData = getWsDataMapper().selectByPrimaryKey(id);
         WsData wsData1 = com.iscas.biz.domain.common.WsData.convert(wsData);
         p2p(wsData1);
     }
 
     @Async("wsExecutor")
     public void ack(String msgId) {
+        if (getWsDataMapper() == null) {
+            return;
+        }
         WsDataExample dataExample = new WsDataExample();
         dataExample.createCriteria().andMsgIdEqualTo(msgId);
-        List<com.iscas.biz.domain.common.WsData> wsDatas = wsDataMapper.selectByExample(dataExample);
+        List<com.iscas.biz.domain.common.WsData> wsDatas = getWsDataMapper().selectByExample(dataExample);
         if (wsDatas != null) {
             for (com.iscas.biz.domain.common.WsData wsData : wsDatas) {
                 wsData.setAck(true);
                 try {
-                    wsDataMapper.updateByPrimaryKey(wsData);
+                    getWsDataMapper().updateByPrimaryKey(wsData);
                 } catch (Exception e) {
                     log.warn("消息:{}不存在", msgId);
 //                    e.printStackTrace();

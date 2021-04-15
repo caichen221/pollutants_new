@@ -7,6 +7,7 @@ package com.iscas.biz.mp.aop.associate;
  * @date 2018/9/4 11:04
  * @since jdk1.8
  */
+@Deprecated
 public enum CustomAssociateType {
     /**左连*/
     LEFT,

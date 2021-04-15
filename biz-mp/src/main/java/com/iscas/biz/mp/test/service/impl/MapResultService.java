@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.service.impl;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.mapper.MapResultMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @Modified:
  **/
 @Service
+@ConditionalOnMybatis
 public class MapResultService {
     @Autowired
     private MapResultMapper mapResultMapper;

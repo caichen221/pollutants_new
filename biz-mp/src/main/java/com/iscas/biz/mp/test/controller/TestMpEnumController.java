@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.mapper.TestEntityMapper;
 import com.iscas.biz.mp.test.model.TestEntity;
 import com.iscas.templet.common.BaseController;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/testEntity")
+@ConditionalOnMybatis
 public class TestMpEnumController extends BaseController {
     @Autowired
     private TestEntityMapper testEntityMapper;

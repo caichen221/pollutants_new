@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.service.mysql2;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class TestService2 {
     @Autowired
     private DynamicMapper dynamicMapper;

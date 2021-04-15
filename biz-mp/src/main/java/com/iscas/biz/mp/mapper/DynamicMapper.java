@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.ResultHandler;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @Repository
+@ConditionalOnMybatis
 public interface DynamicMapper<T> extends BaseMapper {
 
     @Select("${sql}" )

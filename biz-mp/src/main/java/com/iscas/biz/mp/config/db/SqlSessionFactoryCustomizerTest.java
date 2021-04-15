@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.config.db;
 
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  * @since jdk1.8
  */
 @Component
+@ConditionalOnMybatis
 public class SqlSessionFactoryCustomizerTest implements SqlSessionFactoryCustomizer {
     @Override
     public void customize(Configuration configuration, FactoryBean sessionFactory) {

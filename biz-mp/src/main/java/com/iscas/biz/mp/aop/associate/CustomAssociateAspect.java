@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
+@Deprecated
 public class CustomAssociateAspect {
 
     @Before("@annotation(associates)")

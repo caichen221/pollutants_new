@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.model.Parent;
 import com.iscas.biz.mp.test.service.IParentService;
 import com.iscas.templet.common.BaseController;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/parent")
+@ConditionalOnMybatis
 public class ParentDemoController extends BaseController {
     @Autowired
     private IParentService parentService;

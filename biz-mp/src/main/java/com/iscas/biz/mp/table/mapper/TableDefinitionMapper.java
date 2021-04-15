@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.table.mapper;
 
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.model.ColumnDefinition;
 import com.iscas.biz.mp.table.model.TableDefinition;
 import org.apache.ibatis.annotations.*;
@@ -14,6 +15,7 @@ import java.util.Map;
  */
 @Mapper
 @Repository
+@ConditionalOnMybatis
 public interface TableDefinitionMapper {
 	@Select("SELECT * FROM ${tableDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} LIMIT 0,1 ")
 	TableDefinition getTableByIdentify(@Param("tableDefinitionTableName") String tableDefinitionTableName, @Param("tableIdentity") String tableIdentity);

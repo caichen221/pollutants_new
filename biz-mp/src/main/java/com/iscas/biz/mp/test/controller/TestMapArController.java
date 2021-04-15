@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.test.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.test.model.TestMpAr;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @RequestMapping("/test/mp/ar")
 @RestController
+@ConditionalOnMybatis
 public class TestMapArController extends BaseController {
 
     @PostMapping("/insert")

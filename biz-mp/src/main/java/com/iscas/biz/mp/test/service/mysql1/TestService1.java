@@ -2,6 +2,7 @@ package com.iscas.biz.mp.test.service.mysql1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestEntityMapper;
 import com.iscas.biz.mp.test.model.TestEntity;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class TestService1 {
     @Autowired
     private DynamicMapper dynamicMapper;

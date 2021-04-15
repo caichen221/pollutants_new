@@ -10,6 +10,7 @@ import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.domain.common.LogInfo;
 import com.iscas.biz.domain.common.Param;
 import com.iscas.biz.mapper.common.LogInfoMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.LogInfoService;
 import com.iscas.biz.service.common.ParamService;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
@@ -27,6 +28,7 @@ import java.util.Optional;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> implements LogInfoService {
     @Autowired
     private CronTaskRegister cronTaskRegister;

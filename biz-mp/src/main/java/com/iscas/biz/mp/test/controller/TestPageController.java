@@ -3,6 +3,7 @@ package com.iscas.biz.mp.test.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestDataMapper;
 import com.iscas.biz.mp.test.model.TestData;
@@ -29,6 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RestController
 @RequestMapping("/test/page")
 @Slf4j
+@ConditionalOnMybatis
 public class TestPageController {
     @Autowired
     private TestDataMapper testDataMapper;
