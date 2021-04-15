@@ -14,14 +14,16 @@ import java.util.Optional;
  * @since jdk1.8
  */
 public class CacheUtils {
-    public static final CacheManager cacheManager = SpringService.getBean(CacheManager.class);
 
+    public static CacheManager getCacheManager() {
+        return SpringService.getBean(CacheManager.class);
+    }
 
     /**
      * 清理缓存
      */
     public static void evictCache(String cacheName) {
-        Cache cache = cacheManager.getCache(cacheName);
+        Cache cache = getCacheManager().getCache(cacheName);
         Optional.ofNullable(cache).ifPresent(Cache::invalidate);
     }
 
@@ -29,7 +31,7 @@ public class CacheUtils {
      * 根据cacheKeys清理缓存
      */
     public static void evictCache(String cacheName, Collection cacheKeys) {
-        Cache cache = cacheManager.getCache(cacheName);
+        Cache cache = getCacheManager().getCache(cacheName);
         Optional.ofNullable(cache).ifPresent(a -> Optional.ofNullable(cacheKeys).ifPresent(keys -> keys.stream().forEach(cache::evict)));
     }
 
@@ -37,7 +39,7 @@ public class CacheUtils {
      * 缓存存在时，加入缓存
      */
     public static void putCache(String cacheName, Object key, Object value) {
-        Cache cache = cacheManager.getCache(cacheName);
+        Cache cache = getCacheManager().getCache(cacheName);
         Optional.ofNullable(cache).ifPresent(c -> c.put(key, value));
     }
 

@@ -1,6 +1,4 @@
 package com.iscas.common.tools.csv;
-import java.util.LinkedHashMap;
-import com.google.common.collect.Lists;
 
 import cn.hutool.core.text.csv.*;
 import lombok.Cleanup;
@@ -9,9 +7,6 @@ import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -125,7 +120,8 @@ public class CsvUtils {
                             //如果是Java对象，利用反射
                             PropertyDescriptor pd = null;
                             try {
-                                pd = new PropertyDescriptor(entry.getKey(), t.getClass());
+//                                pd = new PropertyDescriptor(entry.getKey(), t.getClass());
+                                pd = new PropertyDescriptor (( String ) entry.getKey(), t.getClass() );
                                 Method getMethod = pd.getReadMethod();//获得get方法
                                 o = getMethod.invoke(t);//执行get方法返回一个Object
                             } catch (Exception e) {
