@@ -96,6 +96,10 @@ dependencies {
 //    compile group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
 
 
+    compile group: 'e-iceblue', name: 'spire.pdf', version: '3.4.2'
+
+
+
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
     testCompile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'

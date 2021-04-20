@@ -61,6 +61,7 @@ subprojects  {
         maven { url "${springUrl}" }
         maven { url "${spring2Url}" }
         maven { url "${spring3Url}" }
+        maven { url "${iceBlueUrl}" }
         jcenter()
         mavenCentral()
     }
