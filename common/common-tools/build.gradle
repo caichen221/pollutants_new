@@ -99,6 +99,10 @@ dependencies {
     compile group: 'e-iceblue', name: 'spire.doc.free', version: '3.9.0'
 //    compile group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
 
+    // https://mvnrepository.com/artifact/org.javatuples/javatuples
+    implementation group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
+
+
 
 
 
