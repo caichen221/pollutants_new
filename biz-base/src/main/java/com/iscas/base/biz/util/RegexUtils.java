@@ -1,4 +1,4 @@
-package com.iscas.biz.util;
+package com.iscas.base.biz.util;
 
 import org.apache.commons.lang3.StringUtils;
 

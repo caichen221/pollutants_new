@@ -8,8 +8,8 @@ import com.iscas.biz.model.common.monitor.jvm.JvmMonitor;
 import com.iscas.biz.model.common.monitor.sys.SysExtraMonitor;
 import com.iscas.biz.model.common.monitor.sys.SysMonitor;
 import com.iscas.biz.service.common.MonitorService;
-import com.iscas.biz.util.CloneUtils;
-import com.iscas.biz.util.RegexUtils;
+import com.iscas.base.biz.util.CloneUtils;
+import com.iscas.base.biz.util.RegexUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
