@@ -1,0 +1,66 @@
+
+dependencies {
+    compile group: 'org.jooq', name: 'jooq', version: "${jooqVersion}"
+    compile("org.jooq:jooq:${jooqVersion}")
+    compile("org.jooq:jooq-meta:${jooqVersion}")
+    compile "org.jooq:jooq-codegen:${jooqVersion}"
+    // mysql连接
+    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    compile ('org.springframework.boot:spring-boot-starter-web')
+            {
+                exclude group: 'ch.qos.logback', module: 'logback-access'
+                exclude group: 'ch.qos.logback', module: 'logback-classic'
+                exclude group: 'ch.qos.logback', module: 'logback-core'
+                exclude group: 'org.slf4j', module: 'slf4j-api'
+            }
+    compile ('org.springframework.boot:spring-boot-starter-jooq')
+    compile group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
+
+
+}
+
+//buildscript {
+//    repositories {
+//        maven { url "${nexusUrl}" }
+//        maven {url "${aliyunUrl}"}
+//        maven { url "${springUrl}" }
+//        maven { url "${spring2Url}" }
+//        jcenter()
+//        mavenCentral()
+//
+//    }
+//    dependencies {
+//        classpath "org.jooq:jooq-codegen:${jooqVersion}"
+//        classpath("mysql:mysql-connector-java:${mysqlVersion}")
+//    }
+//}
+//
+//
+////task jooqCodeGenerate {
+//def writer = new StringWriter()
+//def xml = new groovy.xml.MarkupBuilder(writer).configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.14.0.xsd') {
+//    jdbc() {
+//        driver('com.mysql.cj.jdbc.Driver ')
+//        url('jdbc:mysql://localhost:3306/test_jooq?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true')
+//        user('root')
+//        password('root')
+//    }
+//    generator() {
+//        database() {
+//            name('org.jooq.meta.mysql.MySQLDatabase')
+//            inputSchema('test_jooq')
+//            includes('.*')
+//            excludes()
+//        }
+//        generate([:]) {
+//            pojos true
+//            daos true
+//        }
+//        target() {
+//            packageName('com.iscas.biz.jooq')
+//            directory('src/main/java')
+//        }
+//    }
+//}
+//org.jooq.codegen.GenerationTool.generate(writer.toString())
+//}

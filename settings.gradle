@@ -95,4 +95,5 @@ include 'special:elastic-job-lite-console'
 findProject(':special:elastic-job-lite-console')?.name = 'elastic-job-lite-console'
 include 'samples:opendistro-for-es-samples'
 findProject(':samples:opendistro-for-es-samples')?.name = 'opendistro-for-es-samples'
+include 'biz-jooq'
 
