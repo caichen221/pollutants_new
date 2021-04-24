@@ -100,9 +100,10 @@ dependencies {
 //    compile group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
 
     // https://mvnrepository.com/artifact/org.javatuples/javatuples
-    implementation group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
+    compile group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
 
-
+// https://mvnrepository.com/artifact/top.zibin/Luban
+    compile group: 'top.zibin', name: 'Luban', version: '1.1.6'
 
 
 
