@@ -5,6 +5,7 @@ package com.iscas.biz.jooq.test.code;
 
 
 import com.iscas.biz.jooq.test.code.tables.JooqTestTable;
+import com.iscas.biz.jooq.test.code.tables.Sample;
 
 
 /**
@@ -17,4 +18,9 @@ public class Tables {
      * The table <code>test_jooq.jooq_test_table</code>.
      */
     public static final JooqTestTable JOOQ_TEST_TABLE = JooqTestTable.JOOQ_TEST_TABLE;
+
+    /**
+     * The table <code>test_jooq.sample</code>.
+     */
+    public static final Sample SAMPLE = Sample.SAMPLE;
 }

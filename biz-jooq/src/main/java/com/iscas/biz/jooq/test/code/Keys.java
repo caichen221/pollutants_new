@@ -5,7 +5,9 @@ package com.iscas.biz.jooq.test.code;
 
 
 import com.iscas.biz.jooq.test.code.tables.JooqTestTable;
+import com.iscas.biz.jooq.test.code.tables.Sample;
 import com.iscas.biz.jooq.test.code.tables.records.JooqTestTableRecord;
+import com.iscas.biz.jooq.test.code.tables.records.SampleRecord;
 
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -26,4 +28,6 @@ public class Keys {
 
     public static final UniqueKey<JooqTestTableRecord> KEY_JOOQ_TEST_TABLE_PRIMARY = Internal.createUniqueKey(JooqTestTable.JOOQ_TEST_TABLE, DSL.name("KEY_jooq_test_table_PRIMARY"), new TableField[] { JooqTestTable.JOOQ_TEST_TABLE.ID }, true);
     public static final UniqueKey<JooqTestTableRecord> SYNTHETIC_PK_JOOQ_TEST_TABLE = Internal.createUniqueKey(JooqTestTable.JOOQ_TEST_TABLE, DSL.name("SYNTHETIC_PK_jooq_test_table"), new TableField[] { JooqTestTable.JOOQ_TEST_TABLE.ID }, true);
+    public static final UniqueKey<SampleRecord> KEY_SAMPLE_PRIMARY = Internal.createUniqueKey(Sample.SAMPLE, DSL.name("KEY_sample_PRIMARY"), new TableField[] { Sample.SAMPLE.ID }, true);
+    public static final UniqueKey<SampleRecord> SYNTHETIC_PK_SAMPLE = Internal.createUniqueKey(Sample.SAMPLE, DSL.name("SYNTHETIC_PK_sample"), new TableField[] { Sample.SAMPLE.ID }, true);
 }

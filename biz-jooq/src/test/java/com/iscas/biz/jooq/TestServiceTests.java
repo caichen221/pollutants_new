@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -46,6 +47,15 @@ public class TestServiceTests {
     @Test
     public void testQuery() {
         testService.testQuery();
+    }
+
+    /**
+     *
+     * 测试删除
+     * */
+    @Test
+    public void testDelete() {
+        testService.testDelete();
     }
 
 }

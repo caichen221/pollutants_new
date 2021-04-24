@@ -5,6 +5,7 @@ package com.iscas.biz.jooq.test.code;
 
 
 import com.iscas.biz.jooq.test.code.tables.JooqTestTable;
+import com.iscas.biz.jooq.test.code.tables.Sample;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,11 @@ public class TestJooq extends SchemaImpl {
     public final JooqTestTable JOOQ_TEST_TABLE = JooqTestTable.JOOQ_TEST_TABLE;
 
     /**
+     * The table <code>test_jooq.sample</code>.
+     */
+    public final Sample SAMPLE = Sample.SAMPLE;
+
+    /**
      * No further instances allowed
      */
     private TestJooq() {
@@ -48,6 +54,7 @@ public class TestJooq extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            JooqTestTable.JOOQ_TEST_TABLE);
+            JooqTestTable.JOOQ_TEST_TABLE,
+            Sample.SAMPLE);
     }
 }
