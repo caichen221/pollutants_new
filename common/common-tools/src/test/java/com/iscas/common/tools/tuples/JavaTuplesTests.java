@@ -1,4 +1,4 @@
-package org.tuples;
+package com.iscas.common.tools.tuples;
 
 import org.javatuples.*;
 import org.junit.jupiter.api.Test;

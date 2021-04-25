@@ -57,6 +57,7 @@ public class BizApp extends SpringBootServletInitializer {
         springApplication.run(args);
         log.info("==========服务已启动=================");
     }
+
     /**
      *重写configure
      * @param builder
