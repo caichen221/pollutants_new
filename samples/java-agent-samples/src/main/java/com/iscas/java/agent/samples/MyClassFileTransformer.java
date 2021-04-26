@@ -21,6 +21,9 @@ public class MyClassFileTransformer implements ClassFileTransformer {
         String websocketConfigClass = "com/iscas/biz/config/Swagger3Config";
         if (Objects.equals(websocketConfigClass, className)) {
             try {
+//                ClassPool cp = new ClassPool(true);
+//                cp.insertClassPath(new LoaderClassPath(this.getClass().getClassLoader()));
+
                 ClassPool classPool = ClassPool.getDefault();
                 CtClass ctClass = classPool.get(className.replace("/", "."));
                 System.out.println("===" + ctClass);
