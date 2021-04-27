@@ -73,13 +73,13 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-amqp"
     compile "org.springframework.boot:spring-boot-starter-reactor-netty"
 
-// https://mvnrepository.com/artifact/com.github.oshi/oshi-core
+    // https://mvnrepository.com/artifact/com.github.oshi/oshi-core
     compile group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
 
     //datasong-client-plus
-//    compile ("com.iscas.datasong:datasong-client-plus:${datasongClientPlusVersion}") {
-//        exclude module: 'templet'
-//    }
+    compile ("com.iscas.datasong:datasong-client-plus:${datasongClientPlusVersion}") {
+        exclude module: 'templet'
+    }
 
     compile "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
 
