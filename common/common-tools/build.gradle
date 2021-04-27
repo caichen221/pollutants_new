@@ -96,6 +96,14 @@ dependencies {
 //    compile group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
 
 
+    compile group: 'e-iceblue', name: 'spire.doc.free', version: '3.9.0'
+//    compile group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
+
+    // https://mvnrepository.com/artifact/org.javatuples/javatuples
+    compile group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
+
+
+
 
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
     testCompile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'

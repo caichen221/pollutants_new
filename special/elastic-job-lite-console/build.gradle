@@ -1,13 +1,13 @@
 
 dependencies {
-    implementation group: 'com.dangdang', name: 'elastic-job-lite-lifecycle', version: "${elasticJobVersion}"
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: "${slf4jApiVersion}"
-    implementation group: 'org.slf4j', name: 'log4j-over-slf4j', version: "${slf4jApiVersion}"
-    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
-    testImplementation group: 'junit', name: 'junit', version: "${junitVersion}"
-    testImplementation group: 'org.unitils', name: 'unitils-core', version: "${unitilsVersion}"
-    implementation group: 'commons-dbcp', name: 'commons-dbcp', version: "${dbcpVersion}"
+    compile group: 'com.dangdang', name: 'elastic-job-lite-lifecycle', version: "${elasticJobVersion}"
+    compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
+    compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: "${slf4jApiVersion}"
+    compile group: 'org.slf4j', name: 'log4j-over-slf4j', version: "${slf4jApiVersion}"
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
+    testCompile group: 'junit', name: 'junit', version: "${junitVersion}"
+    testCompile group: 'org.unitils', name: 'unitils-core', version: "${unitilsVersion}"
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version: "${dbcpVersion}"
     compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
 
 

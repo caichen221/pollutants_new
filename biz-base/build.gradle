@@ -34,7 +34,6 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
-    compile group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
     // https://mvnrepository.com/artifact/org.springframework/spring-tx
     compile group: 'org.springframework', name: 'spring-tx'
@@ -74,7 +73,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-amqp"
     compile "org.springframework.boot:spring-boot-starter-reactor-netty"
 
-// https://mvnrepository.com/artifact/com.github.oshi/oshi-core
+    // https://mvnrepository.com/artifact/com.github.oshi/oshi-core
     compile group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
 
     //datasong-client-plus
@@ -98,8 +97,9 @@ dependencies {
     compile group: 'io.github.openfeign', name: 'feign-core', version: "${feignVersion}"
     compile group: 'io.github.openfeign', name: 'feign-jackson', version: "${feignVersion}"
 
-
-
+    //knife4j,替代swagger
+    compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
+//    compile group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
 
 
@@ -111,8 +111,7 @@ dependencies {
 //    compile group: 'com.iscas.datasong', name: 'datasong-client', version: "0.1.2"
 
 
-    //knife4j,替代swagger
-//    compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
+
 
     //    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core

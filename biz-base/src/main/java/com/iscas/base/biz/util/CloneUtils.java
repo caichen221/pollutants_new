@@ -1,15 +1,18 @@
-package com.iscas.biz.util;
+package com.iscas.base.biz.util;
 
 import lombok.Cleanup;
 
 import java.io.*;
 
 /**
+ * 参考：{@link cn.hutool.core.util.ObjectUtil#cloneByStream(Object)} -update by zqw 20210422
+ *
  * @author lirenshen
  * @vesion 1.0
  * @date 2021/1/21 17:02
  * @since jdk1.8
  */
+@Deprecated
 public class CloneUtils {
 
     public static <T extends Serializable> T clone(T source) {

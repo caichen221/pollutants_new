@@ -6,7 +6,7 @@ import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.biz.model.common.monitor.jvm.*;
 import com.iscas.biz.model.common.monitor.sys.*;
 import com.iscas.biz.service.common.MonitorService;
-import com.iscas.biz.util.MathUtils;
+import com.iscas.base.biz.util.MathUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
