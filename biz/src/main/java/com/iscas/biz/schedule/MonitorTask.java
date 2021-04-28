@@ -428,14 +428,20 @@ public class MonitorTask {
      */
     private List<DiskStore> getDiskStore(HardwareAbstractionLayer hardware, long range) {
         List<HWDiskStore> preHwDiskStores = (List<HWDiskStore>) lastCollectData.get("diskStore");
-        List<HWDiskStore> hwDiskStores = hardware.getDiskStores();
+        List<HWDiskStore> hwDiskStores;
+        try {
+            hwDiskStores = hardware.getDiskStores();
+        } catch (Exception e) {
+            hwDiskStores = Collections.emptyList();
+        }
         lastCollectData.put("diskStore", hwDiskStores);
         if (CollectionUtils.isEmpty(preHwDiskStores)) {
             return null;
         }
+        List<HWDiskStore> finalHwDiskStores = hwDiskStores;
         return IntStream.range(0, hwDiskStores.size()).mapToObj(i -> {
             DiskStore diskStore = new DiskStore();
-            HWDiskStore hwDiskStore = hwDiskStores.get(i);
+            HWDiskStore hwDiskStore = finalHwDiskStores.get(i);
             HWDiskStore preHwDiskStore = preHwDiskStores.get(i);
 
             long readBytes = (hwDiskStore.getReadBytes() - preHwDiskStore.getReadBytes()) / range;
