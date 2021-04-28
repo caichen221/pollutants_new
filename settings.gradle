@@ -96,6 +96,6 @@ findProject(':special:elastic-job-lite-console')?.name = 'elastic-job-lite-conso
 include 'samples:opendistro-for-es-samples'
 findProject(':samples:opendistro-for-es-samples')?.name = 'opendistro-for-es-samples'
 include 'biz-jooq'
-include 'samples:java-agent-samples'
-findProject(':samples:java-agent-samples')?.name = 'java-agent-samples'
+include 'samples:java-agent-javaassist-samples'
+findProject(':samples:java-agent-javaassist-samples')?.name = 'java-agent-javaassist-samples'
 

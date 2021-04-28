@@ -2,11 +2,17 @@ package com.iscas.common.tools.core.io.file;
 
 
 import com.iscas.common.tools.constant.FileConstant;
+import lombok.Cleanup;
+import org.apache.commons.io.input.ReversedLinesFileReader;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 此类中封装一些常用的文件操作。
@@ -712,6 +718,75 @@ public class FileUtils {
         mfilter = null;
 
         return counts;
+    }
+
+    /**
+     * 按行读取所有
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/4/28
+     * @param isr 输入流
+     * @throws
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> readLines(InputStreamReader isr) throws IOException {
+
+        List<String> lines = new ArrayList<>();
+        String line = null;
+        @Cleanup BufferedReader br = new BufferedReader(isr);
+        while ((line = br.readLine()) != null) {
+            lines.add(line);
+        }
+        return lines;
+    }
+
+    /**
+     * 按行读取,
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/4/28
+     * @param isr 输入流
+     * @throws
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> readLines(InputStreamReader isr, int count) throws IOException {
+        List<String> lines = new ArrayList<>();
+        String line = null;
+        @Cleanup BufferedReader br = new BufferedReader(isr);
+        int i = 1;
+        while ((line = br.readLine()) != null) {
+            lines.add(line);
+            if (i++ >= count) {
+                break;
+            }
+        }
+        return lines;
+    }
+
+    /**
+     *
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/4/28
+     * @param file
+     * @param charset
+     * @param count
+     * @throws
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> reverseReadLines(File file, String charset, int count) throws IOException {
+        List<String> lines = new ArrayList<>();
+        String line = null;
+        @Cleanup ReversedLinesFileReader rlfr = new ReversedLinesFileReader(file, Charset.forName(charset));
+        int i = 1;
+        while ((line = rlfr.readLine()) != null) {
+            lines.add(line);
+            if (i++ >= count) {
+                break;
+            }
+        }
+        Collections.reverse(lines);
+        return lines;
     }
 
 }
