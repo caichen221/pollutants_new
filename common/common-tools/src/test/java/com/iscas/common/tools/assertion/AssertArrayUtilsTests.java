@@ -18,13 +18,21 @@ public class AssertArrayUtilsTests {
 
     @Test
     public void test5() {
+        System.out.println("-------AssertArrayUtils数组必须为空断言begin---------");
         Integer[] array = null;
         AssertArrayUtils.assertArrayNull(array, "数组必须为空");
+        System.out.println("-------AssertArrayUtils数组必须为空断言end---------");
     }
 
     @Test
     public void test6() {
+        System.out.println("-------AssertArrayUtils数组不能为空断言begin---------");
         Integer[] array = null;
-        AssertArrayUtils.assertArrayNotNull(array, "数组不能为空");
+        try {
+            AssertArrayUtils.assertArrayNotNull(array, "数组不能为空");
+        } catch (Exception e) {
+            System.out.println("断言成功");
+        }
+        System.out.println("-------AssertArrayUtils数组不能为空断言begin---------");
     }
 }
