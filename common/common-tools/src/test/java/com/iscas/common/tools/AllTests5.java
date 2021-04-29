@@ -1,5 +1,9 @@
 package com.iscas.common.tools;
 
+import com.iscas.common.tools.arithmetic.FloatExactArithUtilsTests;
+import com.iscas.common.tools.assertion.AssertArrayUtilsTests;
+import com.iscas.common.tools.assertion.AssertObjUtilsTests;
+import com.iscas.common.tools.captcha.CaptchaTests;
 import com.iscas.common.tools.core.io.file.FileUtilsTests;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
@@ -17,6 +21,11 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(JUnitPlatform.class)
-@SelectClasses({FileUtilsTests.class})
+@SelectClasses({
+        FileUtilsTests.class, FloatExactArithUtilsTests.class,
+        AssertArrayUtilsTests.class, AssertObjUtilsTests.class,
+        CaptchaTests.class
+
+})
 public class AllTests5 {
 }
