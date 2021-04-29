@@ -2,9 +2,8 @@ package com.iscas.common.tools.core.io.file;
 
 import cn.hutool.core.io.IoUtil;
 import lombok.Cleanup;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
@@ -15,13 +14,13 @@ import java.io.*;
  * @date 2020/11/24 8:37
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class LargeFileTests {
 
     /**
      * 原始的IO流方式
      * */
     @Test
+    @Disabled
     public void copy1() throws FileNotFoundException, IOException {
         long start = System.currentTimeMillis();
         File file = new File("d:/testLarge.rar");
@@ -36,6 +35,7 @@ public class LargeFileTests {
      * FileChannel.transferTo的方式
      * */
     @Test
+    @Disabled
     public void copy2() throws FileNotFoundException, IOException {
         long start = System.currentTimeMillis();
         File file = new File("d:/testLarge.rar");
@@ -50,6 +50,7 @@ public class LargeFileTests {
      * 拷贝流，使用NIO
      * */
     @Test
+    @Disabled
     public void copy3() throws FileNotFoundException, IOException {
         long start = System.currentTimeMillis();
         File file = new File("d:/testLarge.rar");

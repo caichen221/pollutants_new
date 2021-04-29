@@ -1,8 +1,8 @@
 package com.iscas.common.tools.core.io.file;
 
-import com.iscas.common.tools.core.io.file.JarPathUtils;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
 
@@ -20,8 +20,10 @@ public class JarPathUtilsTests {
      * */
     @Test
     public void test() throws UnsupportedEncodingException {
+        System.out.println("--------JarPathUtils.getJarPath(Class clazz) begin---------");
         String basePath = JarPathUtils.getJarPath(JarPathUtils.class);
         System.out.println(basePath);
-        Assert.assertNotNull(basePath);
+        Assertions.assertNotNull(basePath);
+        System.out.println("--------JarPathUtils.getJarPath(Class clazz) begin---------");
     }
 }

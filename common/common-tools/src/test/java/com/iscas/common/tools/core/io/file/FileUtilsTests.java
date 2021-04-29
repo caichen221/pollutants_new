@@ -19,6 +19,7 @@ public class FileUtilsTests {
     public void test() throws IOException {
         System.out.println("--------FileUtils按行读取所有begin---------");
         File file = File.createTempFile("test", ".txt");
+        file.deleteOnExit();
         @Cleanup PrintWriter pw = new PrintWriter(file);
         pw.println("1111");
         pw.println("222");
@@ -36,6 +37,7 @@ public class FileUtilsTests {
     public void test2() throws IOException {
         System.out.println("--------FileUtils按行读取begin---------");
         File file = File.createTempFile("test", ".txt");
+        file.deleteOnExit();
         @Cleanup PrintWriter pw = new PrintWriter(file);
         pw.println("1111");
         pw.println("222");
@@ -54,6 +56,7 @@ public class FileUtilsTests {
     public void test3() throws IOException {
         System.out.println("--------FileUtils反向按行读取begin---------");
         File file = File.createTempFile("test", ".txt");
+        file.deleteOnExit();
         @Cleanup PrintWriter pw = new PrintWriter(file);
         pw.println("1111");
         pw.println("222");

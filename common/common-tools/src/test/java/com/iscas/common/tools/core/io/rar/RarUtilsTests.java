@@ -2,9 +2,8 @@ package com.iscas.common.tools.core.io.rar;
 
 import com.github.junrar.UnrarCallback;
 import com.github.junrar.Volume;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * rar工具测试
@@ -14,10 +13,10 @@ import org.junit.runners.JUnit4;
  * @date 2020/3/14 16:19
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class RarUtilsTests {
 
     @Test
+    @Disabled
     public void test() throws Exception {
         RarUtils.unrar("F:\\\u9879\u76ee\\\u5c0f\u536b\u661f\\ProducerConsumer.rar", "F:\\项目\\小卫星\\a", new UnrarCallback() {
             int currentProgress = -1;
