@@ -2,10 +2,8 @@ package com.iscas.common.tools.arithmetic;
 
 import com.iscas.common.tools.core.arithmetic.FloatExactArithUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
@@ -17,7 +15,6 @@ import java.math.BigDecimal;
  * @date 2020/8/11 21:05
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 @Slf4j
 public class FloatExactArithUtilsTests {
 
@@ -29,7 +26,7 @@ public class FloatExactArithUtilsTests {
         log.debug(String.format("不精确计算的结果：%f", (data1 + data2)));
         double result = FloatExactArithUtils.add(data1, data2);
         log.debug(String.format("精确计算的结果：%f", result));
-        Assert.assertEquals(0.06, result, 0);
+        Assertions.assertEquals(0.06, result, 0);
         System.out.println("---------FloatExactArithUtils精确计算float加法 end----------");
 
     }
@@ -42,7 +39,7 @@ public class FloatExactArithUtilsTests {
         log.debug(String.format("不精确计算的结果：%f", (data1 - data2)));
         double result = FloatExactArithUtils.subtract(data1, data2);
         log.debug(String.format("精确计算的结果：%f", result));
-        Assert.assertEquals(0.041, result, 0);
+        Assertions.assertEquals(0.041, result, 0);
         System.out.println("---------FloatExactArithUtils精确计算float减法 end----------");
 
     }
@@ -55,7 +52,7 @@ public class FloatExactArithUtilsTests {
         log.debug(String.format("不精确计算的结果：%f", (data1 * data2)));
         double result = FloatExactArithUtils.multiply(data1, data2);
         log.debug(String.format("精确计算的结果：%f", result));
-        Assert.assertEquals(0.00051, result, 0);
+        Assertions.assertEquals(0.00051, result, 0);
         System.out.println("---------FloatExactArithUtils精确计算float乘法 end----------");
     }
 
@@ -67,7 +64,7 @@ public class FloatExactArithUtilsTests {
         log.debug(String.format("不精确计算的结果：%f", (data1 / data2)));
         double result = FloatExactArithUtils.divide(data1, data2, 1);
         log.debug(String.format("精确计算的结果：%f", result));
-        Assert.assertEquals(5.1, result, 0);
+        Assertions.assertEquals(5.1, result, 0);
         System.out.println("---------FloatExactArithUtils精确计算float除法 end----------");
     }
 
