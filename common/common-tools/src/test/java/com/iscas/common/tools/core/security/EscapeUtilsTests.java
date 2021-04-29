@@ -1,6 +1,7 @@
 package com.iscas.common.tools.core.security;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * 编码工具类测试

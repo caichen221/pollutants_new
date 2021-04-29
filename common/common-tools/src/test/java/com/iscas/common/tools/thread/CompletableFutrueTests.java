@@ -1,16 +1,12 @@
 package com.iscas.common.tools.thread;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -19,13 +15,12 @@ import java.util.stream.Collectors;
  * @date 2021/1/30 15:50
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class CompletableFutrueTests {
-    private ThreadPoolExecutor threadPoolExecutor = null;
-    private AtomicInteger atomicInteger = new AtomicInteger(1);
+    private static ThreadPoolExecutor threadPoolExecutor = null;
+    private static AtomicInteger atomicInteger = new AtomicInteger(1);
 
-    @Before
-    public void before() {
+    @BeforeAll
+    public static void before() {
         threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
                 new SynchronousQueue<Runnable>(), new ThreadFactory() {
             @Override

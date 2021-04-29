@@ -1,10 +1,8 @@
 package com.iscas.common.tools.hutool.bloomfilter;
 
 import cn.hutool.bloomfilter.BitMapBloomFilter;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 布隆过滤器测试
@@ -14,7 +12,6 @@ import org.junit.runners.JUnit4;
  * @date 2018/10/8 14:24
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class BitMapBloomFilterTest {
     @Test
     public void filterTest() {
@@ -24,8 +21,8 @@ public class BitMapBloomFilterTest {
         filter.add("ddd");
 
 
-        Assert.assertTrue(filter.contains("abc"));
-        Assert.assertTrue(filter.contains("ddd"));
-        Assert.assertTrue(filter.contains("123"));
+        Assertions.assertTrue(filter.contains("abc"));
+        Assertions.assertTrue(filter.contains("ddd"));
+        Assertions.assertTrue(filter.contains("123"));
     }
 }

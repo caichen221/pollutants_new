@@ -13,8 +13,8 @@ import cn.hutool.aop.ProxyUtil;
 import cn.hutool.aop.aspects.Aspect;
 import cn.hutool.aop.aspects.TimeIntervalAspect;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class AopTest {
     public void aopTest() {
         Animal cat = ProxyUtil.proxy(new Cat(), TimeIntervalAspect.class);
         String result = cat.eat();
-        Assert.assertEquals("猫吃鱼", result);
+        Assertions.assertEquals("猫吃鱼", result);
     }
 
     /**测试无接口，代理，使用工具内实现的TimeIntervalAspect*/
@@ -42,7 +42,7 @@ public class AopTest {
     public void aopByCglibTest() {
         Dog dog = ProxyUtil.proxy(new Dog(), TimeIntervalAspect.class);
         String result = dog.eat();
-        Assert.assertEquals("狗吃肉", result);
+        Assertions.assertEquals("狗吃肉", result);
     }
 
     /**代理，使用自定义Aspect*/
@@ -50,7 +50,7 @@ public class AopTest {
     public void aopTest2() {
         TestClass testClass = ProxyUtil.proxy(new TestClass(), MyAspect.class);
         String result = testClass.testMethod("abcdefg");
-        Assert.assertEquals("gfedcba", result);
+        Assertions.assertEquals("gfedcba", result);
     }
 
     static interface Animal {
@@ -86,9 +86,9 @@ public class AopTest {
 
     static class TestClass{
         public String testMethod(String str){
-            if(1 == new Random().nextInt(2)){
-                throw new RuntimeException("error");
-            }
+//            if(1 == new Random().nextInt(2)){
+//                throw new RuntimeException("error");
+//            }
             return StringUtils.reverse(str);
         }
     }

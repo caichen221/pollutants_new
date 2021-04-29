@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 
 @RunWith(Suite.class)
+@Deprecated
 @SuiteClasses({FloatExactArithUtilsTests.class, AssertArrayUtilsTests.class})
 public class AllTests4 {
 }

@@ -3,10 +3,11 @@ package com.iscas.common.tools.xml;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultDocument;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -22,7 +23,6 @@ public class Dom4jUtilsTests {
      * 只是获取document的传参不一样而已，这里不做测试了
      * */
     @Test
-    @Ignore
     public  void readXMLTest() throws IOException {
         //测试的XML
 //        String xmlStr = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
@@ -39,19 +39,19 @@ public class Dom4jUtilsTests {
         Element root = document.getRootElement();
         //3. 获取根节点的名称
         String rootName = root.getName();
-        Assert.assertEquals("datasource", rootName);
+        Assertions.assertEquals("datasource", rootName);
         //4. 获取根节点的子节点
         List<Element> elements = Dom4jUtils.getChildElements(root);
         //5. 获取根节点的某个子节点
         Element element1 = Dom4jUtils.getChildElement(root,"url");
         String element1Name = element1.getName();
-        Assert.assertEquals("url", element1Name);
+        Assertions.assertEquals("url", element1Name);
         //6. 或者url节点的内容
         String text1 = Dom4jUtils.getText(root,"url");
-        Assert.assertEquals("aaaa",text1);
+        Assertions.assertEquals("aaaa",text1);
         //7. 获取test节点的prefix内容
         String prefix = Dom4jUtils.getAttribute(Dom4jUtils.getChildElement(root, "test"),"prefix" );
-        Assert.assertEquals("xxx", prefix);
+        Assertions.assertEquals("xxx", prefix);
         is.close();
     }
 
@@ -59,7 +59,6 @@ public class Dom4jUtilsTests {
      * 测试构建一个XML，并写入文件
      * */
     @Test
-    @Ignore
     public void writeXML() throws IOException {
         //1 构建一个默认的document
         Document document = new DefaultDocument();
@@ -75,7 +74,10 @@ public class Dom4jUtilsTests {
         String xmlStr = Dom4jUtils.documentToString(document, "utf-8");
         System.out.println(xmlStr);
         //7. 将document存入file
-        Dom4jUtils.writeXMLToFile(document, "d:/test.xml");
+        File file = File.createTempFile("test", ".xml");
+        file.deleteOnExit();
+        Dom4jUtils.writeXMLToFile(document, file.getAbsolutePath());
+        file.delete();
     }
 
 }

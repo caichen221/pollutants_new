@@ -1,9 +1,8 @@
 package com.iscas.common.tools.jdk;
 
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integer 静态方法测试
@@ -13,7 +12,6 @@ import org.junit.runners.JUnit4;
  * @date 2021/2/3 20:48
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class IntegerTests {
     private String integerStr = "18";
     private String integerStr16 = "12";
@@ -22,7 +20,7 @@ public class IntegerTests {
     private int integer2 = 19;
     private String systemPropKey = "systemPropKey";
 
-    @Before
+    @BeforeEach
     public void before() {
         System.setProperty(systemPropKey, integerStr);
     }

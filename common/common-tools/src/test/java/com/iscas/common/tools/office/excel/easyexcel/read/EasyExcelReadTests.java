@@ -5,9 +5,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,6 @@ import java.util.Map;
  * @date 2021/1/24 10:15
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 @Slf4j
 public class EasyExcelReadTests {
 

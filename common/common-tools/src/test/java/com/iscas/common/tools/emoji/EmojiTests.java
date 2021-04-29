@@ -1,9 +1,7 @@
 package com.iscas.common.tools.emoji;
 
 import com.vdurmont.emoji.EmojiParser;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 /**
  * emoji符号存储
@@ -13,7 +11,6 @@ import org.junit.runners.JUnit4;
  * @date 2019/4/29 17:34
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class EmojiTests {
 
     /**

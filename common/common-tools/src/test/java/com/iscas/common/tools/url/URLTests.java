@@ -1,6 +1,8 @@
 package com.iscas.common.tools.url;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 
@@ -13,6 +15,7 @@ import java.net.MalformedURLException;
  */
 public class URLTests {
     @Test
+    @Disabled
     public void test1() {
         try {
             //获取文件
@@ -23,6 +26,7 @@ public class URLTests {
         }
     }
     @Test
+    @Disabled
     public void test2() {
         try {
             //获取协议
@@ -36,6 +40,7 @@ public class URLTests {
     }
 
     @Test
+    @Disabled
     public void test3() {
         try {
             //获取主机
@@ -49,6 +54,7 @@ public class URLTests {
     }
 
     @Test
+    @Disabled
     public void test4() {
         try {
             //获取路径
@@ -62,6 +68,7 @@ public class URLTests {
     }
 
     @Test
+    @Disabled
     public void test5() {
         try {
             //获取端口
@@ -75,6 +82,7 @@ public class URLTests {
     }
 
     @Test
+    @Disabled
     public void test6() {
         try {
             //获取默认端口

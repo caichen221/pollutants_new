@@ -3,7 +3,7 @@ package com.iscas.common.tools.pinyin;
 import cn.hutool.core.util.PinyinUtil;
 import com.rnkrsoft.bopomofo4j.Bopomofo4j;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *拼音工具测试

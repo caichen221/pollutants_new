@@ -1,8 +1,6 @@
 package com.iscas.common.tools.gis;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 /**
  * 距离测试
@@ -12,7 +10,6 @@ import org.junit.runners.JUnit4;
  * @date 2020/12/17 15:32
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class LatLonUtilsTests {
 
     /**

@@ -1,9 +1,7 @@
 package com.iscas.common.tools.hutool.core;
 
 import cn.hutool.core.util.ArrayUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
@@ -14,7 +12,6 @@ import java.util.Arrays;
  * @date 2019/5/22 15:42
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class ArrayUtilTests {
 
     /**

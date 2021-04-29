@@ -1,6 +1,6 @@
 package com.iscas.common.tools.core.security;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.security.KeyPair;
 
@@ -12,7 +12,6 @@ import java.security.KeyPair;
  * @since jdk1.8
  */
 public class RsaUtilsTests {
-
 
     @Test
     public void testRSA(){
