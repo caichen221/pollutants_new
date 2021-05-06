@@ -454,4 +454,76 @@ public class SSHService {
         return isFile;
     }
 
+    public void newDir(String connectionId, String path, String dirName) throws JSchException, SftpException, BaseException {
+        SSHConnection sshConnection = sshMap.get(connectionId);
+        if (sshConnection != null) {
+            Session session = sshConnection.getSession();
+            ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
+            try {
+                sftp.connect(channelTimeout * 1000);
+                if (isFile(sftp, path)) {
+                    throw new BaseException(String.format("%s是一个文件", path));
+                }
+                try {
+                    sftp.cd(path);
+                } catch (SftpException e) {
+                    throw new BaseException(String.format("进入目录:%s失败", path));
+                }
+                Vector ls = sftp.ls(path);
+                Iterator iterator = ls.iterator();
+                while (iterator.hasNext()) {
+                    ChannelSftp.LsEntry next = (ChannelSftp.LsEntry) iterator.next();
+                    String filename = next.getFilename();
+                    if (Objects.equals(filename, dirName)) {
+                        throw new BaseException(String.format("目录:%s已存在", dirName));
+                    }
+                }
+                sftp.cd(path);
+                sftp.mkdir(dirName);
+            } finally {
+                if (sftp != null) {
+                    sftp.disconnect();
+                }
+            }
+        } else {
+            throw new BaseException("连接不存在");
+        }
+    }
+
+    public void deletePath(String connectionId, String path) throws JSchException, BaseException, SftpException {
+        SSHConnection sshConnection = sshMap.get(connectionId);
+        if (sshConnection != null) {
+            Session session = sshConnection.getSession();
+            ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
+            try {
+                sftp.connect(channelTimeout * 1000);
+                toDelete(sftp, path);
+            } finally {
+                if (sftp != null) {
+                    sftp.disconnect();
+                }
+            }
+        } else {
+            throw new BaseException("连接不存在");
+        }
+    }
+
+    private void toDelete(ChannelSftp sftp, String path) throws SftpException {
+        if (isFile(sftp, path)) {
+            sftp.rm(path);
+        } else {
+            Vector ls = sftp.ls(path);
+            Iterator iterator = ls.iterator();
+            while (iterator.hasNext()) {
+                ChannelSftp.LsEntry next = (ChannelSftp.LsEntry) iterator.next();
+                String filename = next.getFilename();
+                if (!StringUtils.equalsAny(filename, ",", ".")) {
+                    String subPath = path + "/" + filename;
+                    subPath = subPath.replaceAll("//+", "/");
+                    toDelete(sftp, subPath);
+                }
+            }
+        }
+        sftp.rmdir(path);
+    }
 }

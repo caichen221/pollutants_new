@@ -69,6 +69,54 @@
 
     }
 
+    function addDir() {
+        $.messager.prompt("新建目录", "请输入目录名称", function(res) {
+            if (res) {
+                let value = $("#searchbox").val();
+                var pp = $('#tabs').tabs('getSelected');
+                var title = pp.panel('options').title;
+                var connectionId = map.get(title);
+                $.ajax({
+                    url: "http://localhost:7901/demo/ssh/connect/dir?connectionId=" + connectionId + "&path=" + value + "&dirName=" + res,
+                    data: null,
+                    type: "PUT",
+                    dataType: "json",
+                    success: function(res) {
+                        value += "/" + res;
+                        $("#searchbox").val(value)
+                        search(value);
+                    }
+                });
+            }
+
+        })
+    }
+
+    function removeFile() {
+        let pathNode = $("#files").find('.on').find(".pathclass");
+        if (pathNode == null || pathNode.length == 0) {
+            alert("未选择文件");
+        }
+        var pp = $('#tabs').tabs('getSelected');
+        var title = pp.panel('options').title;
+        var connectionId = map.get(title);
+        $.messager.confirm("删除文件", "确定要删除此文件?", function(res) {
+            if (res) {
+                $.ajax({
+                    url: "http://localhost:7901/demo/ssh/connect/path?connectionId=" + connectionId + "&path=" + pathNode.text(),
+                    data: null,
+                    type: "DELETE",
+                    dataType: "json",
+                    success: function(res) {
+                        let value = $("#searchbox").val();
+                        value = value.substring(0, value.lastIndexOf("/"));
+                        search(value);
+                    }
+                });
+            }
+        });
+    }
+
     function refresh() {
         let value = $("#searchbox").val();
         search(value);
@@ -270,6 +318,8 @@
                 <a href="javascript:upload();" class="easyui-linkbutton" data-options="iconCls:'icon-upload'"></a>
                 <a href="javascript:download();" class="easyui-linkbutton" data-options="iconCls:'icon-download'"></a>
                 <a href="javascript:refresh();" class="easyui-linkbutton" data-options="iconCls:'icon-reload'"></a>
+                <a href="javascript:addDir();" class="easyui-linkbutton" data-options="iconCls:'icon-add'"></a>
+                <a href="javascript:removeFile();" class="easyui-linkbutton" data-options="iconCls:'icon-remove'"></a>
             </div>
             <div>
                 <input id = "searchbox" class="easyui-searchbox" style="width: 100%;" data-options="" value="/"/>
