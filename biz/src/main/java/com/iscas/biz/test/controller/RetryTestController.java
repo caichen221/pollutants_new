@@ -31,7 +31,7 @@ public class RetryTestController extends BaseController {
     }
 
     @GetMapping("/t2")
-    public ResponseEntity t1() throws BaseException {
+    public ResponseEntity t2() throws BaseException {
         ResponseEntity response = getResponse();
         String server = retryTestService.server2();
         response.setValue(server);

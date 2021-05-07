@@ -61,7 +61,7 @@ public class RetryTestService {
     /**
      * 测试不用注解的方式
      * */
-    public void server2(){
+    public String server2(){
         final RetryTemplate retryTemplate = new RetryTemplate();
         final SimpleRetryPolicy policy = new SimpleRetryPolicy(3, Collections.<Class<? extends Throwable>, Boolean>
                 singletonMap(Exception.class, true));
@@ -69,32 +69,28 @@ public class RetryTestService {
         fixedBackOffPolicy.setBackOffPeriod(100);
         retryTemplate.setRetryPolicy(policy);
         retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
-        final RetryCallback<Object, Exception> retryCallback = new RetryCallback<Object, Exception>() {
-            @Override
-            public Object doWithRetry(RetryContext context) throws Exception {
-                System.out.println("do some thing");
-                //设置context一些属性,给RecoveryCallback传递一些属性
-                context.setAttribute("key1", "value1");
-                System.out.println(context.getRetryCount());
-                throw new Exception("exception");
-                //                return null;
-            }
+        final RetryCallback<String, Exception> retryCallback = context -> {
+            System.out.println("do some thing");
+            //设置context一些属性,给RecoveryCallback传递一些属性
+            context.setAttribute("key1", "value1");
+            System.out.println(context.getRetryCount());
+            throw new Exception("exception");
+            //                return null;
         };
 
         // 如果RetryCallback执行出现指定异常, 并且超过最大重试次数依旧出现指定异常的话,就执行RecoveryCallback动作
-        final RecoveryCallback<Object> recoveryCallback = new RecoveryCallback<Object>() {
-            @Override
-            public Object recover(RetryContext context) throws Exception {
-                System.out.println("do recory operation");
-                System.out.println(context.getAttribute("key1"));
-                return "出错啦拉拉";
-            }
+        final RecoveryCallback<String> recoveryCallback = context -> {
+            System.out.println("do recory operation");
+            System.out.println(context.getAttribute("key1"));
+            return "出错啦拉拉";
         };
 
         try {
-            final Object execute = retryTemplate.execute(retryCallback, recoveryCallback);
+            final String execute = retryTemplate.execute(retryCallback, recoveryCallback);
+            return execute;
         } catch (Exception e) {
             e.printStackTrace();
+            return e.getMessage();
         }
     }
 }
