@@ -78,6 +78,14 @@ subprojects  {
 
         //junit
         testCompile group: 'junit', name: 'junit', version:"${junitVersion}"
+
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${jupiterVersion}"
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${jupiterVersion}"
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: "${jupiterVersion}"
+        testCompile group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "${jupiterVersion}"
+        testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: "${junitPlatformVersion}"
+        testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: "${junitPlatformVersion}"
+        testCompile group: 'org.junit.platform', name: 'junit-platform-suite-api', version: "${junitPlatformVersion}"
     }
 //    dependencyManagement {
 //        imports {

@@ -3,9 +3,7 @@ package com.iscas.templet.dynamic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +17,6 @@ import java.util.Map;
  * @date 2019/4/8 14:56
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)

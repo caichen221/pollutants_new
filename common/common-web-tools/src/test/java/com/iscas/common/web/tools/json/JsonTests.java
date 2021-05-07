@@ -1,8 +1,6 @@
 package com.iscas.common.web.tools.json;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +13,7 @@ import java.util.Map;
  * @date 2019/5/9 14:36
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
+
 public class JsonTests {
 
     public JsonObject getSimpleJsonObject() {

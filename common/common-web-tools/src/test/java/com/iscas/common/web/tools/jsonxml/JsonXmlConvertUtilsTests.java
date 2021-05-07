@@ -1,8 +1,6 @@
 package com.iscas.common.web.tools.jsonxml;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -13,7 +11,6 @@ import java.io.IOException;
  * @date 2020/1/20 15:52
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class JsonXmlConvertUtilsTests {
 
     /**

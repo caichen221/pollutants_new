@@ -2,9 +2,8 @@ package com.iscas.common.web.tools.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -16,7 +15,6 @@ import java.util.Map;
  * @date 2019/6/4 8:37
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class JsonUtilsTests {
     private String json = "{\n" +
                             "\t\"name\": \"zhangsan\",\n" +
@@ -47,11 +45,13 @@ public class JsonUtilsTests {
     }
 
     @Test
+    @Disabled
     public void test1() {
         String name = JsonUtils.getValueByKey(json, "name");
         System.out.println(name);
     }
     @Test
+    @Disabled
     public void test2() {
         String ret = JsonUtils.getValueByKey(json2, "json.b.www");
         System.out.println(ret);
