@@ -17,6 +17,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -48,6 +49,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableSocketio //是否开启Socketio的支持
 //@EnableElasticJob(withDatasource = true)
 @EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
+@EnableRetry(proxyTargetClass = true) //是否允许方法重试功能
+
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

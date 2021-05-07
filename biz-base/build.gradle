@@ -101,6 +101,8 @@ dependencies {
     compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
 //    compile group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
+    compile group: 'org.springframework.retry', name: 'spring-retry'
+
 
 
 
