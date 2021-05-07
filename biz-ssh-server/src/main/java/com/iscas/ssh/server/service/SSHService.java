@@ -517,7 +517,7 @@ public class SSHService {
             while (iterator.hasNext()) {
                 ChannelSftp.LsEntry next = (ChannelSftp.LsEntry) iterator.next();
                 String filename = next.getFilename();
-                if (!StringUtils.equalsAny(filename, ",", ".")) {
+                if (!StringUtils.equalsAny(filename, "..", ".")) {
                     String subPath = path + "/" + filename;
                     subPath = subPath.replaceAll("//+", "/");
                     toDelete(sftp, subPath);
