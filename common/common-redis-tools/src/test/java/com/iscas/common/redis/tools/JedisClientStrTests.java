@@ -222,7 +222,7 @@ public class JedisClientStrTests {
             set.add("y");
             set.add("z");
             set.add("m");
-            long result = jedisClient.sadd("set1", set.toArray(String[]::new));
+            long result = jedisClient.sadd("set1", set.toArray(new String[0]));
             System.out.println(result);
         } finally {
             jedisClient.del("set1");

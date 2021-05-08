@@ -1,12 +1,11 @@
 package com.iscas.common.redis.tools;
 
-import com.iscas.common.redis.tools.helper.MyObjectHelper;
-import com.iscas.common.redis.tools.impl.JedisClient;
-import com.iscas.common.redis.tools.impl.standalone.JedisStandAloneConnection;
+import com.iscas.common.redis.tools.impl.JdkNoneRedisStrClient;
+import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.Tuple;
 
@@ -25,63 +24,22 @@ import java.util.concurrent.TimeUnit;
  * @date 2018/11/5 15:36
  * @since jdk1.8
  */
-public class JedisClientTests {
-    private JedisClient jedisClient;
+public class JdkNoneRedisClientStrTests {
+    private static IJedisStrClient jedisClient;
     private int goodsCount = 50;
-
-    @Before
-    public void before() {
-        JedisConnection jedisConnection = new JedisStandAloneConnection();
-        ConfigInfo configInfo = new ConfigInfo();
-        configInfo.setMaxIdle(10);
-        configInfo.setMaxTotal(50);
-        configInfo.setMaxWait(20000);
-        RedisInfo redisInfo = new RedisInfo();
-        redisInfo.setHost("localhost");
-        redisInfo.setPort(6379);
-//        redisInfo.setPwd("iscas");
-        redisInfo.setTimeout(10000);
-        configInfo.setRedisInfos(Arrays.asList(redisInfo));
-        jedisClient = new JedisClient(jedisConnection, configInfo);
+    @BeforeAll
+    public static void before() {
+        JdkNoneRedisConnection jdkNoneRedisConnection = new JdkNoneRedisConnection();
+        jedisClient = new JdkNoneRedisStrClient(jdkNoneRedisConnection);
 
     }
 
-    //集群
-//    @Before
-//    @Ignore
-//    public void before() {
-//        JedisClusterConnection jedisConnection = new JedisClusterConnection();
-//        ConfigInfo configInfo = new ConfigInfo();
-//
-//        configInfo.setClusterMaxAttempts(10);
-//        configInfo.setClusterPassword("iscas");
-//        configInfo.setClusterTimeout(2000);
-//        configInfo.setClusterSoTimeout(2000);
-//        RedisInfo redisInfo = new RedisInfo("localhost", 6379, 10000, "iscas");
-//        configInfo.setRedisInfos(Arrays.asList(redisInfo));
-//        jedisClient = new JedisStrClient(jedisConnection, configInfo);
-//    }
 
-    //shared
-//    @Before
-//    @Ignore
-//    public void before() {
-//        JedisConnection jedisConnection = new JedisShardConnection();
-//        ConfigInfo configInfo = new ConfigInfo();
-//        configInfo.setMaxIdle(10);
-//        configInfo.setMaxTotal(50);
-//        configInfo.setMaxWait(20000);
-//        RedisInfo redisInfo = new RedisInfo("localhost", 6379, 10000, "iscas");
-//        configInfo.setRedisInfos(Arrays.asList(redisInfo));
-//        jedisClient = new JedisStrClient(jedisConnection, configInfo);
-//    }
-
-
-    /*======================================通用 begin==============================================================*/
+    /*==============================通用begin======================================*/
     /**
      * 测试分布式锁
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void test32() throws InterruptedException {
         //JVM 锁
         final Object lock = new Object();
@@ -133,29 +91,38 @@ public class JedisClientTests {
 
     /**
      * 测试分布式限流
-     */
+     * */
     @Test
     public void test33() {
-        for (int i = 0; i < 150; i++) {
+        for (int i = 0; i < 150 ; i++) {
             boolean flag = jedisClient.accessLimit("localhost", 10, 100);
             System.out.println(flag);
         }
 
     }
 
+    /**
+     * 测试延时队列
+     * */
+    @Test
+    public void test34() {
+        jedisClient.putDelayQueue("this is test", 5, TimeUnit.SECONDS, (task)-> {
+            System.out.println(task);
+        });
+    }
 
     /**
-     * 测试设置存储对象的key的过期时间
-     */
+     * 测试设置key的过期时间
+     * */
     @Test
-    public void test54() throws IOException, ClassNotFoundException {
+    public void test36() throws IOException {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "11111", 0);
             jedisClient.expire("testKey", 5000);
-            Assert.assertEquals("11111", jedisClient.get(Object.class, "testKey"));
+            Assert.assertEquals("11111", jedisClient.get("testKey"));
             TimeUnit.SECONDS.sleep(6);
-            Assert.assertNull(jedisClient.get(Object.class, "testKey"));
+            Assert.assertNull(jedisClient.get("testKey"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -167,72 +134,129 @@ public class JedisClientTests {
      * 测试pipeline
      * */
     @Test
-    public void testPipelineBatch() throws IOException, ClassNotFoundException {
+    public void testPipelineBatch() {
         try {
             jedisClient.del("testKey");
             jedisClient.pipelineBatch(pipelineBase -> {
                 pipelineBase.set("testKey", "1111");
                 pipelineBase.append("testKey", "2222");
             });
-            String value = jedisClient.get(String.class, "testKey");
+            String value = jedisClient.get("testKey");
             Assert.assertEquals("11112222", value);
         } finally {
             jedisClient.del("testKey");
         }
     }
 
-    /*======================================通用 end==============================================================*/
-
-    /*=====================================测试SET BEGIN=================================================*/
-
     /**
-     * 测试设置集合，并测试获取集合的值
-     */
+     * 测试pipeline,必须在Cluster模式下才能用
+     * */
     @Test
-    public void testSadd() throws IOException, ClassNotFoundException {
+    @Ignore
+    public void testPipelineClusterBatch() {
         try {
-            Set<Object> set = new HashSet<>();
-            set.add("x");
-            set.add("y");
-            set.add("z");
-            set.add("m");
-            long result = jedisClient.sadd("testKey", set, 0);
-            Set resultSet = jedisClient.smembers(Object.class, "testKey");
-            Assert.assertEquals(4, result);
-            resultSet.forEach(System.out::println);
+            jedisClient.del("testKey");
+            jedisClient.pipelineClusterBatch(pipeline -> {
+                pipeline.set("testKey", "1111");
+                pipeline.append("testKey", "2222");
+            });
+            String value = jedisClient.get("testKey");
+            Assert.assertEquals("11112222", value);
         } finally {
             jedisClient.del("testKey");
         }
     }
+    /*==============================通用end========================================*/
+
+
+    /*=====================================测试SET BEGIN===================================================*/
+    /**
+     * 测试设置集合，数据为字符串
+     * */
+    @Test
+    public void testAdd() throws IOException {
+        try {
+            jedisClient.del("set1");
+            Set<String> set = new HashSet<>();
+            set.add("x");
+            set.add("y");
+            set.add("z");
+            set.add("m");
+            long result = jedisClient.sadd("set1", set.toArray(new String[0]));
+            System.out.println(result);
+        } finally {
+            jedisClient.del("set1");
+        }
+    }
 
     /**
-     * 测试集合追加值，数据为对象
-     */
+     * 测试集合追加值，数据为字符串
+     * */
     @Test
-    public void testSdd2() throws IOException, ClassNotFoundException {
+    public void testAdd2()  {
         try {
-            long result = jedisClient.sadd("testKey", 1, 2, 4, "wegw");
-            Set resultSet = jedisClient.smembers(Object.class, "testKey");
-            Assert.assertEquals(4, result);
-            resultSet.forEach(System.out::println);
+            jedisClient.del("set1");
+            long result = jedisClient.sadd("set1", "x", "p", "q");
+            System.out.println(result);
+        } finally {
+            jedisClient.del("set1");
+        }
+    }
+
+    /**
+     * 测试差集
+     * */
+    @Test
+    public void testSdiff() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.sadd("testKey", "11111", "22222", "33333");
+            jedisClient.del("testKey2");
+            jedisClient.sadd("testKey2", "11111", "22222", "44444");
+            Set<String> diffSet = jedisClient.sdiff("testKey", "testKey2");
+            diffSet.forEach(System.out::println);
+            Assert.assertEquals(1, diffSet.size());
         } finally {
             jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
+
+    /**
+     * 测试差集，存储到新集合中
+     * */
+    @Test
+    public void testSdiffStore() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.sadd("testKey", "11111", "22222", "33333");
+            jedisClient.del("testKey2");
+            jedisClient.sadd("testKey2", "11111", "22222", "44444");
+            long result = jedisClient.sdiffStore("newKey", "testKey", "testKey2");
+            System.out.println(result);
+            Set<String> newSet = jedisClient.smembers("newKey");
+            newSet.stream().forEach(System.out::println);
+            Assert.assertEquals(1, result);
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.del("newKey");
         }
     }
 
     /**
      * 测试交集
-     */
+     * */
     @Test
-    public void testSinter() throws IOException, ClassNotFoundException {
+    public void testSinter() throws IOException {
         try {
             jedisClient.del("testKey");
-            jedisClient.sadd("testKey", "11111", "22222", "33333", 45);
+            jedisClient.sadd("testKey", "11111", "22222", "33333");
             jedisClient.del("testKey2");
-            jedisClient.sadd("testKey2", "11111", "22222", "44444", 45);
-            Set<Object> result = jedisClient.sinter(Object.class, "testKey", "testKey2");
+            jedisClient.sadd("testKey2", "11111", "22222", "44444");
+            Set<String> result = jedisClient.sinter("testKey", "testKey2");
             result.stream().forEach(System.out::println);
-            Assert.assertEquals(3, result.size());
+            Assert.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -241,18 +265,18 @@ public class JedisClientTests {
 
     /**
      * 测试交集,存入新集合
-     */
+     * */
     @Test
     public void testSinterStore() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
-            jedisClient.sadd("testKey", "11111", "33333", 67);
+            jedisClient.sadd("testKey", "11111", "33333");
             jedisClient.del("testKey2");
-            jedisClient.sadd("testKey2", "11111", "44444", 67);
-            long result = jedisClient.sinterStore("newKey", "testKey", "testKey2");
-            Set<Object> newSet = jedisClient.smembers(Object.class, "newKey");
+            jedisClient.sadd("testKey2", "11111", "44444");
+            long result = jedisClient.sinterStore("newKey","testKey", "testKey2");
+            Set<String> newSet = jedisClient.smembers("newKey");
             newSet.stream().forEach(System.out::println);
-            Assert.assertEquals(2, result);
+            Assert.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -262,39 +286,38 @@ public class JedisClientTests {
 
     /**
      * 测试集合中某个元素是否存在
-     */
+     * */
     @Test
     public void testSismember() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
-            jedisClient.sadd("testKey", "11111", "33333", 1111);
-            boolean exists = jedisClient.sismember("testKey", 1111);
+            jedisClient.sadd("testKey", "11111", "33333");
+            boolean exists = jedisClient.sismember("testKey", "11111");
             Assert.assertEquals(true, exists);
         } finally {
             jedisClient.del("testKey");
         }
     }
 
-
     /**
-     * 测试获取集合中所有的元素,集合中存储为对象
-     */
+     * 测试获取集合中所有的元素
+     * */
     @Test
     public void testSmembers() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
-            jedisClient.sadd("testKey", "11111", "33333", 23455);
-            Set<Object> members = jedisClient.smembers(Object.class, "testKey");
+            jedisClient.sadd("testKey", "11111", "33333");
+            Set<String> members = jedisClient.smembers("testKey");
             members.stream().forEach(System.out::println);
-            Assert.assertEquals(3, members.size());
+            Assert.assertEquals(2, members.size());
         } finally {
             jedisClient.del("testKey");
         }
     }
 
     /**
-     * 测试从集合中移除对象成员,放入目标集合
-     */
+     * 测试从集合中移除成员,放入目标集合
+     * */
     @Test
     public void testSmove() throws IOException, ClassNotFoundException {
         try {
@@ -303,8 +326,8 @@ public class JedisClientTests {
             jedisClient.sadd("srcKey", "11111", "33333");
             jedisClient.sadd("dstKey", "2222", "5555");
             jedisClient.smove("srcKey", "dstKey", "11111");
-            Set<Object> srcSet = jedisClient.smembers(Object.class, "srcKey");
-            Set<Object> dstSet = jedisClient.smembers(Object.class, "dstKey");
+            Set<String> srcSet = jedisClient.smembers("srcKey");
+            Set<String> dstSet = jedisClient.smembers("dstKey");
             srcSet.forEach(System.out::println);
             dstSet.forEach(System.out::println);
             Assert.assertEquals(1, srcSet.size());
@@ -315,16 +338,15 @@ public class JedisClientTests {
         }
     }
 
-
     /**
-     * 测试从集合中随机移除对象成员并返回
-     */
+     * 测试从集合中随机移除成员并返回
+     * */
     @Test
-    public void testSpop() throws IOException, ClassNotFoundException {
+    public void testScard() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             jedisClient.sadd("testKey", "11111", "33333");
-            Object data = jedisClient.spop(Object.class, "testKey");
+            String data = jedisClient.spop("testKey");
             System.out.println(data);
             Assert.assertEquals(1, jedisClient.scard("testKey"));
         } finally {
@@ -333,32 +355,16 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试获取集合中对象元素的个数
-     */
+     * 测试从集合中随机移除成员多个并返回
+     * */
     @Test
-    public void testScard() throws IOException {
+    public void testSpop() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
-            jedisClient.sadd("testKey", 2, 3, 4);
-            long sum = jedisClient.scard("testKey");
-            Assert.assertEquals(3, sum);
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
-
-
-    /**
-     * 测试从集合中随机移除对象成员并返回
-     */
-    @Test
-    public void testSpopCount() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.del("testKey");
-            jedisClient.sadd("testKey", "11111", "33333", 3);
-            Set<Object> datas = jedisClient.spop(Object.class, "testKey", 3);
+            jedisClient.sadd("testKey", "11111", "33333");
+            Set<String> datas = jedisClient.spop("testKey", 3);
             datas.forEach(System.out::println);
-            Assert.assertEquals(3, datas.size());
+            Assert.assertEquals(2, datas.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -366,94 +372,50 @@ public class JedisClientTests {
 
     /**
      * 测试从集合中删除成员
-     */
+     * */
     @Test
     public void testSrem() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
-            jedisClient.sadd("testKey", "11111", 33333);
+            jedisClient.sadd("testKey", "11111", "33333");
             long result = jedisClient.srem("testKey", "11111", "44444");
-            Set<Object> set = jedisClient.smembers(Object.class, "testKey");
+            Set<String> set = jedisClient.smembers("testKey");
             set.forEach(System.out::println);
             Assert.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
-            jedisClient.del("testKey2");
         }
     }
 
     /**
      * 测试去并集
-     */
+     * */
     @Test
     public void testSunion() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
-            jedisClient.sadd("testKey", "1", "2", "3", 2222);
-            jedisClient.sadd("testKey2", "1", "2", "3", "7", 345);
-            Set sunionSet = jedisClient.sunion(Object.class, "testKey", "testKey2");
+            jedisClient.sadd("testKey", "1", "2", "3");
+            jedisClient.sadd("testKey2", "1", "2", "3", "7");
+            Set<String> sunionSet = jedisClient.sunion("testKey", "testKey2");
             sunionSet.forEach(System.out::println);
-            Assert.assertEquals(6, sunionSet.size());
+            Assert.assertEquals(4, sunionSet.size());
         } finally {
             jedisClient.del("testKey");
-            jedisClient.del("testKey2");
         }
     }
 
-    /**
-     * 测试sdiff 差集
-     */
-    @Test
-    public void testSdiff() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.del("testKey");
-            jedisClient.del("testKey2");
-            long result = jedisClient.sadd("testKey", 1, 2, 4, "wegw");
-            long result2 = jedisClient.sadd("testKey2", 1, 2, 6, 7);
-            Set resultSet = jedisClient.sdiff(Object.class, "testKey", "testKey2");
-            Assert.assertEquals(2, resultSet.size());
-            resultSet.forEach(System.out::println);
-        } finally {
-            jedisClient.del("testKey");
-            jedisClient.del("testKey2");
-        }
-    }
-
-    /**
-     * 测试sdiff 差集
-     */
-    @Test
-    public void testSdiffStore() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.del("testKey");
-            jedisClient.del("testKey2");
-            jedisClient.del("testKey3");
-            long result = jedisClient.sadd("testKey", 1, 2, 4, "wegw");
-            long result2 = jedisClient.sadd("testKey2", 1, 2, 6, 7);
-            jedisClient.sdiffStore("testKey3", "testKey", "testKey2");
-            Set<Object> key3Result = jedisClient.smembers(Object.class, "testKey3");
-            Assert.assertEquals(2, key3Result.size());
-            key3Result.forEach(System.out::println);
-        } finally {
-            jedisClient.del("testKey");
-            jedisClient.del("testKey2");
-            jedisClient.del("testKey3");
-        }
-    }
-
-    /*=====================================测试SET END===================================================*/
-
+    /*=====================================测试SET END  ===================================================*/
 
     /*=============================sort set begin======================================*/
     /**
-     * 测试将一个元素插入zset
+     * 测试向zset添加一个元素
      * */
     @Test
-    public void testZadd() throws IOException {
+    public void testZadd() {
         try {
             jedisClient.del("testKey");
-            long result = jedisClient.zadd("testKey", 1, 123);
+            long result = jedisClient.zadd("testKey", 1, "xxxxx");
             Assert.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
@@ -461,16 +423,16 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试将多个元素插入zset
+     * 测试向zset添加元素，带超时时间
      * */
     @Test
-    public void testZadd2() throws IOException {
+    public void testZadd2() {
         try {
             jedisClient.del("testKey");
-            Map<Integer, Double> map = new HashMap<>();
-            map.put(1, 6.7);
-            map.put(2, 12.9);
-            long result = jedisClient.zadd("testKey", map);
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            long result = jedisClient.zadd("testKey", memebers, 20);
             Assert.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
@@ -478,16 +440,16 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试将多个元素插入zset, 带超时时间
+     * 测试向zset添加元素，不带超时时间
      * */
     @Test
-    public void testZadd3() throws IOException {
+    public void testZadd3() {
         try {
             jedisClient.del("testKey");
-            Map<Integer, Double> map = new HashMap<>();
-            map.put(1, 6.7);
-            map.put(2, 12.9);
-            long result = jedisClient.zadd("testKey", map,  2);
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            long result = jedisClient.zadd("testKey", memebers);
             Assert.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
@@ -495,27 +457,28 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试zset中元素的个数
+     * 测试获取zset中元素的个数
      * */
     @Test
-    public void testZcard() throws IOException {
+    public void testZcard() {
         try {
             jedisClient.del("testKey");
-            Map<Integer, Double> map = new HashMap<>();
-            map.put(1, 6.7);
-            map.put(2, 12.9);
-            jedisClient.zadd("testKey", map,  20);
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zcard("testKey");
             Assert.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
         }
     }
+
     /**
      * 测试获取zset中制定权重区间内的元素的个数
      * */
     @Test
-    public void testZcount() throws IOException {
+    public void testZcount() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -533,7 +496,7 @@ public class JedisClientTests {
      * 测试为zset中某个元素增加权重
      * */
     @Test
-    public void testZincrby() throws IOException {
+    public void testZincrby() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -555,17 +518,17 @@ public class JedisClientTests {
      * 测试获取zset制定范围的元素
      * */
     @Test
-    public void testZrange() throws IOException, ClassNotFoundException {
+    public void testZrange() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
             memebers.put("1", 1.0);
             memebers.put("2", 2.0);
             jedisClient.zadd("testKey", memebers);
-            Set<String> set1 = jedisClient.zrange(String.class, "testKey", 0, -1);
+            Set<String> set1 = jedisClient.zrange("testKey", 0, -1);
             set1.forEach(System.out::println);
             //如果元素不存在，增加这个元素
-            Set<String> set2 = jedisClient.zrange(String.class, "testKey", 0, 0);
+            Set<String> set2 = jedisClient.zrange("testKey", 0, 0);
             Assert.assertEquals("1", set2.iterator().next());
         } finally {
             jedisClient.del("testKey");
@@ -576,7 +539,7 @@ public class JedisClientTests {
      * 测试获取zset制定范围的元素,并附带权重
      * */
     @Test
-    public void testZrangeWithScores() throws IOException {
+    public void testZrangeWithScores() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -585,13 +548,7 @@ public class JedisClientTests {
             jedisClient.zadd("testKey", memebers);
             Set<Tuple> tuples = jedisClient.zrangeWithScores("testKey", 0, -1);
             tuples.forEach(tuple -> {
-                try {
-                    System.out.println(MyObjectHelper.unserialize(tuple.getBinaryElement()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(tuple.getElement());
                 System.out.println(tuple.getScore());
             });
             Assert.assertEquals(2, tuples.size());
@@ -604,14 +561,14 @@ public class JedisClientTests {
      * 测试获取zset制定范围的元素,并附带权重,返回Map
      * */
     @Test
-    public void testZrangeWithScoresToMap() throws IOException, ClassNotFoundException {
+    public void testZrangeWithScoresToMap() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
             memebers.put("1", 1.0);
             memebers.put("2", 2.0);
             jedisClient.zadd("testKey", memebers);
-            Map<String, Double> map = jedisClient.zrangeWithScoresToMap(String.class, "testKey", 0, -1);
+            Map<String, Double> map = jedisClient.zrangeWithScoresToMap("testKey", 0, -1);
             map.entrySet().forEach(entry -> {
                 System.out.println(entry.getKey());
                 System.out.println(entry.getValue());
@@ -626,14 +583,14 @@ public class JedisClientTests {
      * 测试按照权重查找zset中元素
      * */
     @Test
-    public void testZrangeByScore() throws IOException, ClassNotFoundException {
+    public void testZrangeByScore() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
             memebers.put("1", 1.0);
             memebers.put("2", 2.0);
             jedisClient.zadd("testKey", memebers);
-            Set<String> result = jedisClient.zrangeByScore(String.class, "testKey", 1.0, 1.7);
+            Set<String> result = jedisClient.zrangeByScore("testKey", 1.0, 1.7);
             result.forEach(System.out::println);
             Assert.assertEquals(1, result.size());
         } finally {
@@ -645,7 +602,7 @@ public class JedisClientTests {
      * 测试按照权重查找zset中元素, 带偏移量
      * */
     @Test
-    public void testZrangeByScore2() throws IOException, ClassNotFoundException {
+    public void testZrangeByScore2() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -655,9 +612,9 @@ public class JedisClientTests {
             memebers.put("4", 4.0);
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
-            Set<String> result = jedisClient.zrangeByScore(String.class, "testKey", 1.0, 4, 1, 2);
+            Set<String> result = jedisClient.zrangeByScore("testKey", 1.0, 2, 1, 2);
             result.forEach(System.out::println);
-            Assert.assertEquals(2, result.size());
+            Assert.assertEquals(1, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -667,7 +624,7 @@ public class JedisClientTests {
      * 测试按照权重查找zset中元素,返回值附带权重
      * */
     @Test
-    public void testZrangeByScoreWithScores() throws IOException, ClassNotFoundException {
+    public void testZrangeByScoreWithScores() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -679,13 +636,7 @@ public class JedisClientTests {
             jedisClient.zadd("testKey", memebers);
             Set<Tuple> result = jedisClient.zrangeByScoreWithScores("testKey", 1.0, 2.0);
             result.forEach(tuple -> {
-                try {
-                    System.out.println(MyObjectHelper.unserialize(tuple.getBinaryElement()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(tuple.getElement());
                 System.out.println(tuple.getScore());
             });
             Assert.assertEquals(2, result.size());
@@ -695,10 +646,10 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试按照权重查找zset中元素,返回值附带权重,返回Map
+     * 测试按照权重查找zset中元素,返回值附带权重, 返回Map
      * */
     @Test
-    public void testZrangeByScoreWithScoresToMap() throws IOException, ClassNotFoundException {
+    public void testZrangeByScoreWithScoresToMap() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -708,19 +659,20 @@ public class JedisClientTests {
             memebers.put("4", 4.0);
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
-            Map<String, Double> result = jedisClient.zrangeByScoreWithScoresToMap(String.class, "testKey", 1.0, 2.0);
-            result.entrySet().forEach(System.out::println);
+            Map<String, Double> result = jedisClient.zrangeByScoreWithScoresToMap("testKey", 1.0, 2.0);
+            System.out.println(result);
             Assert.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }
     }
 
+
     /**
      * 测试按照权重查找zset中元素,返回值附带权重, 带偏移量
      * */
     @Test
-    public void testZrangeByScoreWithScores2() throws IOException, ClassNotFoundException {
+    public void testZrangeByScoreWithScores2() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -732,37 +684,9 @@ public class JedisClientTests {
             jedisClient.zadd("testKey", memebers);
             Set<Tuple> result = jedisClient.zrangeByScoreWithScores("testKey", 1.0, 2.0, 0, 1);
             result.forEach(tuple -> {
-                try {
-                    System.out.println(MyObjectHelper.unserialize(tuple.getBinaryElement()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(tuple.getElement());
                 System.out.println(tuple.getScore());
             });
-            Assert.assertEquals(1, result.size());
-        } finally {
-            jedisClient.del("testKey");
-        }
-    }
-
-    /**
-     * 测试按照权重查找zset中元素,返回值附带权重,返回Map, 带偏移量
-     * */
-    @Test
-    public void testZrangeByScoreWithScoresToMap2() throws IOException, ClassNotFoundException {
-        try {
-            jedisClient.del("testKey");
-            Map<String, Double> memebers = new HashMap<>();
-            memebers.put("1", 1.0);
-            memebers.put("2", 2.0);
-            memebers.put("3", 3.0);
-            memebers.put("4", 4.0);
-            memebers.put("5", 5.0);
-            jedisClient.zadd("testKey", memebers);
-            Map<String, Double> result = jedisClient.zrangeByScoreWithScoresToMap(String.class, "testKey", 1.0, 2.0, 0, 1);
-            result.entrySet().forEach(System.out::println);
             Assert.assertEquals(1, result.size());
         } finally {
             jedisClient.del("testKey");
@@ -773,7 +697,29 @@ public class JedisClientTests {
      * 测试按照权重查找zset中元素,返回值附带权重, 返回Map，带偏移量
      * */
     @Test
-    public void testZrank() throws IOException {
+    public void testZrangeByScoreWithScoresToMap2() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Map<String, Double> result = jedisClient.zrangeByScoreWithScoresToMap("testKey", 1.0, 2.0, 0, 1);
+            System.out.println(result);
+            Assert.assertEquals(1, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从低到高权重排列，某个元素的位置
+     * */
+    @Test
+    public void testZrank() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -794,7 +740,7 @@ public class JedisClientTests {
      * 测试从高到低权重排列，某个元素的位置
      * */
     @Test
-    public void testZrevrank() throws IOException {
+    public void testZrevrank() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -815,7 +761,7 @@ public class JedisClientTests {
      * 测试从zset中删除元素
      * */
     @Test
-    public void testZrem() throws IOException {
+    public void testZrem() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -836,7 +782,7 @@ public class JedisClientTests {
      * 测试从zset中删除指定位置的元素
      * */
     @Test
-    public void testZremrangeByRank() throws IOException {
+    public void testZremrangeByRank() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -857,7 +803,7 @@ public class JedisClientTests {
      * 测试从zset中删除指定群众的元素
      * */
     @Test
-    public void testZremrangeByScore() throws IOException {
+    public void testZremrangeByScore() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -878,7 +824,7 @@ public class JedisClientTests {
      * 测试指定元素在zset中的权重
      * */
     @Test
-    public void testZscore() throws IOException {
+    public void testZscore() {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -897,38 +843,91 @@ public class JedisClientTests {
         }
     }
 
-//    /**
-//     * 测试通过字典区间返回有序集合的成员
-//     * */
-//    @Test
-//    public void testZrangeByLex() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            memebers.put("3", 3.0);
-//            memebers.put("4", 4.0);
-//            memebers.put("5", 5.0);
-//            jedisClient.zadd("testKey", memebers);
-////            Set<String> result1 = jedisClient.zrangeByLex(String.class, "testKey", "-", "+");
-////            result1.forEach(System.out::println);
-////            Assert.assertEquals(5, result1.size());
-//
-//            Set<String> result2 = jedisClient.zrangeByLex(String.class, "testKey", "[2", "(4");
-//            result2.forEach(System.out::println);
-//            Assert.assertEquals(2, result2.size());
-//
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
+    /**
+     * 测试通过字典区间返回有序集合的成员
+     * */
+    @Test
+    public void testZrangeByLex() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
+            result1.forEach(System.out::println);
+            Assert.assertEquals(5, result1.size());
+
+            Set<String> result2 = jedisClient.zrangeByLex("testKey", "[2", "(4");
+            result2.forEach(System.out::println);
+            Assert.assertEquals(2, result2.size());
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试通过字典区间返回有序集合的成员
+     * */
+    @Test
+    public void testZrangeByLex2() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
+            result1.forEach(System.out::println);
+            Assert.assertEquals(5, result1.size());
+
+            Set<String> result2 = jedisClient.zrangeByLex("testKey", "[2", "(4", 0, 1);
+            result2.forEach(System.out::println);
+            Assert.assertEquals(1, result2.size());
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试通过字典区间删除有序集合的成员
+     * */
+    @Test
+    public void testZremrangeByLex() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
+            result1.forEach(System.out::println);
+            Assert.assertEquals(5, result1.size());
+
+            long count = jedisClient.zremrangeByLex("testKey", "[2", "(4");
+            Assert.assertEquals(2, count);
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
 
     /**
      * 测试zset取交集并存入新集合
      * */
     @Test
-    public void testZinterstore() throws IOException, ClassNotFoundException {
+    public void testZinterstore() {
         try {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -949,7 +948,7 @@ public class JedisClientTests {
             memebers2.put("6", 6.0);
             jedisClient.zadd("testKey2", memebers2);
             long result = jedisClient.zinterstore("testKey3", "testKey", "testKey2");
-            Set<String> set = jedisClient.zrange(String.class, "testKey3", 0, -1);
+            Set<String> set = jedisClient.zrange("testKey3", 0, -1);
             set.forEach(System.out::println);
             Assert.assertEquals(result, 4);
 
@@ -964,7 +963,7 @@ public class JedisClientTests {
      * 测试zset取交集并存入新集合
      * */
     @Test
-    public void testZunionstore() throws IOException, ClassNotFoundException {
+    public void testZunionstore() {
         try {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -985,7 +984,7 @@ public class JedisClientTests {
             memebers2.put("6", 6.0);
             jedisClient.zadd("testKey2", memebers2);
             long result = jedisClient.zunionstore("testKey3", "testKey", "testKey2");
-            Set<String> set = jedisClient.zrange(String.class, "testKey3", 0, -1);
+            Set<String> set = jedisClient.zrange("testKey3", 0, -1);
             set.forEach(System.out::println);
             Assert.assertEquals(result, 6);
 
@@ -999,12 +998,12 @@ public class JedisClientTests {
     /*=============================sort set end========================================*/
 
 
-    /*=============================hash start========================================*/
+    /*=============================hash begin  ========================================*/
     /**
      * 测试存入hash
      * */
     @Test
-    public void testHmset() throws IOException {
+    public void testHmset() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
@@ -1022,14 +1021,14 @@ public class JedisClientTests {
      * 测试获取hash中所有的元素
      * */
     @Test
-    public void testHgetAll() throws IOException, ClassNotFoundException {
+    public void testHgetAll() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
             hash.put("a", "1");
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
-            Map<String, String> result = jedisClient.hgetAll(String.class, String.class, "testKey");
+            Map<String, String> result = jedisClient.hgetAll("testKey");
             result.entrySet().forEach(System.out::println);
             Assert.assertEquals(2, result.size());
 
@@ -1042,7 +1041,7 @@ public class JedisClientTests {
      * 测试从hash中删除元素
      * */
     @Test
-    public void testHdel() throws IOException {
+    public void testHdel() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
@@ -1061,7 +1060,7 @@ public class JedisClientTests {
      * 测试hash中是否存在某个key
      * */
     @Test
-    public void testHexists() throws IOException {
+    public void testHexists() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
@@ -1079,14 +1078,14 @@ public class JedisClientTests {
      * 测试hash中指定key的值
      * */
     @Test
-    public void testHget() throws IOException, ClassNotFoundException {
+    public void testHget() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
             hash.put("a", "1");
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
-            String result = jedisClient.hget(String.class, "testKey", "a");
+            String result = jedisClient.hget("testKey", "a");
             Assert.assertEquals(result, "1");
         } finally {
             jedisClient.del("testKey");
@@ -1097,15 +1096,15 @@ public class JedisClientTests {
      * 测试向hash中添加一个键值对
      * */
     @Test
-    public void testHset() throws IOException, ClassNotFoundException {
+    public void testHset() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
             hash.put("a", "1");
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
-            jedisClient.hset("testKey", "c", 3);
-            Assert.assertEquals(3, jedisClient.hgetAll(String.class, Object.class, "testKey").size());
+            jedisClient.hset("testKey", "c", "3");
+            Assert.assertEquals(3, jedisClient.hgetAll("testKey").size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -1115,7 +1114,7 @@ public class JedisClientTests {
      * 测试向hash中添加一个键值对,当这个field不存在时才添加
      * */
     @Test
-    public void testHsetnx() throws IOException, ClassNotFoundException {
+    public void testHsetnx() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
@@ -1123,10 +1122,10 @@ public class JedisClientTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             jedisClient.hsetnx("testKey", "c", "3");
-            Assert.assertEquals("3", jedisClient.hget(String.class, "testKey", "c"));
+            Assert.assertEquals("3", jedisClient.hget("testKey", "c"));
 
             jedisClient.hsetnx("testKey", "c", "311");
-            Assert.assertNotEquals("311", jedisClient.hget(String.class, "testKey", "c"));
+            Assert.assertNotEquals("311", jedisClient.hget("testKey", "c"));
 
         } finally {
             jedisClient.del("testKey");
@@ -1137,15 +1136,55 @@ public class JedisClientTests {
      * 测试获取hash的val
      * */
     @Test
-    public void testHvals() throws IOException, ClassNotFoundException {
+    public void testHvals() {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
             hash.put("a", "1");
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
-            List<String> result = jedisClient.hvals(String.class, "testKey");
+            List<String> result = jedisClient.hvals("testKey");
             Assert.assertEquals(2, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hincrby
+     * */
+    @Test
+    public void testHincrby() {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            jedisClient.hincrby("testKey", "a", 2);
+            Map<String, String> result = jedisClient.hgetAll("testKey");
+            result.entrySet().forEach(System.out::println);
+            Assert.assertEquals("3", jedisClient.hget("testKey", "a"));
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hincrby
+     * */
+    @Test
+    public void testHincrby2() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1.0");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            jedisClient.hincrby("testKey", "a", 2.7);
+            Map<String, String> result = jedisClient.hgetAll("testKey");
+            result.entrySet().forEach(System.out::println);
+            Assert.assertEquals("3.7", jedisClient.hget("testKey", "a"));
         } finally {
             jedisClient.del("testKey");
         }
@@ -1155,14 +1194,14 @@ public class JedisClientTests {
      * 测试hkeys
      * */
     @Test
-    public void testHkeys() throws IOException, ClassNotFoundException {
+    public void testHkeys() throws IOException {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
             hash.put("a", "1.0");
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
-            Set<String> set = jedisClient.hkeys(String.class, "testKey");
+            Set<String> set = jedisClient.hkeys("testKey");
             Assert.assertEquals(2, set.size());
         } finally {
             jedisClient.del("testKey");
@@ -1191,56 +1230,66 @@ public class JedisClientTests {
      * 测试hmege
      * */
     @Test
-    public void testHmget() throws IOException, ClassNotFoundException {
+    public void testHmget() throws IOException {
         try {
             jedisClient.del("testKey");
             Map<String, String> hash = new HashMap<>();
             hash.put("a", "1.0");
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
-            List<String> result = jedisClient.hmget(String.class, "testKey", "a", "b");
+            List<String> result = jedisClient.hmget("testKey", "a", "b");
             Assert.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }
     }
 
-    /*=============================hash end  ========================================*/
+
+    /*=============================hash end    ========================================*/
+
 
     /*=============================string begin========================================*/
+
     /**
-     * 测试插入一个对象，有超时时间，并测试获取这个对象
+     * 测试插入一个字符串，无超时时间
      */
     @Test
-    public void testSetAndGet() throws IOException, ClassNotFoundException {
+    public void testSet() {
         try {
-            boolean result = jedisClient.set("testKey", "value", 20);
-            String testValue = jedisClient.get(String.class, "testKey");
+            jedisClient.del("testKey");
+            boolean result = jedisClient.set("testKey", "value", 0);
             Assert.assertTrue(result);
-            Assert.assertEquals(testValue, "value");
-            Map map = new HashMap();
-            map.put("x", Arrays.asList(1,2,3));
-            jedisClient.set("testKey", map, 20);
-            Map testMap = jedisClient.get(Map.class, "testKey");
-            System.out.println(testMap);
+        } finally {
+            jedisClient.del("testKey");
+        }
+
+    }
+
+    /**
+     * 测试插入一个字符串，有超时时间
+     * */
+    @Test
+    public void testSet2() {
+        try {
+            jedisClient.del("testKey");
+            boolean result = jedisClient.set("testKey", "value", 20);
+            Assert.assertTrue(result);
         } finally {
             jedisClient.del("testKey");
         }
     }
 
+
     /**
-     * 测试setnx
-     */
+     * 测试获取字符串
+     * */
     @Test
-    public void testSetnx() throws IOException, ClassNotFoundException {
+    public void testGet() {
         try {
-            Map map = new HashMap();
-            map.put("a", 123);
             jedisClient.del("testKey");
-            long result1 = jedisClient.setnx("testKey", map);
-            Assert.assertEquals(result1, 1L);
-            long result2 = jedisClient.setnx("testKey", 22);
-            Assert.assertEquals(result2, 0L);
+            boolean setResult = jedisClient.set("testKey", "value", 0);
+            String result = jedisClient.get("testKey");
+            Assert.assertEquals(result, "value");
         } finally {
             jedisClient.del("testKey");
         }
@@ -1250,15 +1299,45 @@ public class JedisClientTests {
      * 测试setnx
      * */
     @Test
-    public void testSetrange() throws IOException, ClassNotFoundException {
+    public void testSetnx() {
+        try {
+            jedisClient.del("testKey");
+            long result1 = jedisClient.setnx("testKey", "value");
+            Assert.assertEquals(result1, 1L);
+            long result2 = jedisClient.setnx("testKey", "value2");
+            Assert.assertEquals(result2, 0);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setnx
+     * */
+    @Test
+    public void testSetrange() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "123456", 0);
             long result = jedisClient.setrange("testKey", 2, "99999999");
-            String strRes = jedisClient.get(String.class, "testKey");
-            System.out.println(strRes);
             Assert.assertEquals(result, 10);
+            String strRes = jedisClient.get("testKey");
             Assert.assertEquals("1299999999", strRes);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试append
+     * */
+    @Test
+    public void testAppend() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "123456", 0);
+            long len = jedisClient.append("testKey", "abcd");
+            Assert.assertEquals(10, len);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1268,12 +1347,42 @@ public class JedisClientTests {
      * 测试decrBy
      * */
     @Test
-    public void testDecrBy() throws IOException {
+    public void testDecrBy() {
         try {
             jedisClient.del("testKey");
-            jedisClient.set("testKey", 10000, 0);
+            jedisClient.set("testKey", "10000", 0);
             long result = jedisClient.decrBy("testKey", 1000);
             Assert.assertEquals(9000, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试incrBy
+     * */
+    @Test
+    public void testIncrBy() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            long result = jedisClient.incrBy("testKey", 1000);
+            Assert.assertEquals(11000, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试getrange
+     * */
+    @Test
+    public void testGetRange() {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.set("testKey", "10000", 0);
+            String result = jedisClient.getrange("testKey", 0, 2);
+            Assert.assertEquals("100", result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1283,12 +1392,12 @@ public class JedisClientTests {
      * 测试getSet
      * */
     @Test
-    public void testGetSet() throws IOException, ClassNotFoundException {
+    public void testGetSet() {
         try {
             jedisClient.del("testKey");
-            String result1 = jedisClient.getSet(String.class, "testKey", "10000");
+            String result1 = jedisClient.getSet("testKey", "10000");
             Assert.assertNull(result1);
-            String result2 = jedisClient.getSet(String.class, "testKey", "123");
+            String result2 = jedisClient.getSet("testKey", "123");
             Assert.assertEquals(result2, "10000");
         } finally {
             jedisClient.del("testKey");
@@ -1299,15 +1408,15 @@ public class JedisClientTests {
      * 测试mget
      * */
     @Test
-    public void testMget() throws IOException, ClassNotFoundException {
+    public void testMget() {
         try {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
             jedisClient.set("testKey", "111", 0);
-            jedisClient.set("testKey2", 222, 0);
-            List<Object> result = jedisClient.mget(Object.class, "testKey", "testKey2");
+            jedisClient.set("testKey2", "222", 0);
+            List<String> result = jedisClient.mget("testKey", "testKey2");
             Assert.assertEquals("111", result.get(0));
-            Assert.assertEquals(222, result.get(1));
+            Assert.assertEquals("222", result.get(1));
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -1318,12 +1427,12 @@ public class JedisClientTests {
      * 测试mset
      * */
     @Test
-    public void testMset() throws IOException, ClassNotFoundException {
+    public void testMset() {
         try {
             jedisClient.del("111");
             jedisClient.del("222");
             jedisClient.mset("111", "a", "222", "b");
-            List<String> result = jedisClient.mget(String.class, "111", "222");
+            List<String> result = jedisClient.mget("111", "222");
             Assert.assertEquals("a", result.get(0));
             Assert.assertEquals("b", result.get(1));
         } finally {
@@ -1336,7 +1445,7 @@ public class JedisClientTests {
      * 测试strlen
      * */
     @Test
-    public void testStrlen() throws IOException {
+    public void testStrlen() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "10000", 0);
@@ -1349,13 +1458,12 @@ public class JedisClientTests {
 
     /*=============================string end==========================================*/
 
-
     /*=============================list begin==========================================*/
     /**
      * 测试rpush
      * */
     @Test
-    public void testRpush() throws IOException {
+    public void testRpush() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.rpush("testKey", "10000", "22222");
@@ -1370,7 +1478,7 @@ public class JedisClientTests {
      * 测试rpush
      * */
     @Test
-    public void testLpush() throws IOException {
+    public void testLpush() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.lpush("testKey", "10000", "22222");
@@ -1385,7 +1493,7 @@ public class JedisClientTests {
      * 测试llen
      * */
     @Test
-    public void testLlen() throws IOException {
+    public void testLlen() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.rpush("testKey", "10000", "22222");
@@ -1400,7 +1508,7 @@ public class JedisClientTests {
      * 测试lset
      * */
     @Test
-    public void testLset() throws IOException {
+    public void testLset() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
@@ -1418,27 +1526,26 @@ public class JedisClientTests {
      * 测试linsert
      * */
     @Test
-    public void testLinsert() throws IOException {
+    public void testLinsert() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
             long result = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", "33333");
             Assert.assertEquals(result, 3);
-            long result2 = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", 45678);
-            Assert.assertEquals(result2, 4);
         } finally {
             jedisClient.del("testKey");
         }
     }
+
     /**
      * 测试lindex
      * */
     @Test
-    public void testLindex() throws IOException, ClassNotFoundException {
+    public void testLindex() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
-            String result = jedisClient.lindex(String.class, "testKey", 1);
+            String result = jedisClient.lindex("testKey", 1);
             Assert.assertEquals(result, "22222");
         } finally {
             jedisClient.del("testKey");
@@ -1449,11 +1556,11 @@ public class JedisClientTests {
      * 测试lpop
      * */
     @Test
-    public void testLpop() throws IOException, ClassNotFoundException {
+    public void testLpop() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
-            String result = jedisClient.lpop(String.class, "testKey");
+            String result = jedisClient.lpop("testKey");
             Assert.assertEquals(result, "10000");
         } finally {
             jedisClient.del("testKey");
@@ -1461,14 +1568,14 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试lpop
+     * 测试rpop
      * */
     @Test
-    public void testRpop() throws IOException, ClassNotFoundException {
+    public void testRpop() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
-            String result = jedisClient.rpop(String.class, "testKey");
+            String result = jedisClient.rpop("testKey");
             Assert.assertEquals(result, "22222");
         } finally {
             jedisClient.del("testKey");
@@ -1479,11 +1586,11 @@ public class JedisClientTests {
      * 测试lrange
      * */
     @Test
-    public void testLrange() throws IOException, ClassNotFoundException {
+    public void testLrange() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222", "444", "adsdb");
-            List<String> result = jedisClient.lrange(String.class, "testKey", 0, 2);
+            List<String> result = jedisClient.lrange("testKey", 0, 2);
             Assert.assertEquals(result.size(), 3);
         } finally {
             jedisClient.del("testKey");
@@ -1494,7 +1601,7 @@ public class JedisClientTests {
      * 测试lrem
      * */
     @Test
-    public void testLrem() throws IOException {
+    public void testLrem() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
@@ -1511,13 +1618,13 @@ public class JedisClientTests {
      * 测试ltrim
      * */
     @Test
-    public void testLtrim() throws IOException, ClassNotFoundException {
+    public void testLtrim() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
             boolean result = jedisClient.ltrim("testKey", 2, 3);
             Assert.assertTrue(result);
-            List<String> result2 = jedisClient.lrange(String.class, "testKey", 0, -1);
+            List<String> result2 = jedisClient.lrange("testKey", 0, -1);
             Assert.assertEquals(2, result2.size());
         } finally {
             jedisClient.del("testKey");
@@ -1525,6 +1632,7 @@ public class JedisClientTests {
     }
 
     /*=============================list end============================================*/
+
 
 
 }
