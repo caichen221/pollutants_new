@@ -35,8 +35,8 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * @return
      */
     @Override
-    public long del(String key) throws IOException {
-        return 0L;
+    public long del(String key) {
+        return toDel(key);
     }
 
     /**
@@ -45,9 +45,8 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * @return
      */
     @Override
-    public  boolean exists(String key) throws IOException {
-        return false;
-
+    public boolean exists(String key) throws IOException {
+        return toExists(key);
     }
 
     private boolean jedisCommandsBytesExists(Object jedisCommands, byte[] bytesKey) {
@@ -75,9 +74,8 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public void deleteByPattern(String pattern) throws UnsupportedEncodingException {
-
-
+    public void deleteByPattern(String pattern) {
+        toDeleteByPattern(pattern);
     }
 
 //    @Override

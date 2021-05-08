@@ -23,12 +23,19 @@ public class JdkNoneRedisConnection implements JedisConnection {
     /**存储分布式锁对象*/
     public TimedCache<String, String> ACQUIRE_LOCK_CACHE = null;
 
+    /**对象缓存对象*/
+    public TimedCache<String, String> OBJECT_CACHE = null;
+
     //初始化
     public void init() {
 
-        ACQUIRE_LOCK_CACHE = CacheUtil.newTimedCache(Integer.MAX_VALUE);
+        ACQUIRE_LOCK_CACHE = CacheUtil.newTimedCache(Long.MAX_VALUE);
         //启动定时任务，每5毫秒秒检查一次过期
         ACQUIRE_LOCK_CACHE.schedulePrune(5);
+
+        OBJECT_CACHE = CacheUtil.newTimedCache(Long.MAX_VALUE);
+        //启动定时任务，每5毫秒秒检查一次过期
+        OBJECT_CACHE.schedulePrune(5);
     }
 
     @Override

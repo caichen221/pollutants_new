@@ -1,5 +1,6 @@
 package com.iscas.common.redis.tools.impl;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
@@ -141,6 +142,29 @@ public class JdkNoneRedisCommonClient {
 
     public void pipelineBatch(Consumer<PipelineBase> consumer) {
         throw new UnsupportedOperationException("jdk模式不支持pipeline");
+    }
+
+    protected long toDel(String key) {
+        synchronized (key.intern()) {
+            if (jdkNoneRedisConnection.OBJECT_CACHE.containsKey(key)) {
+                jdkNoneRedisConnection.OBJECT_CACHE.remove(key);
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    protected boolean toExists(String key) {
+        return jdkNoneRedisConnection.OBJECT_CACHE.containsKey(key);
+    }
+
+    protected void toDeleteByPattern(String pattern) {
+        //转换为正则表达式
+        pattern = pattern.replace("*", ".*");
+        pattern = pattern.replace("?", ".");
+        Object cacheMap = ReflectUtil.getFieldValue(jdkNoneRedisConnection.OBJECT_CACHE, "cacheMap");
+        System.out.println(cacheMap);
     }
 
 

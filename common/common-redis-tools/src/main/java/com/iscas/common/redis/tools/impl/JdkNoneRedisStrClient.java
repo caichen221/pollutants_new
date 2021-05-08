@@ -13,6 +13,7 @@ import redis.clients.jedis.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * JdkStrClient
@@ -46,24 +47,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public long del(String key) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.del(key);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                shardedJedis.del(key);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.del(key);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0;
+        return toDel(key);
     }
 
     /**
@@ -73,48 +57,12 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public boolean exists(String key) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.exists(key);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                shardedJedis.exists(key);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.exists(key);
-//            }
-//            return false;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return false;
+        return toExists(key);
     }
 
     @Override
     public void deleteByPattern(String pattern) {
-//        Object jedis = null;
-//        try {
-//            jedis = getResource(Object.class);
-//            if (jedis instanceof Jedis) {
-//                Jedis jd = (Jedis) jedis;
-//                Set<String> keys = jd.keys(pattern);
-//                if(keys != null && !keys.isEmpty()) {
-//                    String[] keyArr = new String[keys.size()];
-//                    jd.del(keys.toArray(keyArr));
-//                }
-//            } else if (jedis instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jedis;
-//                throw new RuntimeException("ShardedJedis 暂不支持pattern删除");
-//            } else if (jedis instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jedis;
-//                throw new RuntimeException("JedisCluster 暂不支持pattern删除");
-//            }
-//        } finally {
-//            returnResource(jedis);
-//        }
+        toDeleteByPattern(pattern);
     }
 
 
@@ -612,7 +560,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public Map<String, Double> zrangeWithScoresToMap(String key, long start, long end) {
-       return null;
+        return null;
     }
 
     @Override
