@@ -20,7 +20,7 @@ import java.util.*;
  * @date 2021/05/08
  * @since jdk1.8
  */
-public class JdkNoneRedisClient extends JdkCommonClient implements IJedisClient {
+public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJedisClient {
 
     public JdkNoneRedisClient(JedisConnection jedisConnection) {
         this.jedisConnection = jedisConnection;

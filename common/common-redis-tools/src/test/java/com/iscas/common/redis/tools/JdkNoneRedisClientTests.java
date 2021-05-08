@@ -1,20 +1,12 @@
 package com.iscas.common.redis.tools;
 
-import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.impl.JdkNoneRedisClient;
-import com.iscas.common.redis.tools.impl.JdkNoneRedisStrClient;
-import com.iscas.common.redis.tools.impl.JedisClient;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
-import com.iscas.common.redis.tools.impl.standalone.JedisStandAloneConnection;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
-import redis.clients.jedis.ListPosition;
-import redis.clients.jedis.Tuple;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -93,17 +85,18 @@ public class JdkNoneRedisClientTests {
         }
     }
 
-//    /**
-//     * 测试分布式限流
-//     */
-//    @Test
-//    public void test33() {
-//        for (int i = 0; i < 150; i++) {
-//            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
-//            System.out.println(flag);
-//        }
-//
-//    }
+    /**
+     * 测试分布式限流
+     */
+    @Test
+    @Disabled
+    public void test33() {
+        for (int i = 0; i < 150; i++) {
+            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
+            System.out.println(flag);
+        }
+
+    }
 //
 //
 //    /**
@@ -125,11 +118,12 @@ public class JdkNoneRedisClientTests {
 //        }
 //    }
 //
-//    /**
-//     * 测试pipeline
-//     * */
-//    @Test
-//    public void testPipelineBatch() throws IOException, ClassNotFoundException {
+    /**
+     * 测试pipeline
+     * */
+    @Test
+    @Disabled
+    public void testPipelineBatch() throws IOException, ClassNotFoundException {
 //        try {
 //            jedisClient.del("testKey");
 //            jedisClient.pipelineBatch(pipelineBase -> {
@@ -137,11 +131,10 @@ public class JdkNoneRedisClientTests {
 //                pipelineBase.append("testKey", "2222");
 //            });
 //            String value = jedisClient.get(String.class, "testKey");
-//            Assert.assertEquals("11112222", value);
 //        } finally {
 //            jedisClient.del("testKey");
 //        }
-//    }
+    }
 //
 //    /*======================================通用 end==============================================================*/
 //

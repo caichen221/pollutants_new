@@ -7,6 +7,7 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import redis.clients.jedis.PipelineBase;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
  * @date 2021/05/08 12:53
  * @since jdk1.8
  */
-public class JdkCommonClient {
+public class JdkNoneRedisCommonClient {
     protected JedisConnection jedisConnection;
     protected JdkNoneRedisConnection jdkNoneRedisConnection;
 
@@ -127,70 +128,19 @@ public class JdkCommonClient {
      * @return 是否可以访问
      */
     public boolean accessLimit(String ip, int timeout, int limit) {
-//        Object conn = null;
-//        try {
-//            conn = getResource(Object.class);
-//            String lua = "local num = redis.call('incr', KEYS[1])\n" +
-//                    "if tonumber(num) == 1 then\n" +
-//                    "\tredis.call('expire', KEYS[1], ARGV[1])\n" +
-//                    "\treturn 1\n" +
-//                    "elseif tonumber(num) > tonumber(ARGV[2]) then\n" +
-//                    "\treturn 0\n" +
-//                    "else \n" +
-//                    "\treturn 1\n" +
-//                    "end\n";
-//            Object result = jedisCommandsBytesLuaEvalSha(conn, lua, Arrays.asList(ip), Arrays.asList(String.valueOf(timeout),
-//                    String.valueOf(limit)));
-//            return "1".equals(result == null ? null : result.toString());
-//        }  finally {
-//            returnResource(conn);
-//        }
-        return false;
+        throw new UnsupportedOperationException("jdk模式不支持IP限流");
     }
 
     public Object jedisCommandsBytesLuaEvalSha(Object jedisCommands, String lua, List key, List val) {
-//        if (jedisCommands instanceof Jedis) {
-//            Jedis jedis = (Jedis) jedisCommands;
-//            return jedis.evalsha(jedis.scriptLoad(lua), key, val);
-//        } else if (jedisCommands instanceof ShardedJedis) {
-//            ShardedJedis shardedJedis = (ShardedJedis) jedisCommands;
-//            throw new RuntimeException("ShardedJedis 暂不支持执行Lua脚本");
-//        } else if (jedisCommands instanceof JedisCluster) {
-//            JedisCluster jedisCluster = (JedisCluster) jedisCommands;
-//            return jedisCluster.evalsha(jedisCluster.scriptLoad(lua, lua), key, val);
-//        }
-        return 0;
+        throw new UnsupportedOperationException("jdk模式不支持pipeline");
     }
 
     public PipelineBase getPipeline(Object jedisResource) {
-//        if (jedisResource instanceof Jedis) {
-//            Jedis jedis = (Jedis) jedisResource;
-//            return jedis.pipelined();
-//        } else if (jedisResource instanceof ShardedJedis) {
-//            ShardedJedis shardedJedis = (ShardedJedis) jedisResource;
-//            return shardedJedis.pipelined();
-//        } else if (jedisResource instanceof JedisCluster) {
-//            JedisCluster jedisCluster = (JedisCluster) jedisResource;
-//            throw new RuntimeException("JedisCluster 暂不支持pipeline");
-//        }
-//        throw new RuntimeException("jedisResource:" + jedisResource.getClass().getSimpleName() + " 为不支持的类型");
-        return null;
+        throw new UnsupportedOperationException("jdk模式不支持pipeline");
     }
 
     public void pipelineBatch(Consumer<PipelineBase> consumer) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            PipelineBase pipeline = getPipeline(jc);
-//            consumer.accept(pipeline);
-//            if (pipeline instanceof Pipeline) {
-//                ((Pipeline) pipeline).sync();
-//            } else if (pipeline instanceof ShardedJedisPipeline) {
-//                ((ShardedJedisPipeline) pipeline).sync();
-//            }
-//        } finally {
-//            returnResource(jc);
-//        }
+        throw new UnsupportedOperationException("jdk模式不支持pipeline");
     }
 
 

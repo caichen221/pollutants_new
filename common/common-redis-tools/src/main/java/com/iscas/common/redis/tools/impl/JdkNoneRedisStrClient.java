@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  * @date 2021/05/08
  * @since jdk1.8
  */
-public class JdkNoneRedisStrClient extends JdkCommonClient implements IJedisStrClient {
+public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements IJedisStrClient {
 
     public JdkNoneRedisStrClient(JedisConnection jedisConnection) {
         this.jedisConnection = jedisConnection;
@@ -37,12 +37,7 @@ public class JdkNoneRedisStrClient extends JdkCommonClient implements IJedisStrC
 
     @Override
     public void pipelineClusterBatch(Consumer<RedisAdvancedClusterCommands<String, String>> consumer) {
-        JedisClusterConnection jedisClusterConnection = (JedisClusterConnection) jedisConnection;
-        RedisClusterClient lettuceClusterClient = jedisClusterConnection.getLettuceClusterClient();
-        StatefulRedisClusterConnection<String, String> connect = lettuceClusterClient.connect();
-        RedisAdvancedClusterCommands<String, String> commands = connect.sync();
-        consumer.accept(commands);
-        connect.close();
+        throw new UnsupportedOperationException("jdk模式不支持pipeline");
     }
     /**
      * 删除缓存
