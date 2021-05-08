@@ -1,5 +1,6 @@
 package com.iscas.common.redis.tools.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
@@ -8,11 +9,9 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import redis.clients.jedis.PipelineBase;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * 不使用Redis，使用Jdk仿造Redis的方法，
@@ -163,8 +162,14 @@ public class JdkNoneRedisCommonClient {
         //转换为正则表达式
         pattern = pattern.replace("*", ".*");
         pattern = pattern.replace("?", ".");
-        Object cacheMap = ReflectUtil.getFieldValue(jdkNoneRedisConnection.OBJECT_CACHE, "cacheMap");
-        System.out.println(cacheMap);
+        Map cacheMap = (Map) ReflectUtil.getFieldValue(jdkNoneRedisConnection.OBJECT_CACHE, "cacheMap");
+        Set<String> set = cacheMap.keySet();
+        if (CollectionUtil.isNotEmpty(set)) {
+            Pattern pa = Pattern.compile(pattern);
+            //删除正则表达式匹配到得key
+            set.stream().filter(key -> pa.matcher(key).matches())
+                    .forEach(jdkNoneRedisConnection.OBJECT_CACHE::remove);
+        }
     }
 
 

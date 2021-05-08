@@ -11,6 +11,7 @@ import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -96,11 +97,19 @@ public class JdkNoneRedisClientStrTests {
     @org.junit.jupiter.api.Test
     @Disabled
     public void test33() {
-        for (int i = 0; i < 150 ; i++) {
-            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
-            System.out.println(flag);
-        }
+//        for (int i = 0; i < 150 ; i++) {
+//            boolean flag = jedisClient.accessLimit("localhost", 10, 100);
+//            System.out.println(flag);
+//        }
 
+    }
+
+    /**
+     * 测试模糊匹配删除
+     * */
+    @org.junit.jupiter.api.Test
+    public void testDeleteByPattern() throws UnsupportedEncodingException {
+        jedisClient.deleteByPattern("*");
     }
 
     /**

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,6 +98,15 @@ public class JdkNoneRedisClientTests {
         }
 
     }
+
+    /**
+     * 测试模糊匹配删除
+     * */
+    @Test
+    public void testDeleteByPattern() throws UnsupportedEncodingException {
+        jedisClient.deleteByPattern("*");
+    }
+
 //
 //
 //    /**
