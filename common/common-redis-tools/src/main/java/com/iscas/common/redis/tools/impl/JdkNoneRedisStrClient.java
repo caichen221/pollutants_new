@@ -60,34 +60,17 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
         return toExists(key);
     }
 
+    /**
+     * 模糊删除
+     * */
     @Override
     public void deleteByPattern(String pattern) {
         toDeleteByPattern(pattern);
     }
 
-
-
     @Override
     public void expire(String key, long milliseconds) {
-//        Object jedis = null;
-//        try {
-//            jedis = getResource(Object.class);
-//            if (milliseconds <= 0) {
-//                return;
-//            }
-//            if (jedis instanceof Jedis) {
-//                Jedis jd = (Jedis) jedis;
-//                jd.pexpire(key, milliseconds);
-//            } else if (jedis instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jedis;
-//                shardedJedis.pexpire(key, milliseconds);
-//            } else if (jedis instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jedis;
-//                jedisCluster.pexpire(key, milliseconds);
-//            }
-//        } finally {
-//            returnResource(jedis);
-//        }
+        toExpire(key, milliseconds);
     }
 
     @Override
@@ -735,7 +718,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public boolean set(String key, String value, int cacheSeconds) {
-        return false;
+        return toSet(key, value, cacheSeconds);
     }
 
     /**

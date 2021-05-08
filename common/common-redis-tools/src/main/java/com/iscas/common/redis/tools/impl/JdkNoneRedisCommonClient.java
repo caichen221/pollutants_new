@@ -172,5 +172,20 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
+    protected void toExpire(String key, long milliseconds) {
+        Object value = jdkNoneRedisConnection.OBJECT_CACHE.get(key);
+        if (value != null) {
+            jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, milliseconds);
+        }
+    }
+
+    protected boolean toSet(String key, Object value, long seconds) {
+        if (seconds == 0) {
+            jdkNoneRedisConnection.OBJECT_CACHE.put(key, value);
+        } else {
+            jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, seconds * 1000);
+        }
+        return true;
+    }
 
 }

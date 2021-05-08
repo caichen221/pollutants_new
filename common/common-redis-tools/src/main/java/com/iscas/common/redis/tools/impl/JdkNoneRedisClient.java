@@ -73,6 +73,9 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
         return 0L;
     }
 
+    /**
+     * 模糊删除
+     * */
     @Override
     public void deleteByPattern(String pattern) {
         toDeleteByPattern(pattern);
@@ -107,7 +110,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public void expire(String key, long milliseconds) throws IOException {
-
+        toExpire(key, milliseconds);
     }
     /*=============================通用 end==========================================*/
 
@@ -435,9 +438,8 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * @return
      */
     @Override
-    public  boolean set(String key, Object value, int cacheSeconds) throws IOException {
-        throw new UnsupportedOperationException();
-
+    public boolean set(String key, Object value, int cacheSeconds) throws IOException {
+        return toSet(key, value, cacheSeconds);
     }
 
     @Override

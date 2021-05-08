@@ -24,7 +24,7 @@ public class JdkNoneRedisConnection implements JedisConnection {
     public TimedCache<String, String> ACQUIRE_LOCK_CACHE = null;
 
     /**对象缓存对象*/
-    public TimedCache<String, String> OBJECT_CACHE = null;
+    public TimedCache<String, Object> OBJECT_CACHE = null;
 
     //初始化
     public void init() {
