@@ -10,10 +10,7 @@ import redis.clients.jedis.ListPosition;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -967,216 +964,212 @@ public class JdkNoneRedisClientTests {
 //        }
 //    }
 //
-//    /*=============================sort set end========================================*/
-//
-//
-//    /*=============================hash start========================================*/
-//    /**
-//     * 测试存入hash
-//     * */
-//    @Test
-//    public void testHmset() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            boolean result = jedisClient.hmset("testKey", hash, 5);
-//            Assert.assertEquals(true, result);
-//
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试获取hash中所有的元素
-//     * */
-//    @Test
-//    public void testHgetAll() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            Map<String, String> result = jedisClient.hgetAll(String.class, String.class, "testKey");
-//            result.entrySet().forEach(System.out::println);
-//            Assert.assertEquals(2, result.size());
-//
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试从hash中删除元素
-//     * */
-//    @Test
-//    public void testHdel() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            long result = jedisClient.hdel("testKey", "a", "b");
-//            Assert.assertEquals(2, result);
-//
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试hash中是否存在某个key
-//     * */
-//    @Test
-//    public void testHexists() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            boolean hexists = jedisClient.hexists("testKey", "a");
-//            Assert.assertTrue(hexists);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试hash中指定key的值
-//     * */
-//    @Test
-//    public void testHget() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            String result = jedisClient.hget(String.class, "testKey", "a");
-//            Assert.assertEquals(result, "1");
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试向hash中添加一个键值对
-//     * */
-//    @Test
-//    public void testHset() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            jedisClient.hset("testKey", "c", 3);
-//            Assert.assertEquals(3, jedisClient.hgetAll(String.class, Object.class, "testKey").size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试向hash中添加一个键值对,当这个field不存在时才添加
-//     * */
-//    @Test
-//    public void testHsetnx() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            jedisClient.hsetnx("testKey", "c", "3");
-//            Assert.assertEquals("3", jedisClient.hget(String.class, "testKey", "c"));
-//
-//            jedisClient.hsetnx("testKey", "c", "311");
-//            Assert.assertNotEquals("311", jedisClient.hget(String.class, "testKey", "c"));
-//
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试获取hash的val
-//     * */
-//    @Test
-//    public void testHvals() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            List<String> result = jedisClient.hvals(String.class, "testKey");
-//            Assert.assertEquals(2, result.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试hkeys
-//     * */
-//    @Test
-//    public void testHkeys() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1.0");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            Set<String> set = jedisClient.hkeys(String.class, "testKey");
-//            Assert.assertEquals(2, set.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试hlen
-//     * */
-//    @Test
-//    public void testHlen() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1.0");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            long result = jedisClient.hlen("testKey");
-//            Assert.assertEquals(2, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试hmege
-//     * */
-//    @Test
-//    public void testHmget() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, String> hash = new HashMap<>();
-//            hash.put("a", "1.0");
-//            hash.put("b", "2");
-//            jedisClient.hmset("testKey", hash, 0);
-//            List<String> result = jedisClient.hmget(String.class, "testKey", "a", "b");
-//            Assert.assertEquals(2, result.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /*=============================hash end  ========================================*/
+    /*=============================sort set end========================================*/
+
+
+    /*=============================hash start========================================*/
+    /**
+     * 测试存入hash
+     * */
+    @Test
+    public void testHmset() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            boolean result = jedisClient.hmset("testKey", hash, 5);
+            Assertions.assertEquals(true, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取hash中所有的元素
+     * */
+    @Test
+    public void testHgetAll() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            Map<String, String> result = jedisClient.hgetAll(String.class, String.class, "testKey");
+            result.entrySet().forEach(System.out::println);
+            Assertions.assertEquals(2, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试从hash中删除元素
+     * */
+    @Test
+    public void testHdel() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            long result = jedisClient.hdel("testKey", "a", "b");
+            Assertions.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hash中是否存在某个key
+     * */
+    @Test
+    public void testHexists() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            boolean hexists = jedisClient.hexists("testKey", "a");
+            Assertions.assertTrue(hexists);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hash中指定key的值
+     * */
+    @Test
+    public void testHget() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            String result = jedisClient.hget(String.class, "testKey", "a");
+            Assertions.assertEquals(result, "1");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试向hash中添加一个键值对
+     * */
+    @Test
+    public void testHset() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            jedisClient.hset("testKey", "c", 3);
+            Assertions.assertEquals(3, jedisClient.hgetAll(String.class, Object.class, "testKey").size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试向hash中添加一个键值对,当这个field不存在时才添加
+     * */
+    @Test
+    public void testHsetnx() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            jedisClient.hsetnx("testKey", "c", "3");
+            Assertions.assertEquals("3", jedisClient.hget(String.class, "testKey", "c"));
+
+            jedisClient.hsetnx("testKey", "c", "311");
+            Assertions.assertNotEquals("311", jedisClient.hget(String.class, "testKey", "c"));
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取hash的val
+     * */
+    @Test
+    public void testHvals() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            List<String> result = jedisClient.hvals(String.class, "testKey");
+            Assertions.assertEquals(2, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hkeys
+     * */
+    @Test
+    public void testHkeys() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1.0");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            Set<String> set = jedisClient.hkeys(String.class, "testKey");
+            Assertions.assertEquals(2, set.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hlen
+     * */
+    @Test
+    public void testHlen() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1.0");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            long result = jedisClient.hlen("testKey");
+            Assertions.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试hmget
+     * */
+    @Test
+    public void testHmget() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, String> hash = new HashMap<>();
+            hash.put("a", "1.0");
+            hash.put("b", "2");
+            jedisClient.hmset("testKey", hash, 0);
+            List<String> result = jedisClient.hmget(String.class, "testKey", "a", "b");
+            Assertions.assertEquals(2, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /*=============================hash end  ========================================*/
 
     /*=============================string begin========================================*/
     /**

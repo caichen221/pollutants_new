@@ -1014,7 +1014,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试存入hash
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHmset() {
         try {
             jedisClient.del("testKey");
@@ -1022,7 +1022,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("a", "1");
             hash.put("b", "2");
             boolean result = jedisClient.hmset("testKey", hash, 5);
-            Assert.assertEquals(true, result);
+            Assertions.assertEquals(true, result);
 
         } finally {
             jedisClient.del("testKey");
@@ -1032,7 +1032,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取hash中所有的元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHgetAll() {
         try {
             jedisClient.del("testKey");
@@ -1042,8 +1042,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.hmset("testKey", hash, 0);
             Map<String, String> result = jedisClient.hgetAll("testKey");
             result.entrySet().forEach(System.out::println);
-            Assert.assertEquals(2, result.size());
-
+            Assertions.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -1052,7 +1051,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从hash中删除元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHdel() {
         try {
             jedisClient.del("testKey");
@@ -1061,8 +1060,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             long result = jedisClient.hdel("testKey", "a", "b");
-            Assert.assertEquals(2, result);
-
+            Assertions.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1071,7 +1069,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hash中是否存在某个key
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHexists() {
         try {
             jedisClient.del("testKey");
@@ -1080,7 +1078,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             boolean hexists = jedisClient.hexists("testKey", "a");
-            Assert.assertTrue(hexists);
+            Assertions.assertTrue(hexists);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1089,7 +1087,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hash中指定key的值
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHget() {
         try {
             jedisClient.del("testKey");
@@ -1098,7 +1096,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             String result = jedisClient.hget("testKey", "a");
-            Assert.assertEquals(result, "1");
+            Assertions.assertEquals(result, "1");
         } finally {
             jedisClient.del("testKey");
         }
@@ -1107,7 +1105,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试向hash中添加一个键值对
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHset() {
         try {
             jedisClient.del("testKey");
@@ -1116,7 +1114,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             jedisClient.hset("testKey", "c", "3");
-            Assert.assertEquals(3, jedisClient.hgetAll("testKey").size());
+            Assertions.assertEquals(3, jedisClient.hgetAll("testKey").size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -1125,7 +1123,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试向hash中添加一个键值对,当这个field不存在时才添加
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHsetnx() {
         try {
             jedisClient.del("testKey");
@@ -1134,11 +1132,10 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             jedisClient.hsetnx("testKey", "c", "3");
-            Assert.assertEquals("3", jedisClient.hget("testKey", "c"));
+            Assertions.assertEquals("3", jedisClient.hget("testKey", "c"));
 
             jedisClient.hsetnx("testKey", "c", "311");
-            Assert.assertNotEquals("311", jedisClient.hget("testKey", "c"));
-
+            Assertions.assertNotEquals("311", jedisClient.hget("testKey", "c"));
         } finally {
             jedisClient.del("testKey");
         }
@@ -1147,7 +1144,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取hash的val
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHvals() {
         try {
             jedisClient.del("testKey");
@@ -1156,7 +1153,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             List<String> result = jedisClient.hvals("testKey");
-            Assert.assertEquals(2, result.size());
+            Assertions.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -1165,7 +1162,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hincrby
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHincrby() {
         try {
             jedisClient.del("testKey");
@@ -1176,7 +1173,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.hincrby("testKey", "a", 2);
             Map<String, String> result = jedisClient.hgetAll("testKey");
             result.entrySet().forEach(System.out::println);
-            Assert.assertEquals("3", jedisClient.hget("testKey", "a"));
+            Assertions.assertEquals("3", jedisClient.hget("testKey", "a"));
         } finally {
             jedisClient.del("testKey");
         }
@@ -1185,7 +1182,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hincrby
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHincrby2() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1196,7 +1193,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.hincrby("testKey", "a", 2.7);
             Map<String, String> result = jedisClient.hgetAll("testKey");
             result.entrySet().forEach(System.out::println);
-            Assert.assertEquals("3.7", jedisClient.hget("testKey", "a"));
+            Assertions.assertEquals("3.7", jedisClient.hget("testKey", "a"));
         } finally {
             jedisClient.del("testKey");
         }
@@ -1205,7 +1202,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hkeys
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHkeys() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1214,7 +1211,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             Set<String> set = jedisClient.hkeys("testKey");
-            Assert.assertEquals(2, set.size());
+            Assertions.assertEquals(2, set.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -1223,7 +1220,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hlen
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHlen() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1232,7 +1229,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             long result = jedisClient.hlen("testKey");
-            Assert.assertEquals(2, result);
+            Assertions.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1241,7 +1238,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试hmege
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHmget() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -1250,7 +1247,7 @@ public class JdkNoneRedisClientStrTests {
             hash.put("b", "2");
             jedisClient.hmset("testKey", hash, 0);
             List<String> result = jedisClient.hmget("testKey", "a", "b");
-            Assert.assertEquals(2, result.size());
+            Assertions.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }

@@ -377,4 +377,177 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
+    private Map getMap(String key) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            map = new HashMap();
+            doSet(key, map, 0);
+        }
+        return map;
+    }
+
+    protected boolean doHmset(String key, Map map, int cacheSeconds) {
+        synchronized (key.intern()) {
+            Map storeMap = getMap(key);
+            storeMap.putAll(map);
+            if (cacheSeconds != 0) {
+                doExpire(key, cacheSeconds * 1000);
+            }
+            return true;
+        }
+    }
+
+
+    protected  <K extends Object, V extends Object> Map<K, V> doHgetAll(Class<K> keyClass, Class<V> valClass, String key) {
+        Map<K, V> map = doGet(Map.class, key);
+        return map;
+    }
+
+    protected long doHdel(String key, Object... fields) {
+        synchronized (key.intern()) {
+            long count = 0;
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return 0L;
+            }
+            for (Object field : fields) {
+                Object remove = map.remove(field);
+                if (remove != null) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+
+    protected boolean doHexists(String key, Object field) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(field);
+    }
+
+    protected <T> T doHget(Class<T> tClass, String key, String field) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            return null;
+        }
+        return (T) map.get(field);
+    }
+
+    protected long doHset(String key, Object field, Object value) {
+        synchronized (key.intern()) {
+            Map map = getMap(key);
+            map.put(field, value);
+            return 1L;
+        }
+    }
+
+    protected long doHsetnx(String key, Object field, Object value) {
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map.containsKey(field)) {
+                return 0L;
+            }
+            map.put(field, value);
+            return 1L;
+        }
+    }
+
+    protected <T> List<T> doHvals(Class<T> tClass, String key) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            return null;
+        }
+        return new ArrayList<T>(map.values());
+    }
+
+    protected long doHincrby(String key, String field, long value) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            throw new RuntimeException(String.format("key:%s对应的hash不存在", key));
+        }
+        synchronized (key.intern()) {
+            Object o = map.get(field);
+            if (o == null) {
+                throw new RuntimeException(String.format("field:%s对应的值不存在", key));
+            }
+            try {
+                long data = Long.parseLong(o.toString());
+                data += value;
+                if (o instanceof String) {
+                    doHset(key, field, String.valueOf(data));
+                } else if (o instanceof Integer || o.getClass() == int.class) {
+                    doHset(key, field, (int) data);
+                } else if (o instanceof Short || o.getClass() == short.class) {
+                    doHset(key, field, (int) data);
+                } else if (o instanceof Byte || o.getClass() == byte.class) {
+                    doHset(key, field, (int) data);
+                } else if (o instanceof Long || o.getClass() == long.class) {
+                    doHset(key, field, data);
+                } else {
+                    throw new RuntimeException(String.format("不支持的数据类型:%s", o.getClass()));
+                }
+                return data;
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("值:%s不能转化为整数", o.toString()));
+            }
+        }
+    }
+
+    public Double doHincrby(String key, String field, double value) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            throw new RuntimeException(String.format("key:%s对应的hash不存在", key));
+        }
+        synchronized (key.intern()) {
+            Object o = map.get(field);
+            if (o == null) {
+                throw new RuntimeException(String.format("field:%s对应的值不存在", key));
+            }
+            try {
+                double data = Double.parseDouble(o.toString());
+                data += value;
+                if (o instanceof String) {
+                    doHset(key, field, String.valueOf(data));
+                } else if (o instanceof Float || o.getClass() == float.class) {
+                    doHset(key, field, (int) data);
+                } else if (o instanceof Double || o.getClass() == double.class) {
+                    doHset(key, field, (int) data);
+                } else {
+                    throw new RuntimeException(String.format("不支持的数据类型:%s", o.getClass()));
+                }
+                return data;
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("值:%s不能转化为浮点数", o.toString()));
+            }
+        }
+    }
+
+    protected <T> Set<T> doHkeys(Class<T> tClass, String key) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            return null;
+        }
+        return map.keySet();
+    }
+
+    protected long doHlen(String key) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            return 0L;
+        }
+        return map.size();
+    }
+
+    protected <T> List<T> doHmget(Class<T> tClass, String key, Object... fields) {
+        Map map = doGet(Map.class, key);
+        if (map == null) {
+            return null;
+        }
+        return Arrays.stream(fields).map(field -> (T) map.get(field))
+                .collect(Collectors.toList());
+    }
+
 }

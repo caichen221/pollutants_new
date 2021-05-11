@@ -637,69 +637,70 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
 
     /*==============================hash begin  =====================================================*/
+
     @Override
-    public boolean hmset(String key, Map<String, String> map, int cacheSenconds) {
-        return false;
+    public boolean hmset(String key, Map<String, String> map, int cacheSeconds) {
+        return doHmset(key, map, cacheSeconds);
     }
 
     @Override
     public Map<String, String> hgetAll(String key) {
-        return null;
+        return doHgetAll(String.class, String.class, key);
     }
 
     @Override
     public long hdel(String key, String... fields) {
-        return 0L;
+        return doHdel(key, fields);
     }
 
     @Override
     public boolean hexists(String key, String field) {
-        return false;
+        return doHexists(key, field);
     }
 
     @Override
     public String hget(String key, String field) {
-        return null;
+        return doHget(String.class, key, field);
     }
 
     @Override
     public long hset(String key, String field, String value) {
-        return 0L;
+        return doHset(key, field, value);
     }
 
     @Override
     public long hsetnx(String key, String field, String value) {
-        return 0L;
+        return doHsetnx(key, field, value);
     }
 
     @Override
     public List<String> hvals(String key) {
-        return null;
+        return doHvals(String.class, key);
     }
 
     @Override
     public long hincrby(String key, String field, long value) {
-        return 0L;
+        return doHincrby(key, field, value);
     }
 
     @Override
     public Double hincrby(String key, String field, double value) {
-        return 0.0;
+        return doHincrby(key, field, value);
     }
 
     @Override
     public Set<String> hkeys(String key) {
-        return null;
+        return doHkeys(String.class, key);
     }
 
     @Override
     public long hlen(String key) {
-        return 0L;
+        return doHlen(key);
     }
 
     @Override
     public List<String> hmget(String key, String... fields) {
-        return null;
+        return doHmget(String.class, key, fields);
     }
 
     /*==============================hash end=====================================================*/

@@ -351,79 +351,68 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     /*===========================hash begin==========================================*/
 
     @Override
-    public boolean hmset(String key, Map map, int cacheSenconds) throws IOException {
-        throw new UnsupportedOperationException();
-
+    public boolean hmset(String key, Map map, int cacheSeconds) throws IOException {
+        return doHmset(key, map, cacheSeconds);
     }
 
     @Override
     public <K extends Object, V extends Object> Map<K, V> hgetAll(Class<K> keyClass, Class<V> valClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doHgetAll(keyClass, valClass, key);
     }
 
     @Override
     public long hdel(String key, Object... fields) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doHdel(key, fields);
     }
 
     @Override
     public boolean hexists(String key, Object field) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doHexists(key, field);
     }
 
     @Override
     public <T> T hget(Class<T> tClass, String key, String field) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doHget(tClass, key, field);
     }
 
     @Override
     public long hset(String key, Object field, Object value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doHset(key, field, value);
     }
 
     @Override
     public long hsetnx(String key, Object field, Object value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doHsetnx(key, field, value);
     }
 
     @Override
     public <T> List<T> hvals(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doHvals(tClass, key);
     }
 
     @Override
     public long hincrby(String key, String field, long value) throws IOException {
-        throw new UnsupportedOperationException("redis暂不支持此操作,请使用IJedisStrClient中对应的函数");
+        return doHincrby(key, field, value);
     }
 
     @Override
     public Double hincrby(String key, String field, double value) throws IOException {
-        throw new UnsupportedOperationException("redis暂不支持此操作,请使用IJedisStrClient中对应的函数");
+        return doHincrby(key, field, value);
     }
 
     @Override
     public <T> Set<T> hkeys(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doHkeys(tClass, key);
     }
 
     @Override
     public long hlen(String key) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doHlen(key);
     }
 
     @Override
     public <T> List<T> hmget(Class<T> tClass, String key, Object... fields) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+       return doHmget(tClass, key, fields);
     }
 
     /*===========================hash end==========================================*/
