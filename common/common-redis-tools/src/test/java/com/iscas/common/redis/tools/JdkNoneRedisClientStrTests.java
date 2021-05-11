@@ -1476,13 +1476,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试rpush
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRpush() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.rpush("testKey", "10000", "22222");
             long result2 = jedisClient.rpush("testKey", "aaa", "bbb");
-            Assert.assertEquals(4, result2);
+            Assertions.assertEquals(4, result2);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1491,13 +1491,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试rpush
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLpush() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.lpush("testKey", "10000", "22222");
             long result2 = jedisClient.lpush("testKey", "aaa", "bbb");
-            Assert.assertEquals(4, result2);
+            Assertions.assertEquals(4, result2);
         } finally {
             jedisClient.del("testKey");
         }

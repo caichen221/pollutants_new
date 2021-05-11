@@ -1,6 +1,7 @@
 package com.iscas.common.redis.tools.impl.jdk;
 
 import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.date.DateUnit;
 import com.iscas.common.redis.tools.ConfigInfo;
@@ -26,6 +27,7 @@ public class JdkNoneRedisConnection implements JedisConnection {
 
     /**对象缓存对象*/
     public TimedCache<String, Object> OBJECT_CACHE = null;
+
 
     //初始化
     public void init() {

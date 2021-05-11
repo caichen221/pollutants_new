@@ -232,4 +232,28 @@ public class JdkNoneRedisCommonClient {
         return true;
     }
 
+    protected long doRpush(String key, Object... value) {
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                linkedList = new LinkedList();
+                doSet(key, linkedList, 0);
+            }
+            Arrays.stream(value).forEach(linkedList::addLast);
+            return linkedList.size();
+        }
+    }
+
+    protected long doLpush(String key, Object... value) {
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                linkedList = new LinkedList();
+                doSet(key, linkedList, 0);
+            }
+            Arrays.stream(value).forEach(linkedList::addFirst);
+            return linkedList.size();
+        }
+    }
+
 }

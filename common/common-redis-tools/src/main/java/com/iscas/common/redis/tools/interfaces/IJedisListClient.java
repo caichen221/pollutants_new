@@ -37,7 +37,7 @@ public interface IJedisListClient {
      * @throws
      * @return 追加元素后链表的长度
      */
-    long lpush(String key, String... value) throws IOException;
+    long lpush(String key, Object... value) throws IOException;
 
     /**
      * 获取list的长度

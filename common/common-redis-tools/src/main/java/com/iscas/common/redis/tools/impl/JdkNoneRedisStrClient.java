@@ -823,12 +823,12 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
     /*==============================list begin=====================================================*/
     @Override
     public long rpush(String key, String... value) {
-        return 0L;
+        return doRpush(key, value);
     }
 
     @Override
     public long lpush(String key, String... value) {
-        return 0L;
+        return doRpush(key, value);
     }
 
     @Override

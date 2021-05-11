@@ -496,17 +496,18 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     public long strlen(String key) throws IOException {
         throw new UnsupportedOperationException("不支持此strlen操作");
     }
+    /*===========================string end==========================================*/
+
+    /*===========================list begin==========================================*/
 
     @Override
     public long rpush(String key, Object... value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doRpush(key, value);
     }
 
     @Override
-    public long lpush(String key, String... value) throws IOException {
-        throw new UnsupportedOperationException();
-
+    public long lpush(String key, Object... value) throws IOException {
+        return doLpush(key, value);
     }
 
     @Override
@@ -563,7 +564,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     }
 
-    /*===========================string end============================================*/
+    /*===========================list end============================================*/
 
 
 

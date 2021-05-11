@@ -1296,40 +1296,40 @@ public class JdkNoneRedisClientTests {
     public void testStrlen() throws IOException {
 
     }
-//
-//    /*=============================string end==========================================*/
-//
-//
-//    /*=============================list begin==========================================*/
-//    /**
-//     * 测试rpush
-//     * */
-//    @Test
-//    public void testRpush() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            long result = jedisClient.rpush("testKey", "10000", "22222");
-//            long result2 = jedisClient.rpush("testKey", "aaa", "bbb");
-//            Assert.assertEquals(4, result2);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试rpush
-//     * */
-//    @Test
-//    public void testLpush() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            long result = jedisClient.lpush("testKey", "10000", "22222");
-//            long result2 = jedisClient.lpush("testKey", "aaa", "bbb");
-//            Assert.assertEquals(4, result2);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
+
+    /*=============================string end==========================================*/
+
+
+    /*=============================list begin==========================================*/
+    /**
+     * 测试rpush
+     * */
+    @Test
+    public void testRpush() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.rpush("testKey", "10000", "22222");
+            long result2 = jedisClient.rpush("testKey", "aaa", "bbb");
+            Assertions.assertEquals(4, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lpush
+     * */
+    @Test
+    public void testLpush() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.lpush("testKey", "10000", "22222");
+            long result2 = jedisClient.lpush("testKey", "aaa", "bbb");
+            Assertions.assertEquals(4, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
 //
 //    /**
 //     * 测试llen
