@@ -1269,39 +1269,33 @@ public class JdkNoneRedisClientTests {
             jedisClient.del("testKey2");
         }
     }
-//
-//    /**
-//     * 测试mset
-//     * */
-//    @Test
-//    public void testMset() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("111");
-//            jedisClient.del("222");
-//            jedisClient.mset("111", "a", "222", "b");
-//            List<String> result = jedisClient.mget(String.class, "111", "222");
-//            Assert.assertEquals("a", result.get(0));
-//            Assert.assertEquals("b", result.get(1));
-//        } finally {
-//            jedisClient.del("111");
-//            jedisClient.del("222");
-//        }
-//    }
-//
-//    /**
-//     * 测试strlen
-//     * */
-//    @Test
-//    public void testStrlen() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.set("testKey", "10000", 0);
-//            long len = jedisClient.strlen("testKey");
-//            Assert.assertEquals(5, len);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
+
+    /**
+     * 测试mset
+     * */
+    @Test
+    public void testMset() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("111");
+            jedisClient.del("222");
+            jedisClient.mset("111", "a", "222", "b");
+            List<String> result = jedisClient.mget(String.class, "111", "222");
+            Assertions.assertEquals("a", result.get(0));
+            Assertions.assertEquals("b", result.get(1));
+        } finally {
+            jedisClient.del("111");
+            jedisClient.del("222");
+        }
+    }
+
+    /**
+     * 测试strlen
+     * */
+    @Test
+    @Disabled
+    public void testStrlen() throws IOException {
+
+    }
 //
 //    /*=============================string end==========================================*/
 //

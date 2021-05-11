@@ -809,12 +809,13 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public boolean mset(String... keysvalues) {
-        return false;
+        return doMset(keysvalues);
     }
 
     @Override
     public long strlen(String key) {
-        return 0L;
+        String s = get(key);
+        return s == null ? 0L : s.length();
     }
     /*==============================string end=====================================================*/
 

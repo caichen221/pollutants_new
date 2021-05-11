@@ -489,13 +489,12 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public boolean mset(Object... keysvalues) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doMset(keysvalues);
     }
 
     @Override
     public long strlen(String key) throws IOException {
-        throw new UnsupportedOperationException("redis暂不支持此strlen操作,请使用IJedisStrClient中对应的函数");
+        throw new UnsupportedOperationException("不支持此strlen操作");
     }
 
     @Override

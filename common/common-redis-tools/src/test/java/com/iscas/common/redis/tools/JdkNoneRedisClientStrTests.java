@@ -1440,15 +1440,15 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试mset
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMset() {
         try {
             jedisClient.del("111");
             jedisClient.del("222");
             jedisClient.mset("111", "a", "222", "b");
             List<String> result = jedisClient.mget("111", "222");
-            Assert.assertEquals("a", result.get(0));
-            Assert.assertEquals("b", result.get(1));
+            Assertions.assertEquals("a", result.get(0));
+            Assertions.assertEquals("b", result.get(1));
         } finally {
             jedisClient.del("111");
             jedisClient.del("222");
@@ -1458,13 +1458,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试strlen
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testStrlen() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "10000", 0);
             long len = jedisClient.strlen("testKey");
-            Assert.assertEquals(5, len);
+            Assertions.assertEquals(5, len);
         } finally {
             jedisClient.del("testKey");
         }

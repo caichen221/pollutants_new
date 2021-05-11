@@ -218,4 +218,18 @@ public class JdkNoneRedisCommonClient {
                 .collect(Collectors.toList());
     }
 
+    protected boolean doMset(Object... keysvalues) {
+        if (keysvalues.length % 2 != 0) {
+            throw new RuntimeException("key和value必须匹配");
+        }
+        Map<String, Object> keyValueMap = new LinkedHashMap<>();
+        for (int i = 0; i < keysvalues.length; i = i + 2) {
+            keyValueMap.put((String) keysvalues[i], keysvalues[i + 1]);
+        }
+        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+            doSet(entry.getKey(), entry.getValue(), 0);
+        }
+        return true;
+    }
+
 }
