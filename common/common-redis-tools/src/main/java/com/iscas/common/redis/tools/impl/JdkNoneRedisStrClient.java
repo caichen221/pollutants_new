@@ -5,6 +5,7 @@ import com.iscas.common.redis.tools.IJedisStrClient;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
+import lombok.NonNull;
 import redis.clients.jedis.*;
 
 import java.util.*;
@@ -755,27 +756,54 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public long append(String key, String value) {
-        return 0L;
+        synchronized (key.intern()) {
+            String s = doGet(String.class, key);
+            if (s == null || value.length() == 0) {
+                return 0L;
+            }
+            String newStr = s + value;
+            boolean res = doSet(key, newStr, 0);
+            return res ? newStr.length() : 0L;
+        }
     }
 
     @Override
     public long decrBy(String key, long number) {
-        return 0L;
+        synchronized (key.intern()) {
+            String s = doGet(String.class, key);
+            if (s == null) {
+                throw new RuntimeException(String.format("未找到key：%s对应的值", key));
+            }
+            try {
+                long l = Long.parseLong(s);
+                return l - number;
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("无法将值:%s转为数字", s), e);
+            }
+        }
     }
 
     @Override
     public long incrBy(String key, long number) {
-        return 0L;
+        return decrBy(key, -number);
     }
 
     @Override
     public String getrange(String key, long startOffset, long endOffset) {
-        return null;
+        String s = doGet(String.class, key);
+        if (s == null) {
+            throw new RuntimeException(String.format("未找到key：%s对应的值", key));
+        }
+        return s.substring((int) startOffset, (int) endOffset + 1);
     }
 
     @Override
     public String getSet(String key, String value) {
-        return null;
+        synchronized (key.intern()) {
+            String s = doGet(String.class, key);
+            doSet(key, value, 0);
+            return s;
+        }
     }
 
     @Override

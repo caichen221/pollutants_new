@@ -1224,37 +1224,24 @@ public class JdkNoneRedisClientTests {
 
     }
 
-//    /**
-//     * 测试decrBy
-//     * */
-//    @Test
-//    public void testDecrBy() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.set("testKey", 10000, 0);
-//            long result = jedisClient.decrBy("testKey", 1000);
-//            Assert.assertEquals(9000, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试getSet
-//     * */
-//    @Test
-//    public void testGetSet() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            String result1 = jedisClient.getSet(String.class, "testKey", "10000");
-//            Assert.assertNull(result1);
-//            String result2 = jedisClient.getSet(String.class, "testKey", "123");
-//            Assert.assertEquals(result2, "10000");
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
+    /**
+     * 测试decrBy
+     * */
+    @Test
+    @Disabled
+    public void testDecrBy() throws IOException {
+
+    }
+
+    /**
+     * 测试getSet
+     * */
+    @Test
+    @Disabled
+    public void testGetSet() throws IOException, ClassNotFoundException {
+
+    }
+
 //    /**
 //     * 测试mget
 //     * */

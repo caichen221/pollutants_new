@@ -458,23 +458,23 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public long append(String key, String value) {
-        throw new UnsupportedOperationException("redis暂不支持此append操作,请使用IJedisStrClient中对应的函数");
+        throw new UnsupportedOperationException("不支持此append操作");
 
     }
 
     @Override
     public long decrBy(String key, long number) throws IOException {
-        throw new UnsupportedOperationException("redis暂不支持此decrBy操作,请使用IJedisStrClient中对应的函数");
+        throw new UnsupportedOperationException("不支持此decrBy操作");
     }
 
     @Override
     public long incrBy(String key, long number) throws IOException {
-        throw new UnsupportedOperationException("redis暂不支持此incrBy操作,请使用IJedisStrClient中对应的函数");
+        throw new UnsupportedOperationException("不支持此incrBy操作");
     }
 
     @Override
     public <T> T getrange(Class<T> tClass, String key, long startOffset, long endOffset) {
-        throw new UnsupportedOperationException("redis暂不支持此getrange操作,请使用IJedisStrClient中对应的函数");
+        throw new UnsupportedOperationException("不支持此getrange操作");
     }
 
     @Override

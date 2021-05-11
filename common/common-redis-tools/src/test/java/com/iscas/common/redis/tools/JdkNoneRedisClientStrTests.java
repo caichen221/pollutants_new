@@ -1343,13 +1343,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试append
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAppend() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "123456", 0);
             long len = jedisClient.append("testKey", "abcd");
-            Assert.assertEquals(10, len);
+            Assertions.assertEquals(10, len);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1358,13 +1358,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试decrBy
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDecrBy() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "10000", 0);
             long result = jedisClient.decrBy("testKey", 1000);
-            Assert.assertEquals(9000, result);
+            Assertions.assertEquals(9000, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1373,13 +1373,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试incrBy
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIncrBy() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "10000", 0);
             long result = jedisClient.incrBy("testKey", 1000);
-            Assert.assertEquals(11000, result);
+            Assertions.assertEquals(11000, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1388,13 +1388,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试getrange
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetRange() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "10000", 0);
             String result = jedisClient.getrange("testKey", 0, 2);
-            Assert.assertEquals("100", result);
+            Assertions.assertEquals("100", result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1403,14 +1403,14 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试getSet
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetSet() {
         try {
             jedisClient.del("testKey");
             String result1 = jedisClient.getSet("testKey", "10000");
-            Assert.assertNull(result1);
+            Assertions.assertNull(result1);
             String result2 = jedisClient.getSet("testKey", "123");
-            Assert.assertEquals(result2, "10000");
+            Assertions.assertEquals(result2, "10000");
         } finally {
             jedisClient.del("testKey");
         }
