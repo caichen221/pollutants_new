@@ -5,7 +5,6 @@ import com.iscas.common.redis.tools.IJedisStrClient;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
-import lombok.NonNull;
 import redis.clients.jedis.*;
 
 import java.util.*;
@@ -141,289 +140,67 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
     /*=============================set begin===============================================*/
     @Override
     public long sadd(String key, String... value) {
-//        long result = 0;
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sadd(key, value);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis jedis = (ShardedJedis) jc;
-//                return jedis.sadd(key, value);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedis = (JedisCluster) jc;
-//                return jedis.sadd(key, value);
-//            }
-//        } finally {
-//            returnResource(jc);
-//        }
-//        return result;
-        return 0L;
+        return doSadd(key, value);
     }
 
     @Override
     public long scard(String key) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.scard(key);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis jedis = (ShardedJedis) jc;
-//                return jedis.scard(key);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedis = (JedisCluster) jc;
-//                return jedis.scard(key);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doScard(key);
     }
 
     @Override
     public Set<String> sdiff(String... keys) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sdiff(keys);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.sdiff(keys);
-//            }
-//            return null;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return null;
+        return doSdiff(String.class, keys);
     }
 
     @Override
     public long sdiffStore(String newkey, String... keys) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sdiffstore(newkey, keys);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                throw new RuntimeException("ShardedJedis 暂不支持sdiff");
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.sdiffstore(newkey, keys);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doSdiffStore(newkey, keys);
     }
 
     @Override
     public Set<String> sinter(String... keys) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sinter(keys);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                throw new RuntimeException("ShardedJedis 暂不支持sinter");
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.sinter(keys);
-//            }
-//            return null;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return null;
+        return doSinter(String.class, keys);
     }
 
     @Override
     public long sinterStore(String newKey, String... keys) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sinterstore(newKey, keys);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                throw new RuntimeException("ShardedJedis 暂不支持sinter");
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.sinterstore(newKey, keys);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doSinterStore(newKey, keys);
     }
 
     @Override
     public boolean sismember(String key, String member) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sismember(key, member);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis jedis = (ShardedJedis) jc;
-//                return jedis.sismember(key, member);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedis = (JedisCluster) jc;
-//                return jedis.sismember(key, member);
-//            }
-//            return false;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return false;
+        return doSismember(key, member);
     }
 
     @Override
     public Set<String> smembers(String key) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.smembers(key);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis jedis = (ShardedJedis) jc;
-//                return jedis.smembers(key);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedis = (JedisCluster) jc;
-//                return jedis.smembers(key);
-//            }
-//            return new HashSet<>();
-//        } finally {
-//            returnResource(jc);
-//        }
-        return null;
+        return doSmembers(String.class, key);
     }
 
     @Override
     public long smove(String srckey, String dstkey, String member) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.smove(srckey, dstkey, member);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                throw new RuntimeException("ShardedJedis 暂不支持smove");
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.smove(srckey, dstkey, member);
-//            }
-//            return -1;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doSmove(srckey, dstkey, member);
     }
 
     @Override
     public String spop(String key) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.spop(key);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                return shardedJedis.spop(key);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.spop(key);
-//            }
-//            return null;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return null;
+        return doSpop(String.class, key);
     }
 
     @Override
     public Set<String> spop(String key, long count) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.spop(key, count);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                return shardedJedis.spop(key, count);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.spop(key, count);
-//            }
-//            return new HashSet<>();
-//        } finally {
-//            returnResource(jc);
-//        }
-        return null;
+        return doSpop(String.class, key, count);
     }
 
     @Override
     public long srem(String key, String... member) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.srem(key, member);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                return shardedJedis.srem(key, member);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.srem(key, member);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doSrem(key, member);
     }
 
     @Override
     public Set<String> sunion(String... keys) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.sunion(keys);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                throw new RuntimeException("ShardedJedis 暂不支持sunion");
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.sunion(keys);
-//            }
-//            return null;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return null;
+        return doSunion(String.class, keys);
     }
 
     /*=============================set end  ===============================================*/
@@ -791,11 +568,13 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public String getrange(String key, long startOffset, long endOffset) {
-        String s = doGet(String.class, key);
-        if (s == null) {
-            throw new RuntimeException(String.format("未找到key：%s对应的值", key));
+        synchronized (key.intern()) {
+            String s = doGet(String.class, key);
+            if (s == null) {
+                throw new RuntimeException(String.format("未找到key：%s对应的值", key));
+            }
+            return s.substring((int) startOffset, (int) endOffset + 1);
         }
-        return s.substring((int) startOffset, (int) endOffset + 1);
     }
 
     @Override

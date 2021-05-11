@@ -1,6 +1,7 @@
 package com.iscas.common.redis.tools.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
@@ -175,19 +176,23 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected void doExpire(String key, long milliseconds) {
-        Object value = jdkNoneRedisConnection.OBJECT_CACHE.get(key);
-        if (value != null) {
-            jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, milliseconds);
+        synchronized (key.intern()) {
+            Object value = jdkNoneRedisConnection.OBJECT_CACHE.get(key);
+            if (value != null) {
+                jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, milliseconds);
+            }
         }
     }
 
     protected boolean doSet(String key, Object value, long seconds) {
-        if (seconds == 0) {
-            jdkNoneRedisConnection.OBJECT_CACHE.put(key, value);
-        } else {
-            jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, seconds * 1000);
+        synchronized (key.intern()) {
+            if (seconds == 0) {
+                jdkNoneRedisConnection.OBJECT_CACHE.put(key, value);
+            } else {
+                jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, seconds * 1000);
+            }
+            return true;
         }
-        return true;
     }
 
     protected <T> T doGet(Class<T> tClass, String key) {
@@ -259,12 +264,14 @@ public class JdkNoneRedisCommonClient {
     }
 
     private LinkedList getLinkedList(String key) {
-        LinkedList linkedList = doGet(LinkedList.class, key);
-        if (linkedList == null) {
-            linkedList = new LinkedList();
-            doSet(key, linkedList, 0);
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                linkedList = new LinkedList();
+                doSet(key, linkedList, 0);
+            }
+            return linkedList;
         }
-        return linkedList;
     }
 
     protected boolean doLset(String key, int index, Object value) {
@@ -299,38 +306,46 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected  <T> T doLindex(Class<T> tClass, String key, long index) {
-        LinkedList linkedList = doGet(LinkedList.class, key);
-        if (linkedList == null) {
-            return null;
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                return null;
+            }
+            return (T) linkedList.get((int) index);
         }
-        return (T) linkedList.get((int) index);
     }
 
     protected  <T> T doLpop(Class<T> tClass, String key) {
-        LinkedList linkedList = doGet(LinkedList.class, key);
-        if (linkedList == null) {
-            return null;
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                return null;
+            }
+            return (T) linkedList.pollFirst();
         }
-        return (T) linkedList.pollFirst();
     }
 
     protected <T> T doRpop(Class<T> tClass, String key) {
-        LinkedList linkedList = doGet(LinkedList.class, key);
-        if (linkedList == null) {
-            return null;
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                return null;
+            }
+            return (T) linkedList.pollLast();
         }
-        return (T) linkedList.pollLast();
     }
 
     protected <T> List<T> doLrange(Class<T> tClass, String key, long start, long end) {
-        LinkedList linkedList = doGet(LinkedList.class, key);
-        if (linkedList == null) {
-            return null;
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                return null;
+            }
+            if (end == -1) {
+                end = linkedList.size() - 1;
+            }
+            return linkedList.subList((int) start, (int) end + 1);
         }
-        if (end == -1) {
-            end = linkedList.size() - 1;
-        }
-        return linkedList.subList((int) start, (int) end + 1);
     }
 
     protected long doLrem(String key, int count, Object value) {
@@ -378,12 +393,14 @@ public class JdkNoneRedisCommonClient {
     }
 
     private Map getMap(String key) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            map = new HashMap();
-            doSet(key, map, 0);
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                map = new HashMap();
+                doSet(key, map, 0);
+            }
+            return map;
         }
-        return map;
     }
 
     protected boolean doHmset(String key, Map map, int cacheSeconds) {
@@ -421,19 +438,23 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected boolean doHexists(String key, Object field) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            return false;
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return false;
+            }
+            return map.containsKey(field);
         }
-        return map.containsKey(field);
     }
 
     protected <T> T doHget(Class<T> tClass, String key, String field) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            return null;
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return null;
+            }
+            return (T) map.get(field);
         }
-        return (T) map.get(field);
     }
 
     protected long doHset(String key, Object field, Object value) {
@@ -456,11 +477,13 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected <T> List<T> doHvals(Class<T> tClass, String key) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            return null;
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return null;
+            }
+            return new ArrayList<T>(map.values());
         }
-        return new ArrayList<T>(map.values());
     }
 
     protected long doHincrby(String key, String field, long value) {
@@ -526,28 +549,223 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected <T> Set<T> doHkeys(Class<T> tClass, String key) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            return null;
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return null;
+            }
+            return map.keySet();
         }
-        return map.keySet();
     }
 
     protected long doHlen(String key) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            return 0L;
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return 0L;
+            }
+            return map.size();
         }
-        return map.size();
     }
 
     protected <T> List<T> doHmget(Class<T> tClass, String key, Object... fields) {
-        Map map = doGet(Map.class, key);
-        if (map == null) {
-            return null;
+        synchronized (key.intern()) {
+            Map map = doGet(Map.class, key);
+            if (map == null) {
+                return null;
+            }
+            return Arrays.stream(fields).map(field -> (T) map.get(field))
+                    .collect(Collectors.toList());
         }
-        return Arrays.stream(fields).map(field -> (T) map.get(field))
-                .collect(Collectors.toList());
     }
+
+    private Set getSet(String key) {
+        synchronized (key.intern()) {
+            Set set = doGet(Set.class, key);
+            if (set == null) {
+                set = new HashSet();
+                doSet(key, set, 0);
+            }
+            return set;
+        }
+    }
+
+    protected long doSadd(String key, Set value, int cacheSeconds) {
+        synchronized (key.intern()) {
+            Set set = getSet(key);
+            set.addAll(value);
+            if (cacheSeconds != 0) {
+                doExpire(key, cacheSeconds * 1000);
+            }
+            return value.size();
+        }
+    }
+
+    protected long doSadd(String key, Object... value) {
+        synchronized (key.intern()) {
+            Set set = getSet(key);
+            Arrays.stream(value).forEach(set::add);
+            return value.length;
+        }
+    }
+
+    protected long doScard(String key) {
+        synchronized (key.intern()) {
+            Set set = doGet(Set.class, key);
+            if (set == null) {
+                return 0;
+            }
+            return set.size();
+        }
+    }
+
+    protected <T> Set<T> doSdiff(Class<T> tClass, String... keys) {
+        Set set0 = doGet(Set.class, keys[0]);
+        if (set0 == null) {
+            return new HashSet<>();
+        }
+        Set diffSet = ObjectUtil.cloneByStream(set0);
+        for (int i = 1; i < keys.length; i++) {
+            Set set = doGet(Set.class, keys[i]);
+            if (set != null) {
+                for (Object o : set) {
+                    if (diffSet.contains(o)) {
+                        diffSet.remove(o);
+                    }
+                }
+            }
+        }
+        return diffSet;
+    }
+
+    protected long doSdiffStore(String newkey, String... keys) {
+        Set<Object> diffSet = doSdiff(Object.class, keys);
+        if (diffSet != null && diffSet.size() > 0) {
+            doSadd(newkey, diffSet, 0);
+            return diffSet.size();
+        } else {
+            return 0L;
+        }
+    }
+
+    protected <T> Set<T> doSinter(Class<T> tClass, String... keys) {
+        Set set0 = doGet(Set.class, keys[0]);
+        if (set0 == null) {
+            return new HashSet<>();
+        }
+        Set interSet = ObjectUtil.cloneByStream(set0);
+        Set tmpInterSet = new HashSet();
+        for (int i = 1; i < keys.length; i++) {
+            Set set = doGet(Set.class, keys[i]);
+            if (set != null) {
+                for (Object o : set) {
+                    if (interSet.contains(o)) {
+                         tmpInterSet.add(o);
+                    }
+                }
+            } else {
+                return new HashSet<>();
+            }
+            interSet.clear();
+            interSet = tmpInterSet;
+        }
+        return interSet;
+    }
+
+    protected long doSinterStore(String newKey, String... keys) {
+        Set<Object> diffSet = doSinter(Object.class, keys);
+        if (diffSet != null && diffSet.size() > 0) {
+            doSadd(newKey, diffSet, 0);
+            return diffSet.size();
+        } else {
+            return 0L;
+        }
+    }
+
+    protected boolean doSismember(String key, Object member) {
+        synchronized (key.intern()) {
+            Set set = doGet(Set.class, key);
+            if (set == null) {
+                return false;
+            }
+            return set.contains(member);
+        }
+    }
+
+    protected <T> Set<T> doSmembers(Class<T> tClass, String key) {
+        synchronized (key.intern()) {
+            Set set = doGet(Set.class, key);
+            if (set == null) {
+                return null;
+            }
+            return set;
+        }
+    }
+
+    protected long doSmove(String srckey, String dstkey, Object member) {
+        synchronized (srckey.intern()) {
+            synchronized (dstkey.intern()) {
+                Set set = doGet(Set.class, srckey);
+                if (!set.contains(member)) {
+                    return 0;
+                }
+                set.remove(member);
+                Set set1 = getSet(dstkey);
+                set1.add(member);
+                return 1;
+            }
+        }
+    }
+
+    protected <T> T doSpop(Class<T> tClass, String key) {
+        synchronized (key.intern()) {
+            Set set = doGet(Set.class, key);
+            Iterator iterator = set.iterator();
+            if (iterator.hasNext()) {
+                T o = (T) iterator.next();
+                iterator.remove();
+                return o;
+            } else {
+                return null;
+            }
+        }
+    }
+    protected <T> Set<T> doSpop(Class<T> tClass, String key, long count) {
+        synchronized (key.intern()) {
+            Set<T> result = new HashSet<>();
+            Set set = doGet(Set.class, key);
+            Iterator iterator = set.iterator();
+            int sum = 0;
+            while (iterator.hasNext() && sum < count) {
+                T o = (T) iterator.next();
+                iterator.remove();
+                sum++;
+                result.add(o);
+            }
+            return result;
+        }
+    }
+
+    protected long doSrem(String key, Object... member) {
+        synchronized (key.intern()) {
+            long result = 0;
+            Set set = doGet(Set.class, key);
+            for (Object o : member) {
+                boolean remove = set.remove(o);
+                if (remove) {
+                    result = 1;
+                }
+            }
+            return result;
+        }
+    }
+
+    protected  <T> Set<T> doSunion(Class<T> tClass, String... keys) {
+        Set result = new HashSet();
+        Arrays.stream(keys).map(key -> doGet(Set.class, key))
+                .forEach(result::addAll);
+        return result;
+    }
+
 
 }

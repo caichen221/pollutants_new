@@ -185,7 +185,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试设置集合，数据为字符串
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAdd() throws IOException {
         try {
             jedisClient.del("set1");
@@ -204,7 +204,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试集合追加值，数据为字符串
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAdd2()  {
         try {
             jedisClient.del("set1");
@@ -218,7 +218,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试差集
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSdiff() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -227,7 +227,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.sadd("testKey2", "11111", "22222", "44444");
             Set<String> diffSet = jedisClient.sdiff("testKey", "testKey2");
             diffSet.forEach(System.out::println);
-            Assert.assertEquals(1, diffSet.size());
+            Assertions.assertEquals(1, diffSet.size());
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -237,7 +237,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试差集，存储到新集合中
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSdiffStore() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -248,7 +248,7 @@ public class JdkNoneRedisClientStrTests {
             System.out.println(result);
             Set<String> newSet = jedisClient.smembers("newKey");
             newSet.stream().forEach(System.out::println);
-            Assert.assertEquals(1, result);
+            Assertions.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -259,7 +259,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试交集
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSinter() throws IOException {
         try {
             jedisClient.del("testKey");
@@ -268,7 +268,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.sadd("testKey2", "11111", "22222", "44444");
             Set<String> result = jedisClient.sinter("testKey", "testKey2");
             result.stream().forEach(System.out::println);
-            Assert.assertEquals(2, result.size());
+            Assertions.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -278,7 +278,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试交集,存入新集合
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSinterStore() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -288,7 +288,7 @@ public class JdkNoneRedisClientStrTests {
             long result = jedisClient.sinterStore("newKey","testKey", "testKey2");
             Set<String> newSet = jedisClient.smembers("newKey");
             newSet.stream().forEach(System.out::println);
-            Assert.assertEquals(1, result);
+            Assertions.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
@@ -299,13 +299,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试集合中某个元素是否存在
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSismember() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             jedisClient.sadd("testKey", "11111", "33333");
             boolean exists = jedisClient.sismember("testKey", "11111");
-            Assert.assertEquals(true, exists);
+            Assertions.assertEquals(true, exists);
         } finally {
             jedisClient.del("testKey");
         }
@@ -314,14 +314,14 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取集合中所有的元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSmembers() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             jedisClient.sadd("testKey", "11111", "33333");
             Set<String> members = jedisClient.smembers("testKey");
             members.stream().forEach(System.out::println);
-            Assert.assertEquals(2, members.size());
+            Assertions.assertEquals(2, members.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -330,7 +330,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从集合中移除成员,放入目标集合
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSmove() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("srcKey");
@@ -342,8 +342,8 @@ public class JdkNoneRedisClientStrTests {
             Set<String> dstSet = jedisClient.smembers("dstKey");
             srcSet.forEach(System.out::println);
             dstSet.forEach(System.out::println);
-            Assert.assertEquals(1, srcSet.size());
-            Assert.assertEquals(3, dstSet.size());
+            Assertions.assertEquals(1, srcSet.size());
+            Assertions.assertEquals(3, dstSet.size());
         } finally {
             jedisClient.del("srcKey");
             jedisClient.del("dstKey");
@@ -353,14 +353,14 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从集合中随机移除成员并返回
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testScard() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             jedisClient.sadd("testKey", "11111", "33333");
             String data = jedisClient.spop("testKey");
             System.out.println(data);
-            Assert.assertEquals(1, jedisClient.scard("testKey"));
+            Assertions.assertEquals(1, jedisClient.scard("testKey"));
         } finally {
             jedisClient.del("testKey");
         }
@@ -369,14 +369,14 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从集合中随机移除成员多个并返回
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSpop() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             jedisClient.sadd("testKey", "11111", "33333");
             Set<String> datas = jedisClient.spop("testKey", 3);
             datas.forEach(System.out::println);
-            Assert.assertEquals(2, datas.size());
+            Assertions.assertEquals(2, datas.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -385,7 +385,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从集合中删除成员
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSrem() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -393,7 +393,7 @@ public class JdkNoneRedisClientStrTests {
             long result = jedisClient.srem("testKey", "11111", "44444");
             Set<String> set = jedisClient.smembers("testKey");
             set.forEach(System.out::println);
-            Assert.assertEquals(1, result);
+            Assertions.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -402,7 +402,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试去并集
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSunion() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
@@ -411,7 +411,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.sadd("testKey2", "1", "2", "3", "7");
             Set<String> sunionSet = jedisClient.sunion("testKey", "testKey2");
             sunionSet.forEach(System.out::println);
-            Assert.assertEquals(4, sunionSet.size());
+            Assertions.assertEquals(4, sunionSet.size());
         } finally {
             jedisClient.del("testKey");
         }

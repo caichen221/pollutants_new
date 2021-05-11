@@ -123,7 +123,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      */
     @Override
     public long sadd(String key, Set value, int cacheSeconds) throws IOException {
-       return 0L;
+       return doSadd(key, value, cacheSeconds);
     }
 
     /**
@@ -134,74 +134,67 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      */
     @Override
     public long sadd(String key, Object... value) throws IOException {
-        return 0L;
+        return doSadd(key, value);
     }
 
     @Override
     public long scard(String key) throws IOException {
-       return 0L;
+       return doScard(key);
     }
 
     @Override
     public <T> Set<T> sdiff(Class<T> tClass, String... keys) throws IOException, ClassNotFoundException {
-        return null;
+        return doSdiff(tClass, keys);
     }
 
     @Override
     public long sdiffStore(String newkey, String... keys) throws IOException, ClassNotFoundException {
-        return 0L;
+        return doSdiffStore(newkey, keys);
     }
 
     @Override
     public <T> Set<T> sinter(Class<T> tClass, String... keys) throws IOException, ClassNotFoundException {
-        return null;
+        return doSinter(tClass, keys);
     }
 
     @Override
     public long sinterStore(String newKey, String... keys) throws IOException {
-        return 0L;
+        return doSinterStore(newKey, keys);
     }
 
     @Override
     public boolean sismember(String key, Object member) throws IOException {
-        throw new UnsupportedOperationException();
+        return doSismember(key, member);
     }
 
     @Override
     public <T> Set<T> smembers(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doSmembers(tClass, key);
     }
 
     @Override
     public long smove(String srckey, String dstkey, Object member) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doSmove(srckey, dstkey, member);
     }
 
     @Override
     public <T> T spop(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doSpop(tClass, key);
     }
 
     @Override
     public <T> Set<T> spop(Class<T> tClass, String key, long count) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doSpop(tClass, key, count);
     }
 
     @Override
     public long srem(String key, Object... member) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doSrem(key, member);
     }
 
     @Override
     public <T> Set<T> sunion(Class<T> tClass, String... keys) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
-
+        return doSunion(tClass, keys);
     }
 
     /*========================================set end  ========================================================*/
