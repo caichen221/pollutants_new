@@ -19,6 +19,7 @@ import java.util.concurrent.locks.Lock;
  * @since jdk1.8
  */
 public class JdkNoneRedisConnection implements JedisConnection {
+    private static final long MAX_TIMEOUT = 20L * 365 * 24 * 3600 * 1000;
 
     /**存储分布式锁对象*/
     public TimedCache<String, String> ACQUIRE_LOCK_CACHE = null;
@@ -29,11 +30,11 @@ public class JdkNoneRedisConnection implements JedisConnection {
     //初始化
     public void init() {
 
-        ACQUIRE_LOCK_CACHE = CacheUtil.newTimedCache(Long.MAX_VALUE);
+        ACQUIRE_LOCK_CACHE = CacheUtil.newTimedCache(MAX_TIMEOUT);
         //启动定时任务，每5毫秒秒检查一次过期
         ACQUIRE_LOCK_CACHE.schedulePrune(5);
 
-        OBJECT_CACHE = CacheUtil.newTimedCache(Long.MAX_VALUE);
+        OBJECT_CACHE = CacheUtil.newTimedCache(MAX_TIMEOUT);
         //启动定时任务，每5毫秒秒检查一次过期
         OBJECT_CACHE.schedulePrune(5);
     }

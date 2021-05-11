@@ -1247,7 +1247,7 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试setnx
+     * 测试setrange
      * */
     @Test
     public void testSetrange() throws IOException, ClassNotFoundException {

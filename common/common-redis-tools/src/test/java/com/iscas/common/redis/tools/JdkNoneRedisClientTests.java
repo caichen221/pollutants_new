@@ -2,12 +2,16 @@ package com.iscas.common.redis.tools;
 
 import com.iscas.common.redis.tools.impl.JdkNoneRedisClient;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -1171,64 +1175,55 @@ public class JdkNoneRedisClientTests {
 //    }
 //
 //    /*=============================hash end  ========================================*/
-//
-//    /*=============================string begin========================================*/
-//    /**
-//     * 测试插入一个对象，有超时时间，并测试获取这个对象
-//     */
-//    @Test
-//    public void testSetAndGet() throws IOException, ClassNotFoundException {
-//        try {
-//            boolean result = jedisClient.set("testKey", "value", 20);
-//            String testValue = jedisClient.get(String.class, "testKey");
-//            Assert.assertTrue(result);
-//            Assert.assertEquals(testValue, "value");
-//            Map map = new HashMap();
-//            map.put("x", Arrays.asList(1,2,3));
-//            jedisClient.set("testKey", map, 20);
-//            Map testMap = jedisClient.get(Map.class, "testKey");
-//            System.out.println(testMap);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试setnx
-//     */
-//    @Test
-//    public void testSetnx() throws IOException, ClassNotFoundException {
-//        try {
-//            Map map = new HashMap();
-//            map.put("a", 123);
-//            jedisClient.del("testKey");
-//            long result1 = jedisClient.setnx("testKey", map);
-//            Assert.assertEquals(result1, 1L);
-//            long result2 = jedisClient.setnx("testKey", 22);
-//            Assert.assertEquals(result2, 0L);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试setnx
-//     * */
-//    @Test
-//    public void testSetrange() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.set("testKey", "123456", 0);
-//            long result = jedisClient.setrange("testKey", 2, "99999999");
-//            String strRes = jedisClient.get(String.class, "testKey");
-//            System.out.println(strRes);
-//            Assert.assertEquals(result, 10);
-//            Assert.assertEquals("1299999999", strRes);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
+
+    /*=============================string begin========================================*/
+    /**
+     * 测试插入一个对象，有超时时间，并测试获取这个对象
+     */
+    @Test
+    public void testSetAndGet() throws IOException, ClassNotFoundException {
+        try {
+            boolean result = jedisClient.set("testKey", "value", 20);
+            String testValue = jedisClient.get(String.class, "testKey");
+            Assertions.assertTrue(result);
+            Assertions.assertEquals(testValue, "value");
+            Map map = new HashMap();
+            map.put("x", Arrays.asList(1,2,3));
+            jedisClient.set("testKey", map, 20);
+            Map testMap = jedisClient.get(Map.class, "testKey");
+            System.out.println(testMap);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setnx
+     */
+    @Test
+    public void testSetnx() throws IOException, ClassNotFoundException {
+        try {
+            Map map = new HashMap();
+            map.put("a", 123);
+            jedisClient.del("testKey");
+            long result1 = jedisClient.setnx("testKey", map);
+            Assertions.assertEquals(result1, 1L);
+            long result2 = jedisClient.setnx("testKey", 22);
+            Assertions.assertEquals(result2, 0L);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试setrange
+     * */
+    @Test
+    @Disabled
+    public void testSetrange() throws IOException, ClassNotFoundException {
+
+    }
+
 //    /**
 //     * 测试decrBy
 //     * */

@@ -1352,7 +1352,7 @@ public class JedisClientStrTests {
     }
 
     /**
-     * 测试setnx
+     * 测试setrange
      * */
     @Test
     public void testSetrange() {

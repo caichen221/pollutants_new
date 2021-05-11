@@ -143,7 +143,7 @@ public class JdkNoneRedisCommonClient {
         throw new UnsupportedOperationException("jdk模式不支持pipeline");
     }
 
-    protected long toDel(String key) {
+    protected long doDel(String key) {
         synchronized (key.intern()) {
             if (jdkNoneRedisConnection.OBJECT_CACHE.containsKey(key)) {
                 jdkNoneRedisConnection.OBJECT_CACHE.remove(key);
@@ -154,11 +154,11 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
-    protected boolean toExists(String key) {
+    protected boolean doExists(String key) {
         return jdkNoneRedisConnection.OBJECT_CACHE.containsKey(key);
     }
 
-    protected void toDeleteByPattern(String pattern) {
+    protected void doDeleteByPattern(String pattern) {
         //转换为正则表达式
         pattern = pattern.replace("*", ".*");
         pattern = pattern.replace("?", ".");
@@ -172,20 +172,36 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
-    protected void toExpire(String key, long milliseconds) {
+    protected void doExpire(String key, long milliseconds) {
         Object value = jdkNoneRedisConnection.OBJECT_CACHE.get(key);
         if (value != null) {
             jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, milliseconds);
         }
     }
 
-    protected boolean toSet(String key, Object value, long seconds) {
+    protected boolean doSet(String key, Object value, long seconds) {
         if (seconds == 0) {
             jdkNoneRedisConnection.OBJECT_CACHE.put(key, value);
         } else {
             jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, seconds * 1000);
         }
         return true;
+    }
+
+    protected <T> T doGet(Class<T> tClass, String key) {
+        return (T) jdkNoneRedisConnection.OBJECT_CACHE.get(key);
+    }
+
+    protected long doSetnx(String key, Object value) {
+        synchronized (key.intern()) {
+            if (doExists(key)) {
+                return 0L;
+            }
+            if (doSet(key, value, 0)) {
+                return 1L;
+            }
+            return 0L;
+        }
     }
 
 }

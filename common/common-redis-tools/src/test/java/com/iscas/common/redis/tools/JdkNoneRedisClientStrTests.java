@@ -3,8 +3,8 @@ package com.iscas.common.redis.tools;
 import com.iscas.common.redis.tools.impl.JdkNoneRedisStrClient;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import redis.clients.jedis.ListPosition;
@@ -1265,12 +1265,12 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试插入一个字符串，无超时时间
      */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSet() {
         try {
             jedisClient.del("testKey");
             boolean result = jedisClient.set("testKey", "value", 0);
-            Assert.assertTrue(result);
+            Assertions.assertTrue(result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1280,7 +1280,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试插入一个字符串，有超时时间
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSet2() {
         try {
             jedisClient.del("testKey");
@@ -1295,13 +1295,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取字符串
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGet() {
         try {
             jedisClient.del("testKey");
             boolean setResult = jedisClient.set("testKey", "value", 0);
             String result = jedisClient.get("testKey");
-            Assert.assertEquals(result, "value");
+            Assertions.assertEquals(result, "value");
         } finally {
             jedisClient.del("testKey");
         }
@@ -1310,31 +1310,31 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试setnx
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetnx() {
         try {
             jedisClient.del("testKey");
             long result1 = jedisClient.setnx("testKey", "value");
-            Assert.assertEquals(result1, 1L);
+            Assertions.assertEquals(result1, 1L);
             long result2 = jedisClient.setnx("testKey", "value2");
-            Assert.assertEquals(result2, 0);
+            Assertions.assertEquals(result2, 0);
         } finally {
             jedisClient.del("testKey");
         }
     }
 
     /**
-     * 测试setnx
+     * 测试setrange
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetrange() {
         try {
             jedisClient.del("testKey");
             jedisClient.set("testKey", "123456", 0);
             long result = jedisClient.setrange("testKey", 2, "99999999");
-            Assert.assertEquals(result, 10);
+            Assertions.assertEquals(result, 10);
             String strRes = jedisClient.get("testKey");
-            Assert.assertEquals("1299999999", strRes);
+            Assertions.assertEquals("1299999999", strRes);
         } finally {
             jedisClient.del("testKey");
         }

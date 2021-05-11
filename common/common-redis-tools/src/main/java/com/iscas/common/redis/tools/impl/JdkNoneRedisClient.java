@@ -7,7 +7,6 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -36,7 +35,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      */
     @Override
     public long del(String key) {
-        return toDel(key);
+        return doDel(key);
     }
 
     /**
@@ -46,7 +45,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      */
     @Override
     public boolean exists(String key) throws IOException {
-        return toExists(key);
+        return doExists(key);
     }
 
     private boolean jedisCommandsBytesExists(Object jedisCommands, byte[] bytesKey) {
@@ -78,7 +77,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * */
     @Override
     public void deleteByPattern(String pattern) {
-        toDeleteByPattern(pattern);
+        doDeleteByPattern(pattern);
     }
 
 //    @Override
@@ -110,7 +109,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public void expire(String key, long milliseconds) throws IOException {
-        toExpire(key, milliseconds);
+        doExpire(key, milliseconds);
     }
     /*=============================通用 end==========================================*/
 
@@ -439,24 +438,22 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      */
     @Override
     public boolean set(String key, Object value, int cacheSeconds) throws IOException {
-        return toSet(key, value, cacheSeconds);
+        return doSet(key, value, cacheSeconds);
     }
 
     @Override
     public <T> T get(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doGet(tClass, key);
     }
 
     @Override
     public long setnx(String key, Object value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doSetnx(key, value);
     }
 
     @Override
     public long setrange(String key, long offset, Object value) throws IOException {
-        throw new UnsupportedOperationException("redis暂不支持此setrange操作,请使用IJedisStrClient中对应的函数");
+        throw new UnsupportedOperationException("不支持此setrange操作");
     }
 
     @Override

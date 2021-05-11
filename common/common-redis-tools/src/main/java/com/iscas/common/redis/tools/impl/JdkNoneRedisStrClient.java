@@ -3,17 +3,13 @@ package com.iscas.common.redis.tools.impl;
 
 import com.iscas.common.redis.tools.IJedisStrClient;
 import com.iscas.common.redis.tools.JedisConnection;
-import com.iscas.common.redis.tools.impl.cluster.JedisClusterConnection;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
-import io.lettuce.core.cluster.RedisClusterClient;
-import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 /**
  * JdkStrClient
@@ -47,7 +43,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public long del(String key) {
-        return toDel(key);
+        return doDel(key);
     }
 
     /**
@@ -57,7 +53,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public boolean exists(String key) {
-        return toExists(key);
+        return doExists(key);
     }
 
     /**
@@ -65,12 +61,12 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      * */
     @Override
     public void deleteByPattern(String pattern) {
-        toDeleteByPattern(pattern);
+        doDeleteByPattern(pattern);
     }
 
     @Override
     public void expire(String key, long milliseconds) {
-        toExpire(key, milliseconds);
+        doExpire(key, milliseconds);
     }
 
     @Override
@@ -718,7 +714,9 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public boolean set(String key, String value, int cacheSeconds) {
-        return toSet(key, value, cacheSeconds);
+        synchronized (key.intern()) {
+            return doSet(key, value, cacheSeconds);
+        }
     }
 
     /**
@@ -728,17 +726,31 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      */
     @Override
     public String get(String key) {
-        return null;
+        return doGet(String.class, key);
     }
 
     @Override
     public long setnx(String key, String value) {
-        return 0L;
+        return doSetnx(key, value);
     }
 
     @Override
     public long setrange(String key, long offset, String value) {
-        return 0L;
+        synchronized (key.intern()) {
+            String s = doGet(String.class, key);
+            if (s == null || offset > s.length() - 1) {
+                return 0L;
+            }
+            String prefix = s.substring(0, (int) offset);
+            StringBuilder resStr = new StringBuilder(prefix);
+            resStr.append(value);
+            if (s.length() > resStr.length()) {
+                String suffix = key.substring(resStr.length());
+                resStr.append(suffix);
+            }
+            boolean res = doSet(key, resStr.toString(), 0);
+            return res ? resStr.length() : 0L;
+        }
     }
 
     @Override
