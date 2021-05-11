@@ -202,14 +202,12 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     /*===========================sort set begin========================================*/
     @Override
     public long zadd(String key, double score, Object member) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZadd(key, score, member);
     }
 
     @Override
     public long zadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZadd(key, valueScoreMap, cacheSeconds);
     }
 
     @Override

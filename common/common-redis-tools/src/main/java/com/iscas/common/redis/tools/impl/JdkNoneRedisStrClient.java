@@ -208,69 +208,12 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
     /*==============================sort set begin=====================================================*/
     @Override
     public long zadd(String key, double score, String member) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.zadd(key, score, member);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                shardedJedis.zadd(key, score, member);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.zadd(key, score, member);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doZadd(key, score, member);
     }
 
     @Override
     public long zadd(String key, Map<String, Double> valueScoreMap, int cacheSeconds) {
-//        long result = 0;
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (valueScoreMap == null || valueScoreMap.size() == 0 ) {
-//                throw new RuntimeException("集合不能为空");
-//            }
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                if (jedis.exists(key)) {
-//                    jedis.del(key);
-//                }
-//                result = jedis.zadd(key, valueScoreMap);
-//                if (cacheSeconds != 0) {
-//                    jedis.expire(key, cacheSeconds);
-//                }
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis jedis = (ShardedJedis) jc;
-//                if (jedis.exists(key)) {
-//                    jedis.del(key);
-//                }
-//                result = jedis.zadd(key, valueScoreMap);
-//                if (cacheSeconds != 0) {
-//                    jedis.expire(key, cacheSeconds);
-//                }
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedis = (JedisCluster) jc;
-//                if (jedis.exists(key)) {
-//                    jedis.del(key);
-//                }
-//                result = jedis.zadd(key, valueScoreMap);
-//                if (cacheSeconds != 0) {
-//                    jedis.expire(key, cacheSeconds);
-//                }
-//            }
-//
-//        } finally {
-//            returnResource(jc);
-//        }
-//        return result;
-        return 0L;
+        return doZadd(key, valueScoreMap, cacheSeconds);
     }
 
     @Override

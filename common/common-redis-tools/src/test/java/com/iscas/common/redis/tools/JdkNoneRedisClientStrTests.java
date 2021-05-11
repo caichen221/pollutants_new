@@ -423,12 +423,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试向zset添加一个元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZadd() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.zadd("testKey", 1, "xxxxx");
-            Assert.assertEquals(1, result);
+            long result2 = jedisClient.zadd("testKey", 2, "xxxxx");
+            Assertions.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -437,7 +438,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试向zset添加元素，带超时时间
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZadd2() {
         try {
             jedisClient.del("testKey");
@@ -445,7 +446,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("1", 1.0);
             memebers.put("2", 2.0);
             long result = jedisClient.zadd("testKey", memebers, 20);
-            Assert.assertEquals(2, result);
+            Assertions.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
         }

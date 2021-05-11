@@ -7,6 +7,7 @@ import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
+import com.iscas.common.redis.tools.impl.jdk.ZsortDto;
 import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.PipelineBase;
 
@@ -767,5 +768,37 @@ public class JdkNoneRedisCommonClient {
         return result;
     }
 
+    private TreeSet<ZsortDto> getZset(String key) {
+        TreeSet<ZsortDto> treeSet = doGet(TreeSet.class, key);
+        if (treeSet == null) {
+            treeSet = new TreeSet<>();
+            doSet(key, treeSet, 0);
+        }
+        return treeSet;
+    }
+    protected long doZadd(String key, double score, Object member) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = getZset(key);
+            ZsortDto zsortDto = new ZsortDto(score, member);
+            zset.remove(zsortDto);
+            zset.add(zsortDto);
+            return 1L;
+        }
+    }
+
+    protected long doZadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = getZset(key);
+            for (Map.Entry<?, Double> entry : valueScoreMap.entrySet()) {
+                ZsortDto zsortDto = new ZsortDto(entry.getValue(), entry.getKey());
+                zset.remove(zsortDto);
+                zset.add(zsortDto);
+            }
+            if (cacheSeconds != 0) {
+                doExpire(key, cacheSeconds * 1000);
+            }
+            return valueScoreMap.size();
+        }
+    }
 
 }

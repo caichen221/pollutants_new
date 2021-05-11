@@ -410,57 +410,57 @@ public class JdkNoneRedisClientTests {
         }
     }
 
-//    /*=====================================测试SET END===================================================*/
-//
-//
-//    /*=============================sort set begin======================================*/
-//    /**
-//     * 测试将一个元素插入zset
-//     * */
-//    @Test
-//    public void testZadd() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            long result = jedisClient.zadd("testKey", 1, 123);
-//            Assert.assertEquals(1, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试将多个元素插入zset
-//     * */
-//    @Test
-//    public void testZadd2() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<Integer, Double> map = new HashMap<>();
-//            map.put(1, 6.7);
-//            map.put(2, 12.9);
-//            long result = jedisClient.zadd("testKey", map);
-//            Assert.assertEquals(2, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试将多个元素插入zset, 带超时时间
-//     * */
-//    @Test
-//    public void testZadd3() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<Integer, Double> map = new HashMap<>();
-//            map.put(1, 6.7);
-//            map.put(2, 12.9);
-//            long result = jedisClient.zadd("testKey", map,  2);
-//            Assert.assertEquals(2, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
+    /*=====================================测试SET END===================================================*/
+
+
+    /*=============================sort set begin======================================*/
+    /**
+     * 测试将一个元素插入zset
+     * */
+    @Test
+    public void testZadd() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.zadd("testKey", 1, 123);
+            Assertions.assertEquals(1, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试将多个元素插入zset
+     * */
+    @Test
+    public void testZadd2() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<Integer, Double> map = new HashMap<>();
+            map.put(1, 6.7);
+            map.put(2, 12.9);
+            long result = jedisClient.zadd("testKey", map);
+            Assertions.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试将多个元素插入zset, 带超时时间
+     * */
+    @Test
+    public void testZadd3() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<Integer, Double> map = new HashMap<>();
+            map.put(1, 6.7);
+            map.put(2, 12.9);
+            long result = jedisClient.zadd("testKey", map,  2);
+            Assertions.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
 //
 //    /**
 //     * 测试zset中元素的个数
