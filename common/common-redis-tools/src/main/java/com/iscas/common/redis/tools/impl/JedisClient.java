@@ -1515,7 +1515,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     }
 
     @Override
-    public <T> T getSet(Class<T> tClass, String key, String value) throws IOException, ClassNotFoundException {
+    public <T> T getSet(Class<T> tClass, String key, T value) throws IOException, ClassNotFoundException {
         Object jc = null;
         try {
             jc = getResource(Object.class);

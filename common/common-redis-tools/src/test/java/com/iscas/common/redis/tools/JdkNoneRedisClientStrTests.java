@@ -1419,19 +1419,21 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试mget
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMget() {
         try {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
             jedisClient.set("testKey", "111", 0);
             jedisClient.set("testKey2", "222", 0);
-            List<String> result = jedisClient.mget("testKey", "testKey2");
-            Assert.assertEquals("111", result.get(0));
-            Assert.assertEquals("222", result.get(1));
+            jedisClient.set("testKey3", "3333", 0);
+            List<String> result = jedisClient.mget("testKey", "testKeyz", "testKey2", "testKey3");
+            Assertions.assertEquals("111", result.get(0));
+            Assertions.assertEquals("222", result.get(2));
         } finally {
             jedisClient.del("testKey");
             jedisClient.del("testKey2");
+            jedisClient.del("testKey3");
         }
     }
 

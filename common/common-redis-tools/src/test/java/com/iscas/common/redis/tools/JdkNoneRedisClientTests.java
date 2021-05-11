@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -1239,27 +1240,35 @@ public class JdkNoneRedisClientTests {
     @Test
     @Disabled
     public void testGetSet() throws IOException, ClassNotFoundException {
-
+        try {
+            jedisClient.del("testKey");
+            String result1 = jedisClient.getSet(String.class, "testKey", "10000");
+            Assertions.assertNull(result1);
+            String result2 = jedisClient.getSet(String.class,"testKey", "123");
+            Assertions.assertEquals(result2, "10000");
+        } finally {
+            jedisClient.del("testKey");
+        }
     }
 
-//    /**
-//     * 测试mget
-//     * */
-//    @Test
-//    public void testMget() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.del("testKey2");
-//            jedisClient.set("testKey", "111", 0);
-//            jedisClient.set("testKey2", 222, 0);
-//            List<Object> result = jedisClient.mget(Object.class, "testKey", "testKey2");
-//            Assert.assertEquals("111", result.get(0));
-//            Assert.assertEquals(222, result.get(1));
-//        } finally {
-//            jedisClient.del("testKey");
-//            jedisClient.del("testKey2");
-//        }
-//    }
+    /**
+     * 测试mget
+     * */
+    @Test
+    public void testMget() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+            jedisClient.set("testKey", "111", 0);
+            jedisClient.set("testKey2", 222, 0);
+            List<Object> result = jedisClient.mget(Object.class, "testKey", "testKey2");
+            Assertions.assertEquals("111", result.get(0));
+            Assertions.assertEquals(222, result.get(1));
+        } finally {
+            jedisClient.del("testKey");
+            jedisClient.del("testKey2");
+        }
+    }
 //
 //    /**
 //     * 测试mset

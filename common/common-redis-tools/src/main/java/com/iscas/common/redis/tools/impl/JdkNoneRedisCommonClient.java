@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 不使用Redis，使用Jdk仿造Redis的方法，
@@ -202,6 +203,19 @@ public class JdkNoneRedisCommonClient {
             }
             return 0L;
         }
+    }
+
+    protected <T> T doGetSet(Class<T> tClass, String key, T value) {
+        synchronized (key.intern()) {
+            T s = doGet(tClass, key);
+            doSet(key, value, 0);
+            return s;
+        }
+    }
+
+    protected <T> List<T> doMget(Class<T> tClass, String... keys) {
+        return Arrays.stream(keys).map(key -> doGet(tClass, key))
+                .collect(Collectors.toList());
     }
 
 }

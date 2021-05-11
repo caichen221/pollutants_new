@@ -478,15 +478,13 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public <T> T getSet(Class<T> tClass, String key, String value) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+    public <T> T getSet(Class<T> tClass, String key, T value) throws IOException, ClassNotFoundException {
+        return doGetSet(tClass, key, value);
     }
 
     @Override
     public <T> List<T> mget(Class<T> tClass, String... keys) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doMget(tClass, keys);
     }
 
     @Override

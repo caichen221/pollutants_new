@@ -799,16 +799,12 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public String getSet(String key, String value) {
-        synchronized (key.intern()) {
-            String s = doGet(String.class, key);
-            doSet(key, value, 0);
-            return s;
-        }
+        return doGetSet(String.class, key, value);
     }
 
     @Override
     public List<String> mget(String... keys) {
-        return null;
+        return doMget(String.class, keys);
     }
 
     @Override
