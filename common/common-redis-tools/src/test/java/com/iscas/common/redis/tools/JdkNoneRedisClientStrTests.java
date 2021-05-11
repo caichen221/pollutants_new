@@ -1506,13 +1506,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试llen
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLlen() {
         try {
             jedisClient.del("testKey");
             long result = jedisClient.rpush("testKey", "10000", "22222");
             long result2 = jedisClient.llen("testKey");
-            Assert.assertEquals(2, result2);
+            Assertions.assertEquals(2, result2);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1521,15 +1521,15 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试lset
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLset() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
             boolean result1 = jedisClient.lset("testKey", 1, "dfg");
-            Assert.assertTrue(result1);
+            Assertions.assertTrue(result1);
             boolean result2 = jedisClient.lset("testKey", 0, "zqw");
-            Assert.assertTrue(result2);
+            Assertions.assertTrue(result2);
 
         } finally {
             jedisClient.del("testKey");
@@ -1539,13 +1539,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试linsert
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLinsert() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
             long result = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", "33333");
-            Assert.assertEquals(result, 3);
+            Assertions.assertEquals(result, 3);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1554,13 +1554,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试lindex
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLindex() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
             String result = jedisClient.lindex("testKey", 1);
-            Assert.assertEquals(result, "22222");
+            Assertions.assertEquals(result, "22222");
         } finally {
             jedisClient.del("testKey");
         }
@@ -1569,13 +1569,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试lpop
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLpop() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
             String result = jedisClient.lpop("testKey");
-            Assert.assertEquals(result, "10000");
+            Assertions.assertEquals(result, "10000");
         } finally {
             jedisClient.del("testKey");
         }
@@ -1584,13 +1584,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试rpop
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRpop() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222");
             String result = jedisClient.rpop("testKey");
-            Assert.assertEquals(result, "22222");
+            Assertions.assertEquals(result, "22222");
         } finally {
             jedisClient.del("testKey");
         }
@@ -1599,13 +1599,13 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试lrange
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLrange() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222", "444", "adsdb");
             List<String> result = jedisClient.lrange("testKey", 0, 2);
-            Assert.assertEquals(result.size(), 3);
+            Assertions.assertEquals(result.size(), 3);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1614,15 +1614,15 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试lrem
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLrem() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
             long result = jedisClient.lrem("testKey", 6, "10000");
-            Assert.assertEquals(3, result);
+            Assertions.assertEquals(3, result);
             long result2 = jedisClient.lrem("testKey", -1, "22222");
-            Assert.assertEquals(1, result2);
+            Assertions.assertEquals(1, result2);
         } finally {
             jedisClient.del("testKey");
         }
@@ -1631,15 +1631,15 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试ltrim
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLtrim() {
         try {
             jedisClient.del("testKey");
             jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
             boolean result = jedisClient.ltrim("testKey", 2, 3);
-            Assert.assertTrue(result);
+            Assertions.assertTrue(result);
             List<String> result2 = jedisClient.lrange("testKey", 0, -1);
-            Assert.assertEquals(2, result2.size());
+            Assertions.assertEquals(2, result2.size());
         } finally {
             jedisClient.del("testKey");
         }

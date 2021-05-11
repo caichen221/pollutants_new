@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import redis.clients.jedis.ListPosition;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -1330,150 +1331,149 @@ public class JdkNoneRedisClientTests {
             jedisClient.del("testKey");
         }
     }
-//
-//    /**
-//     * 测试llen
-//     * */
-//    @Test
-//    public void testLlen() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            long result = jedisClient.rpush("testKey", "10000", "22222");
-//            long result2 = jedisClient.llen("testKey");
-//            Assert.assertEquals(2, result2);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试lset
-//     * */
-//    @Test
-//    public void testLset() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222");
-//            boolean result1 = jedisClient.lset("testKey", 1, "dfg");
-//            Assert.assertTrue(result1);
-//            boolean result2 = jedisClient.lset("testKey", 0, "zqw");
-//            Assert.assertTrue(result2);
-//
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试linsert
-//     * */
-//    @Test
-//    public void testLinsert() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222");
-//            long result = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", "33333");
-//            Assert.assertEquals(result, 3);
-//            long result2 = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", 45678);
-//            Assert.assertEquals(result2, 4);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//    /**
-//     * 测试lindex
-//     * */
-//    @Test
-//    public void testLindex() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222");
-//            String result = jedisClient.lindex(String.class, "testKey", 1);
-//            Assert.assertEquals(result, "22222");
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试lpop
-//     * */
-//    @Test
-//    public void testLpop() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222");
-//            String result = jedisClient.lpop(String.class, "testKey");
-//            Assert.assertEquals(result, "10000");
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试lpop
-//     * */
-//    @Test
-//    public void testRpop() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222");
-//            String result = jedisClient.rpop(String.class, "testKey");
-//            Assert.assertEquals(result, "22222");
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试lrange
-//     * */
-//    @Test
-//    public void testLrange() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222", "444", "adsdb");
-//            List<String> result = jedisClient.lrange(String.class, "testKey", 0, 2);
-//            Assert.assertEquals(result.size(), 3);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试lrem
-//     * */
-//    @Test
-//    public void testLrem() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
-//            long result = jedisClient.lrem("testKey", 6, "10000");
-//            Assert.assertEquals(3, result);
-//            long result2 = jedisClient.lrem("testKey", -1, "22222");
-//            Assert.assertEquals(1, result2);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试ltrim
-//     * */
-//    @Test
-//    public void testLtrim() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
-//            boolean result = jedisClient.ltrim("testKey", 2, 3);
-//            Assert.assertTrue(result);
-//            List<String> result2 = jedisClient.lrange(String.class, "testKey", 0, -1);
-//            Assert.assertEquals(2, result2.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
+
+    /**
+     * 测试llen
+     * */
+    @Test
+    public void testLlen() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            long result = jedisClient.rpush("testKey", "10000", "22222");
+            long result2 = jedisClient.llen("testKey");
+            Assertions.assertEquals(2, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lset
+     * */
+    @Test
+    public void testLset() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            boolean result1 = jedisClient.lset("testKey", 1, "dfg");
+            Assertions.assertTrue(result1);
+            boolean result2 = jedisClient.lset("testKey", 0, "zqw");
+            Assertions.assertTrue(result2);
+
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试linsert
+     * */
+    @Test
+    public void testLinsert() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            long result = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", "33333");
+            Assertions.assertEquals(result, 3);
+            long result2 = jedisClient.linsert("testKey", ListPosition.AFTER, "10000", 45678);
+            Assertions.assertEquals(result2, 4);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+    /**
+     * 测试lindex
+     * */
+    @Test
+    public void testLindex() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            String result = jedisClient.lindex(String.class, "testKey", 1);
+            Assertions.assertEquals(result, "22222");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lpop
+     * */
+    @Test
+    public void testLpop() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            String result = jedisClient.lpop(String.class, "testKey");
+            Assertions.assertEquals(result, "10000");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lpop
+     * */
+    @Test
+    public void testRpop() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222");
+            String result = jedisClient.rpop(String.class, "testKey");
+            Assertions.assertEquals(result, "22222");
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lrange
+     * */
+    @Test
+    public void testLrange() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222", "444", "adsdb");
+            List<String> result = jedisClient.lrange(String.class, "testKey", 0, 2);
+            Assertions.assertEquals(result.size(), 3);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试lrem
+     * */
+    @Test
+    public void testLrem() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
+            long result = jedisClient.lrem("testKey", 6, "10000");
+            Assertions.assertEquals(3, result);
+            long result2 = jedisClient.lrem("testKey", -1, "22222");
+            Assertions.assertEquals(1, result2);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试ltrim
+     * */
+    @Test
+    public void testLtrim() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            jedisClient.rpush("testKey", "10000", "22222", "10000", "22222", "10000");
+            boolean result = jedisClient.ltrim("testKey", 2, 3);
+            Assertions.assertTrue(result);
+            List<String> result2 = jedisClient.lrange(String.class, "testKey", 0, -1);
+            Assertions.assertEquals(2, result2.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
 //    /*=============================list end============================================*/
 
 

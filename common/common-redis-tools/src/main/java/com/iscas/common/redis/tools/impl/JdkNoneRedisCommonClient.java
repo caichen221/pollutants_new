@@ -6,6 +6,7 @@ import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.helper.MyStringHelper;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
+import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.PipelineBase;
 
 import java.io.IOException;
@@ -246,13 +247,133 @@ public class JdkNoneRedisCommonClient {
 
     protected long doLpush(String key, Object... value) {
         synchronized (key.intern()) {
-            LinkedList linkedList = doGet(LinkedList.class, key);
-            if (linkedList == null) {
-                linkedList = new LinkedList();
-                doSet(key, linkedList, 0);
-            }
+            LinkedList linkedList = getLinkedList(key);
             Arrays.stream(value).forEach(linkedList::addFirst);
             return linkedList.size();
+        }
+    }
+
+    protected long doLlen(String key) {
+        LinkedList linkedList = doGet(LinkedList.class, key);
+        return linkedList == null ? 0 : linkedList.size();
+    }
+
+    private LinkedList getLinkedList(String key) {
+        LinkedList linkedList = doGet(LinkedList.class, key);
+        if (linkedList == null) {
+            linkedList = new LinkedList();
+            doSet(key, linkedList, 0);
+        }
+        return linkedList;
+    }
+
+    protected boolean doLset(String key, int index, Object value) {
+        synchronized (key.intern()) {
+            LinkedList linkedList = getLinkedList(key);
+            if (index > linkedList.size() - 1) {
+                throw new RuntimeException(String.format("链表没有下标:%d", index));
+            }
+            linkedList.set(index, value);
+            return true;
+        }
+    }
+
+    protected long doLinsert(String key, ListPosition where, Object pivot, Object value) {
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                throw new RuntimeException(String.format("key:%s对应的链表不存在", key));
+            }
+            for (int i = 0; i < linkedList.size(); i++) {
+                Object o = linkedList.get(i);
+                if (Objects.equals(o, pivot)) {
+                    if (where == ListPosition.AFTER) {
+                        linkedList.add(i + 1, value);
+                    } else {
+                        linkedList.add(i, value);
+                    }
+                }
+            }
+            return linkedList.size();
+        }
+    }
+
+    protected  <T> T doLindex(Class<T> tClass, String key, long index) {
+        LinkedList linkedList = doGet(LinkedList.class, key);
+        if (linkedList == null) {
+            return null;
+        }
+        return (T) linkedList.get((int) index);
+    }
+
+    protected  <T> T doLpop(Class<T> tClass, String key) {
+        LinkedList linkedList = doGet(LinkedList.class, key);
+        if (linkedList == null) {
+            return null;
+        }
+        return (T) linkedList.pollFirst();
+    }
+
+    protected <T> T doRpop(Class<T> tClass, String key) {
+        LinkedList linkedList = doGet(LinkedList.class, key);
+        if (linkedList == null) {
+            return null;
+        }
+        return (T) linkedList.pollLast();
+    }
+
+    protected <T> List<T> doLrange(Class<T> tClass, String key, long start, long end) {
+        LinkedList linkedList = doGet(LinkedList.class, key);
+        if (linkedList == null) {
+            return null;
+        }
+        if (end == -1) {
+            end = linkedList.size() - 1;
+        }
+        return linkedList.subList((int) start, (int) end + 1);
+    }
+
+    protected long doLrem(String key, int count, Object value) {
+        synchronized (key.intern()) {
+            long sum = 0L;
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                return 0L;
+            }
+            if (count > 0) {
+                Iterator iterator = linkedList.iterator();
+                while (iterator.hasNext() && sum < count) {
+                    Object o = iterator.next();
+                    if (Objects.equals(o, value)) {
+                        iterator.remove();
+                        sum ++;
+                    }
+                }
+            } else {
+                for (int i = linkedList.size() - 1; i >= 0 && sum < -count; i--) {
+                    Object o = linkedList.get(i);
+                    if (Objects.equals(o, value)) {
+                        linkedList.remove(i);
+                        sum ++;
+                    }
+                }
+            }
+            return sum;
+        }
+    }
+
+    protected boolean doLtrim(String key, long start, long end) {
+        synchronized (key.intern()) {
+            LinkedList linkedList = doGet(LinkedList.class, key);
+            if (linkedList == null) {
+                return false;
+            }
+            for (int i = linkedList.size() - 1; i >= 0; i--) {
+                if (i < start || i > end) {
+                    linkedList.remove(i);
+                }
+            }
+            return true;
         }
     }
 

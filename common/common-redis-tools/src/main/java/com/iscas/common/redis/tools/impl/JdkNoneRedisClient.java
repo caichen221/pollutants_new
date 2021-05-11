@@ -512,56 +512,47 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public long llen(String key) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doLlen(key);
     }
 
     @Override
     public boolean lset(String key, int index, Object value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doLset(key, index, value);
     }
 
     @Override
     public long linsert(String key, ListPosition where, Object pivot, Object value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doLinsert(key, where, pivot, value);
     }
 
     @Override
     public <T> T lindex(Class<T> tClass, String key, long index) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doLindex(tClass, key, index);
     }
 
     @Override
     public <T> T lpop(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doLpop(tClass, key);
     }
 
     @Override
     public <T> T rpop(Class<T> tClass, String key) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doRpop(tClass, key);
     }
 
     @Override
     public <T> List<T> lrange(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doLrange(tClass, key, start, end);
     }
 
     @Override
     public long lrem(String key, int count, Object value) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doLrem(key, count, value);
     }
 
     @Override
     public boolean ltrim(String key, long start, long end) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doLtrim(key, start, end);
     }
 
     /*===========================list end============================================*/

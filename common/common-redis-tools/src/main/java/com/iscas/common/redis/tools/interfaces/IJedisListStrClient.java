@@ -45,7 +45,7 @@ public interface IJedisListStrClient {
      * @date 2020/11/19
      * @param key key
      * @throws
-     * @return 追加元素后链表的长度
+     * @return 链表的长度
      */
     long llen(String key);
 
@@ -58,7 +58,7 @@ public interface IJedisListStrClient {
      * @param index 下标
      * @param value 值
      * @throws
-     * @return 追加元素后链表的长度
+     * @return 链表的长度
      */
     boolean lset(String key, int index, String value);
 

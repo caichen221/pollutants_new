@@ -833,47 +833,47 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public long llen(String key) {
-        return 0L;
+        return doLlen(key);
     }
 
     @Override
     public boolean lset(String key, int index, String value) {
-        return false;
+        return doLset(key, index, value);
     }
 
     @Override
     public long linsert(String key, ListPosition where, String pivot, String value) {
-        return 0L;
+        return doLinsert(key, where, pivot, value);
     }
 
     @Override
     public String lindex(String key, long index) {
-        return null;
+        return doLindex(String.class, key, index);
     }
 
     @Override
     public String lpop(String key) {
-        return null;
+        return doLpop(String.class, key);
     }
 
     @Override
     public String rpop(String key) {
-        return null;
+        return doRpop(String.class, key);
     }
 
     @Override
     public List<String> lrange(String key, long start, long end) {
-        return null;
+        return doLrange(String.class, key, start, end);
     }
 
     @Override
     public long lrem(String key, int count, String value) {
-        return 0L;
+        return doLrem(key, count, value);
     }
 
     @Override
     public boolean ltrim(String key, long start, long end) {
-        return false;
+        return doLtrim(key, start, end);
     }
     /*==============================list end=======================================================*/
 
