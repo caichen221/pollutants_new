@@ -212,32 +212,27 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public long zadd(String key, Map<? extends Object, Double> valueScoreMap) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZadd(key, valueScoreMap);
     }
 
     @Override
     public long zcard(String key) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZcard(key);
     }
 
     @Override
     public long zcount(String key, double min, double max) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZcount(key, min, max);
     }
 
     @Override
     public double zincrby(String key, double score, Object member) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZincrby(key, score, member);
     }
 
     @Override
     public <T> Set<T> zrange(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doZrange(tClass, key, start, end);
     }
 
     @Override

@@ -455,7 +455,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试向zset添加元素，不带超时时间
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZadd3() {
         try {
             jedisClient.del("testKey");
@@ -472,7 +472,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取zset中元素的个数
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZcard() {
         try {
             jedisClient.del("testKey");
@@ -481,7 +481,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("2", 2.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zcard("testKey");
-            Assert.assertEquals(2, result);
+            Assertions.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -490,7 +490,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取zset中制定权重区间内的元素的个数
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZcount() {
         try {
             jedisClient.del("testKey");
@@ -499,7 +499,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("2", 2.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zcount("testKey", 1.0, 1.6);
-            Assert.assertEquals(1, result);
+            Assertions.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -508,7 +508,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试为zset中某个元素增加权重
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZincrby() {
         try {
             jedisClient.del("testKey");
@@ -517,7 +517,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("2", 2.0);
             jedisClient.zadd("testKey", memebers);
             double result = jedisClient.zincrby("testKey", 3, "2");
-            Assert.assertEquals(5.0, result, 1);
+            Assertions.assertEquals(5.0, result, 1);
             //如果元素不存在，增加这个元素
             double result2 = jedisClient.zincrby("testKey", 3, "4");
             System.out.println(result2);
@@ -530,7 +530,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取zset制定范围的元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrange() {
         try {
             jedisClient.del("testKey");
@@ -542,7 +542,7 @@ public class JdkNoneRedisClientStrTests {
             set1.forEach(System.out::println);
             //如果元素不存在，增加这个元素
             Set<String> set2 = jedisClient.zrange("testKey", 0, 0);
-            Assert.assertEquals("1", set2.iterator().next());
+            Assertions.assertEquals("1", set2.iterator().next());
         } finally {
             jedisClient.del("testKey");
         }

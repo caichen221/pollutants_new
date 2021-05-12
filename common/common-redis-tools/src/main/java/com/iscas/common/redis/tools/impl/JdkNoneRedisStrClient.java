@@ -218,44 +218,27 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public long zadd(String key, Map<String, Double> valueScoreMap) {
-//        Object jc = null;
-//        try {
-//            jc = getResource(Object.class);
-//            if (jc instanceof Jedis) {
-//                Jedis jedis = (Jedis) jc;
-//                return jedis.zadd(key, valueScoreMap);
-//            } else if (jc instanceof ShardedJedis) {
-//                ShardedJedis shardedJedis = (ShardedJedis) jc;
-//                shardedJedis.zadd(key, valueScoreMap);
-//            } else if (jc instanceof JedisCluster) {
-//                JedisCluster jedisCluster = (JedisCluster) jc;
-//                return jedisCluster.zadd(key, valueScoreMap);
-//            }
-//            return 0;
-//        } finally {
-//            returnResource(jc);
-//        }
-        return 0L;
+        return doZadd(key, valueScoreMap);
     }
 
     @Override
     public long zcard(String key) {
-        return 0L;
+        return doZcard(key);
     }
 
     @Override
     public long zcount(String key, double min, double max) {
-        return 0L;
+        return doZcount(key, min, max);
     }
 
     @Override
     public double zincrby(String key, double score, String member) {
-        return 0.0;
+        return doZincrby(key, score, member);
     }
 
     @Override
     public Set<String> zrange(String key, long start, long end) {
-        return null;
+        return doZrange(String.class, key, start, end);
     }
 
     @Override

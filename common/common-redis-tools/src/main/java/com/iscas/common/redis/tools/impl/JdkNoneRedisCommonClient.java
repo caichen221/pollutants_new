@@ -788,16 +788,85 @@ public class JdkNoneRedisCommonClient {
 
     protected long doZadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) {
         synchronized (key.intern()) {
+            long l = doZadd(key, valueScoreMap);
+            if (cacheSeconds != 0) {
+                doExpire(key, cacheSeconds * 1000);
+            }
+            return l;
+        }
+    }
+
+    protected long doZadd(String key, Map<? extends Object, Double> valueScoreMap) {
+        synchronized (key.intern()) {
             TreeSet<ZsortDto> zset = getZset(key);
             for (Map.Entry<?, Double> entry : valueScoreMap.entrySet()) {
                 ZsortDto zsortDto = new ZsortDto(entry.getValue(), entry.getKey());
                 zset.remove(zsortDto);
                 zset.add(zsortDto);
             }
-            if (cacheSeconds != 0) {
-                doExpire(key, cacheSeconds * 1000);
-            }
             return valueScoreMap.size();
+        }
+    }
+
+    protected long doZcard(String key) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            return zset == null ? 0 : zset.size();
+        }
+    }
+
+    protected long doZcount(String key, double min, double max) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset != null) {
+                long count = 0L;
+                for (ZsortDto zsortDto : zset) {
+                    if (zsortDto.getScore() >= min && zsortDto.getScore() <= max) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+            return 0L;
+        }
+    }
+
+    protected double doZincrby(String key, double score, Object member) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = getZset(key);
+            for (ZsortDto zsortDto : zset) {
+                double score1 = zsortDto.getScore();
+                Object member1 = zsortDto.getMember();
+                if (Objects.equals(member, member1)) {
+                    double newScore = score + score1;
+                    zsortDto.setScore(newScore);
+                    return newScore;
+                }
+            }
+            ZsortDto zsortDto = new ZsortDto(score, member);
+            zset.add(zsortDto);
+            return score;
+        }
+    }
+
+    protected <T> Set<T> doZrange(Class<T> tClass, String key, long start, long end) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return new HashSet<>();
+            }
+            int i = 0;
+            if (end == -1) {
+                end = zset.size() - 1;
+            }
+            Set<T> result = new TreeSet<>();
+            for (ZsortDto zsortDto : zset) {
+                if (i >= start && i <= end) {
+                    result.add((T) zsortDto.getMember());
+                }
+                i++;
+            }
+            return result;
         }
     }
 

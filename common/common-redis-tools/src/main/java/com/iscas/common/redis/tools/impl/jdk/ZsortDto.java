@@ -20,7 +20,7 @@ import java.util.TreeSet;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ZsortDto implements Comparable<ZsortDto> {
-    private double score;
+    private double score = Double.MIN_VALUE;
     private Object member;
 
     @Override

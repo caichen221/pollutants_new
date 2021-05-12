@@ -461,85 +461,85 @@ public class JdkNoneRedisClientTests {
             jedisClient.del("testKey");
         }
     }
-//
-//    /**
-//     * 测试zset中元素的个数
-//     * */
-//    @Test
-//    public void testZcard() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<Integer, Double> map = new HashMap<>();
-//            map.put(1, 6.7);
-//            map.put(2, 12.9);
-//            jedisClient.zadd("testKey", map,  20);
-//            long result = jedisClient.zcard("testKey");
-//            Assert.assertEquals(2, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//    /**
-//     * 测试获取zset中制定权重区间内的元素的个数
-//     * */
-//    @Test
-//    public void testZcount() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            jedisClient.zadd("testKey", memebers);
-//            long result = jedisClient.zcount("testKey", 1.0, 1.6);
-//            Assert.assertEquals(1, result);
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试为zset中某个元素增加权重
-//     * */
-//    @Test
-//    public void testZincrby() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            jedisClient.zadd("testKey", memebers);
-//            double result = jedisClient.zincrby("testKey", 3, "2");
-//            Assert.assertEquals(5.0, result, 1);
-//            //如果元素不存在，增加这个元素
-//            double result2 = jedisClient.zincrby("testKey", 3, "4");
-//            System.out.println(result2);
-//            System.out.println(jedisClient.zcard("testKey"));
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试获取zset制定范围的元素
-//     * */
-//    @Test
-//    public void testZrange() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            jedisClient.zadd("testKey", memebers);
-//            Set<String> set1 = jedisClient.zrange(String.class, "testKey", 0, -1);
-//            set1.forEach(System.out::println);
-//            //如果元素不存在，增加这个元素
-//            Set<String> set2 = jedisClient.zrange(String.class, "testKey", 0, 0);
-//            Assert.assertEquals("1", set2.iterator().next());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
+
+    /**
+     * 测试zset中元素的个数
+     * */
+    @Test
+    public void testZcard() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<Integer, Double> map = new HashMap<>();
+            map.put(1, 6.7);
+            map.put(2, 12.9);
+            jedisClient.zadd("testKey", map,  20);
+            long result = jedisClient.zcard("testKey");
+            Assertions.assertEquals(2, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+    /**
+     * 测试获取zset中制定权重区间内的元素的个数
+     * */
+    @Test
+    public void testZcount() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
+            long result = jedisClient.zcount("testKey", 1.0, 1.6);
+            Assertions.assertEquals(1, result);
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试为zset中某个元素增加权重
+     * */
+    @Test
+    public void testZincrby() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
+            double result = jedisClient.zincrby("testKey", 3, "2");
+            Assertions.assertEquals(5.0, result, 1);
+            //如果元素不存在，增加这个元素
+            double result2 = jedisClient.zincrby("testKey", 3, "4");
+            System.out.println(result2);
+            System.out.println(jedisClient.zcard("testKey"));
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取zset制定范围的元素
+     * */
+    @Test
+    public void testZrange() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> set1 = jedisClient.zrange(String.class, "testKey", 0, -1);
+            set1.forEach(System.out::println);
+            //如果元素不存在，增加这个元素
+            Set<String> set2 = jedisClient.zrange(String.class, "testKey", 0, 0);
+            Assertions.assertEquals("1", set2.iterator().next());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
 //    /**
 //     * 测试获取zset制定范围的元素,并附带权重
 //     * */
