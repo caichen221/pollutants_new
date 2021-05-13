@@ -1,5 +1,6 @@
 package com.iscas.common.redis.tools;
 
+import com.iscas.common.redis.tools.helper.MyObjectHelper;
 import com.iscas.common.redis.tools.impl.JdkNoneRedisClient;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import org.junit.jupiter.api.Assertions;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import redis.clients.jedis.ListPosition;
+import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -540,97 +542,98 @@ public class JdkNoneRedisClientTests {
         }
     }
 
-//    /**
-//     * 测试获取zset制定范围的元素,并附带权重
-//     * */
-//    @Test
-//    public void testZrangeWithScores() throws IOException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            jedisClient.zadd("testKey", memebers);
-//            Set<Tuple> tuples = jedisClient.zrangeWithScores("testKey", 0, -1);
-//            tuples.forEach(tuple -> {
-//                try {
-//                    System.out.println(MyObjectHelper.unserialize(tuple.getBinaryElement()));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//                System.out.println(tuple.getScore());
-//            });
-//            Assert.assertEquals(2, tuples.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试获取zset制定范围的元素,并附带权重,返回Map
-//     * */
-//    @Test
-//    public void testZrangeWithScoresToMap() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            jedisClient.zadd("testKey", memebers);
-//            Map<String, Double> map = jedisClient.zrangeWithScoresToMap(String.class, "testKey", 0, -1);
-//            map.entrySet().forEach(entry -> {
-//                System.out.println(entry.getKey());
-//                System.out.println(entry.getValue());
-//            });
-//            Assert.assertEquals(2, map.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试按照权重查找zset中元素
-//     * */
-//    @Test
-//    public void testZrangeByScore() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            jedisClient.zadd("testKey", memebers);
-//            Set<String> result = jedisClient.zrangeByScore(String.class, "testKey", 1.0, 1.7);
-//            result.forEach(System.out::println);
-//            Assert.assertEquals(1, result.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
-//    /**
-//     * 测试按照权重查找zset中元素, 带偏移量
-//     * */
-//    @Test
-//    public void testZrangeByScore2() throws IOException, ClassNotFoundException {
-//        try {
-//            jedisClient.del("testKey");
-//            Map<String, Double> memebers = new HashMap<>();
-//            memebers.put("1", 1.0);
-//            memebers.put("2", 2.0);
-//            memebers.put("3", 3.0);
-//            memebers.put("4", 4.0);
-//            memebers.put("5", 5.0);
-//            jedisClient.zadd("testKey", memebers);
-//            Set<String> result = jedisClient.zrangeByScore(String.class, "testKey", 1.0, 4, 1, 2);
-//            result.forEach(System.out::println);
-//            Assert.assertEquals(2, result.size());
-//        } finally {
-//            jedisClient.del("testKey");
-//        }
-//    }
-//
+    /**
+     * 测试获取zset制定范围的元素,并附带权重
+     * */
+    @Test
+    @Disabled
+    public void testZrangeWithScores() throws IOException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<Tuple> tuples = jedisClient.zrangeWithScores("testKey", 0, -1);
+            tuples.forEach(tuple -> {
+                try {
+                    System.out.println(MyObjectHelper.unserialize(tuple.getBinaryElement()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(tuple.getScore());
+            });
+            Assertions.assertEquals(2, tuples.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试获取zset制定范围的元素,并附带权重,返回Map
+     * */
+    @Test
+    public void testZrangeWithScoresToMap() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
+            Map<String, Double> map = jedisClient.zrangeWithScoresToMap(String.class, "testKey", 0, -1);
+            map.entrySet().forEach(entry -> {
+                System.out.println(entry.getKey());
+                System.out.println(entry.getValue());
+            });
+            Assertions.assertEquals(2, map.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试按照权重查找zset中元素
+     * */
+    @Test
+    public void testZrangeByScore() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result = jedisClient.zrangeByScore(String.class, "testKey", 1.0, 1.7);
+            result.forEach(System.out::println);
+            Assertions.assertEquals(1, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
+    /**
+     * 测试按照权重查找zset中元素, 带偏移量
+     * */
+    @Test
+    public void testZrangeByScore2() throws IOException, ClassNotFoundException {
+        try {
+            jedisClient.del("testKey");
+            Map<String, Double> memebers = new HashMap<>();
+            memebers.put("1", 1.0);
+            memebers.put("2", 2.0);
+            memebers.put("3", 3.0);
+            memebers.put("4", 4.0);
+            memebers.put("5", 5.0);
+            jedisClient.zadd("testKey", memebers);
+            Set<String> result = jedisClient.zrangeByScore(String.class, "testKey", 1.0, 4, 1, 2);
+            result.forEach(System.out::println);
+            Assertions.assertEquals(2, result.size());
+        } finally {
+            jedisClient.del("testKey");
+        }
+    }
+
 //    /**
 //     * 测试按照权重查找zset中元素,返回值附带权重
 //     * */

@@ -28,7 +28,7 @@ public class ZsortDto implements Comparable<ZsortDto> {
         if (Objects.equals(o.getMember(), member)) {
             return 0;
         }
-        return o.score < score ? -1 : 1;
+        return o.score > score ? -1 : 1;
     }
 
     @Override

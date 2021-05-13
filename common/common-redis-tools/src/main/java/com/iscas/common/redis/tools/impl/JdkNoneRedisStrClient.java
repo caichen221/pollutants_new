@@ -243,22 +243,22 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public Map<String, Double> zrangeWithScoresToMap(String key, long start, long end) {
-        return null;
+        return doZrangeWithScoresToMap(String.class, key, start, end);
     }
 
     @Override
     public Set<Tuple> zrangeWithScores(String key, long start, long end) {
-        return null;
+        throw new UnsupportedOperationException("暂不支持zrangeWithScores操作");
     }
 
     @Override
     public Set<String> zrangeByScore(String key, double min, double max) {
-        return null;
+        return doZrangeByScore(String.class, key, min, max);
     }
 
     @Override
     public Set<String> zrangeByScore(String key, double min, double max, int offset, int count) {
-        return null;
+        return doZrangeByScore(String.class, key, min, max, offset, count);
     }
 
     @Override

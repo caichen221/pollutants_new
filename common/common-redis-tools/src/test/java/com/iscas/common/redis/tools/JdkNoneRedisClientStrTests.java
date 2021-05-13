@@ -551,7 +551,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取zset制定范围的元素,并附带权重
      * */
-    @Test
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testZrangeWithScores() {
         try {
             jedisClient.del("testKey");
@@ -564,7 +565,7 @@ public class JdkNoneRedisClientStrTests {
                 System.out.println(tuple.getElement());
                 System.out.println(tuple.getScore());
             });
-            Assert.assertEquals(2, tuples.size());
+            Assertions.assertEquals(2, tuples.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -573,7 +574,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试获取zset制定范围的元素,并附带权重,返回Map
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrangeWithScoresToMap() {
         try {
             jedisClient.del("testKey");
@@ -586,7 +587,7 @@ public class JdkNoneRedisClientStrTests {
                 System.out.println(entry.getKey());
                 System.out.println(entry.getValue());
             });
-            Assert.assertEquals(2, map.size());
+            Assertions.assertEquals(2, map.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -595,7 +596,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试按照权重查找zset中元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrangeByScore() {
         try {
             jedisClient.del("testKey");
@@ -605,7 +606,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Set<String> result = jedisClient.zrangeByScore("testKey", 1.0, 1.7);
             result.forEach(System.out::println);
-            Assert.assertEquals(1, result.size());
+            Assertions.assertEquals(1, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -614,7 +615,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试按照权重查找zset中元素, 带偏移量
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrangeByScore2() {
         try {
             jedisClient.del("testKey");
@@ -627,7 +628,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Set<String> result = jedisClient.zrangeByScore("testKey", 1.0, 2, 1, 2);
             result.forEach(System.out::println);
-            Assert.assertEquals(1, result.size());
+            Assertions.assertEquals(1, result.size());
         } finally {
             jedisClient.del("testKey");
         }

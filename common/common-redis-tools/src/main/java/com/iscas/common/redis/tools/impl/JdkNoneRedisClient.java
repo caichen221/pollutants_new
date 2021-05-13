@@ -237,26 +237,22 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public <T> Map<T, Double> zrangeWithScoresToMap(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doZrangeWithScoresToMap(tClass, key, start, end);
     }
 
     @Override
     public Set<Tuple> zrangeWithScores(String key, long start, long end) throws IOException {
-        throw new UnsupportedOperationException();
-
+        throw new UnsupportedOperationException("暂不支持zrangeWithScores操作");
     }
 
     @Override
     public <T> Set<T> zrangeByScore(Class<T> tClass, String key, double min, double max) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doZrangeByScore(tClass, key, min, max);
     }
 
     @Override
     public <T> Set<T> zrangeByScore(Class<T> tClass, String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doZrangeByScore(tClass, key, min, max, offset, count);
     }
 
     @Override

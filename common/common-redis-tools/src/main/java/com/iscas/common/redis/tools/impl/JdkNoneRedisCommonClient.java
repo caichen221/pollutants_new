@@ -10,6 +10,7 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import com.iscas.common.redis.tools.impl.jdk.ZsortDto;
 import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.PipelineBase;
+import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
 import java.util.*;
@@ -869,5 +870,64 @@ public class JdkNoneRedisCommonClient {
             return result;
         }
     }
+
+    protected <T> Map<T, Double> doZrangeWithScoresToMap(Class<T> tClass, String key, long start, long end) {
+        Map<T, Double> resultMap = new LinkedHashMap<>();
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return resultMap;
+            }
+            if (end == -1) {
+                end = zset.size() - 1;
+            }
+            int i = 0;
+            for (ZsortDto zsortDto : zset) {
+                if (i >= start && i <= end) {
+                    resultMap.put((T) zsortDto.getMember(), zsortDto.getScore());
+                }
+                i++;
+            }
+            return resultMap;
+        }
+    }
+
+    protected <T> Set<T> doZrangeByScore(Class<T> tClass, String key, double min, double max) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return new LinkedHashSet<>();
+            }
+            Set<T> resultSet = new LinkedHashSet<>();
+            for (ZsortDto zsortDto : zset) {
+                if (zsortDto.getScore() >= min && zsortDto.getScore() <= max) {
+                    resultSet.add((T) zsortDto.getMember());
+                }
+            }
+            return resultSet;
+        }
+    }
+
+    protected <T> Set<T> doZrangeByScore(Class<T> tClass, String key, double min, double max, int offset, int count) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return new LinkedHashSet<>();
+            }
+            Set<T> resultSet = new LinkedHashSet<>();
+            int index = 0;
+            int sum = 0;
+            for (ZsortDto zsortDto : zset) {
+                if (zsortDto.getScore() >= min && zsortDto.getScore() <= max && index++ >= offset) {
+                    resultSet.add((T) zsortDto.getMember());
+                    if (++sum >= count) {
+                        break;
+                    }
+                }
+            }
+            return resultSet;
+        }
+    }
+
 
 }
