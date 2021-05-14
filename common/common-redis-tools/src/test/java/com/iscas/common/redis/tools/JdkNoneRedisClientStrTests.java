@@ -637,7 +637,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试按照权重查找zset中元素,返回值附带权重
      * */
-    @Test
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testZrangeByScoreWithScores() {
         try {
             jedisClient.del("testKey");
@@ -653,7 +654,7 @@ public class JdkNoneRedisClientStrTests {
                 System.out.println(tuple.getElement());
                 System.out.println(tuple.getScore());
             });
-            Assert.assertEquals(2, result.size());
+            Assertions.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -662,8 +663,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试按照权重查找zset中元素,返回值附带权重, 返回Map
      * */
-    @Test
-    public void testZrangeByScoreWithScoresToMap() {
+    @org.junit.jupiter.api.Test
+    public void testZrangeByScoreWithScoresToMap() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -675,7 +676,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Map<String, Double> result = jedisClient.zrangeByScoreWithScoresToMap("testKey", 1.0, 2.0);
             System.out.println(result);
-            Assert.assertEquals(2, result.size());
+            Assertions.assertEquals(2, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -685,7 +686,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试按照权重查找zset中元素,返回值附带权重, 带偏移量
      * */
-    @Test
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testZrangeByScoreWithScores2() {
         try {
             jedisClient.del("testKey");
@@ -701,7 +703,7 @@ public class JdkNoneRedisClientStrTests {
                 System.out.println(tuple.getElement());
                 System.out.println(tuple.getScore());
             });
-            Assert.assertEquals(1, result.size());
+            Assertions.assertEquals(1, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -710,7 +712,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试按照权重查找zset中元素,返回值附带权重, 返回Map，带偏移量
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrangeByScoreWithScoresToMap2() {
         try {
             jedisClient.del("testKey");
@@ -723,7 +725,7 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Map<String, Double> result = jedisClient.zrangeByScoreWithScoresToMap("testKey", 1.0, 2.0, 0, 1);
             System.out.println(result);
-            Assert.assertEquals(1, result.size());
+            Assertions.assertEquals(1, result.size());
         } finally {
             jedisClient.del("testKey");
         }
@@ -732,7 +734,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从低到高权重排列，某个元素的位置
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrank() {
         try {
             jedisClient.del("testKey");
@@ -744,7 +746,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zrank("testKey", "2");
-            Assert.assertEquals(1, result);
+            Assertions.assertEquals(1, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -753,7 +755,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从高到低权重排列，某个元素的位置
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrevrank() {
         try {
             jedisClient.del("testKey");
@@ -765,7 +767,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zrevrank("testKey", "2");
-            Assert.assertEquals(3, result);
+            Assertions.assertEquals(3, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -774,7 +776,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从zset中删除元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZrem() {
         try {
             jedisClient.del("testKey");
@@ -786,7 +788,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zrem("testKey", "2", "5");
-            Assert.assertEquals(2, result);
+            Assertions.assertEquals(2, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -795,7 +797,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从zset中删除指定位置的元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZremrangeByRank() {
         try {
             jedisClient.del("testKey");
@@ -807,7 +809,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zremrangeByRank("testKey", 2, 4);
-            Assert.assertEquals(3, result);
+            Assertions.assertEquals(3, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -816,7 +818,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试从zset中删除指定群众的元素
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZremrangeByScore() {
         try {
             jedisClient.del("testKey");
@@ -828,7 +830,7 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
             long result = jedisClient.zremrangeByScore("testKey", 1.0, 3.7);
-            Assert.assertEquals(3, result);
+            Assertions.assertEquals(3, result);
         } finally {
             jedisClient.del("testKey");
         }
@@ -837,7 +839,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试指定元素在zset中的权重
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZscore() {
         try {
             jedisClient.del("testKey");
@@ -849,9 +851,9 @@ public class JdkNoneRedisClientStrTests {
             memebers.put("5", 5.0);
             jedisClient.zadd("testKey", memebers);
             Double result1 = jedisClient.zscore("testKey", "1");
-            Assert.assertEquals(1.0, result1, 1);
+            Assertions.assertEquals(1.0, result1, 1);
             Double result2 = jedisClient.zscore("testKey", "88");
-            Assert.assertNull(result2);
+            Assertions.assertNull(result2);
         } finally {
             jedisClient.del("testKey");
         }
@@ -860,7 +862,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试通过字典区间返回有序集合的成员
      * */
-    @Test
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testZrangeByLex() {
         try {
             jedisClient.del("testKey");
@@ -873,11 +876,11 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
             result1.forEach(System.out::println);
-            Assert.assertEquals(5, result1.size());
+            Assertions.assertEquals(5, result1.size());
 
             Set<String> result2 = jedisClient.zrangeByLex("testKey", "[2", "(4");
             result2.forEach(System.out::println);
-            Assert.assertEquals(2, result2.size());
+            Assertions.assertEquals(2, result2.size());
 
         } finally {
             jedisClient.del("testKey");
@@ -887,7 +890,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试通过字典区间返回有序集合的成员
      * */
-    @Test
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testZrangeByLex2() {
         try {
             jedisClient.del("testKey");
@@ -900,11 +904,11 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
             result1.forEach(System.out::println);
-            Assert.assertEquals(5, result1.size());
+            Assertions.assertEquals(5, result1.size());
 
             Set<String> result2 = jedisClient.zrangeByLex("testKey", "[2", "(4", 0, 1);
             result2.forEach(System.out::println);
-            Assert.assertEquals(1, result2.size());
+            Assertions.assertEquals(1, result2.size());
 
         } finally {
             jedisClient.del("testKey");
@@ -914,7 +918,8 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试通过字典区间删除有序集合的成员
      * */
-    @Test
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void testZremrangeByLex() {
         try {
             jedisClient.del("testKey");
@@ -927,10 +932,10 @@ public class JdkNoneRedisClientStrTests {
             jedisClient.zadd("testKey", memebers);
             Set<String> result1 = jedisClient.zrangeByLex("testKey", "-", "+");
             result1.forEach(System.out::println);
-            Assert.assertEquals(5, result1.size());
+            Assertions.assertEquals(5, result1.size());
 
             long count = jedisClient.zremrangeByLex("testKey", "[2", "(4");
-            Assert.assertEquals(2, count);
+            Assertions.assertEquals(2, count);
 
         } finally {
             jedisClient.del("testKey");
@@ -940,7 +945,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试zset取交集并存入新集合
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZinterstore() {
         try {
             jedisClient.del("testKey");
@@ -964,7 +969,7 @@ public class JdkNoneRedisClientStrTests {
             long result = jedisClient.zinterstore("testKey3", "testKey", "testKey2");
             Set<String> set = jedisClient.zrange("testKey3", 0, -1);
             set.forEach(System.out::println);
-            Assert.assertEquals(result, 4);
+            Assertions.assertEquals(result, 4);
 
         } finally {
             jedisClient.del("testKey");
@@ -976,7 +981,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试zset取交集并存入新集合
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testZunionstore() {
         try {
             jedisClient.del("testKey");
@@ -1000,7 +1005,7 @@ public class JdkNoneRedisClientStrTests {
             long result = jedisClient.zunionstore("testKey3", "testKey", "testKey2");
             Set<String> set = jedisClient.zrange("testKey3", 0, -1);
             set.forEach(System.out::println);
-            Assert.assertEquals(result, 6);
+            Assertions.assertEquals(result, 6);
 
         } finally {
             jedisClient.del("testKey");

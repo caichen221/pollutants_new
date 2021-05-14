@@ -257,74 +257,62 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        throw new UnsupportedOperationException("暂不支持此操作");
     }
 
     @Override
-    public  <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max)  throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+    public  <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max) {
+        return doZrangeByScoreWithScoresToMap(tClass, key, min, max);
     }
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        throw new UnsupportedOperationException("暂不支持此操作");
     }
 
     @Override
     public <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
-
+        return doZrangeByScoreWithScoresToMap(tClass, key, min, max, offset, count);
     }
 
     @Override
     public long zrank(String key, Object member) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZrank(key, member);
     }
 
     @Override
     public long zrevrank(String key, Object member) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZrevrank(key, member);
     }
 
     @Override
     public long zrem(String key, Object... members) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZrem(key, members);
     }
 
     @Override
     public long zremrangeByRank(String key, int start, int end) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZremrangeByRank(key, start, end);
     }
 
     @Override
     public long zremrangeByScore(String key, double min, double max) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZremrangeByScore(key, min, max);
     }
 
     @Override
     public Double zscore(String key, Object memeber) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZscore(key, memeber);
     }
 
     @Override
     public long zinterstore(String dstKey, String... keys) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZinterstore(dstKey, keys);
     }
 
     @Override
     public long zunionstore(String dstKey, String... keys) throws IOException {
-        throw new UnsupportedOperationException();
-
+        return doZunionstore(dstKey, keys);
     }
 
     /*===========================sort set end==========================================*/

@@ -1,6 +1,7 @@
 package com.iscas.common.redis.tools.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.iscas.common.redis.tools.JedisConnection;
@@ -929,5 +930,204 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
+    protected  <T> Map<T, Double> doZrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return new LinkedHashMap<>();
+            }
+            Map<T, Double> resultMap = new LinkedHashMap<>();
+            for (ZsortDto zsortDto : zset) {
+                if (zsortDto.getScore() >= min && zsortDto.getScore() <= max) {
+                    resultMap.put((T) zsortDto.getMember(), zsortDto.getScore());
+                }
+            }
+            return resultMap;
+        }
+    }
+
+    protected <T> Map<T, Double> doZrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max, int offset, int count) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return new LinkedHashMap<>();
+            }
+            Map<T, Double> resultMap = new LinkedHashMap<>();
+            int index = 0;
+            for (ZsortDto zsortDto : zset) {
+                if (index++ < offset) {
+                    continue;
+                }
+                if (zsortDto.getScore() >= min && zsortDto.getScore() <= max) {
+                    resultMap.put((T) zsortDto.getMember(), zsortDto.getScore());
+                }
+                if (resultMap.size() >= count) {
+                    break;
+                }
+            }
+            return resultMap;
+        }
+    }
+
+    protected long doZrank(String key, Object member) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return -1;
+            }
+            int index = 0;
+            for (ZsortDto zsortDto : zset) {
+                if (Objects.equals(zsortDto.getMember(), member)) {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+        }
+    }
+
+    public long doZrevrank(String key, Object member) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return -1;
+            }
+            int index = 0;
+            for (ZsortDto zsortDto : zset) {
+                if (Objects.equals(zsortDto.getMember(), member)) {
+                    return zset.size() - index - 1;
+                }
+                index++;
+            }
+            return -1;
+        }
+    }
+
+    protected long doZrem(String key, Object... members) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return 0L;
+            }
+            int count = 0;
+            Iterator<ZsortDto> iterator = zset.iterator();
+            while (iterator.hasNext()) {
+                ZsortDto zsortDto = iterator.next();
+                Object member0 = zsortDto.getMember();
+                if (ArrayUtil.contains(members, member0)) {
+                    iterator.remove();
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+
+    protected long doZremrangeByRank(String key, int start, int end) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return -1L;
+            }
+            int i = 0;
+            long count = 0;
+            Iterator<ZsortDto> iterator = zset.iterator();
+            while (iterator.hasNext()) {
+                ZsortDto zsortDto = iterator.next();
+                if (i < start) {
+                    i++;
+                    continue;
+                }
+                if (i > end) {
+                    break;
+                }
+                iterator.remove();
+                count++;
+                i++;
+            }
+            return count;
+        }
+    }
+
+    protected long doZremrangeByScore(String key, double min, double max) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return -1L;
+            }
+            long count = 0;
+            Iterator<ZsortDto> iterator = zset.iterator();
+            while (iterator.hasNext()) {
+                ZsortDto zsortDto = iterator.next();
+                double score = zsortDto.getScore();
+                if (score >= min && score <= max) {
+                    iterator.remove();
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+
+    public Double doZscore(String key, Object memeber) {
+        synchronized (key.intern()) {
+            TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
+            if (zset == null) {
+                return null;
+            }
+            for (ZsortDto zsortDto : zset) {
+                if (Objects.equals(zsortDto.getMember(), memeber)) {
+                    return zsortDto.getScore();
+                }
+            }
+            return null;
+        }
+    }
+
+    protected long doZinterstore(String dstKey, String... keys) {
+        //线程不安全
+        TreeSet<ZsortDto> treeSet0 = doGet(TreeSet.class, keys[0]);
+        if (treeSet0 == null) {
+            return 0L;
+        }
+        Set<ZsortDto> resultSet = new TreeSet<ZsortDto>(treeSet0);
+        for (int i = 1; i < keys.length; i++) {
+            TreeSet<ZsortDto> treeSet = doGet(TreeSet.class, keys[i]);
+            if (treeSet == null) {
+                return 0L;
+            }
+            Iterator<ZsortDto> iterator = resultSet.iterator();
+            while (iterator.hasNext()) {
+                ZsortDto next = iterator.next();
+                if (!treeSet.contains(next)) {
+                    iterator.remove();
+                }
+            }
+        }
+        for (ZsortDto zsortDto : resultSet) {
+            doZadd(dstKey, zsortDto.getScore(), zsortDto.getMember());
+        }
+        return resultSet.size();
+    }
+
+    protected long doZunionstore(String dstKey, String... keys) {
+        //线程不安全
+        TreeSet<ZsortDto> treeSet0 = doGet(TreeSet.class, keys[0]);
+        if (treeSet0 == null) {
+            return 0L;
+        }
+        Set<ZsortDto> resultSet = new TreeSet<ZsortDto>(treeSet0);
+        for (int i = 1; i < keys.length; i++) {
+            TreeSet<ZsortDto> treeSet = doGet(TreeSet.class, keys[i]);
+            if (treeSet == null) {
+                return 0L;
+            }
+            resultSet.addAll(treeSet);
+        }
+        for (ZsortDto zsortDto : resultSet) {
+            doZadd(dstKey, zsortDto.getScore(), zsortDto.getMember());
+        }
+        return resultSet.size();
+    }
 
 }

@@ -7,6 +7,7 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -263,77 +264,77 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max) {
-        return null;
+        throw new UnsupportedOperationException("暂不支持此操作");
     }
 
     @Override
     public Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max) {
-        return null;
+        return doZrangeByScoreWithScoresToMap(String.class, key, min, max);
     }
 
     @Override
     public Set<Tuple> zrangeByScoreWithScores(String key, double min, double max, int offset, int count) {
-        return null;
+        throw new UnsupportedOperationException("暂不支持此操作");
     }
 
     @Override
     public Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max, int offset, int count) {
-        return null;
+        return doZrangeByScoreWithScoresToMap(String.class, key, min, max, offset, count);
     }
 
     @Override
     public long zrank(String key, String member) {
-        return 0L;
+        return doZrank(key, member);
     }
 
     @Override
     public long zrevrank(String key, String member) {
-        return 0L;
+        return doZrevrank(key, member);
     }
 
     @Override
     public long zrem(String key, String... members) {
-        return 0L;
+        return doZrem(key, members);
     }
 
     @Override
     public long zremrangeByRank(String key, int start, int end) {
-        return 0L;
+        return doZremrangeByRank(key, start, end);
     }
 
     @Override
     public long zremrangeByScore(String key, double min, double max) {
-        return 0L;
+        return doZremrangeByScore(key, min, max);
     }
 
     @Override
     public Double zscore(String key, String memeber) {
-        return 0.0;
+        return doZscore(key, memeber);
     }
 
     @Override
     public Set<String> zrangeByLex(String key, String min, String max) {
-        return null;
+        throw new UnsupportedOperationException("不支持此操作");
     }
 
     @Override
     public Set<String> zrangeByLex(String key, String min, String max, int offset, int count) {
-        return null;
+        throw new UnsupportedOperationException("不支持此操作");
     }
 
     @Override
     public long zremrangeByLex(String key, String min, String max) {
-        return 0L;
+        throw new UnsupportedOperationException("不支持此操作");
     }
 
     @Override
     public long zinterstore(String dstKey, String... keys) {
-        return 0L;
+        return doZinterstore(dstKey, keys);
     }
 
     @Override
     public long zunionstore(String dstKey, String... keys) {
-        return 0L;
+        return doZunionstore(dstKey, keys);
     }
 
     /*==============================sort set end  =====================================================*/

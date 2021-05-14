@@ -689,7 +689,7 @@ public class JedisClientStrTests {
      * 测试按照权重查找zset中元素,返回值附带权重, 返回Map
      * */
     @Test
-    public void testZrangeByScoreWithScoresToMap() {
+    public void testZrangeByScoreWithScoresToMap() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
