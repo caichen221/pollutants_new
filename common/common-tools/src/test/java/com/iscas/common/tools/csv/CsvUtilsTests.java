@@ -21,6 +21,32 @@ public class CsvUtilsTests {
 
     @Test
     public void testWrite() throws IOException {
+        File file = writeCsv();
+        file.delete();
+    }
+
+    @Test
+    public void testRead1() throws IOException {
+        File file = writeCsv();
+        @Cleanup InputStream is =  new FileInputStream(file);
+        @Cleanup InputStreamReader fr = new InputStreamReader(is, "utf-8");
+        List<Map<String, Object>> maps = CsvUtils.readCsvWithHeader(fr, ' ');
+        maps.stream().forEach(System.out::println);
+        file.delete();
+    }
+
+    @Test
+    public void testRead2() throws IOException {
+
+        File file = writeCsv();
+        @Cleanup InputStream is =  new FileInputStream(file);
+        @Cleanup InputStreamReader fr = new InputStreamReader(is, "utf-8");
+        List<List<String>> lists = CsvUtils.readCsv(fr, ' ');
+        lists.stream().forEach(System.out::println);
+        file.delete();
+    }
+
+    private File writeCsv() throws IOException {
         CsvUtils.CsvResult<Map<Object, Object>> csvResult = new CsvUtils.CsvResult<>();
         LinkedHashMap<String, String> header = new LinkedHashMap<>();
         header.put("a", "欸");
@@ -35,28 +61,11 @@ public class CsvUtilsTests {
                         .put("c", "测试测试").build());
         csvResult.setHeader(header);
         csvResult.setContent(maps);
-        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream("d:/test.csv");
+        File file = File.createTempFile("test", ".csv");
+        file.deleteOnExit();
+        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file);
         @Cleanup OutputStreamWriter osw = new OutputStreamWriter(fileOutputStream);
-
         CsvUtils.writeCsv(osw, ' ', csvResult, true);
-    }
-
-
-    @Test
-    public void testRead1() throws IOException {
-
-        @Cleanup InputStream is =  new FileInputStream("d:/test.csv");
-        @Cleanup InputStreamReader fr = new InputStreamReader(is, "utf-8");
-        List<Map<String, Object>> maps = CsvUtils.readCsvWithHeader(fr, ' ');
-        maps.stream().forEach(System.out::println);
-    }
-
-    @Test
-    public void testRead2() throws IOException {
-
-        @Cleanup InputStream is =  new FileInputStream("d:/test.csv");
-        @Cleanup InputStreamReader fr = new InputStreamReader(is, "utf-8");
-        List<List<String>> lists = CsvUtils.readCsv(fr, ' ');
-        lists.stream().forEach(System.out::println);
+        return file;
     }
 }

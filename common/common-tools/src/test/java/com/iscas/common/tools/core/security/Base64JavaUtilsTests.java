@@ -1,8 +1,8 @@
 package com.iscas.common.tools.core.security;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -24,16 +24,16 @@ public class Base64JavaUtilsTests {
         boolean flag1 = Base64Utils.isBase64(str1);
         String str2 = "d3dlZ3dlZ3dlZw==";
         boolean flag2 = Base64Utils.isBase64(str2);
-        Assert.assertEquals(flag1,false);
-        Assert.assertEquals(flag2,true);
+        Assertions.assertEquals(flag1,false);
+        Assertions.assertEquals(flag2,true);
 
         //字符串带编码格式
         String str11 = "111";
         boolean flag11 = Base64Utils.isBase64(str11, "utf-8");
         String str21 = "d3dlZ3dlZ3dlZw==";
         boolean flag21 = Base64Utils.isBase64(str21,"utf-8");
-        Assert.assertEquals(flag11,false);
-        Assert.assertEquals(flag21,true);
+        Assertions.assertEquals(flag11,false);
+        Assertions.assertEquals(flag21,true);
 
     }
 
@@ -44,7 +44,7 @@ public class Base64JavaUtilsTests {
     public void encode(){
         String encodeStr = "wwegwegweg";
         String result = Base64Utils.encode(encodeStr);
-        Assert.assertEquals("d3dlZ3dlZ3dlZw==", result);
+        Assertions.assertEquals("d3dlZ3dlZ3dlZw==", result);
     }
 
     /**
@@ -54,7 +54,7 @@ public class Base64JavaUtilsTests {
     public void decode(){
         String decodeStr = "d3dlZ3dlZ3dlZw==";
         String result = Base64Utils.decode(decodeStr);
-        Assert.assertEquals("wwegwegweg", result);
+        Assertions.assertEquals("wwegwegweg", result);
     }
 
 }

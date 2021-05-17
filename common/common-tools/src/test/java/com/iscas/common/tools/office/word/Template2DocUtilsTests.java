@@ -3,9 +3,9 @@ package com.iscas.common.tools.office.word;
 import cn.hutool.core.io.resource.ClassPathResource;
 import com.iscas.common.tools.office.word.Template2DocUtils;
 import freemarker.template.TemplateException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import java.util.Map;
  * @date 2019/5/22 15:55
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class Template2DocUtilsTests {
 
     private Map<String, Object> crateMap() throws IOException {
@@ -58,6 +57,7 @@ public class Template2DocUtilsTests {
     * 通过resources下的方式生成word
     * */
     @Test
+    @Disabled
     public void test1() throws IOException, TemplateException {
         Map<String, Object> data = crateMap();
         Template2DocUtils.crateDocFromResources(data, "/templates/word/demo.ftl", "C:/Users/Administrator/Desktop/文档/aaa.doc");
@@ -67,6 +67,7 @@ public class Template2DocUtilsTests {
      * 通过绝对路径的方式生成word
      * */
     @Test
+    @Disabled
     public void test2() throws IOException, TemplateException {
         Map<String, Object> data = crateMap();
         Template2DocUtils.crateDocFromDir(data, "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\demo.ftl", "C:/Users/Administrator/Desktop/文档/aaa.doc");

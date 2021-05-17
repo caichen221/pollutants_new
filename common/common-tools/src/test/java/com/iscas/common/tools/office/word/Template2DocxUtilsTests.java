@@ -1,13 +1,13 @@
 package com.iscas.common.tools.office.word;
 
-import cn.hutool.core.io.resource.ClassPathResource;
-import freemarker.template.TemplateException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 测试将docx模板转化为Word
@@ -17,7 +17,6 @@ import java.util.*;
  * @date 2019/5/22 15:55
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class Template2DocxUtilsTests {
 
     private Map<String, Object> crateMap() throws IOException {

@@ -135,4 +135,43 @@ public class WebSSHCotroller extends BaseController {
         return response;
     }
 
+    @ApiOperation(value = "创建文件夹-2021-05-06", notes = "create by zqw")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "connectionId", value = "连接ID", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "path", value="父级目录", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "dirName", value="文件夹名称", required = true, dataType = "String")
+
+    })
+    @PutMapping("/dir")
+    public ResponseEntity newDir(String connectionId, String path, String dirName) throws BaseException {
+        ResponseEntity response = getResponse();
+        try {
+            sshService.newDir(connectionId, path, dirName);
+        } catch (BaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BaseException("创建文件夹出错", e);
+        }
+        return response;
+    }
+
+    @ApiOperation(value = "删除文件或文件夹-2021-05-06", notes = "create by zqw")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "connectionId", value = "连接ID", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "path", value="文件或文件夹路径", required = true, dataType = "String")
+
+    })
+    @DeleteMapping("/path")
+    public ResponseEntity deletePath(String connectionId, String path) throws BaseException {
+        ResponseEntity response = getResponse();
+        try {
+            sshService.deletePath(connectionId, path);
+        } catch (BaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BaseException("删除出错", e);
+        }
+        return response;
+    }
+
 }

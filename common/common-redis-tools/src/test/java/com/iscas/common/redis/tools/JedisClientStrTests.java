@@ -222,7 +222,7 @@ public class JedisClientStrTests {
             set.add("y");
             set.add("z");
             set.add("m");
-            long result = jedisClient.sadd("set1", set.toArray(String[]::new));
+            long result = jedisClient.sadd("set1", set.toArray(new String[0]));
             System.out.println(result);
         } finally {
             jedisClient.del("set1");
@@ -689,7 +689,7 @@ public class JedisClientStrTests {
      * 测试按照权重查找zset中元素,返回值附带权重, 返回Map
      * */
     @Test
-    public void testZrangeByScoreWithScoresToMap() {
+    public void testZrangeByScoreWithScoresToMap() throws IOException, ClassNotFoundException {
         try {
             jedisClient.del("testKey");
             Map<String, Double> memebers = new HashMap<>();
@@ -1352,7 +1352,7 @@ public class JedisClientStrTests {
     }
 
     /**
-     * 测试setnx
+     * 测试setrange
      * */
     @Test
     public void testSetrange() {

@@ -80,12 +80,11 @@ public class JedisClientTests {
     /*======================================通用 begin==============================================================*/
     /**
      * 测试分布式锁
-     */
+     * */
     @Test
     public void test32() throws InterruptedException {
         //JVM 锁
         final Object lock = new Object();
-
         CountDownLatch countDownLatch = new CountDownLatch(10);
         Runnable runnable = () -> {
             try {
@@ -121,12 +120,12 @@ public class JedisClientTests {
             }
         };
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10 ; i++) {
             executorService.submit(runnable);
             countDownLatch.countDown();
         }
 //        // 假设一个足够长的时间去验证最后的goodCount
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10 ; i++) {
             System.out.println(goodsCount);
             TimeUnit.SECONDS.sleep(1);
         }
@@ -1248,7 +1247,7 @@ public class JedisClientTests {
     }
 
     /**
-     * 测试setnx
+     * 测试setrange
      * */
     @Test
     public void testSetrange() throws IOException, ClassNotFoundException {

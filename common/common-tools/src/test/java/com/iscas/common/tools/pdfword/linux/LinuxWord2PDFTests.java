@@ -1,8 +1,8 @@
 package com.iscas.common.tools.pdfword.linux;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -14,10 +14,10 @@ import java.io.IOException;
  * @date 2020/12/22 18:07
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class LinuxWord2PDFTests {
 
     @Test
+    @Disabled
     public void test() throws IOException, InterruptedException {
         LinuxWord2PDF.wordToPdf("D:\\文档资料\\三部软件研发-java.docx", "D:a.pdf");
     }

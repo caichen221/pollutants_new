@@ -6,9 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.lang3.ObjectUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -35,13 +34,13 @@ public class ConvertTest {
         Object obj = 123;
 
         Object object = Convert.convert(Object.class, obj);
-        Assert.assertEquals(123, object);
+        Assertions.assertEquals(123, object);
 
         String str = Convert.convert(String.class, obj);
-        Assert.assertEquals("123",str);
+        Assertions.assertEquals("123",str);
 
         Long lon = Convert.convert(Long.class, obj);
-        Assert.assertEquals(123, lon.longValue());
+        Assertions.assertEquals(123, lon.longValue());
 
         Object[] objects = new Object[]{"123","456","125"};
         List<Integer> list = Convert.convert(List.class, objects);
@@ -55,19 +54,19 @@ public class ConvertTest {
     public void test2(){
         Object obj = 123;
         String s = Convert.toStr(obj);
-        Assert.assertEquals("123",s);
+        Assertions.assertEquals("123",s);
 
         Character[] characters = Convert.toCharArray("123");
         System.out.println(Arrays.toString(characters));
 
         Number number = Convert.toNumber(obj);
-        Assert.assertEquals(123, number);
+        Assertions.assertEquals(123, number);
 
         BigDecimal bigDecimal = Convert.toBigDecimal(obj);
-        Assert.assertEquals(new BigDecimal(123),bigDecimal);
+        Assertions.assertEquals(new BigDecimal(123),bigDecimal);
 
         Long aLong = Convert.toLong(obj);
-        Assert.assertEquals(123, aLong.longValue());
+        Assertions.assertEquals(123, aLong.longValue());
 
         Object[] objects = new Object[]{3,4,5,6,7,8};
         Integer[] integers = Convert.toIntArray(objects);
@@ -80,7 +79,7 @@ public class ConvertTest {
         System.out.println(Arrays.toString(integers1));
 
         byte b = Convert.intToByte(123);
-        Assert.assertEquals(123, b);
+        Assertions.assertEquals(123, b);
 
         byte[] bytes = Convert.intToBytes(123);
         System.out.println(Arrays.toString(bytes));
@@ -168,7 +167,7 @@ public class ConvertTest {
         float money = 158.45F;
         String s = Convert.digitToChinese(money);
         System.out.println(s);
-        Assert.assertEquals("壹佰伍拾捌元肆角伍分",s);
+        Assertions.assertEquals("壹佰伍拾捌元肆角伍分",s);
     }
 
     /**
@@ -178,11 +177,11 @@ public class ConvertTest {
     public void test9(){
         Class<?> aClass = Convert.unWrap(Integer.class);
         System.out.println(aClass);
-        Assert.assertEquals(int.class, aClass);
+        Assertions.assertEquals(int.class, aClass);
 
         Class<?> wrap = Convert.wrap(int.class);
         System.out.println(wrap);
-        Assert.assertEquals(Integer.class, wrap);
+        Assertions.assertEquals(Integer.class, wrap);
 
     }
 

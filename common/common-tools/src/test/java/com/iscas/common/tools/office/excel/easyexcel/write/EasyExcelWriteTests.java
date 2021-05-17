@@ -3,10 +3,10 @@ package com.iscas.common.tools.office.excel.easyexcel.write;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -18,16 +18,17 @@ import java.util.*;
  * @date 2021/1/24 12:08
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class EasyExcelWriteTests {
 
     /**
      * 最简单的写
      */
     @Test
-    public void simpleWrite() {
+    public void simpleWrite() throws IOException {
         // 写法1
-        String fileName = "d:/demo.xlsx";
+        File file = File.createTempFile("demo", ".xlsx");
+        String fileName = file.getAbsolutePath();
+        file.deleteOnExit();
         // 根据用户传入字段 假设我们要忽略 date
         Set<String> excludeColumnFiledNames = new HashSet<String>();
         excludeColumnFiledNames.add("toIgnore");
@@ -51,17 +52,21 @@ public class EasyExcelWriteTests {
                 excelWriter.finish();
             }
         }
+        file.delete();
     }
 
     /**
      * 复杂表头写入
      * */
     @Test
-    public void complexWrite() {
+    public void complexWrite() throws IOException {
         // 写法1
-        String fileName = "d:/demo2.xlsx";
+        File file = File.createTempFile("demo", ".xlsx");
+        String fileName = file.getAbsolutePath();
+        file.deleteOnExit();
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, EasyExcelComplexHeadData.class).sheet("模板").doWrite(data2());
+        file.delete();
     }
 
     //更多高级使用参考：https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/demo/write/WriteTest.java

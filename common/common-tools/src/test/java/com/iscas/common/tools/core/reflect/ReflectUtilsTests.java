@@ -1,8 +1,8 @@
 package com.iscas.common.tools.core.reflect;
 
 import com.iscas.common.tools.core.reflect.reflectTest.*;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -57,8 +57,10 @@ public class ReflectUtilsTests {
      * */
     @Test
     public void test1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        System.out.println("--------反射测试1 begin---------");
         int hash = (int) ReflectUtils.doMethod(a, "getA1Hash");
         System.out.println(hash);
+        System.out.println("--------反射测试1 end---------");
     }
 
     /**
@@ -66,18 +68,22 @@ public class ReflectUtilsTests {
      * */
     @Test
     public void test2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        System.out.println("--------反射测试2 begin---------");
         String result = (String) ReflectUtils.doMethodWithParam(a, "xxx","x",34,new float[]{3,5,6,5.6f,56.78f});
         System.out.println(result);
+        System.out.println("--------反射测试2 end---------");
     }
 
     /**判断一个类是不是基本数据类型*/
     @Test
     public void test3() throws NoSuchFieldException, IllegalAccessException {
+        System.out.println("--------反射测试3 begin---------");
         Integer a = new Integer(4);
         boolean flag = ReflectUtils.isWrapClass(a.getClass());
-        Assert.assertEquals(flag, true);
+        Assertions.assertEquals(flag, true);
         boolean flag1 = ReflectUtils.isWrapClass(A.class);
-        Assert.assertEquals(flag1, false);
+        Assertions.assertEquals(flag1, false);
+        System.out.println("--------反射测试3 end---------");
     }
 
     /**
@@ -85,8 +91,10 @@ public class ReflectUtilsTests {
      * */
     @Test
     public void test4(){
+        System.out.println("--------反射测试4 begin---------");
         List<Field> fields = ReflectUtils.findAllFieldsOfSelfAndSuperClass(A1111.class);
         System.out.println(fields);
+        System.out.println("--------反射测试4 end---------");
     }
 
 }

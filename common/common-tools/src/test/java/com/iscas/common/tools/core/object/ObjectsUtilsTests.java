@@ -1,9 +1,7 @@
 package com.iscas.common.tools.core.object;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
@@ -14,13 +12,12 @@ import java.util.*;
  * @date 2020/3/18 10:26
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class ObjectsUtilsTests {
 
-    private List<A> as = new ArrayList<>();
+    private static List<A> as = new ArrayList<>();
 
-    @Before
-    public void before() {
+    @BeforeAll
+    public static void before() {
         C c1 = new C();
         c1.setP1(11);
         c1.setP2("xxx");
@@ -72,6 +69,7 @@ public class ObjectsUtilsTests {
      * */
     @Test
     public void test() throws Exception {
+        System.out.println("--------深度克隆测试 begin---------");
         System.out.println("==================原来的====================");
         System.out.println(as.get(0));
 
@@ -79,10 +77,12 @@ public class ObjectsUtilsTests {
 
         System.out.println("==================原来的====================");
         System.out.println(copyA);
+        System.out.println("--------深度克隆测试 end---------");
     }
 
     @Test
     public void test2() throws Exception {
+        System.out.println("--------深度克隆测试List begin---------");
         System.out.println("==================原来的====================");
         System.out.println(as);
 
@@ -90,6 +90,7 @@ public class ObjectsUtilsTests {
 
         System.out.println("==================原来的====================");
         System.out.println(copyA);
+        System.out.println("--------深度克隆测试List end---------");
     }
 
 

@@ -4,8 +4,8 @@ import cn.hutool.core.clone.CloneRuntimeException;
 import cn.hutool.core.clone.CloneSupport;
 import cn.hutool.core.clone.Cloneable;
 import cn.hutool.core.util.ObjectUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 
@@ -31,11 +31,11 @@ public class CloneTest {
         phone.setNum("13587457847");
         man.setPhone(phone);
         Man man2 = man.clone();
-        Assert.assertFalse(man == man2);
+        Assertions.assertFalse(man == man2);
         System.out.println(man);
         System.out.println(man2);
         //从下面的输出可以看到嵌套对象使用的浅复制，如果想深度复制，需要使用序列化的方式
-        Assert.assertEquals(man.getPhone().hashCode(), man2.getPhone().hashCode());
+        Assertions.assertEquals(man.getPhone().hashCode(), man2.getPhone().hashCode());
         System.out.println(man.getPhone().hashCode());
         System.out.println(man2.getPhone().hashCode());
 
@@ -47,7 +47,7 @@ public class CloneTest {
         women.setAge(14);
         women.setName("张颖");
         Women women2 = women.clone();
-        Assert.assertFalse(women == women2);
+        Assertions.assertFalse(women == women2);
         System.out.println(women.hashCode());
         System.out.println(women2.hashCode());
     }
@@ -65,11 +65,11 @@ public class CloneTest {
         man.setPhone(phone);
 
         Man man2 = ObjectUtil.cloneByStream(man);
-        Assert.assertFalse(man == man2);
+        Assertions.assertFalse(man == man2);
         System.out.println(man);
         System.out.println(man2);
         //从下面的输出可以看到嵌套对象使用的深度复制，所有嵌套对象都是新对象
-        Assert.assertNotEquals(man.getPhone().hashCode(), man2.getPhone().hashCode());
+        Assertions.assertNotEquals(man.getPhone().hashCode(), man2.getPhone().hashCode());
         System.out.println(man.getPhone().hashCode());
         System.out.println(man2.getPhone().hashCode());
     }

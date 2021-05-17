@@ -1,8 +1,7 @@
 package com.iscas.common.tools.core.classloader;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,7 +16,6 @@ import java.util.Map;
  * @date 2019/4/11 10:07
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class JarClassloaderTests {
 //    String jar2_5 = "C:\\Users\\Administrator\\Desktop\\jar\\base2\\2.5";
     String jar2_6 = "C:\\Users\\Administrator\\Desktop\\jar\\base2\\2.6\\base2-2.6-RELEASE.jar";
@@ -26,6 +24,7 @@ public class JarClassloaderTests {
      * 测试classloader，不带缓存，不从缓存读类的字节数组，也不存入缓存
      * */
     @Test
+    @Disabled
     public void test2() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         JarLoader jarLoader2 = new JarLoader(new String[]{"H:\\ideaProjects\\integration-dev\\ig-bootstrap\\src\\main\\resources" +
                 "\\component\\mysqlreader.jar"});
@@ -45,6 +44,7 @@ public class JarClassloaderTests {
      * 测试加载mysql-reader, 带缓存
      * */
     @Test
+    @Disabled
     public void test3() throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, ClassNotFoundException {
         System.out.println("=========================开始测试，读取指定jar包=========================");
         JarLoader jarLoader = new JarLoader(new String[]{"H:\\ideaProjects\\integration-dev\\ig-bootstrap\\src\\main\\resources\\" +
@@ -76,6 +76,7 @@ public class JarClassloaderTests {
      * 测试classloader，不带缓存，不从缓存读类的字节数组，也不存入缓存
      * */
     @Test
+    @Disabled
     public void test4() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         JarLoader jarLoader2 = new JarLoader(new String[]{"H:\\ideaProjects\\integration-dev\\ig-bootstrap\\src\\main\\resources" +
                 "\\component\\csvreader.jar"});

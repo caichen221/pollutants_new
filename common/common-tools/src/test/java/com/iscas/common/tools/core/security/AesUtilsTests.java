@@ -1,7 +1,8 @@
 package com.iscas.common.tools.core.security;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * AES加解密测试类
@@ -15,7 +16,7 @@ public class AesUtilsTests {
     @Test
     public void aesEncrpty() throws Exception {
         String sec = AesUtils.aesEncrypt("gfdx");
-        Assert.assertEquals("VftCp3FzK7UeUThCOI+3DQ==", sec);
+        Assertions.assertEquals("3Dk6JhPSftrUBxxWRYfA1w==", sec);
     }
 
     /**
@@ -25,7 +26,7 @@ public class AesUtilsTests {
     @Test
     public void aesDecrpty() throws Exception {
         String ori = AesUtils.aesDecrypt("VftCp3FzK7UeUThCOI+3DQ==");
-        Assert.assertEquals("admin", ori);
+        Assertions.assertEquals("admin", ori);
     }
 
     /**
@@ -35,7 +36,7 @@ public class AesUtilsTests {
     public void aesEncrptyWithKey() throws Exception {
         String key = "6x9o67h5BO205Cfv";
         String sec = AesUtils.aesEncrypt("admin", key);
-        Assert.assertEquals("q2F6LtquPxijSre3os07Dg==", sec);
+        Assertions.assertEquals("q2F6LtquPxijSre3os07Dg==", sec);
     }
 
     /**
@@ -45,7 +46,7 @@ public class AesUtilsTests {
     public void aesDecrptyWithKey() throws Exception {
         String key = "6x9o67h5BO205Cfv";
         String ori = AesUtils.aesDecrypt("q2F6LtquPxijSre3os07Dg==", key);
-        Assert.assertEquals("admin", ori);
+        Assertions.assertEquals("admin", ori);
     }
 
 }

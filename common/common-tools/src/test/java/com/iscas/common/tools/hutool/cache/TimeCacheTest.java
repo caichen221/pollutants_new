@@ -4,10 +4,8 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.thread.ThreadUtil;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 超时缓存
@@ -17,7 +15,6 @@ import org.junit.runners.JUnit4;
  * @date 2018/10/8 15:08
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class TimeCacheTest {
     @Test
     public void test(){
@@ -34,12 +31,12 @@ public class TimeCacheTest {
 
         //5毫秒后由于value2设置了5毫秒过期，因此只有value2被保留下来
         String value1 = timedCache.get("key1");
-        Assert.assertTrue(null == value1);
+        Assertions.assertTrue(null == value1);
         String value2 = timedCache.get("key2");
-        Assert.assertFalse(null == value2);
+        Assertions.assertFalse(null == value2);
         //5毫秒后，由于设置了默认过期，key3只被保留4毫秒，因此为null
         String value3 = timedCache.get("key3");
-        Assert.assertTrue(null == value3);
+        Assertions.assertTrue(null == value3);
 
         //取消定时清理
         timedCache.cancelPruneSchedule();

@@ -1515,7 +1515,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     }
 
     @Override
-    public <T> T getSet(Class<T> tClass, String key, String value) throws IOException, ClassNotFoundException {
+    public <T> T getSet(Class<T> tClass, String key, T value) throws IOException, ClassNotFoundException {
         Object jc = null;
         try {
             jc = getResource(Object.class);
@@ -1606,6 +1606,10 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
         throw new UnsupportedOperationException("redis暂不支持此strlen操作,请使用IJedisStrClient中对应的函数");
     }
 
+    /*===========================string end==========================================*/
+
+    /*===========================list begin==========================================*/
+
     @Override
     public long rpush(String key, Object... value) throws IOException {
         Object jc = null;
@@ -1633,7 +1637,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     }
 
     @Override
-    public long lpush(String key, String... value) throws IOException {
+    public long lpush(String key, Object... value) throws IOException {
         Object jc = null;
         try {
             jc = getResource(Object.class);
@@ -1878,7 +1882,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
         }
     }
 
-    /*===========================string end============================================*/
+    /*===========================list end============================================*/
 
 
 

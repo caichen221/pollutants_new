@@ -1,8 +1,6 @@
 package com.iscas.common.tools.url;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -11,7 +9,6 @@ import org.junit.runners.JUnit4;
  * @date 2019/7/4 17:27
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class UrlMatcherTests {
     @Test
     public void test() {

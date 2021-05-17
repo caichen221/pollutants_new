@@ -1,13 +1,12 @@
 package com.iscas.common.web.tools.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -16,7 +15,6 @@ import java.util.Map;
  * @date 2019/6/4 8:37
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class JsonUtilsTests {
     private String json = "{\n" +
                             "\t\"name\": \"zhangsan\",\n" +
@@ -47,11 +45,13 @@ public class JsonUtilsTests {
     }
 
     @Test
+    @Disabled
     public void test1() {
         String name = JsonUtils.getValueByKey(json, "name");
         System.out.println(name);
     }
     @Test
+    @Disabled
     public void test2() {
         String ret = JsonUtils.getValueByKey(json2, "json.b.www");
         System.out.println(ret);
@@ -144,6 +144,78 @@ public class JsonUtilsTests {
 
         public void setDesc(String desc) {
             this.desc = desc;
+        }
+    }
+
+
+
+
+
+    @Test
+    public void ttt() throws JsonProcessingException {
+        Map<String, String> map1 = new HashMap<>();
+        map1.put("name", "lalala");
+        TestModelA ta1 = new TestModelA("1", "zhangsan", 18, map1);
+        TestModelA ta2 = new TestModelA("2", "lisi", 25, map1);
+        TestModelA ta3 = new TestModelA("3", "wangwu", 39, map1);
+        List<TestModelA> modelAList = new ArrayList<>();
+        Collections.addAll(modelAList, ta1, ta2, ta3);
+        String jsonStr = JsonUtils.toJson(modelAList);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Class mainClass = ArrayList.class;
+        Class subClass = TestModelA.class;
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(mainClass, subClass);
+        List<TestModelA> result = mapper.readValue(jsonStr, javaType);
+        System.out.println(result);
+    }
+
+    static class TestModelA {
+        private String id;
+        private String name;
+        private Integer age;
+        private Map<String, String> map = new HashMap<>();
+
+        public TestModelA() {
+        }
+
+        public TestModelA(String id, String name, Integer age, Map<String, String> map) {
+            this.id = id;
+            this.name = name;
+            this.age = age;
+            this.map = map;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
+        public Map<String, String> getMap() {
+            return map;
+        }
+
+        public void setMap(Map<String, String> map) {
+            this.map = map;
         }
     }
 

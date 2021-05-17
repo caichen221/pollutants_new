@@ -1,7 +1,8 @@
 package com.iscas.common.tools.core.random;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 随机字符串工具类
@@ -16,9 +17,11 @@ public class RandomStringUtilsTests {
     * */
     @Test
     public void  randomStr(){
+        System.out.println("--------随机字符串测试 begin---------");
         int length = 16;
         String result = RandomStringUtils.randomStr(length);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(16, result.length());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(16, result.length());
+        System.out.println("--------随机字符串测试 end---------");
     }
 }

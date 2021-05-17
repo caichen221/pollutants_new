@@ -32,6 +32,9 @@ public class MakeClassDemo {
         //创建方法体
         method.setBody("{\n" +
                 "        System.out.println(\"this is sayHello, parameter is \" + $1);\n" +
+                "        System.out.println($type);\n" +
+                "        System.out.println($args);\n" +
+                "        System.out.println($class);\n" +
                 "        return $1;\n" +
                 "    }");
         //将方法添加到类中

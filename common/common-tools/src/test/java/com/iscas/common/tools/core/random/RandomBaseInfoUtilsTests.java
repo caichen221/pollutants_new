@@ -1,6 +1,7 @@
 package com.iscas.common.tools.core.random;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 public class RandomBaseInfoUtilsTests {
     @Test
     public void test(){
+        System.out.println("--------随机身份信息测试 begin---------");
         Map baseInfo = RandomBaseInfoUtils.getBaseInfo();
         System.out.println(baseInfo);
         String chineseName = RandomBaseInfoUtils.getChineseName();
@@ -30,5 +32,6 @@ public class RandomBaseInfoUtilsTests {
         System.out.println(road);
         System.out.println(sex);
         System.out.println(tel);
+        System.out.println("--------随机身份信息测试 end---------");
     }
 }

@@ -2,6 +2,7 @@ package com.iscas.common.redis.tools.interfaces;
 
 import redis.clients.jedis.Tuple;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -131,7 +132,7 @@ public interface IJedisSortSetStrClient {
      * @param max 结束位置(包含)
      * @return 值
      */
-    Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max);
+    Map<String, Double> zrangeByScoreWithScoresToMap(String key, double min, double max) ;
 
     /**
      * 读取指定得分范围的zset中的元素, 带偏移量

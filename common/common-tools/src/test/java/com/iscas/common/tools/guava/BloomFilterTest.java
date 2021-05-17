@@ -3,9 +3,7 @@ package com.iscas.common.tools.guava;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
 
@@ -16,7 +14,6 @@ import java.nio.charset.Charset;
  * @date 2018/10/8 14:40
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class BloomFilterTest {
     @Test
     public void test1(){

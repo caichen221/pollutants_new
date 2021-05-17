@@ -128,7 +128,7 @@ public interface IJedisStringClient {
      * @throws
      * @return 旧的值
      */
-    <T> T getSet(Class<T> tClass, String key, String value) throws IOException, ClassNotFoundException;
+    <T> T getSet(Class<T> tClass, String key, T value) throws IOException, ClassNotFoundException;
 
     /**
      * 批量获取记录,如果指定的key不存在返回List的对应位置将是null

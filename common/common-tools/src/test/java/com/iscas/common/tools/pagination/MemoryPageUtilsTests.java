@@ -1,20 +1,16 @@
 package com.iscas.common.tools.pagination;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2019/4/12 14:24
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class MemoryPageUtilsTests {
     @Test
     public void test() {

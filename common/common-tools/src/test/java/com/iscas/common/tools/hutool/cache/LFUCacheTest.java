@@ -3,10 +3,8 @@ package com.iscas.common.tools.hutool.cache;
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.date.DateUnit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 最少使用缓存策略测试
@@ -17,7 +15,6 @@ import org.junit.runners.JUnit4;
  * @date 2018/10/8 15:00
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class LFUCacheTest {
     @Test
     public void test(){
@@ -32,7 +29,7 @@ public class LFUCacheTest {
         //由于缓存容量只有3，当加入第四个元素的时候，根据LRU规则，最少使用的将被移除（2,3被移除）
         String value2 = lfuCache.get("key2");
         String value3 = lfuCache.get("key3");
-        Assert.assertTrue(null == value2);
-        Assert.assertTrue(null == value3);
+        Assertions.assertTrue(null == value2);
+        Assertions.assertTrue(null == value3);
     }
 }

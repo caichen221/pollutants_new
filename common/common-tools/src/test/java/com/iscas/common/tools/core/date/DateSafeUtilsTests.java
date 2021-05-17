@@ -1,8 +1,7 @@
 package com.iscas.common.tools.core.date;
 
-import com.iscas.common.tools.core.date.DateSafeUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -24,10 +23,11 @@ public class DateSafeUtilsTests {
      */
     @Test
     public void format(){
-
+        System.out.println("-------DateSafeUtils#format(Date date, String pattern) begin---------");
         Date date = new Date();
         String str = DateSafeUtils.format(date, Pattern);
-        Assert.assertNotNull(str);
+        Assertions.assertNotNull(str);
+        System.out.println("-------DateSafeUtils#format(Date date, String pattern) end---------");
     }
     /**
      * <p>字符串类型转为时间<p/>
@@ -38,8 +38,10 @@ public class DateSafeUtilsTests {
      */
     @Test
     public void parse() throws ParseException {
+        System.out.println("-------DateSafeUtils#parse(String dateStr, String pattern) begin---------");
         String dateStr = "2018-12-12 23:12:45";
         Date date = DateSafeUtils.parse(dateStr, Pattern);
-        Assert.assertNotNull(date);
+        Assertions.assertNotNull(date);
+        System.out.println("-------DateSafeUtils#parse(String dateStr, String pattern) end---------");
     }
 }

@@ -2,13 +2,10 @@ package com.iscas.common.tools.core.io.file;
 
 
 import lombok.Cleanup;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <b>添加了一部分单元测试 <b/>
@@ -22,6 +19,7 @@ public class FileUtilsTests {
     public void test() throws IOException {
         System.out.println("--------FileUtils按行读取所有begin---------");
         File file = File.createTempFile("test", ".txt");
+        file.deleteOnExit();
         @Cleanup PrintWriter pw = new PrintWriter(file);
         pw.println("1111");
         pw.println("222");
@@ -39,6 +37,7 @@ public class FileUtilsTests {
     public void test2() throws IOException {
         System.out.println("--------FileUtils按行读取begin---------");
         File file = File.createTempFile("test", ".txt");
+        file.deleteOnExit();
         @Cleanup PrintWriter pw = new PrintWriter(file);
         pw.println("1111");
         pw.println("222");
@@ -57,6 +56,7 @@ public class FileUtilsTests {
     public void test3() throws IOException {
         System.out.println("--------FileUtils反向按行读取begin---------");
         File file = File.createTempFile("test", ".txt");
+        file.deleteOnExit();
         @Cleanup PrintWriter pw = new PrintWriter(file);
         pw.println("1111");
         pw.println("222");
