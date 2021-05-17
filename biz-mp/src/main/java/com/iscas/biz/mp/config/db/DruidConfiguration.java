@@ -17,21 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
-import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
@@ -59,7 +49,8 @@ public class DruidConfiguration implements EnvironmentAware {
     private final String basePath = "spring.datasource.druid.";
     private Environment environment;
 
-    public DataSource initDatasource() throws SQLException {
+    @Bean
+    public DataSource dynamicDataSource() throws SQLException {
         String db = environment.getProperty("spring.datasource.names");
         List<String> dbNames = Arrays.asList(db.split(","));
         if (dbNames.size() == 0) {
@@ -70,7 +61,7 @@ public class DruidConfiguration implements EnvironmentAware {
         for (String dbName : dbNames) {
             //初始化数据源
             DruidDataSource dataSource = initOneDatasource(dbName);
-            if (dataSource != null){
+            if (dataSource != null) {
                 targetDataSources.put(dbName, dataSource);
             }
         }
@@ -201,9 +192,9 @@ public class DruidConfiguration implements EnvironmentAware {
 
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
-        factory.setDataSource(initDatasource());
+        factory.setDataSource(dataSource);
 //        sqlSessionFactory.setDataSource(multipleDataSource);
         //sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*/*Mapper.xml"));
 
