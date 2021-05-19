@@ -3,7 +3,6 @@ package com.iscas.common.redis.tools;
 import com.iscas.common.redis.tools.impl.JdkNoneRedisStrClient;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -115,7 +114,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试延时队列
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void test34() {
         jedisClient.putDelayQueue("this is test", 5, TimeUnit.SECONDS, (task)-> {
             System.out.println(task);
@@ -125,7 +124,7 @@ public class JdkNoneRedisClientStrTests {
     /**
      * 测试设置key的过期时间
      * */
-    @Test
+    @org.junit.jupiter.api.Test
     public void test36() throws IOException {
         try {
             jedisClient.del("testKey");

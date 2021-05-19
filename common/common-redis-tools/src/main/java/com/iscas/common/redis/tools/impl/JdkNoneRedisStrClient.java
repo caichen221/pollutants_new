@@ -8,13 +8,16 @@ import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
  * JdkStrClient
- *
+ * <p>
  * 使用Jdk模拟redis的操作，这里不需要依赖redis,适用不用Redis的环境，但可用Redis的接口
  *
  * @author zhuquanwen
@@ -23,6 +26,7 @@ import java.util.function.Consumer;
  * @since jdk1.8
  */
 public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements IJedisStrClient {
+
 
     public JdkNoneRedisStrClient(JedisConnection jedisConnection) {
         this.jedisConnection = jedisConnection;
@@ -37,8 +41,10 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
     public void pipelineClusterBatch(Consumer<RedisAdvancedClusterCommands<String, String>> consumer) {
         throw new UnsupportedOperationException("jdk模式不支持pipeline");
     }
+
     /**
      * 删除缓存
+     *
      * @param key 键
      * @return
      */
@@ -49,6 +55,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     /**
      * 缓存是否存在
+     *
      * @param key 键
      * @return
      */
@@ -59,7 +66,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     /**
      * 模糊删除
-     * */
+     */
     @Override
     public void deleteByPattern(String pattern) {
         doDeleteByPattern(pattern);
@@ -73,69 +80,62 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
     @Override
     public void putDelayQueue(String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) {
         //使用默认key
-//        String hostAddress = null;
-//        try {
-//            InetAddress localHost = InetAddress.getLocalHost();
-//            hostAddress = localHost.getHostAddress();
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
-//        putDelayQueue(DELAY_QUEUE_DEFUALT_KEY.concat(hostAddress), task, timeout, timeUnit, consumer);
+        String hostAddress = null;
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            hostAddress = localHost.getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        putDelayQueue(DELAY_QUEUE_DEFUALT_KEY.concat(hostAddress), task, timeout, timeUnit, consumer);
     }
 
     @Override
     public void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) {
-//        long l = System.currentTimeMillis();
-//        long x = timeUnit.toMillis(timeout);
-//        long targetScore = l + x;
-//        Map<String, Double> map = new HashMap();
-//        map.put(task, Double.valueOf(String.valueOf(targetScore)));
-//        zadd(key, map);
-//        MAP_DELAY.put(task, consumer);
-//        delayTaskHandler(key);
+        long l = System.currentTimeMillis();
+        long x = timeUnit.toMillis(timeout);
+        long targetScore = l + x;
+        Map<String, Double> map = new HashMap();
+        map.put(task, Double.valueOf(String.valueOf(targetScore)));
+        zadd(key, map);
+        MAP_DELAY.put(task, consumer);
+        delayTaskHandler(key);
     }
 
     private void delayTaskHandler(String key) {
-//        Object jedis = null;
-//        try {
-//            jedis = getResource(Object.class);
-//            if (MAP_DELAY_EXECUTE.get(key) == null) {
-//                synchronized (key.intern()) {
-//                    if (MAP_DELAY_EXECUTE.get(key) == null) {
-//                        MAP_DELAY_EXECUTE.put(key, true);
-//                        while (true) {
-//                            Map<String, Double> zSet = zrangeWithScoresToMap(key, 0, -1);
-//                            if (zSet == null || zSet.size() == 0) {
-//                                break;
-//                            }
-//                            for (Map.Entry<String, Double> entry : zSet.entrySet()) {
-//                                String storeTask = entry.getKey();
-//                                Double score = entry.getValue();
-//                                if (System.currentTimeMillis() - score > 0) {
-//                                    //开始执行任务
-//                                    MAP_DELAY.get(storeTask).accept(storeTask);
-//                                    //删除这个值
-//                                    String script = "return redis.call('zrem', KEYS[1], ARGV[1])";
-//                                    jedisCommandsBytesLuaEvalSha(jedis, script, Collections.singletonList(key), Collections.singletonList(storeTask));
-//                                }
-//                            }
-//                            try {
-//                                TimeUnit.SECONDS.sleep(1);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } finally {
-//            returnResource(jedis);
-//        }
+        if (MAP_DELAY_EXECUTE.get(key) == null) {
+            synchronized (key.intern()) {
+                if (MAP_DELAY_EXECUTE.get(key) == null) {
+                    MAP_DELAY_EXECUTE.put(key, true);
+                    while (true) {
+                        Map<String, Double> zSet = zrangeWithScoresToMap(key, 0, -1);
+                        if (zSet == null || zSet.size() == 0) {
+                            break;
+                        }
+                        for (Map.Entry<String, Double> entry : zSet.entrySet()) {
+                            String storeTask = entry.getKey();
+                            Double score = entry.getValue();
+                            if (System.currentTimeMillis() - score > 0) {
+                                //开始执行任务
+                                MAP_DELAY.get(storeTask).accept(storeTask);
+                                //删除这个值
+                                zrem(key, storeTask);
+                            }
+                        }
+                        try {
+                            TimeUnit.SECONDS.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
 
     }
 
     /*========================通用 end  =================================*/
-
 
 
     /*=============================set begin===============================================*/
@@ -411,10 +411,12 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
 
     /*==============================string begin=====================================================*/
+
     /**
      * 设置数据，字符串数据
-     * @param key 键
-     * @param value 值
+     *
+     * @param key          键
+     * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
      * @return
      */
@@ -427,6 +429,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
     /**
      * 获取数据，获取字符串数据
+     *
      * @param key 键
      * @return 值
      */
@@ -583,8 +586,6 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
         return doLtrim(key, start, end);
     }
     /*==============================list end=======================================================*/
-
-
 
 
 }

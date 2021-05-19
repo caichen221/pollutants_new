@@ -15,6 +15,7 @@ import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,6 +32,9 @@ import java.util.stream.Collectors;
 public class JdkNoneRedisCommonClient {
     protected JedisConnection jedisConnection;
     protected JdkNoneRedisConnection jdkNoneRedisConnection;
+    protected static String DELAY_QUEUE_DEFUALT_KEY = "delay_queue_default_key_20190806";
+    protected static Map<String, Consumer> MAP_DELAY = new ConcurrentHashMap<>();
+    protected static Map<String, Boolean> MAP_DELAY_EXECUTE = new ConcurrentHashMap<>();
 
     /**
      * 获取byte[]类型Key
@@ -173,8 +177,11 @@ public class JdkNoneRedisCommonClient {
         if (CollectionUtil.isNotEmpty(set)) {
             Pattern pa = Pattern.compile(pattern);
             //删除正则表达式匹配到得key
-            set.stream().filter(key -> pa.matcher(key).matches())
-                    .forEach(jdkNoneRedisConnection.OBJECT_CACHE::remove);
+            List<String> keys = set.stream().filter(key -> pa.matcher(key).matches())
+                    .collect(Collectors.toList());
+            if (CollectionUtil.isNotEmpty(keys)) {
+                keys.forEach(jdkNoneRedisConnection.OBJECT_CACHE::remove);
+            }
         }
     }
 

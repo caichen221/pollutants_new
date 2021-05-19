@@ -7,11 +7,15 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * JdkClient
- *
+ * <p>
  * 使用Jdk模拟redis的操作，这里不需要依赖redis,适用不用Redis的环境，但可用Redis的接口
  *
  * @author zhuquanwen
@@ -28,8 +32,10 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     /*=============================通用 begin=========================================*/
+
     /**
      * 删除缓存
+     *
      * @param key 键
      * @return
      */
@@ -40,6 +46,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     /**
      * 缓存是否存在
+     *
      * @param key 键
      * @return
      */
@@ -64,24 +71,24 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
         return null;
     }
 
-    private long  jedisCommandsBytesSadd(Object jedisCommands, byte[] bytesKey, byte[][] bytesValue) {
+    private long jedisCommandsBytesSadd(Object jedisCommands, byte[] bytesKey, byte[][] bytesValue) {
         return 0L;
     }
 
-    private long  jedisCommandsBytesDel(Object jedisCommands, byte[] bytesKey) {
+    private long jedisCommandsBytesDel(Object jedisCommands, byte[] bytesKey) {
         return 0L;
     }
 
     /**
      * 模糊删除
-     * */
+     */
     @Override
     public void deleteByPattern(String pattern) {
         doDeleteByPattern(pattern);
     }
 
 //    @Override
-//    public void putDelayQueue(String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) {
+//    public void putDelayQueue(String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) throws IOException, ClassNotFoundException {
 //        //使用默认key
 //        String hostAddress = null;
 //        try {
@@ -92,19 +99,18 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 //        }
 //        putDelayQueue(DELAY_QUEUE_DEFUALT_KEY.concat(hostAddress), task, timeout, timeUnit, consumer);
 //    }
-
+//
 //    @Override
-//    public void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) {
+//    public void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) throws IOException, ClassNotFoundException {
 //        long l = System.currentTimeMillis();
 //        long x = timeUnit.toMillis(timeout);
 //        long targetScore = l + x;
 //        Map<String, Double> map = new HashMap();
 //        map.put(task, Double.valueOf(String.valueOf(targetScore)));
-//        setZSetAdd(key, map);
+//        zadd(key, map);
 //        MAP_DELAY.put(task, consumer);
 //        delayTaskHandler(key);
 //    }
-
 
 
     @Override
@@ -114,21 +120,24 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     /*=============================通用 end==========================================*/
 
     /*========================================set begin========================================================*/
+
     /**
      * 设置Set，值为任意对象类型
-     * @param key 键
-     * @param value 值
+     *
+     * @param key          键
+     * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
      * @return
      */
     @Override
     public long sadd(String key, Set value, int cacheSeconds) throws IOException {
-       return doSadd(key, value, cacheSeconds);
+        return doSadd(key, value, cacheSeconds);
     }
 
     /**
      * 向Set中追加值，类型为对象
-     * @param key 键
+     *
+     * @param key   键
      * @param value 值
      * @return
      */
@@ -139,7 +148,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public long scard(String key) throws IOException {
-       return doScard(key);
+        return doScard(key);
     }
 
     @Override
@@ -261,7 +270,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public  <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max) {
+    public <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max) {
         return doZrangeByScoreWithScoresToMap(tClass, key, min, max);
     }
 
@@ -382,16 +391,18 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
 
     @Override
     public <T> List<T> hmget(Class<T> tClass, String key, Object... fields) throws IOException, ClassNotFoundException {
-       return doHmget(tClass, key, fields);
+        return doHmget(tClass, key, fields);
     }
 
     /*===========================hash end==========================================*/
 
     /*===========================string begin==========================================*/
+
     /**
      * 设置数据，对象数据，序列化后存入redis
-     * @param key 键
-     * @param value 值
+     *
+     * @param key          键
+     * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
      * @return
      */
@@ -517,43 +528,36 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     /*===========================list end============================================*/
 
 
+    private void delayTaskHandler(String key) throws IOException, ClassNotFoundException {
+        if (MAP_DELAY_EXECUTE.get(key) == null) {
+            synchronized (key.intern()) {
+                if (MAP_DELAY_EXECUTE.get(key) == null) {
+                    MAP_DELAY_EXECUTE.put(key, true);
+                    while (true) {
+                        Map<String, Double> zSet = zrangeWithScoresToMap(String.class, key, 0, -1);
+                        if (zSet == null || zSet.size() == 0) {
+                            break;
+                        }
+                        for (Map.Entry<String, Double> entry : zSet.entrySet()) {
+                            String storeTask = entry.getKey();
+                            Double score = entry.getValue();
+                            if (System.currentTimeMillis() - score > 0) {
+                                //开始执行任务
+                                MAP_DELAY.get(storeTask).accept(storeTask);
+                                //删除这个值
+                                zrem(key, storeTask);
+                            }
+                        }
+                        try {
+                            TimeUnit.SECONDS.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
 
-//    private void delayTaskHandler(String key) {
-//        JedisCommands jedis = null;
-//        try {
-//            jedis = getResource();
-//            if (MAP_DELAY_EXECUTE.get(key) == null) {
-//                synchronized (key.intern()) {
-//                    if (MAP_DELAY_EXECUTE.get(key) == null) {
-//                        MAP_DELAY_EXECUTE.put(key, true);
-//                        while (true) {
-//                            Map<String, Double> zSet = getZSet(key);
-//                            if (zSet == null || zSet.size() == 0) {
-//                                break;
-//                            }
-//                            for (Map.Entry<String, Double> entry : zSet.entrySet()) {
-//                                String storeTask = entry.getKey();
-//                                Double score = entry.getValue();
-//                                if (System.currentTimeMillis() - score > 0) {
-//                                    //开始执行任务
-//                                    MAP_DELAY.get(storeTask).accept(storeTask);
-//                                    //删除这个值
-//                                    String script = "return redis.call('zrem', KEYS[1], ARGV[1])";
-//                                    jedisCommandsBytesLuaEvalSha(jedis, script, Collections.singletonList(key), Collections.singletonList(storeTask));
-//                                }
-//                            }
-//                            try {
-//                                TimeUnit.SECONDS.sleep(1);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } finally {
-//            returnResource(jedis);
-//        }
-//
-//    }
+
+    }
 }
