@@ -3,6 +3,7 @@ package com.iscas.biz;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
+import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableElasticJob(withDatasource = true)
 @EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
 @EnableRetry(proxyTargetClass = true) //是否允许方法重试功能
-
+@EnableAtomikos //是否开启Atomikos分布式事务
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

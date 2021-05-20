@@ -49,6 +49,8 @@ dependencies {
 
     compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: "${mybatisGeneratorVersion}"
 
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jta-atomikos'
+    
 }
 
 
