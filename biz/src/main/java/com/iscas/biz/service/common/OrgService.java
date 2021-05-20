@@ -17,6 +17,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -116,7 +119,7 @@ public class OrgService {
         return childOrgs;
     }
 
-//    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
@@ -142,7 +145,7 @@ public class OrgService {
         return result;
     }
 
-    //    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),

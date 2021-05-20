@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -188,7 +191,7 @@ public class UserService {
         getParentOrgName(orgPid, allOrgMap, orgNameStack);
     }
 
-    //    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     public ResponseEntity add(Map<String, Object> data) throws NoSuchAlgorithmException, ValidDataException {
         Map<String, Object> forceItem = new HashMap<>();
         forceItem.put("user_pwd", MD5Utils.saltMD5(userDefaultPwd));

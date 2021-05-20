@@ -11,6 +11,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -79,7 +82,7 @@ public class MenuController extends BaseController {
             }
     )
     @PostMapping("/node/del")
-//    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     public ResponseEntity deleteNode(@RequestBody List<Integer> menuIds) throws BaseException {
         ResponseEntity response = getResponse();
         for (Integer menuId : menuIds) {
