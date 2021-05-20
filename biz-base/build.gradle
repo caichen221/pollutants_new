@@ -103,6 +103,19 @@ dependencies {
 
     compile group: 'org.springframework.retry', name: 'spring-retry'
 
+    //定时任务锁
+    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-spring', version: "${shedlockVersion}"
+    //使用数据库锁
+    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-jdbc-template', version: "${shedlockVersion}"
+//    //使用mongo锁
+//    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-mongo', version: "${shedlockVersion}"
+//    //使用zookeeper锁
+//    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-zookeeper-curator', version: "${shedlockVersion}"
+//    //使用redis
+//    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-redis-jedis', version: "${shedlockVersion}"
+
+
+
 
 
 

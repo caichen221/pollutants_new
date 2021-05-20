@@ -7,6 +7,7 @@ import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -51,7 +52,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableElasticJob(withDatasource = true)
 @EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
 @EnableRetry(proxyTargetClass = true) //是否允许方法重试功能
-@EnableAtomikos //是否开启Atomikos分布式事务
+@EnableAtomikos //开启Atomikos分布式事务（有些数据库需要给权限）
+@EnableShedLock //shedlock开关，spring定时任务锁（暂时只能应用到spring的@Scheduled定时任务上）
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
