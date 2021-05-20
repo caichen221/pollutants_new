@@ -108,8 +108,11 @@ public class ExcelUtils {
      */
     public static <T> void exportXLSExcel(List<ExcelResult<T>> excelResults , String path) throws Exception{
         File file = new File(path);
-        OutputStream out = new FileOutputStream(file);
-        exportXLSExcel(excelResults,DEFAULT_COLOUMN_WIDTH,out);
+        try (
+                OutputStream out = new FileOutputStream(file);
+        ) {
+            exportXLSExcel(excelResults,DEFAULT_COLOUMN_WIDTH,out);
+        }
     }
 
 
@@ -127,8 +130,11 @@ public class ExcelUtils {
     public static <T> void exportXLSExcel(List<ExcelResult<T>> excelResults,int colWidth,
                                           String path) throws Exception{
         File file = new File(path);
-        OutputStream out = new FileOutputStream(file);
-        exportXLSExcel(excelResults,colWidth,out);
+        try (
+                OutputStream out = new FileOutputStream(file);
+        ) {
+            exportXLSExcel(excelResults,colWidth,out);
+        }
     }
 
     /**
@@ -144,8 +150,11 @@ public class ExcelUtils {
     public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults ,
                                            String path) throws Exception{
         File file = new File(path);
-        OutputStream out = new FileOutputStream(file);
-        exportXLSXExcel(excelResults, DEFAULT_COLOUMN_WIDTH, out);
+        try (
+                OutputStream out = new FileOutputStream(file);
+        ) {
+            exportXLSXExcel(excelResults, DEFAULT_COLOUMN_WIDTH, out);
+        }
     }
 
     /**
@@ -162,8 +171,11 @@ public class ExcelUtils {
     public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults , int colWidth,
                                            String path) throws Exception{
         File file = new File(path);
-        OutputStream out = new FileOutputStream(file);
-        exportXLSXExcel(excelResults,colWidth,out);
+        try (
+                OutputStream out = new FileOutputStream(file);
+        ) {
+            exportXLSXExcel(excelResults,colWidth,out);
+        }
     }
 
     /**
@@ -390,8 +402,11 @@ public class ExcelUtils {
      * @return java.util.List<java.lang.String>
      */
     public static LinkedHashMap<String, List<String>> readExcelHeader(File file) throws Exception{
-        InputStream is = new FileInputStream(file);
-        return readExcelHeader(is);
+        try (
+                InputStream is = new FileInputStream(file);
+        ) {
+            return readExcelHeader(is);
+        }
     }
 
     /**
