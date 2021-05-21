@@ -6,6 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  *
+ * 使用javassists创建一个类
+ *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/4/26 21:10
