@@ -33,6 +33,7 @@ public class UpdateMethodDemo {
         String targetClassName = "com.iscas.java.agent.samples.UpdateMethodDemo$DemoClass";
         CtClass ctClass = classPool.get(targetClassName);
         CtClass intClass = classPool.get("int");
+
         //获取randonNum函数
         CtMethod randonNumMethod = ctClass.getDeclaredMethod("randonNum", new CtClass[]{intClass});
         //复制函数，并改名
