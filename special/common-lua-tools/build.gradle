@@ -1,4 +1,4 @@
 
 dependencies {
-    compile group: 'org.luaj', name: 'luaj-jse', version: "${luajJseVersion}"
+    api group: 'org.luaj', name: 'luaj-jse', version: "${luajJseVersion}"
 }

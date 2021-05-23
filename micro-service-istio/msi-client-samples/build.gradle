@@ -1,5 +1,5 @@
 
 dependencies {
-    compile ('org.springframework.boot:spring-boot-starter-web')
-    compile project(":micro-service-istio:msi-api")
+    api ('org.springframework.boot:spring-boot-starter-web')
+    api project(":micro-service-istio:msi-api")
 }

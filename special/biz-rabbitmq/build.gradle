@@ -2,31 +2,31 @@ apply plugin: 'java'
 apply plugin: 'war'
 
 dependencies {
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     //导入基础工具工程
-    compile project (":common:common-tools")
+    api project (":common:common-tools")
     //导入web相关的基础工具工程
-    compile project (":common:common-web-tools")
+    api project (":common:common-web-tools")
     //导入模板
-    compile project (":templet")
+    api project (":templet")
 
-    compile fileTree(dir:'libs',include:['*.jar'])
+    api fileTree(dir:'libs',include:['*.jar'])
 
-    compile ('org.springframework.boot:spring-boot-starter-web')
+    api ('org.springframework.boot:spring-boot-starter-web')
             {
                 exclude group: 'ch.qos.logback', module: 'logback-access'
                 exclude group: 'ch.qos.logback', module: 'logback-classic'
                 exclude group: 'ch.qos.logback', module: 'logback-core'
                 exclude group: 'org.slf4j', module: 'slf4j-api'
             }
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
 }
 //打入本地maven库配置
-install {
-    repositories.mavenInstaller {
-        pom.version="${project.version}"
-        pom.artifactId="${project.archivesBaseName}"
-        pom.groupId="${project.group}"
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.version="${project.version}"
+//        pom.artifactId="${project.archivesBaseName}"
+//        pom.groupId="${project.group}"
+//    }
+//}

@@ -25,9 +25,9 @@ protobuf {
 }
 
 dependencies {
-//    compile group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
-    compile project (":common:common-rpc-tools")
+//    api group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
+    api project (":common:common-rpc-tools")
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
+    api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
 
 }

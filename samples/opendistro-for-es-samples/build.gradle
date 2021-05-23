@@ -1,6 +1,6 @@
 
 dependencies {
     // https://mvnrepository.com/artifact/com.amazon.opendistroforelasticsearch.client/opendistro-sql-jdbc
-    compile group: 'com.amazon.opendistroforelasticsearch.client', name: 'opendistro-sql-jdbc', version: '1.13.0.0'
+    api group: 'com.amazon.opendistroforelasticsearch.client', name: 'opendistro-sql-jdbc', version: '1.13.0.0'
 
 }

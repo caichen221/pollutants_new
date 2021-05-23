@@ -24,27 +24,27 @@ protobuf {
 
 }
 configurations {
-    compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    compile.exclude group: 'org.apache.tomcat'
-    compile.exclude group: 'org.apache.tomcat.embed'
+    api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    api.exclude group: 'org.apache.tomcat'
+    api.exclude group: 'org.apache.tomcat.embed'
 }
 
 dependencies {
-//    compile "org.springframework.boot:spring-boot-starter:2.4.1"
-//    compile group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
-    compile project (":common:common-rpc-tools")
-    compile project (":templet")
+//    api "org.springframework.boot:spring-boot-starter:2.4.1"
+//    api group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
+    api project (":common:common-rpc-tools")
+    api project (":templet")
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-    compile 'ch.qos.logback:logback-classic:1.2.3'
+    api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
+    api 'ch.qos.logback:logback-classic:1.2.3'
     //TODO jafu0.4.3与2.4.2不匹配，暂时把springboot版本降低
-    compile "org.springframework.boot:spring-boot-starter-web:2.4.1"
-    compile "org.springframework.boot:spring-boot-autoconfigure:2.4.1"
-    compile "org.springframework.boot:spring-boot-starter-undertow"
-//    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.springframework.fu:spring-fu-jafu:${jafuVersion}"
-    runtime "org.springframework.fu:spring-fu-autoconfigure-adapter:${jafuVersion}"
-    compile group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
+    api "org.springframework.boot:spring-boot-starter-web:2.4.1"
+    api "org.springframework.boot:spring-boot-autoconfigure:2.4.1"
+    api "org.springframework.boot:spring-boot-starter-undertow"
+//    api "org.springframework.boot:spring-boot-starter-tomcat"
+    api "org.springframework.fu:spring-fu-jafu:${jafuVersion}"
+    api "org.springframework.fu:spring-fu-autoconfigure-adapter:${jafuVersion}"
+    api group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
 
 
 

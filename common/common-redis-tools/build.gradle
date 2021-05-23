@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'maven'
+//    id 'maven'
 }
 
 //sourceCompatibility = 1.8
@@ -15,23 +15,23 @@ plugins {
 //}
 
 dependencies {
-    compile group: 'redis.clients', name: 'jedis', version:"${jedisVersion}"
+    api group: 'redis.clients', name: 'jedis', version:"${jedisVersion}"
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
-    compile group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
+    api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
 
     // https://mvnrepository.com/artifact/io.lettuce/lettuce-core
-    compile group: 'io.lettuce', name: 'lettuce-core', version: "${lettuceCoreVersion}"
+    api group: 'io.lettuce', name: 'lettuce-core', version: "${lettuceCoreVersion}"
 
     //hutool-all
-    compile "cn.hutool:hutool-all:${htoolVersion}"
+    api "cn.hutool:hutool-all:${htoolVersion}"
 
 
 }
 
-install {
-    repositories.mavenInstaller {
-        pom.version="${project.version}"
-        pom.artifactId="${project.archivesBaseName}"
-        pom.groupId="${project.group}"
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.version="${project.version}"
+//        pom.artifactId="${project.archivesBaseName}"
+//        pom.groupId="${project.group}"
+//    }
+//}

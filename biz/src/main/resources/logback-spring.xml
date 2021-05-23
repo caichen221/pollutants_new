@@ -148,6 +148,7 @@
     <logger name="oshi.util.platform.windows" level="INFO" />
     <logger name="org.quartz.core" level="INFO" />
     <logger name="org.quartz.simpl" level="INFO" />
+    <logger name="net.javacrumbs.shedlock.core.DefaultLockingTaskExecutor" level="INFO" />
     <logger name="root" level="DEBUG" />
 
 

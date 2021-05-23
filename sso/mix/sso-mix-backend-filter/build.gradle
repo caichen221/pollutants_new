@@ -3,9 +3,9 @@
 dependencies {
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    compile project(":templet")
-    compile project(":common:common-web-tools")
-    compile group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
-    compile "com.squareup.okhttp3:okhttp"
+    api project(":templet")
+    api project(":common:common-web-tools")
+    api group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
+    api "com.squareup.okhttp3:okhttp"
 
 }

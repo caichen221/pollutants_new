@@ -1,13 +1,13 @@
 
 dependencies {
 
-    compile ('org.springframework.boot:spring-boot-starter-web')
-    compile ('org.springframework.boot:spring-boot-starter-data-jpa')
-    testCompile ('org.springframework.boot:spring-boot-starter-test')
+    api ('org.springframework.boot:spring-boot-starter-web')
+    api ('org.springframework.boot:spring-boot-starter-data-jpa')
+    testImplementation ('org.springframework.boot:spring-boot-starter-test')
 
-    compile "com.graphql-java-kickstart:graphql-java-tools:${graphqlJavaToolsVersion}"
-    compile "mysql:mysql-connector-java:${mysqlVersion}"
-    compile "com.graphql-java-kickstart:graphql-spring-boot-starter:${graphqlStarterVersion}"
-    compile "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlStarterVersion}"
+    api "com.graphql-java-kickstart:graphql-java-tools:${graphqlJavaToolsVersion}"
+    api "mysql:mysql-connector-java:${mysqlVersion}"
+    api "com.graphql-java-kickstart:graphql-spring-boot-starter:${graphqlStarterVersion}"
+    api "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlStarterVersion}"
 
 }

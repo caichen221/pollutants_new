@@ -1,9 +1,9 @@
 
 dependencies {
-    compile ('org.springframework.boot:spring-boot-starter-web')
-    compile ('org.springframework.boot:spring-boot-starter-jersey')
+    api ('org.springframework.boot:spring-boot-starter-web')
+    api ('org.springframework.boot:spring-boot-starter-jersey')
     //文件上传处理
-    compile 'org.glassfish.jersey.media:jersey-media-multipart'
-    compile project(":templet")
+    api 'org.glassfish.jersey.media:jersey-media-multipart'
+    api project(":templet")
 
 }

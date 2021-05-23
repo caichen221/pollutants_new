@@ -26,13 +26,13 @@ protobuf {
 
 dependencies {
     // https://mvnrepository.com/artifact/com.alipay.sofa/sofa-rpc-all
-    compile group: 'com.alipay.sofa', name: 'sofa-rpc-all', version: "${sofaVersion}"
+    api group: 'com.alipay.sofa', name: 'sofa-rpc-all', version: "${sofaVersion}"
 
     // https://mvnrepository.com/artifact/io.grpc/grpc-all
-    compile group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
+    api group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
 
     // https://mvnrepository.com/artifact/org.apache.thrift/libthrift
-    compile group: 'org.apache.thrift', name: 'libthrift', version: "${libthriftVersion}"
+    api group: 'org.apache.thrift', name: 'libthrift', version: "${libthriftVersion}"
 
 
 

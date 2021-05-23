@@ -26,8 +26,7 @@ public class ShedLockTest {
      * [秒] [分] [小时] [日] [月] [周] [年]
      */
     // @Scheduled(cron = "0 0 17 * * ?") 每天17点执行
-    @Scheduled(cron = "* * 0/1 * * ?")
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     @SchedulerLock(name = "shedLockTest", lockAtMostFor = "2m", lockAtLeastFor = "10s")
     public void SynchronousSchedule() {
         log.info("测试定时任务锁，使用spring的Scheduled");

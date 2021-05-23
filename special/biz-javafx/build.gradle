@@ -1,7 +1,8 @@
-task copyToLib(type: Copy) {
-    into "$buildDir/libs/lib"
-    from configurations.runtime
-}
+//todo 升级到springboot 2.5.0后这里有问题
+//task copyToLib(type: Copy) {
+//    into "$buildDir/libs/lib"
+//    from configurations.runtime
+//}
 
 //apply plugin: 'application'
 //
@@ -51,23 +52,23 @@ run {
 
 dependencies {
 
-    compile "org.openjfx:javafx-base:11:${platform}"
+    api "org.openjfx:javafx-base:11:${platform}"
 
-    compile "org.openjfx:javafx-graphics:11:${platform}"
+    api "org.openjfx:javafx-graphics:11:${platform}"
 
-    compile "org.openjfx:javafx-controls:11:${platform}"
+    api "org.openjfx:javafx-controls:11:${platform}"
 
-    compile "org.openjfx:javafx-fxml:11:${platform}"
+    api "org.openjfx:javafx-fxml:11:${platform}"
 
-    compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter'
+    api group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter'
 
 
-//    compile fileTree(dir:'fxlibs',include:['*.jar'])
+//    api fileTree(dir:'fxlibs',include:['*.jar'])
 
-    compile project(":common:common-tools")
+    api project(":common:common-tools")
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 //jar {
@@ -100,8 +101,9 @@ bootJar {
 
     mainClassName = 'com.iscas.biz.jf.JFApp'
     // 指定依赖包的路径
-    manifest {
-        attributes "Manifest-Version": 1.0,
-                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' ')
-    }
+    //todo 升级到springboot 2.5.0后这里有问题
+//    manifest {
+//        attributes "Manifest-Version": 1.0,
+//                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' ')
+//    }
 }

@@ -4,5 +4,5 @@ jar {
     }
 }
 dependencies {
-    implementation 'org.javassist:javassist:3.25.0-GA'
+    api 'org.javassist:javassist:3.25.0-GA'
 }

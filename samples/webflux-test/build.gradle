@@ -1,9 +1,9 @@
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-r2dbc'
-    compile group: 'io.r2dbc', name: 'r2dbc-pool'
-    compile group: 'dev.miku', name: 'r2dbc-mysql'
-    testCompile group: 'io.projectreactor', name: 'reactor-test'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-data-r2dbc'
+    api group: 'io.r2dbc', name: 'r2dbc-pool'
+    api group: 'dev.miku', name: 'r2dbc-mysql'
+    testImplementation group: 'io.projectreactor', name: 'reactor-test'
 }
