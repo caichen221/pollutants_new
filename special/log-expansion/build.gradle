@@ -3,8 +3,14 @@ apply plugin: 'maven-publish'
 //apply plugin: 'maven'
 buildscript {
     repositories {
-        maven { url "${nexusUrl}" }
-        maven {url "${aliyunUrl}"}
+        maven {
+            url "${nexusUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aliyunUrl}"
+            allowInsecureProtocol = true
+        }
         mavenCentral()
         maven {url "https://plugins.gradle.org/m2/"}
     }
@@ -21,8 +27,14 @@ sourceCompatibility = "${javaVersion}"
 targetCompatibility = "${javaVersion}"
 
 repositories {
-    maven { url "${nexusUrl}" }
-    maven {url "${aliyunUrl}"}
+    maven {
+        url "${nexusUrl}"
+        allowInsecureProtocol = true
+    }
+    maven {
+        url "${aliyunUrl}"
+        allowInsecureProtocol = true
+    }
     mavenCentral()
 }
 

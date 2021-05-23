@@ -3,6 +3,7 @@ package com.iscas.webflux.test.controller;
 import com.iscas.webflux.test.domain.City;
 import com.iscas.webflux.test.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping("/city")
+@CrossOrigin
 public class CityController {
     @Autowired
     private CityService cityService;
@@ -40,5 +42,11 @@ public class CityController {
     @GetMapping("/{name}")
     public Flux<City> search(@PathVariable String name) {
         return cityService.search(name);
+    }
+
+    /**流式返回，需要前端配合*/
+    @GetMapping(value = "/findAll", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<City> findAll() {
+        return cityService.findAll();
     }
 }

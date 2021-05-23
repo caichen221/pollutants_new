@@ -36,4 +36,6 @@ public class CityService {
         return cityRepository.findByNameLike(name);
     }
 
+    public Flux<City> findAll() {return cityRepository.findAll();}
+
 }
