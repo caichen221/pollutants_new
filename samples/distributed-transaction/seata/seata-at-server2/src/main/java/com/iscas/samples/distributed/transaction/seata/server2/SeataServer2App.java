@@ -3,6 +3,7 @@ package com.iscas.samples.distributed.transaction.seata.server2;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  *
@@ -11,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2021/5/24 22:17
  * @since jdk1.8
  */
-@SpringBootApplication
+@SpringBootApplication/*(exclude = DataSourceAutoConfiguration.class)*/
 @MapperScan(basePackages = "com.iscas.samples.distributed.transaction.seata.server2.mapper")
 public class SeataServer2App {
     public static void main(String[] args) {
