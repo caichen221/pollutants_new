@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
  *
  * @author zhuquanwen
@@ -23,11 +25,15 @@ public class TestTccActionImpl implements TestTccAction {
     @Autowired
     private UserDetailsMapper userDetailsMapper;
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public boolean prepareTest(BusinessActionContext businessActionContext, UserDetails userDetails) {
         log.info("测试，第一阶段");
-
+        //防悬挂处理
+        if (ResultHolder.getNullRollbackedResult(getClass(), businessActionContext.getXid()) != null) {
+            return false;
+        }
+        //模拟回滚
         if (ThreadLocalRandom.current().nextBoolean()) {
             throw new RuntimeException("出错啦");
         }
@@ -37,7 +43,7 @@ public class TestTccActionImpl implements TestTccAction {
         return true;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public boolean commit(BusinessActionContext businessActionContext) {
 
@@ -57,14 +63,16 @@ public class TestTccActionImpl implements TestTccAction {
         return true;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public boolean rollback(BusinessActionContext businessActionContext) {
 
         log.info("第二阶段，回滚");
 
-        //防止重复提交
+        //防止空回滚
         if (ResultHolder.getResult(getClass(), businessActionContext.getXid()) == null) {
+            //防悬挂处理
+            ResultHolder.setNullRollbackedResult(getClass(), businessActionContext.getXid(), new Date());
             return true;
         }
         JSONObject jsonObject = (JSONObject) businessActionContext.getActionContext().get("userDetails");

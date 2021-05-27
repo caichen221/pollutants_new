@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
  * @author zhuquanwen
  * @vesion 1.0
@@ -21,18 +23,23 @@ public class TestTccActionImpl implements TestTccAction {
     @Autowired
     private UserMapper userMapper;
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public boolean prepareTest(BusinessActionContext businessActionContext, User user) {
         log.info("创建 test 第一阶段，预留资源 - " + businessActionContext.getXid());
+        //防悬挂处理
+        if (ResultHolder.getNullRollbackedResult(getClass(), businessActionContext.getXid()) != null) {
+            return false;
+        }
 
+        //相当于锁定这个用户ID，预留资源
         userMapper.insert(user);
         //事务成功，保存一个标识，供第二阶段进行判断
         ResultHolder.setResult(getClass(), businessActionContext.getXid(), "p");
         return true;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public boolean commit(BusinessActionContext businessActionContext) {
         log.info("创建 test 第二阶段提交，修改用户名为zhangsan1 - " + businessActionContext.getXid());
@@ -42,6 +49,7 @@ public class TestTccActionImpl implements TestTccAction {
             return true;
         }
 
+        //将用户修改为想要得zhangsan1
         JSONObject jsonObject = (JSONObject) businessActionContext.getActionContext().get("user");
         User user = jsonObject.toJavaObject(User.class);
         user.setName("zhangsan1");
@@ -52,7 +60,7 @@ public class TestTccActionImpl implements TestTccAction {
         return true;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public boolean rollback(BusinessActionContext businessActionContext) {
         log.info("创建 test 第二阶段回滚，删除用户 - " + businessActionContext.getXid());
@@ -62,6 +70,8 @@ public class TestTccActionImpl implements TestTccAction {
         //如果这里第一阶段成功，而其他全局事务参与者失败，这里会执行回滚
         //幂等性控制：如果重复执行回滚则直接返回
         if (ResultHolder.getResult(getClass(), businessActionContext.getXid()) == null) {
+            //防悬挂处理
+            ResultHolder.setNullRollbackedResult(getClass(), businessActionContext.getXid(), new Date());
             return true;
         }
 
