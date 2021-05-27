@@ -1,4 +1,4 @@
-package com.iscas.samples.distributed.transaction.seata.at.server2.po;
+package com.iscas.samples.distributed.transaction.seata.tcc.server2.po;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import lombok.Data;
  *
  * @author zhuquanwen
  * @vesion 1.0
- * @date 2021/5/24 22:21
+ * @date 2021/5/27 22:21
  * @since jdk1.8
  */
 @Data

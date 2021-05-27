@@ -1,7 +1,7 @@
-package com.iscas.samples.distributed.transaction.seata.at.server1.controller;
+package com.iscas.samples.distributed.transaction.seata.tcc.server1.controller;
 
-import com.iscas.samples.distributed.transaction.seata.at.server1.mapper.UserMapper;
-import com.iscas.samples.distributed.transaction.seata.at.server1.po.User;
+import com.iscas.samples.distributed.transaction.seata.tcc.server1.po.User;
+import com.iscas.samples.distributed.transaction.seata.tcc.server1.tcc.TestTccAction;
 import io.seata.core.context.RootContext;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,37 +9,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- *
  * @author zhuquanwen
  * @vesion 1.0
- * @date 2021/5/24 22:59
+ * @date 2021/5/27 10:27
  * @since jdk1.8
  */
+@RequestMapping("/tcc/server1")
 @RestController
-@RequestMapping("/at/server1")
 public class TestController {
     @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private UserMapper userMapper;
-    @GlobalTransactional(name = "my-test-transactional", timeoutMills = 600000)
+    private TestTccAction testTccAction;
+
+    @GlobalTransactional
     @GetMapping
-    public String test1() throws IOException {
-        System.out.println(dataSource);
+    public String test() throws IOException {
         User user = new User();
         user.setName("zhangsan");
-        userMapper.insert(user);
+        user.setId(ThreadLocalRandom.current().nextInt(500000) + 1);
+        testTccAction.prepareTest(null, user);
 
-        call();
+        //调用server2
         call();
 
         return "success";
@@ -48,7 +46,7 @@ public class TestController {
     private void call() throws IOException {
         String xid = RootContext.getXID();
         System.out.println("xid:" + xid);
-        URL url = new URL("http://localhost:7002/server2?id=1");
+        URL url = new URL("http://localhost:7004/tcc/server2");
         // 打开连接 获取连接对象
         URLConnection connection = url.openConnection();
         connection.setRequestProperty(RootContext.KEY_XID, xid);
@@ -74,4 +72,6 @@ public class TestController {
         inputStreamReader.close();
         inputStream.close();
     }
+
+
 }

@@ -17,7 +17,7 @@ import javax.sql.DataSource;
  * @since jdk1.8
  */
 @RestController
-@RequestMapping("/server2")
+@RequestMapping("/at/server2")
 public class TestController {
     @Autowired
     private DataSource dataSource;

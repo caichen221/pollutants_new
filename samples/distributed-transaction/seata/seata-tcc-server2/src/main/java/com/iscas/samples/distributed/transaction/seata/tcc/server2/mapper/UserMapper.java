@@ -1,6 +1,7 @@
-package com.iscas.samples.distributed.transaction.seata.tcc.server1.mapper;
+package com.iscas.samples.distributed.transaction.seata.tcc.server2.mapper;
 
-import com.iscas.samples.distributed.transaction.seata.tcc.server1.po.User;
+
+import com.iscas.samples.distributed.transaction.seata.tcc.server2.po.User;
 
 /**
  *
