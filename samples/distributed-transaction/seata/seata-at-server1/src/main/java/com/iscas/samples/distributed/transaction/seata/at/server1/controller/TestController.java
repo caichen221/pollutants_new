@@ -1,7 +1,7 @@
-package com.iscas.samples.distributed.transaction.seata.server1.controller;
+package com.iscas.samples.distributed.transaction.seata.at.server1.controller;
 
-import com.iscas.samples.distributed.transaction.seata.server1.mapper.UserMapper;
-import com.iscas.samples.distributed.transaction.seata.server1.po.User;
+import com.iscas.samples.distributed.transaction.seata.at.server1.mapper.UserMapper;
+import com.iscas.samples.distributed.transaction.seata.at.server1.po.User;
 import io.seata.core.context.RootContext;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -50,7 +48,7 @@ public class TestController {
     private void call() throws IOException {
         String xid = RootContext.getXID();
         System.out.println("xid:" + xid);
-        URL url = new URL("http://localhost:7002/server2?id=1&xid=" + xid);
+        URL url = new URL("http://localhost:7002/server2?id=1");
         // 打开连接 获取连接对象
         URLConnection connection = url.openConnection();
         connection.setRequestProperty(RootContext.KEY_XID, xid);

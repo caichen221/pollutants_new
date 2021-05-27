@@ -16,7 +16,7 @@ spring:
       pool-name: seata-test
 # mybatis配置
 mybatis:
-  type-aliases-package: com.iscas.samples.distributed.transaction.seata.server1.po
+  type-aliases-package: com.iscas.samples.distributed.transaction.seata.at.server1.po
   mapper-locations: classpath:mapper/*.xml
   configuration:
     # 开启数据表字段自动下划线转驼峰

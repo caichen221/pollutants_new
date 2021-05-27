@@ -1,11 +1,8 @@
-package com.iscas.samples.distributed.transaction.seata.server2.controller;
+package com.iscas.samples.distributed.transaction.seata.at.server2.controller;
 
-import com.iscas.samples.distributed.transaction.seata.server2.mapper.UserDetailsMapper;
-import com.iscas.samples.distributed.transaction.seata.server2.po.UserDetails;
-import io.seata.core.context.RootContext;
-import io.seata.spring.annotation.GlobalTransactional;
+import com.iscas.samples.distributed.transaction.seata.at.server2.mapper.UserDetailsMapper;
+import com.iscas.samples.distributed.transaction.seata.at.server2.po.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +25,7 @@ public class TestController {
     private UserDetailsMapper userDetailsMapper;
 //    @Transactional
     @GetMapping
-    public String test1(Integer id, String xid) {
-//        System.out.println("xid:" + xid);
+    public String test1(Integer id) {
 //        RootContext.bind(xid);
         UserDetails user = new UserDetails();
         user.setUserId(id);
