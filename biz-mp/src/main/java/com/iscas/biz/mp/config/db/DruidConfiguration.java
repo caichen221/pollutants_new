@@ -24,6 +24,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -60,7 +61,7 @@ public class DruidConfiguration implements EnvironmentAware {
     @Autowired
     private ApplicationContext context;
 
-    @Bean
+    @Bean(name="dynamicDatasource")
     public DataSource dynamicDataSource() throws SQLException {
         String db = environment.getProperty("spring.datasource.names");
         List<String> dbNames = Arrays.asList(db.split(","));
@@ -111,6 +112,30 @@ public class DruidConfiguration implements EnvironmentAware {
         }
         String value;
         String path = basePath + dbName + ".";
+
+        //将构建datasource的一部分把代码抽成静态方法，sharding-jdbc 调用一下 update by zqw 20210527
+        datasource = doInitOneDatasource(path, dbName, datasource, environment);
+        //Filters
+        value = environment.getProperty(path + "filters");
+        if (StringUtils.isNotBlank(value)) {
+            List<Filter> filterList = handlerFilters(path + "filter.", value);
+            if (filterList.size() > 0) {
+                datasource.setProxyFilters(filterList);
+            }
+        }
+        datasource.init();
+
+        return datasource;
+    }
+
+    /**
+     * 将构建datasource的一部分把代码抽成静态方法，sharding-jdbc
+     * 调用一下 update by zqw 20210527
+     * */
+    public static DruidDataSource doInitOneDatasource(String path, String dbName, DruidDataSource datasource,
+                                           Environment environment) {
+        String value;
+
         datasource.setName(dbName);
         //必选参数
         value = environment.getProperty(path + "username");
@@ -183,17 +208,6 @@ public class DruidConfiguration implements EnvironmentAware {
         if (StringUtils.isNotBlank(value)) {
             datasource.setMaxPoolPreparedStatementPerConnectionSize(Integer.parseInt(value));
         }
-
-        //Filters
-        value = environment.getProperty(path + "filters");
-        if (StringUtils.isNotBlank(value)) {
-            List<Filter> filterList = handlerFilters(path + "filter.", value);
-            if (filterList.size() > 0) {
-                datasource.setProxyFilters(filterList);
-            }
-        }
-        datasource.init();
-
         return datasource;
     }
 
@@ -222,7 +236,7 @@ public class DruidConfiguration implements EnvironmentAware {
 
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, @Qualifier(value = "dynamicDatasource") DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
 //        sqlSessionFactory.setDataSource(multipleDataSource);

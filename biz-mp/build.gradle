@@ -49,7 +49,10 @@ dependencies {
     api group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: "${mybatisGeneratorVersion}"
 
     api group: 'org.springframework.boot', name: 'spring-boot-starter-jta-atomikos'
-    
+
+    api group: 'org.apache.shardingsphere', name: 'sharding-jdbc-core', version: "${shardingJdbcCoreVersion}"
+
+
 }
 
 
