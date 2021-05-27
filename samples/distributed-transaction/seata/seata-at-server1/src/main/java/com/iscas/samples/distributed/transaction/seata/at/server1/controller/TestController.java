@@ -1,17 +1,21 @@
-package com.iscas.samples.distributed.transaction.seata.at.server1.controller;
+package com.iscas.samples.distributed.transaction.seata.server1.controller;
 
-import com.iscas.samples.distributed.transaction.seata.at.server1.mapper.UserMapper;
-import com.iscas.samples.distributed.transaction.seata.at.server1.po.User;
+import com.iscas.samples.distributed.transaction.seata.server1.mapper.UserMapper;
+import com.iscas.samples.distributed.transaction.seata.server1.po.User;
+import io.seata.core.context.RootContext;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -26,17 +30,30 @@ import java.net.URLConnection;
 @RequestMapping("/server1")
 public class TestController {
     @Autowired
+    private DataSource dataSource;
+    @Autowired
     private UserMapper userMapper;
-    @GlobalTransactional
+    @GlobalTransactional(name = "my-test-transactional", timeoutMills = 600000)
     @GetMapping
     public String test1() throws IOException {
+        System.out.println(dataSource);
         User user = new User();
         user.setName("zhangsan");
         userMapper.insert(user);
 
-        URL url = new URL("http://localhost:7002/server2");
+        call();
+        call();
+
+        return "success";
+    }
+
+    private void call() throws IOException {
+        String xid = RootContext.getXID();
+        System.out.println("xid:" + xid);
+        URL url = new URL("http://localhost:7002/server2?id=1&xid=" + xid);
         // 打开连接 获取连接对象
         URLConnection connection = url.openConnection();
+        connection.setRequestProperty(RootContext.KEY_XID, xid);
 
         // 从连接对象中获取网络连接中的输入字节流对象
         InputStream inputStream = connection.getInputStream();
@@ -58,8 +75,5 @@ public class TestController {
         bufferedReader.close();
         inputStreamReader.close();
         inputStream.close();
-
-
-        return "success";
     }
 }
