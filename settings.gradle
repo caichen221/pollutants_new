@@ -106,4 +106,8 @@ include 'samples:distributed-transaction:seata:seata-at-server1'
 findProject(':samples:distributed-transaction:seata:seata-at-server1')?.name = 'seata-at-server1'
 include 'samples:distributed-transaction:seata:seata-at-server2'
 findProject(':samples:distributed-transaction:seata:seata-at-server2')?.name = 'seata-at-server2'
+include 'samples:distributed-transaction:seata:seata-tcc-server1'
+findProject(':samples:distributed-transaction:seata:seata-tcc-server1')?.name = 'seata-tcc-server1'
+include 'samples:distributed-transaction:seata:seata-tcc-server2'
+findProject(':samples:distributed-transaction:seata:seata-tcc-server2')?.name = 'seata-tcc-server2'
 
