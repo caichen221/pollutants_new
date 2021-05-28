@@ -6,6 +6,7 @@ import com.iscas.base.biz.config.stomp.WsPushType;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
+import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
@@ -53,6 +54,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableRetry(proxyTargetClass = true) //是否允许方法重试功能
 @EnableAtomikos //开启Atomikos分布式事务（有些数据库需要给权限）
 @EnableShedLock //shedlock开关，spring定时任务锁（暂时只能应用到spring的@Scheduled定时任务上）
+//@EnableShardingJdbc //是否开启分库分表
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

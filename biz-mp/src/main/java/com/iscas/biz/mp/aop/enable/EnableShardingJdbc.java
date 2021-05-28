@@ -1,8 +1,5 @@
 package com.iscas.biz.mp.aop.enable;
 
-import com.iscas.biz.mp.config.shardingjdbc.ShardingJdbcConfiguration;
-import org.springframework.context.annotation.Import;
-
 import java.lang.annotation.*;
 
 /**
@@ -15,6 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(value={ShardingJdbcConfiguration.class})
+//@Import(value={ShardingJdbcConfiguration.class})
 public @interface EnableShardingJdbc {
 }
