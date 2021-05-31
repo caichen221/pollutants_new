@@ -36,7 +36,7 @@ public class MysqlColumn extends Column {
 
     private Long numScale;
 
-    private Integer datetimePrecision;
+//    private Integer datetimePrecision;
 
 
 
