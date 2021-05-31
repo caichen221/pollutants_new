@@ -14,9 +14,6 @@ import javax.sql.DataSource;
  * @since jdk1.8
  */
 public class DatasourceUtils {
-
-
-
     public DataSource getOracleDatasource(String ip, String port, String sid, String username, String pwd) {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:oracle:thin:@" + ip + ":" + port + ":" + sid);

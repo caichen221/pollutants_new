@@ -1,5 +1,4 @@
 
-apply plugin: 'java'
 apply plugin: 'war'
 
 //configurations {
@@ -11,108 +10,108 @@ apply plugin: 'war'
 
 dependencies {
     //导入基础工具工程
-    compile project (":common:common-tools")
+    api project (":common:common-tools")
     //导入web相关的基础工具工程
-    compile project (":common:common-web-tools")
-    compile project (":common:common-redis-tools")
+    api project (":common:common-web-tools")
+    api project (":common:common-redis-tools")
     //导入模板
-    compile project (":templet")
+    api project (":templet")
 
-    compile fileTree(dir:'libs',include:['*.jar'])
+    api fileTree(dir:'libs',include:['*.jar'])
 
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    compile ('org.springframework.boot:spring-boot-starter-web')
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    api ('org.springframework.boot:spring-boot-starter-web')
 //            {
 //                exclude group: 'ch.qos.logback', module: 'logback-access'
 //                exclude group: 'ch.qos.logback', module: 'logback-classic'
 //                exclude group: 'ch.qos.logback', module: 'logback-core'
 //                exclude group: 'org.slf4j', module: 'slf4j-api'
 //            }
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
 
     // https://mvnrepository.com/artifact/org.springframework/spring-tx
-    compile group: 'org.springframework', name: 'spring-tx'
+    api group: 'org.springframework', name: 'spring-tx'
 
-    compile('org.springframework.boot:spring-boot-starter-validation')
+    api('org.springframework.boot:spring-boot-starter-validation')
 
     //okhttp
-    compile "com.squareup.okhttp3:okhttp"
+    api "com.squareup.okhttp3:okhttp"
     //google caffeine
-    compile group: 'com.github.ben-manes.caffeine', name: 'caffeine'
+    api group: 'com.github.ben-manes.caffeine', name: 'caffeine'
     //gson
-    compile group: 'com.google.code.gson',name:'gson'
+    api group: 'com.google.code.gson',name:'gson'
 
     //jwt
-    compile group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
+    api group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
 
     //eu.bitwalker
-    compile group: 'nl.bitwalker', name: 'UserAgentUtils', version: "${userAgentUtilVersion}"
+    api group: 'nl.bitwalker', name: 'UserAgentUtils', version: "${userAgentUtilVersion}"
 
     // jsoup
-    compile group: 'org.jsoup', name: 'jsoup', version: "${jsoupVersion}"
+    api group: 'org.jsoup', name: 'jsoup', version: "${jsoupVersion}"
 
 
     //实现RSA 对请求和返回值的加解密
-    compile "cn.shuibo:rsa-encrypt-body-spring-boot:${rsaEncryVersion}"
+    api "cn.shuibo:rsa-encrypt-body-spring-boot:${rsaEncryVersion}"
 
     //springboot-admin客户端
-    compile "de.codecentric:spring-boot-admin-starter-client:${bootAdminVersion}"
+    api "de.codecentric:spring-boot-admin-starter-client:${bootAdminVersion}"
 
     //验证码
-    compile "com.github.penggle:kaptcha:${kaptchaVersion}"
+    api "com.github.penggle:kaptcha:${kaptchaVersion}"
 
     //redis
-    compile "org.springframework.boot:spring-boot-starter-data-redis"
+    api "org.springframework.boot:spring-boot-starter-data-redis"
 
     //rabiitmq-做websocket集群推送
-    compile "org.springframework.boot:spring-boot-starter-amqp"
-    compile "org.springframework.boot:spring-boot-starter-reactor-netty"
+    api "org.springframework.boot:spring-boot-starter-amqp"
+    api "org.springframework.boot:spring-boot-starter-reactor-netty"
 
     // https://mvnrepository.com/artifact/com.github.oshi/oshi-core
-    compile group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
+    api group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
 
     //datasong-client-plus
-    compile ("com.iscas.datasong:datasong-client-plus:${datasongClientPlusVersion}") {
+    api ("com.iscas.datasong:datasong-client-plus:${datasongClientPlusVersion}") {
         exclude module: 'templet'
     }
 
-    compile "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
+    api "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
 
-    compile "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:${elasticJobVersion}"
+    api "com.github.kuhn-he:elastic-job-lite-spring-boot-starter:${elasticJobVersion}"
 
     // mysql连接
-    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
 
-//    compile group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
+//    api group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
 
     //elasticJob记录日志使用druid会一直抛出一个SQL错误，改为dbcp2记录
-    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: "${dbcp2Version}"
+    api group: 'org.apache.commons', name: 'commons-dbcp2', version: "${dbcp2Version}"
 
     //feign
-    compile group: 'io.github.openfeign', name: 'feign-core', version: "${feignVersion}"
-    compile group: 'io.github.openfeign', name: 'feign-jackson', version: "${feignVersion}"
+    api group: 'io.github.openfeign', name: 'feign-core', version: "${feignVersion}"
+    api group: 'io.github.openfeign', name: 'feign-jackson', version: "${feignVersion}"
 
     //knife4j,替代swagger
-    compile "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
-//    compile group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
+    api "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
+//    api group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
-    compile group: 'org.springframework.retry', name: 'spring-retry'
+    api group: 'org.springframework.retry', name: 'spring-retry'
 
     //定时任务锁
-    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-spring', version: "${shedlockVersion}"
+    api group: 'net.javacrumbs.shedlock', name: 'shedlock-spring', version: "${shedlockVersion}"
     //使用数据库锁
-    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-jdbc-template', version: "${shedlockVersion}"
+    api group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-jdbc-template', version: "${shedlockVersion}"
 //    //使用mongo锁
-//    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-mongo', version: "${shedlockVersion}"
+//    api group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-mongo', version: "${shedlockVersion}"
 //    //使用zookeeper锁
-//    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-zookeeper-curator', version: "${shedlockVersion}"
+//    api group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-zookeeper-curator', version: "${shedlockVersion}"
 //    //使用redis
-//    compile group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-redis-jedis', version: "${shedlockVersion}"
+//    api group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-redis-jedis', version: "${shedlockVersion}"
 
 
 
@@ -123,44 +122,44 @@ dependencies {
 //                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
 //                exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
 //            }
-//    compile group: 'com.iscas.datasong', name: 'datasong-client', version: "0.1.2"
+//    api group: 'com.iscas.datasong', name: 'datasong-client', version: "0.1.2"
 
 
 
 
-    //    compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
+    //    api group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
-//    compile group: 'org.apache.velocity', name: 'velocity-engine-core', version: "${velocity_engine_core_version}"
+//    api group: 'org.apache.velocity', name: 'velocity-engine-core', version: "${velocity_engine_core_version}"
 
     // https://mvnrepository.com/artifact/freemarker/freemarker
-//    compile group: 'org.freemarker', name: 'freemarker'
+//    api group: 'org.freemarker', name: 'freemarker'
 
-    //    compile group: 'com.iscas.log', name: 'log-expansion', version: "${logExpansionVersion}"
+    //    api group: 'com.iscas.log', name: 'log-expansion', version: "${logExpansionVersion}"
 
     //swagger
-//    compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
-//    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
+//    api group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+//    api group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
     // mysql连接
-//    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+//    api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
     //mybatis分页插件(基本弃用)
-//    compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
+//    api group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
     //druid连接池配置
-//    compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: "${druidVersion}"
+//    api group: 'com.alibaba', name: 'druid-spring-boot-starter', version: "${druidVersion}"
 
-    //    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
-//    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version:"${springCloudConfigVersion}"
+    //    api group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
+//    api group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version:"${springCloudConfigVersion}"
 
-    //    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    //    api group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
 
 }
 
 
 //打入本地maven库配置
-install {
-    repositories.mavenInstaller {
-        pom.version="${project.version}"
-        pom.artifactId="${project.archivesBaseName}"
-        pom.groupId="${project.group}"
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.version="${project.version}"
+//        pom.artifactId="${project.archivesBaseName}"
+//        pom.groupId="${project.group}"
+//    }
+//}
 

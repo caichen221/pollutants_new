@@ -1,118 +1,103 @@
-plugins {
-    id 'java'
-    id 'maven'
-}
-
-//sourceCompatibility = 1.8
-
-//repositories {
-//    maven { url "http://192.168.100.88:8081/repository/maven-public/" }
-//    maven {url "http://maven.aliyun.com/nexus/content/groups/public"}
-//    maven { url "https://repo.spring.io/libs-milestone/" }
-//    jcenter()
-//    mavenCentral()
-//
-//}
 
 dependencies {
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
-    compile group: 'commons-codec', name: 'commons-codec', version:"${codecVersion}"
+    api group: 'commons-codec', name: 'commons-codec', version:"${codecVersion}"
     // https://mvnrepository.com/artifact/org.ostermiller/utils
-    compile group: 'org.ostermiller', name: 'utils', version: "${ostermillerVersion}"
+    api group: 'org.ostermiller', name: 'utils', version: "${ostermillerVersion}"
 
     //commons-lang3
-    compile group: 'org.apache.commons', name: 'commons-lang3', version:"${commonLang3Version}"
+    api group: 'org.apache.commons', name: 'commons-lang3', version:"${commonLang3Version}"
     // https://mvnrepository.com/artifact/dom4j/dom4j
-    compile group: 'dom4j', name: 'dom4j', version:"${dom4jVersion}"
+    api group: 'dom4j', name: 'dom4j', version:"${dom4jVersion}"
     // https://mvnrepository.com/artifact/org.apache.poi/poi
-    compile group: 'org.apache.poi', name: 'poi',version:"${poiVersion}"
+    api group: 'org.apache.poi', name: 'poi',version:"${poiVersion}"
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: "${poiOoxmlVersion}"
+    api group: 'org.apache.poi', name: 'poi-ooxml', version: "${poiOoxmlVersion}"
     // https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans
-//    compile group: 'org.apache.xmlbeans', name: 'xmlbeans'
+//    api group: 'org.apache.xmlbeans', name: 'xmlbeans'
 
     // https://mvnrepository.com/artifact/commons-io/commons-io
-    compile group: 'commons-io', name: 'commons-io', version:"${commonsIoVersion}"
+    api group: 'commons-io', name: 'commons-io', version:"${commonsIoVersion}"
     // https://mvnrepository.com/artifact/stax/stax-api
-    compile group: 'stax', name: 'stax-api', version: "${staxVersion}"
+    api group: 'stax', name: 'stax-api', version: "${staxVersion}"
     // https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
-    compile group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
+    api group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
 
-    compile group: 'com.itextpdf', name: 'itext-asian', version: "${itextAsianVersion}"
-    compile group: 'com.lowagie', name: 'itext', version: "${itextVersion}"
+    api group: 'com.itextpdf', name: 'itext-asian', version: "${itextAsianVersion}"
+    api group: 'com.lowagie', name: 'itext', version: "${itextVersion}"
 
 // https://mvnrepository.com/artifact/com.google.zxing/core
-    compile group: 'com.google.zxing', name: 'core', version: "${zxingCoreVersion}"
+    api group: 'com.google.zxing', name: 'core', version: "${zxingCoreVersion}"
 
-    compile fileTree(dir: 'lib', include: '*.jar')
+    api fileTree(dir: 'lib', include: '*.jar')
 
     //jzip压缩
-    compile group: 'org.apache.ant', name: 'ant', version: "${apacheAntVersion}"
+    api group: 'org.apache.ant', name: 'ant', version: "${apacheAntVersion}"
 
     // ip to area
-    compile group: 'org.lionsoul', name: 'ip2region', version: "${ip2regionVersion}"
+    api group: 'org.lionsoul', name: 'ip2region', version: "${ip2regionVersion}"
 
     //hutool-all
-    compile "cn.hutool:hutool-all:${htoolVersion}"
+    api "cn.hutool:hutool-all:${htoolVersion}"
 
-    compile "cglib:cglib:${cglibVersion}"
+    api "cglib:cglib:${cglibVersion}"
 
     //https://mvnrepository.com/artifact/com.google.guava/guava
-    compile group: 'com.google.guava', name: 'guava', version:"${guavaVersion}"
+    api group: 'com.google.guava', name: 'guava', version:"${guavaVersion}"
 
     // https://mvnrepository.com/artifact/com.belerweb/pinyin4j
     //拼音转换工具包
-    compile group: 'com.belerweb', name: 'pinyin4j', version: "${pingyin4jVersion}"
+    api group: 'com.belerweb', name: 'pinyin4j', version: "${pingyin4jVersion}"
 
     // https://mvnrepository.com/artifact/com.vdurmont/emoji-java
-    compile group: 'com.vdurmont', name: 'emoji-java', version: "${emojiJavaVersion}"
+    api group: 'com.vdurmont', name: 'emoji-java', version: "${emojiJavaVersion}"
 
     // https://mvnrepository.com/artifact/com.squareup.okio/okio
-    compile group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
+    api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
 
-    compile group: 'org.freemarker', name: 'freemarker', version: "${freemarkerVersion}"
+    api group: 'org.freemarker', name: 'freemarker', version: "${freemarkerVersion}"
     
     // https://mvnrepository.com/artifact/com.yahoo.platform.yui/yuicompressor
-    compile group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: "${yuicompressorVersion}"
+    api group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: "${yuicompressorVersion}"
 
     // https://mvnrepository.com/artifact/com.rnkrsoft.bopomofo4j/bopomofo4j
     //拼音转换工具包
-    compile group: 'com.rnkrsoft.bopomofo4j', name: 'bopomofo4j', version: "${bopomofo4jVersion}"
+    api group: 'com.rnkrsoft.bopomofo4j', name: 'bopomofo4j', version: "${bopomofo4jVersion}"
 
     // https://mvnrepository.com/artifact/com.github.junrar/junrar
-    compile group: 'com.github.junrar', name: 'junrar', version: "${junrarVersion}"
+    api group: 'com.github.junrar', name: 'junrar', version: "${junrarVersion}"
 
     // https://mvnrepository.com/artifact/net.oschina.htmlsucker/HtmlSucker
-    compile group: 'net.oschina.htmlsucker', name: 'HtmlSucker', version: "${htmlsuckerVersion}"
+    api group: 'net.oschina.htmlsucker', name: 'HtmlSucker', version: "${htmlsuckerVersion}"
     // https://mvnrepository.com/artifact/com.alibaba/easyexcel
-    compile group: 'com.alibaba', name: 'easyexcel', version: "${easyexcelVersion}"
+    api group: 'com.alibaba', name: 'easyexcel', version: "${easyexcelVersion}"
 
     // https://mvnrepository.com/artifact/com.esotericsoftware/kryo
-    compile group: 'com.esotericsoftware', name: 'kryo', version: "${kryoVersion}"
+    api group: 'com.esotericsoftware', name: 'kryo', version: "${kryoVersion}"
 
-    compile "org.yaml:snakeyaml:${snakeyamlVersion}"
+    api "org.yaml:snakeyaml:${snakeyamlVersion}"
 
     // https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv
-//    compile group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
+//    api group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
 
 
-    compile group: 'e-iceblue', name: 'spire.doc.free', version: '3.9.0'
-//    compile group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
+    api group: 'e-iceblue', name: 'spire.doc.free', version: '3.9.0'
+//    api group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
 
     // https://mvnrepository.com/artifact/org.javatuples/javatuples
-    compile group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
+    api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
 
-    testCompile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-    testCompile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
-    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
+    api group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    api group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
 
 }
 
-install {
-    repositories.mavenInstaller {
-        pom.version="${project.version}"
-        pom.artifactId="${project.archivesBaseName}"
-        pom.groupId="${project.group}"
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.version="${project.version}"
+//        pom.artifactId="${project.archivesBaseName}"
+//        pom.groupId="${project.group}"
+//    }
+//}

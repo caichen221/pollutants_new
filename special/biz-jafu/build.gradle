@@ -2,11 +2,11 @@
 //todo springboot 2.4.2 跟0.4.3的jafu不匹配，等新版更新
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-web"
-//    compile "org.springframework.boot:spring-boot-starter-undertow"
-//    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.springframework.fu:spring-fu-jafu:${jafuVersion}"
-    runtime "org.springframework.fu:spring-fu-autoconfigure-adapter:${jafuVersion}"
+    api "org.springframework.boot:spring-boot-starter-web"
+//    api "org.springframework.boot:spring-boot-starter-undertow"
+//    api "org.springframework.boot:spring-boot-starter-tomcat"
+    api "org.springframework.fu:spring-fu-jafu:${jafuVersion}"
+    api "org.springframework.fu:spring-fu-autoconfigure-adapter:${jafuVersion}"
 
 }
 

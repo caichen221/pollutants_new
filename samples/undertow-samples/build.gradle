@@ -2,8 +2,8 @@
 
 dependencies {
     // https://mvnrepository.com/artifact/io.undertow/undertow-core
-    compile group: 'io.undertow', name: 'undertow-core', version: '2.2.4.Final'
+    api group: 'io.undertow', name: 'undertow-core', version: '2.2.4.Final'
     // https://mvnrepository.com/artifact/io.undertow/undertow-servlet
-    compile group: 'io.undertow', name: 'undertow-servlet', version: '2.2.4.Final'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
+    api group: 'io.undertow', name: 'undertow-servlet', version: '2.2.4.Final'
+    api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
 }

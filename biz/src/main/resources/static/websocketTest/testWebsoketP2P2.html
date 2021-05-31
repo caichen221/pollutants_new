@@ -6,7 +6,7 @@
     <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script>
-        var socket = new SockJS("http://192.168.100.88:7901/demo/webSocketServer");
+        var socket = new SockJS("http://localhost:7901/demo/webSocketServer");
         var stompClient = Stomp.over(socket);
         // stompClient.heartbeat.outgoing = 2000; // client will send heartbeats every 20000ms
         // stompClient.heartbeat.incoming = 0;     // client does not want to receive heartbeats
@@ -71,7 +71,7 @@
 
         function connect() {
             stompClient.connect({
-                Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjE5MDU3ODU4LCJleHAiOjE2MTkxNDQyNTgsImlhdCI6MTYxOTA1Nzg1OCwidXNlcm5hbWUiOiJhZG1pbiJ9.KQqV1_BY7dgomWd5aHFc3LPc2ZaxzLZ8w4NuhtbIdqc"
+                Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjIxNzU3OTAxLCJleHAiOjE2MjE4NDQzMDEsImlhdCI6MTYyMTc1NzkwMSwidXNlcm5hbWUiOiJhZG1pbiJ9.ryfGYS9uwGZwvPFbvTR52c-h5y_rUlA4lcJKcipXp4g"
                     //这里可以改成token
                     // name: 'admin' // 携带客户端信息
                 },

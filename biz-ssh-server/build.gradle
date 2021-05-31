@@ -1,5 +1,5 @@
 
 dependencies {
-    compile project (":special:common-ssh-tools")
-    compile project (":biz-base")
+    api project (":special:common-ssh-tools")
+    api project (":biz-base")
 }

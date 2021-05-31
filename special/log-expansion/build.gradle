@@ -1,10 +1,16 @@
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven-publish'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 buildscript {
     repositories {
-        maven { url "${nexusUrl}" }
-        maven {url "${aliyunUrl}"}
+        maven {
+            url "${nexusUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aliyunUrl}"
+            allowInsecureProtocol = true
+        }
         mavenCentral()
         maven {url "https://plugins.gradle.org/m2/"}
     }
@@ -21,18 +27,24 @@ sourceCompatibility = "${javaVersion}"
 targetCompatibility = "${javaVersion}"
 
 repositories {
-    maven { url "${nexusUrl}" }
-    maven {url "${aliyunUrl}"}
+    maven {
+        url "${nexusUrl}"
+        allowInsecureProtocol = true
+    }
+    maven {
+        url "${aliyunUrl}"
+        allowInsecureProtocol = true
+    }
     mavenCentral()
 }
 
 dependencies {
 //    testCompile group: 'junit', name: 'junit', version: '4.12'
-//    compile group:"org.slf4j", name:"slf4j-api",version: "1.7.1"
-    compile group:"ch.qos.logback", name:"logback-core",version: "1.1.7"
-    compile group:"ch.qos.logback", name:"logback-access",version: "1.1.7"
-//    compile group:"ch.qos.logback", name:"logback-classic",version: "1.1.7"
-    compile fileTree(dir:'libs',include:['*.jar'])
+//    api group:"org.slf4j", name:"slf4j-api",version: "1.7.1"
+    api group:"ch.qos.logback", name:"logback-core",version: "1.1.7"
+    api group:"ch.qos.logback", name:"logback-access",version: "1.1.7"
+//    api group:"ch.qos.logback", name:"logback-classic",version: "1.1.7"
+    api fileTree(dir:'libs',include:['*.jar'])
 }
 
 tasks.withType(JavaCompile) {
@@ -51,13 +63,13 @@ shadowJar {
     }
 }
 //打入本地maven库配置
-install {
-    repositories.mavenInstaller {
-        pom.version="${project.version}"
-        pom.artifactId="${project.archivesBaseName}"
-        pom.groupId="${project.group}"
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.version="${project.version}"
+//        pom.artifactId="${project.archivesBaseName}"
+//        pom.groupId="${project.group}"
+//    }
+//}
 
 //上传至nexus
 publishing {

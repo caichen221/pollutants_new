@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.config.db;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
@@ -18,12 +19,19 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
+import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
+import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
+import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
+import org.apache.shardingsphere.api.config.sharding.strategy.InlineShardingStrategyConfiguration;
+import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -36,6 +44,7 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -60,33 +69,45 @@ public class DruidConfiguration implements EnvironmentAware {
     @Autowired
     private ApplicationContext context;
 
-    @Bean
+    @Bean(name="dynamicDatasource")
     public DataSource dynamicDataSource() throws SQLException {
         String db = environment.getProperty("spring.datasource.names");
-        List<String> dbNames = Arrays.asList(db.split(","));
-        if (dbNames.size() == 0) {
-            log.error("没有数据源，无法使用数据库!!!");
-            return null;
-        }
-        Map<Object, Object> targetDataSources = new HashMap<>(2 << 2);
+
+        Map<Object, Object> targetDataSources = new LinkedHashMap<>(2 << 2);
         Map<String, Object> enableAtomikosMap = context.getBeansWithAnnotation(EnableAtomikos.class);
-        for (String dbName : dbNames) {
-            //初始化数据源
-            //update by zqw 20210520 添加Atomikos支持
-            DruidDataSource dataSource = initOneDatasource(dbName);
-            if (dataSource != null) {
-                if (MapUtil.isNotEmpty(enableAtomikosMap)) {
-                    //如果开启了Atomikos
-                    AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
-                    atomikosDataSourceBean.setXaDataSource((XADataSource) dataSource);
-                    //必须设置uniqueResourceName
-                    atomikosDataSourceBean.setUniqueResourceName(dbName);
-                    targetDataSources.put(dbName, atomikosDataSourceBean);
-                } else {
-                    //如果没开启Atomikos
-                    targetDataSources.put(dbName, dataSource);
+        if (db != null) {
+            List<String> dbNames = Arrays.asList(db.split(","));
+            if (CollectionUtil.isNotEmpty(dbNames)) {
+                for (String dbName : dbNames) {
+                    //初始化数据源
+                    //update by zqw 20210520 添加Atomikos支持
+                    DruidDataSource dataSource = initOneDatasource(dbName);
+                    if (dataSource != null) {
+                        if (MapUtil.isNotEmpty(enableAtomikosMap)) {
+                            //如果开启了Atomikos
+                            AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
+                            atomikosDataSourceBean.setXaDataSource((XADataSource) dataSource);
+                            //必须设置uniqueResourceName
+                            atomikosDataSourceBean.setUniqueResourceName(dbName);
+                            targetDataSources.put(dbName, atomikosDataSourceBean);
+                        } else {
+                            //如果没开启Atomikos
+                            targetDataSources.put(dbName, dataSource);
+                        }
+                    }
                 }
             }
+        }
+
+        //如果有shardingjdbc的配置，读取
+        Map<String, Object> enableShardingJdbcMap = context.getBeansWithAnnotation(EnableShardingJdbc.class);
+        if (CollectionUtil.isNotEmpty(enableShardingJdbcMap)) {
+            IShardingJdbcHandler shardingJdbcHandler = context.getBean(IShardingJdbcHandler.class);
+            if (shardingJdbcHandler != null) {
+                targetDataSources.putAll(shardingJdbcHandler.initShardingDatasource());
+            }
+//            DataSource dataSource = getShardingDatasource();
+//            targetDataSources.put("ds0_ds1", dataSource);
         }
 
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
@@ -94,11 +115,16 @@ public class DruidConfiguration implements EnvironmentAware {
         //设置数据源
         if (targetDataSources.size() > 0) {
             dynamicDataSource.setTargetDataSources(targetDataSources);
-            dynamicDataSource.setDefaultTargetDataSource(targetDataSources.get(dbNames.get(0)));
+            dynamicDataSource.setDefaultTargetDataSource(targetDataSources.entrySet().iterator().next().getValue());
+        } else {
+            log.error("没有数据源，无法使用数据库!!!");
+            return null;
         }
         dynamicDataSource.afterPropertiesSet();
         return dynamicDataSource;
     }
+
+
 
     private DruidDataSource initOneDatasource(String dbName) throws SQLException {
         // update by zqw 20210520 将DruidDataSource修改为DruidXADataSource，为了Atomikos
@@ -111,6 +137,30 @@ public class DruidConfiguration implements EnvironmentAware {
         }
         String value;
         String path = basePath + dbName + ".";
+
+        //将构建datasource的一部分把代码抽成静态方法，sharding-jdbc 调用一下 update by zqw 20210527
+        datasource = doInitOneDatasource(path, dbName, datasource, environment);
+        //Filters
+        value = environment.getProperty(path + "filters");
+        if (StringUtils.isNotBlank(value)) {
+            List<Filter> filterList = handlerFilters(path + "filter.", value);
+            if (filterList.size() > 0) {
+                datasource.setProxyFilters(filterList);
+            }
+        }
+        datasource.init();
+
+        return datasource;
+    }
+
+    /**
+     * 将构建datasource的一部分把代码抽成静态方法，sharding-jdbc
+     * 调用一下 update by zqw 20210527
+     * */
+    public static DruidDataSource doInitOneDatasource(String path, String dbName, DruidDataSource datasource,
+                                                      Environment environment) {
+        String value;
+
         datasource.setName(dbName);
         //必选参数
         value = environment.getProperty(path + "username");
@@ -183,17 +233,6 @@ public class DruidConfiguration implements EnvironmentAware {
         if (StringUtils.isNotBlank(value)) {
             datasource.setMaxPoolPreparedStatementPerConnectionSize(Integer.parseInt(value));
         }
-
-        //Filters
-        value = environment.getProperty(path + "filters");
-        if (StringUtils.isNotBlank(value)) {
-            List<Filter> filterList = handlerFilters(path + "filter.", value);
-            if (filterList.size() > 0) {
-                datasource.setProxyFilters(filterList);
-            }
-        }
-        datasource.init();
-
         return datasource;
     }
 
@@ -222,7 +261,7 @@ public class DruidConfiguration implements EnvironmentAware {
 
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, @Qualifier(value = "dynamicDatasource") DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
 //        sqlSessionFactory.setDataSource(multipleDataSource);

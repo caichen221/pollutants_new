@@ -1,10 +1,10 @@
 
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    implementation 'org.springframework.experimental:spring-graalvm-native:0.8.5'
-    compile 'org.springframework:spring-context-indexer'
+    api('org.springframework.boot:spring-boot-starter-web')
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    api 'org.springframework.experimental:spring-graalvm-native:0.8.5'
+    api 'org.springframework:spring-context-indexer'
 }
 
 jar {

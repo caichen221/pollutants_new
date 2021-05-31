@@ -1,5 +1,5 @@
 dependencies {
     // https://mvnrepository.com/artifact/co.paralleluniverse/quasar-core
-    compile group: 'co.paralleluniverse', name: 'quasar-core', version: '0.8.0'
+    api group: 'co.paralleluniverse', name: 'quasar-core', version: '0.8.0'
 
 }

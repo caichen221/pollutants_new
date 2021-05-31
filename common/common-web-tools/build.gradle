@@ -14,27 +14,27 @@ plugins {
 //}
 
 dependencies {
-    testCompile group: 'junit', name: 'junit'
+    testImplementation group: 'junit', name: 'junit'
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
-    compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
+    api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:"${jacksonVersion}"
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:"${jacksonVersion}"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
 
     // https://mvnrepository.com/artifact/cn.miludeer/jsoncode
-    compile group: 'cn.miludeer', name: 'jsoncode', version: "${jsoncodeVersion}"
+    api group: 'cn.miludeer', name: 'jsoncode', version: "${jsoncodeVersion}"
 
     // https://mvnrepository.com/artifact/net.sf.json-lib/json-lib
-    compile ("net.sf.json-lib:json-lib:${jsonlibVersion}")
+    api ("net.sf.json-lib:json-lib:${jsonlibVersion}")
 
     // https://mvnrepository.com/artifact/org.json/json
-    compile group: 'org.json', name: 'json', version: "${orgJsonVersion}"
+    api group: 'org.json', name: 'json', version: "${orgJsonVersion}"
 
-    compile ("xom:xom:${xomVersion}")
+    api ("xom:xom:${xomVersion}")
 
-    compile "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
+    api "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
 
 
 

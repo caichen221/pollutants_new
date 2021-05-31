@@ -26,7 +26,7 @@
 
   <select id="selectUserByIds" resultMap="BaseResultMap" parameterType="java.util.List">
     select * from user where user_id in
-    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+    <foreach collection="list" item="id" open="(" close=")" separator=",">
       #{id, jdbcType=INTEGER}
     </foreach>
   </select>
