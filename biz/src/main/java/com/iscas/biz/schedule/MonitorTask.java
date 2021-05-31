@@ -7,6 +7,7 @@ import com.iscas.biz.model.common.monitor.jvm.*;
 import com.iscas.biz.model.common.monitor.sys.*;
 import com.iscas.biz.service.common.MonitorService;
 import com.iscas.base.biz.util.MathUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,7 @@ import java.util.stream.IntStream;
  * @since jdk1.8
  */
 @Component
+@Slf4j
 public class MonitorTask {
     private static final String winPath = "C:\\Users\\x\\Desktop\\clientInfo.txt";
     private static final String linuxPath = "/opt/tmp/clientInfo.txt";
@@ -42,6 +44,8 @@ public class MonitorTask {
     public static volatile Map lastCollectData = new HashMap();
     //是否是首次上报采集数据
     public static volatile boolean isFirst = true;
+    //java:8-alpine Udev
+    private static volatile boolean isFailed;
 
     @Autowired
     private MonitorService monitorService;
@@ -213,22 +217,28 @@ public class MonitorTask {
 
     private Long[] calculateNetworkInterface(List<NetworkInterface> networkInterfaces) {
         //long[0] recv , long[1] send
-        return networkInterfaces.stream().map(networkInterface -> new Long[]{networkInterface.getBytesRecv(), networkInterface.getBytesSent()}).reduce(new Long[]{0L, 0L}, accumulatorLongSum);
+        return Optional.ofNullable(networkInterfaces)
+                .map(networkInterfaceList -> networkInterfaceList.stream().map(networkInterface -> new Long[]{networkInterface.getBytesRecv(), networkInterface.getBytesSent()}).reduce(new Long[]{0L, 0L}, accumulatorLongSum))
+                .orElse(new Long[]{0L, 0L});
     }
 
     private Long[] calculateDiskStoreSum(List<DiskStore> diskStores) {
         //每个disk累加 Long[0]累加读写次数iops，Long[1]累加读写字节数Throught
-        return diskStores.stream().map(diskStore -> new Long[]{diskStore.getIops(), diskStore.getThrought()}).reduce(new Long[]{0L, 0L}, accumulatorLongSum);
+        return Optional.ofNullable(diskStores)
+                .map(diskStoreList -> diskStoreList.stream().map(diskStore -> new Long[]{diskStore.getIops(), diskStore.getThrought()}).reduce(new Long[]{0L, 0L}, accumulatorLongSum))
+                .orElse(new Long[]{0L, 0L});
     }
 
     private String[] calculateDiskUseRateAvg(List<Disk> disks) {
         //String[0] 空间使用率平均值，String[1] inodes使用率平均值
-        return disks.stream().map(disk -> new Long[]{disk.getTotal(), disk.getUsed(), disk.getTotalInodes(), disk.getUsedInodes()}
-        ).collect(Collectors.collectingAndThen(Collectors.reducing(new Long[]{0L, 0L, 0L, 0L}, accumulatorLongSum), r -> {
-            String surPercent = MathUtils.double2Percent((double) r[1] / r[0], 2);
-            String isrPercent = MathUtils.double2Percent((double) r[3] / r[2], 2);
-            return new String[]{surPercent, isrPercent};
-        }));
+        return Optional.ofNullable(disks)
+                .map(diskList -> diskList.stream().map(disk -> new Long[]{disk.getTotal(), disk.getUsed(), disk.getTotalInodes(), disk.getUsedInodes()})
+                        .collect(Collectors.collectingAndThen(Collectors.reducing(new Long[]{0L, 0L, 0L, 0L}, accumulatorLongSum), r -> {
+                            String surPercent = MathUtils.double2Percent((double) r[1] / r[0], 2);
+                            String isrPercent = MathUtils.double2Percent((double) r[3] / r[2], 2);
+                            return new String[]{surPercent, isrPercent};
+                        })))
+                .orElse(new String[]{"0.00%", "0.00%"});
     }
 
     /**
@@ -428,10 +438,16 @@ public class MonitorTask {
      */
     private List<DiskStore> getDiskStore(HardwareAbstractionLayer hardware, long range) {
         List<HWDiskStore> preHwDiskStores = (List<HWDiskStore>) lastCollectData.get("diskStore");
-        List<HWDiskStore> hwDiskStores;
+        List<HWDiskStore> hwDiskStores = null;
         try {
-            hwDiskStores = hardware.getDiskStores();
-        } catch (Exception e) {
+            // TODO Udev 在 java:8-alpine 下报错问题
+            if (!isFailed) {
+                hwDiskStores = hardware.getDiskStores();
+            } else {
+                return null;
+            }
+        } catch (Throwable e) {
+            isFailed = true;
             hwDiskStores = Collections.emptyList();
         }
         lastCollectData.put("diskStore", hwDiskStores);
