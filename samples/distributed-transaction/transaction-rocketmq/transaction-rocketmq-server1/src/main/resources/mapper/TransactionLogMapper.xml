@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iscas.samples.distributed.transaction.rocketmq.server1.mapper.TransactionLogMapper">
+
+    <insert id="insert" parameterType="com.iscas.samples.distributed.transaction.rocketmq.server1.model.TransactionLog">
+        insert into transaction_log(id, business, foreign_key) values (#{id}, #{business}, #{foreignKey})
+    </insert>
+
+    <select id="selectCountById" resultType="java.lang.Integer">
+        select count(*) from transaction_log where id = #{id}
+    </select>
+
+</mapper>

@@ -191,7 +191,7 @@ public class ExcelUtils {
      */
     public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults ,int colWidth, OutputStream out) throws ExcelHandlerException {
         // 声明一个工作薄
-        SXSSFWorkbook   workbook = new SXSSFWorkbook();
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
         try {
             for (Iterator<ExcelResult<T>> i = excelResults.iterator(); i.hasNext(); ) {
                 ExcelResult<T> excelResult = i.next();

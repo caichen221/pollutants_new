@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: transaction-rocketmq-server1
+  datasource:
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rocketmq-transaction?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    # 池配置
+    hikari:
+      maximum-pool-size: 2
+      pool-name: zqw-dev
+# mybatis配置
+mybatis:
+  type-aliases-package: com.iscas.samples.distributed.transaction.rocketmq.server1.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # 开启数据表字段自动下划线转驼峰
+    map-underscore-to-camel-case: true
+# 打印sql
+logging:
+  level:
+    com.varyuan.awesome.dao: debug
+server:
+  port: 7101
+rocketmq:
+  nameserver: 127.0.0.1:9876
+  topic: order-topic
