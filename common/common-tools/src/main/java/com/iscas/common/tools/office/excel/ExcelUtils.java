@@ -1,15 +1,24 @@
 package com.iscas.common.tools.office.excel;
 
+import cn.hutool.core.io.IoUtil;
+import com.iscas.common.tools.core.io.file.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.*;
 
+import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 /**
  * <p>Excel操作工具类<p/>
@@ -854,4 +863,180 @@ public class ExcelUtils {
         headerStyle.setFont(headerFont);
         return headerStyle;
     }
+
+    /**
+     * Excel流式写入，不须POI依赖，非空Excel模板暂未做处理，建议使用{@link #flowExportXLSXExcel(List, OutputStream, FlowExcelDataProducer)}
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/06/02
+     * @param sheetNames 多个sheet页的名字
+     * @param os 导出的流，可以为文件流或其他输出流
+     * @param flowExcelDataProducer 生成数据的回调，会一直回调，直至返回为null
+     * @param templateExcelFile 模板excel文件，这里必须为空Excel,否则会出问题，  todo 非空Excel模板暂未做处理
+     * @throws Exception
+     * @return void
+     */
+    public static void flowExportXLSXExcel(List<String> sheetNames, OutputStream os,
+                                           FlowExcelDataProducer flowExcelDataProducer, File templateExcelFile) throws IOException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+        //判断sheet页文件的表达式
+        String regex = "xl/worksheets/sheet[0-9]+\\.xml";
+        //套一层压缩流写出
+        ZipOutputStream zos = null;
+        try {
+            zos = new ZipOutputStream(os);
+            ZipFile tmpZipFile = new ZipFile(templateExcelFile);
+            Enumeration<? extends ZipEntry> entries = tmpZipFile.entries();
+            while (entries.hasMoreElements()) {
+                //除了sheet页，其他都直接输出到压缩流内
+                ZipEntry zipEntry = entries.nextElement();
+                String zipEntryName = zipEntry.getName();
+                zos.putNextEntry(new ZipEntry(zipEntryName));
+                if (Pattern.matches(regex, zipEntryName)) {
+                    //获取对应的sheet页名字
+                    String no = StringUtils.substringBetween(zipEntryName, "xl/worksheets/sheet", ".xml");
+                    String currentSheetName = sheetNames.get(Integer.parseInt(no) - 1);
+
+                    //如果是sheet页数据，调用回调函数不断获取数据，
+                    // 并输出至sheet页，直到获取到的数据为空
+                    try (
+                            InputStream is = tmpZipFile.getInputStream(zipEntry);
+                            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                    ) {
+                        OutputStreamWriter osw = new OutputStreamWriter(zos, "UTF-8");
+                        List<String> lines = FileUtils.readLines(isr);
+                        if (lines == null || lines.size() != 2) {
+                            throw new RuntimeException(String.format("sheet页：%s的格式出现错误", zipEntryName));
+                        }
+                        //第一行为xml的声明
+                        osw.write(lines.get(0));
+                        osw.write("\n");
+                        //第二行为值以及描述，没换行，按应有的行分割
+                        String dataStr = lines.get(1);
+                        for (String elementStr : dataStr.replace(">", ">\n").split("\n")) {
+                            if (elementStr.trim().startsWith("<sheetData")) {
+                                osw.write("<sheetData>");
+
+                                int[] rowIndex = new int[1];
+                                int times = 0;
+                                //获取数据，在sheetData下写入，直至拿不到数据。
+                                boolean firstWrite = true;
+                                while (true) {
+                                    ExcelResult excelResult = flowExcelDataProducer.supply(++times, currentSheetName);
+                                    if (excelResult == null) {
+                                        break;
+                                    }
+                                    //写入数据
+                                    writeData(osw, excelResult, firstWrite, rowIndex);
+                                    firstWrite = false;
+                                    osw.flush();
+                                }
+                                osw.write("</sheetData>");
+                            } else {
+                                osw.write(elementStr);
+                            }
+                        }
+                        osw.flush();
+                    }
+                } else {
+                    //如果是非sheet页数据，直接输出到压缩流内
+                    try (InputStream is = tmpZipFile.getInputStream(zipEntry)) {
+                        //输出
+                        IoUtil.copy(is, zos);
+                    }
+                }
+            }
+        } finally {
+            zos.close();
+        }
+    }
+
+    /**
+     * Excel流式写入，使用POI自动生成Excel空模板，写入，需要POI的依赖
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/06/02
+     * @param sheetNames 多个sheet页的名字
+     * @param os 导出的流，可以为文件流或其他输出流
+     * @param flowExcelDataProducer 生成数据的回调，会一直回调，直至返回为null
+     * @throws Exception
+     * @return void
+     */
+    public static void flowExportXLSXExcel(List<String> sheetNames, OutputStream os,
+                                           FlowExcelDataProducer flowExcelDataProducer) throws IOException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+        //通过POI生成一个临时excel，这里可以不用POI，使用一个模板的Excel文件也可以
+        File tmpFile = File.createTempFile("tmpExcel", ".xlsx");
+        try {
+            try (
+                    XSSFWorkbook wb = new XSSFWorkbook();
+                    OutputStream fos = new FileOutputStream(tmpFile);
+            ) {
+                //创建sheet页
+                sheetNames.forEach(wb::createSheet);
+                wb.write(fos);
+            }
+            flowExportXLSXExcel(sheetNames, os, flowExcelDataProducer, tmpFile);
+        } finally {
+            //删除临时文件
+            tmpFile.delete();
+        }
+    }
+
+    private static void writeData(OutputStreamWriter osw, ExcelResult excelResult, boolean firstWrite, int[] rowIndex) throws IOException, IntrospectionException, InvocationTargetException, IllegalAccessException {
+        String cellStr = "<c r=\"@wordIndex@@index@\"><v>@data@</v></c>";
+        List content = excelResult.getContent();
+        final LinkedHashMap<String, String>  header = excelResult.getHeader();
+        //如果是第一次写入，顺带写入表头
+        if (firstWrite) {
+            int index = 0;
+            osw.write("<row r=\""+ 1 +"\">");
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                String headerCh = entry.getValue();
+                osw.write(cellStr.replace("@wordIndex@", getColNoByIndex(index++))
+                        .replace("@index@", "1").replace("@data@", headerCh == null ? "" : headerCh));
+            }
+            osw.write("</row>");
+            rowIndex[0]++;
+        }
+
+        if (content != null) {
+            for (int i = 0; i < content.size(); i++) {
+                Object t = content.get(i);
+                ++rowIndex[0];
+                int index = 0;
+                osw.write("<row r=\""+ rowIndex[0] +"\">");
+                for (Map.Entry<String, String> entry : header.entrySet()) {
+                    Object cellValue = null;
+                    if (t instanceof Map) {
+                        cellValue = ((Map) t).get(entry.getKey());
+                    } else {
+                        //如果是Java对象，利用反射
+                        PropertyDescriptor pd = new PropertyDescriptor(entry.getKey(), t.getClass());
+                        Method getMethod = pd.getReadMethod();//获得get方法
+                        cellValue = getMethod.invoke(t);//执行get方法返回一个Object
+                    }
+                    osw.write(cellStr.replace("@wordIndex@", getColNoByIndex(index++))
+                            .replace("@index@", String.valueOf(rowIndex[0])).replace("@data@", cellValue == null ? "" : cellValue.toString()));
+                }
+                osw.write("</row>");
+                if (i % 100 == 99) {
+                    //100个一批flush
+                    osw.flush();
+                }
+            }
+        }
+        osw.flush();
+    }
+
+    /**
+     * 下标从0开始，获取对应的Excel列的标号，分别为A B C D ...... 26对应AA，27对应AB，依次类推
+     * */
+    private static String getColNoByIndex(int index) {
+        if (index < 26) {
+            return String.valueOf((char)(index + (int) 'A'));
+        } else {
+            //最多支持26 * 26列，足够了，就这样吧。
+            return getColNoByIndex((index - 26) / 26) + getColNoByIndex((index - 26) % 26);
+        }
+    }
+
 }

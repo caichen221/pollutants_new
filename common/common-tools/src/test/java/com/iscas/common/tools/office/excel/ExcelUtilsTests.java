@@ -4,10 +4,12 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.beans.IntrospectionException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -180,4 +182,35 @@ public class ExcelUtilsTests {
         ExcelUtils.exportXLSXExcel(Arrays.asList(excelResult), 79, file.getAbsolutePath());
         file.delete();
     }
+
+    @Test
+    public void testFlowExportXLSXExcel() throws IOException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+        File file = File.createTempFile("testExportExcel", ".xlsx");
+        OutputStream os = new FileOutputStream(file);
+        file.deleteOnExit();
+        ExcelUtils.flowExportXLSXExcel(Arrays.asList("sheet页1", "sheet页2"), os, (times, sheetName) -> {
+            if (times > 10) {
+                return null;
+            }
+            if (Objects.equals("sheet页1", sheetName)) {
+                List<Model> models = new ArrayList<>();
+                for (int i = 0; i < 10000; i++) {
+                    Model model = new Model("页1-a" + i , "b" + i, "2020-11-12");
+                    models.add(model);
+                }
+                excelResult.setContent(models);
+            } else if (Objects.equals("sheet页2", sheetName)) {
+                List<Model> models = new ArrayList<>();
+                for (int i = 0; i < 10000; i++) {
+                    Model model = new Model("页2-a" + i , "b" + i, "2020-11-12");
+                    models.add(model);
+                }
+                excelResult.setContent(models);
+            }
+            return excelResult;
+
+        });
+        file.delete();
+    }
+
 }

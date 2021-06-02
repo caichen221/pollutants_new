@@ -1,14 +1,21 @@
 package com.iscas.base.biz.util;
 
+import com.iscas.common.tools.office.excel.ExcelUtils;
+import com.iscas.common.tools.office.excel.FlowExcelDataProducer;
+import com.iscas.common.web.tools.file.FileDownloadUtils;
+import com.iscas.templet.exception.BaseRuntimeException;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 使用spring的方式下载文件
@@ -78,12 +85,35 @@ public class SpringFileDownloadUtils {
      * @throws
      * @return org.springframework.http.ResponseEntity<cn.hutool.core.io.resource.ByteArrayResource>
      */
-    public static ResponseEntity<ByteArrayResource> download(String fileName, byte[] bytes) throws FileNotFoundException {
+    public static ResponseEntity<ByteArrayResource> download(String fileName, byte[] bytes) {
         ByteArrayResource bar = new ByteArrayResource(bytes);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header("Content-disposition", "attachment; filename=".concat(fileName))
                 .body(bar);
+    }
+
+    /**
+     * 根据字节数组和文件名下载文件， 接口的返回值需要为ResponseEntity<ByteArrayResource>
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/5/19
+     * @param fileName 文件名
+     * @param sheetNames Excel的sheet页名字
+     * @param flowExcelDataProducer 流式生成数据的回调，会一直调用{@link FlowExcelDataProducer#supply(int, String)}，
+     *                              直至返回为空,第一个参数为调用的次数，从1开始，第二个参数为sheet页的名字
+     *
+     * @throws Exception
+     * @return void
+     */
+    public static void createAndDownloadExcel(String fileName, List<String> sheetNames, FlowExcelDataProducer flowExcelDataProducer) throws Exception {
+        if (!fileName.endsWith(".xlsx")) {
+            throw new BaseRuntimeException("仅支持xlsx格式的文件");
+        }
+        HttpServletRequest request = SpringUtils.getRequest();
+        HttpServletResponse response = SpringUtils.getResponse();
+        FileDownloadUtils.setResponseHeader(request, response, fileName);
+        ExcelUtils.flowExportXLSXExcel(sheetNames, response.getOutputStream(), flowExcelDataProducer);
     }
 
 }
