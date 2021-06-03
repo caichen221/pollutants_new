@@ -1,11 +1,14 @@
 package com.iscas.common.tools.office.excel.easyexcel.write;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -78,6 +81,39 @@ public class EasyExcelWriteTests {
     }
 
     public List<EasyExcelComplexHeadData> data2() {
+        List<EasyExcelComplexHeadData> data = new ArrayList<>();
+        data.add(new EasyExcelComplexHeadData("111", new Date(), 1.2));
+        return data;
+    }
+
+    /**
+     * 追加
+     */
+    @Test
+    public void appendWrite() throws IOException {
+//        // 写法1
+        File file = new File("d:/test.xlsx");
+        String fileName = file.getAbsolutePath();
+
+        Set<String> includeColumnFiledNames = new HashSet<String>();
+        includeColumnFiledNames.add("d");
+        includeColumnFiledNames.add("date");
+        includeColumnFiledNames.add("str");
+        ExcelWriter excelWriter = EasyExcel.write(fileName, EasyExcelDemoData.class).includeColumnFiledNames(includeColumnFiledNames).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+        excelWriter.write(data2(), writeSheet);
+        excelWriter.finish();
+
+        ExcelWriter writer = EasyExcelFactory.write().withTemplate(file)
+                .excelType(ExcelTypeEnum.XLSX)
+                .file(new FileOutputStream("d:/test2.xlsx")).build();
+//        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+        writer.write(data3(), writeSheet);
+        writer.finish();
+
+    }
+
+    public List<EasyExcelComplexHeadData> data3() {
         List<EasyExcelComplexHeadData> data = new ArrayList<>();
         data.add(new EasyExcelComplexHeadData("111", new Date(), 1.2));
         return data;

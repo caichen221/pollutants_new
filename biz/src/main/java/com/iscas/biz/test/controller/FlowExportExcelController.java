@@ -3,12 +3,9 @@ package com.iscas.biz.test.controller;
 import com.iscas.base.biz.util.SpringFileDownloadUtils;
 import com.iscas.common.tools.office.excel.ExcelUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -34,7 +31,7 @@ public class FlowExportExcelController {
                             return null;
                         }
                         List<Model> models = new ArrayList<>();
-                        for (int i = 0; i < 10000; i++) {
+                        for (int i = 0; i < 100000; i++) {
                             Model model = new Model("页1-a" + i, "b" + i, "2020-11-12");
                             models.add(model);
                         }
@@ -49,7 +46,7 @@ public class FlowExportExcelController {
                             return null;
                         }
                         List<Model> models = new ArrayList<>();
-                        for (int i = 0; i < 10000; i++) {
+                        for (int i = 0; i < 100000; i++) {
                             Model model = new Model("页2-a" + i, "b" + i, "2020-11-12");
                             models.add(model);
                         }

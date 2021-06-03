@@ -7,6 +7,7 @@ import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
+import de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
@@ -19,6 +20,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -55,10 +57,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAtomikos //开启Atomikos分布式事务（有些数据库需要给权限）
 @EnableShedLock //shedlock开关，spring定时任务锁（暂时只能应用到spring的@Scheduled定时任务上）
 //@EnableShardingJdbc //是否开启分库分表
+//@EnableSpringBootAdminClient //是否开启springboot-admin客户端，如果不适用可以关闭，防止一只连接admin服务
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
-
         SpringApplication springApplication = new SpringApplication(BizApp.class);
 //        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);

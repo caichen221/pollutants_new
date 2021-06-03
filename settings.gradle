@@ -116,4 +116,6 @@ include 'samples:distributed-transaction:transaction-rocketmq:transaction-rocket
 findProject(':samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-server1')?.name = 'transaction-rocketmq-server1'
 include 'samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-server2'
 findProject(':samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-server2')?.name = 'transaction-rocketmq-server2'
+include 'common:common-minio-tools'
+findProject(':common:common-minio-tools')?.name = 'common-minio-tools'
 

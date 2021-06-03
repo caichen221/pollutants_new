@@ -2,4 +2,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.iscas.base.biz.config.cros.CrosAutoConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
 com.iscas.base.biz.config.failure.StompRegistryFailureAnalyzer
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+ com.iscas.base.biz.filter.MyExclusionFilter
   
