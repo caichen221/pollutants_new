@@ -998,6 +998,9 @@ public class ExcelUtils {
             rowIndex[0]++;
         }
 
+        //缓存反射的method
+        Map<String, Method> cachedMethodMap = new HashMap<>();
+
         if (content != null) {
             for (int i = 0; i < content.size(); i++) {
                 Object t = content.get(i);
@@ -1010,9 +1013,10 @@ public class ExcelUtils {
                         cellValue = ((Map) t).get(entry.getKey());
                     } else {
                         //如果是Java对象，利用反射
-                        PropertyDescriptor pd = new PropertyDescriptor(entry.getKey(), t.getClass());
-                        Method getMethod = pd.getReadMethod();//获得get方法
-                        cellValue = getMethod.invoke(t);//执行get方法返回一个Object
+//                        PropertyDescriptor pd = new PropertyDescriptor(entry.getKey(), t.getClass());
+//                        Method getMethod = pd.getReadMethod();//获得get方法
+//                        cellValue = getMethod.invoke(t);//执行get方法返回一个Object
+                        cellValue = getReadMethod(cachedMethodMap, entry.getKey(), t.getClass()).invoke(t);
                     }
                     osw.write(cellStr.replace("@wordIndex@", getColNoByIndex(index++))
                             .replace("@index@", String.valueOf(rowIndex[0])).replace("@data@", cellValue == null ? "" : cellValue.toString()));
@@ -1025,6 +1029,18 @@ public class ExcelUtils {
             }
         }
         osw.flush();
+    }
+
+    private static Method getReadMethod(Map<String, Method> cachedMethodMap, String key, Class clazz) throws IntrospectionException {
+        Method method = null;
+        if (!cachedMethodMap.containsKey(key)) {
+            PropertyDescriptor pd = new PropertyDescriptor(key, clazz);
+            method = pd.getReadMethod();//获得get方法
+            cachedMethodMap.put(key, method);
+        } else {
+            method = cachedMethodMap.get(key);
+        }
+        return method;
     }
 
     /**
