@@ -12,10 +12,11 @@ import io.minio.MinioClient;
 public class MinioClientUtils {
     private MinioClientUtils() {}
 
-    public static MinioClient getMinioClient(String endpoint, int port, String accessKey, String secretKey) {
+    public static MinioClient getClient(String endpoint, String accessKey, String secretKey) {
         return MinioClient.builder()
                 .endpoint(endpoint)
                 .credentials(accessKey, secretKey)
                 .build();
     }
+
 }
