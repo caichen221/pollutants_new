@@ -24,7 +24,7 @@ import java.util.Map;
  * @create: 2018-08-29 09:56
  **/
 public class JsonUtils {
-    private static ObjectMapper mapper;
+    private static volatile ObjectMapper mapper;
 
 
     /**
@@ -33,7 +33,7 @@ public class JsonUtils {
      * @param object
      * @return
      */
-    public static String toJson(Object object){
+    public static String toJson(Object object) {
         try {
             return getMapper().writeValueAsString(object);
         } catch (JsonProcessingException e) {
@@ -44,7 +44,7 @@ public class JsonUtils {
 //        return null;
     }
 
-    public static <T> T fromJson(String json, Class<T > classOfT) {
+    public static <T> T fromJson(String json, Class<T> classOfT) {
         //				return gson.fromJson(json, classOfT);
         try {
             return getMapper().readValue(json, classOfT);
@@ -73,16 +73,16 @@ public class JsonUtils {
 
     /**
      * 定义一个嵌套的泛型、子泛型
-     * */
+     */
     static class ParametricTypes {
         /**
          * 泛型1
-         * */
+         */
         private Class clazz;
 
         /**
          * 子泛型
-         * */
+         */
         private List<ParametricTypes> subClazz;
 
         public Class getClazz() {
@@ -151,30 +151,32 @@ public class JsonUtils {
 
 
     private static ObjectMapper getMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-			/*ObjectMapper configure = mapper
+        synchronized (JsonUtils.class) {
+            if (mapper == null) {
+                synchronized (JsonUtils.class) {
+                    mapper = new ObjectMapper();
+			    /*ObjectMapper configure = mapper
 				.configure(org.codehaus.jackson.map.DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT,
 					true);*/
-            //为null的不输出
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            //大小写问题
-            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                    //为null的不输出
+                    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                    //大小写问题
+                    mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
-            //设置等同于@JsonIgnoreProperties(ignoreUnknown = true)
-            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-            mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);//防止转为json是首字母大写的属性会出现两次
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    //设置等同于@JsonIgnoreProperties(ignoreUnknown = true)
+                    mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+                    mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);//防止转为json是首字母大写的属性会出现两次
+                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            //设置JSON时间格式
-            SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mapper.setDateFormat(myDateFormat);
+                    //设置JSON时间格式
+                    SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    mapper.setDateFormat(myDateFormat);
 
 //			mapper.configure(SerializationFeature.WRAP_ROOT_VALUE CLOSE_CLOSEABLE)
+                }
+            }
         }
-
         return mapper;
-
     }
 
     /**
@@ -188,8 +190,7 @@ public class JsonUtils {
      * @param json 未格式化的JSON字符串。
      * @return 格式化的JSON字符串。
      */
-    public static String formatJson(String json)
-    {
+    public static String formatJson(String json) {
         StringBuffer result = new StringBuffer();
 
         int length = json.length();
@@ -197,17 +198,14 @@ public class JsonUtils {
         char key = 0;
 
         //遍历输入字符串。
-        for (int i = 0; i < length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             //1、获取当前字符。
             key = json.charAt(i);
 
             //2、如果当前字符是前方括号、前花括号做如下处理：
-            if((key == '[') || (key == '{') )
-            {
+            if ((key == '[') || (key == '{')) {
                 //（1）如果前面还有字符，并且字符为“：”，打印：换行和缩进字符字符串。
-                if((i - 1 > 0) && (json.charAt(i - 1) == ':'))
-                {
+                if ((i - 1 > 0) && (json.charAt(i - 1) == ':')) {
                     result.append('\n');
                     result.append(indent(number));
                 }
@@ -227,8 +225,7 @@ public class JsonUtils {
             }
 
             //3、如果当前字符是后方括号、后花括号做如下处理：
-            if((key == ']') || (key == '}') )
-            {
+            if ((key == ']') || (key == '}')) {
                 //（1）后方括号、后花括号，的前面必须换行。打印：换行。
                 result.append('\n');
 
@@ -240,8 +237,7 @@ public class JsonUtils {
                 result.append(key);
 
                 //（4）如果当前字符后面还有字符，并且字符不为“，”，打印：换行。
-                if(((i + 1) < length) && (json.charAt(i + 1) != ','))
-                {
+                if (((i + 1) < length) && (json.charAt(i + 1) != ',')) {
                     result.append('\n');
                 }
 
@@ -250,8 +246,7 @@ public class JsonUtils {
             }
 
             //4、如果当前字符是逗号。逗号后面换行，并缩进，不改变缩进次数。
-            if((key == ','))
-            {
+            if ((key == ',')) {
                 result.append(key);
                 result.append('\n');
                 result.append(indent(number));
@@ -271,20 +266,17 @@ public class JsonUtils {
      * @param number 缩进次数。
      * @return 指定缩进次数的字符串。
      */
-    private static String indent(int number)
-    {
+    private static String indent(int number) {
         StringBuffer result = new StringBuffer();
-        for(int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             result.append(SPACE);
         }
         return result.toString();
     }
 
     /**
-     *
      * 校验一个JSON串是否为JSON结构，必须满足Map或集合结构
-     * */
+     */
     public static boolean validateJson(String json) {
         boolean flag = false;
         try {
@@ -302,14 +294,14 @@ public class JsonUtils {
     }
 
     /**
-     *  向JSON中追加参数
-     *  注意：只支持Map类型的JSON
+     * 向JSON中追加参数
+     * 注意：只支持Map类型的JSON
      *
      * @param json 原始JSON字符串。
      * @param data 要添加的数据，数组类型，数组里两个值，第一个值为key，第二个值为value
      * @return 追加后的JSON字符串。
      */
-    public static String appendJson(String json, Object[] ... data) throws RuntimeException {
+    public static String appendJson(String json, Object[]... data) throws RuntimeException {
         Map map = null;
         try {
             map = JsonUtils.fromJson(json, Map.class);
@@ -372,9 +364,8 @@ public class JsonUtils {
     }
 
     /**
-     *
      * 获取JSON中的一个数据，字符串形式
-     * */
+     */
     public static String getValueByKey(String json, String key) {
         return JsonCode.getValue(json, String.format("$.%s", key));
     }
