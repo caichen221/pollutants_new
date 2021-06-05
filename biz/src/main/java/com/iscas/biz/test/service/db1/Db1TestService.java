@@ -21,4 +21,8 @@ public class Db1TestService {
     public void test() {
         dynamicMapper.insert("insert into test_mp_ar(name) values('111')");
     }
+
+    public void test2() {
+        dynamicMapper.insert("insert into ws_data(type) values('BUSINESS')");
+    }
 }

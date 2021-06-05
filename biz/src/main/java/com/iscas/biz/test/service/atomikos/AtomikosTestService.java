@@ -1,6 +1,7 @@
 package com.iscas.biz.test.service.atomikos;
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
+import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.test.service.db1.Db1TestService;
 import com.iscas.biz.test.service.db2.Db2TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,21 @@ public class AtomikosTestService {
     private Db1TestService db1TestService;
     @Autowired
     private Db2TestService db2TestService;
+    @Autowired
+    private DynamicMapper dynamicMapper;
 
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     public void test() {
         db1TestService.test();
         int a = 4/0;
         db2TestService.test();
+        throw new RuntimeException("出错啦");
+    }
+
+    public void test2() {
+        db1TestService.test2();
+        db2TestService.test2();
+        dynamicMapper.insert("insert into ws_data(type) values('BUSINESS')");
         throw new RuntimeException("出错啦");
     }
 

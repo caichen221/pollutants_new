@@ -9,6 +9,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
+import com.atomikos.icatch.jta.UserTransactionImp;
+import com.atomikos.icatch.jta.UserTransactionManager;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -29,6 +31,7 @@ import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.strategy.InlineShardingStrategyConfiguration;
 import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,11 +40,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
+import javax.transaction.SystemException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -259,7 +265,7 @@ public class DruidConfiguration implements EnvironmentAware {
         return filterList;
     }
 
-
+    @Primary
     @Bean
     public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, @Qualifier(value = "dynamicDatasource") DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
@@ -286,6 +292,39 @@ public class DruidConfiguration implements EnvironmentAware {
         factory.setTransactionFactory(new MultiDataSourceTransactionFactory());
         return factory.getObject();
     }
+
+    @Bean
+    @Primary
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) throws Exception {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+
+    /**
+     * 分布式事务使用JTA管理，不管有多少个数据源只要配置一个 JtaTransactionManager
+     *
+     */
+//    /*atomikos事务管理器*/
+//    public UserTransactionManager userTransactionManager() {
+//        UserTransactionManager userTransactionManager = new UserTransactionManager();
+//        userTransactionManager.setForceShutdown(true);
+//        return userTransactionManager;
+//    }
+//
+//    public UserTransactionImp userTransactionImp() throws SystemException {
+//        UserTransactionImp userTransactionImp = new UserTransactionImp();
+//        userTransactionImp.setTransactionTimeout(5000);
+//        return userTransactionImp;
+//    }
+//
+//    @Bean
+//    public JtaTransactionManager jtaTransactionManager() throws SystemException {
+//        JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
+//        jtaTransactionManager.setTransactionManager(userTransactionManager());
+//        jtaTransactionManager.setUserTransaction(userTransactionImp());
+//        jtaTransactionManager.setAllowCustomIsolationLevels(true);
+//        return jtaTransactionManager;
+//    }
+
 
     @Bean
     @ConditionalOnMissingBean

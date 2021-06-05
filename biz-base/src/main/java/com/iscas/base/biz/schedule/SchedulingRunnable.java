@@ -38,7 +38,7 @@ public class SchedulingRunnable implements Runnable {
 
     @Override
     public void run() {
-        logger.info("定时任务开始执行 - bean：{}，方法：{}，参数：{}", beanName, methodName, params);
+        logger.debug("定时任务开始执行 - bean：{}，方法：{}，参数：{}", beanName, methodName, params);
         long startTime = System.currentTimeMillis();
 
         try {
@@ -66,7 +66,7 @@ public class SchedulingRunnable implements Runnable {
         }
 
         long times = System.currentTimeMillis() - startTime;
-        logger.info("定时任务执行结束 - bean：{}，方法：{}，参数：{}，耗时：{} 毫秒", beanName, methodName, params, times);
+        logger.debug("定时任务执行结束 - bean：{}，方法：{}，参数：{}，耗时：{} 毫秒", beanName, methodName, params, times);
     }
 
     @Override
