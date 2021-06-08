@@ -1,0 +1,6 @@
+
+dependencies {
+    api group: 'org.apache.rocketmq', name: 'rocketmq-client', version: "${rocketmqClientVersion}"
+
+}
+
