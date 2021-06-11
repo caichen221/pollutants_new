@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 public class SqlFilterProducer {
     public static void main(String[] args) throws MQClientException, MQBrokerException, RemotingException, InterruptedException {
         DefaultMQProducer producer = new DefaultMQProducer("group");
-        producer.setNamesrvAddr("172.16.10.169:9876");
+        producer.setNamesrvAddr("172.16.10.169:9876;172.16.10.168:9876");
         producer.start();
         for (int i = 0; i < 10; i++) {
             Message message = new Message("tag-filter-topic", "tag-filter-tag-1", ("msg-tag1:" + i).getBytes(StandardCharsets.UTF_8));

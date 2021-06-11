@@ -23,7 +23,7 @@ public class SqlFilterConsumer {
     public static void main(String[] args) throws MQClientException {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("group-sql-filter");
         consumer.subscribe("tag-filter-topic",  MessageSelector.bySql("i > 5"));
-        consumer.setNamesrvAddr("172.16.10.169:9876");
+        consumer.setNamesrvAddr("172.16.10.169:9876;172.16.10.168:9876");
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
