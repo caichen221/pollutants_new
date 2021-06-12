@@ -24,5 +24,5 @@ logging:
 server:
   port: 7201
 rocketmq:
-  nameserver: 127.0.0.1:9876
-  topic: order-topic
+  nameserver: 172.16.10.168:9876;172.16.10.169
+  topic: order-notify-topic

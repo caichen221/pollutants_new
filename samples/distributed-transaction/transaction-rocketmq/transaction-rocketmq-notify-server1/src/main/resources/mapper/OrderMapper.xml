@@ -7,4 +7,8 @@
         insert into good_order(id, name, num, price) values (#{id}, #{name}, #{num}, #{price})
     </insert>
 
+    <select id="selectById" parameterType="java.lang.Integer" resultType = "com.iscas.samples.distributed.transaction.rocketmq.server1.model.Order">
+        select * from good_order where id = #{id}
+    </select>
+
 </mapper>

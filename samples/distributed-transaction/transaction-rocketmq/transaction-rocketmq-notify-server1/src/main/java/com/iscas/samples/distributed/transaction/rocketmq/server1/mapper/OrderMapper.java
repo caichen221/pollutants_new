@@ -11,4 +11,6 @@ import com.iscas.samples.distributed.transaction.rocketmq.server1.model.Order;
  */
 public interface OrderMapper {
     int insert(Order order);
+
+    Order selectById(Integer id);
 }
