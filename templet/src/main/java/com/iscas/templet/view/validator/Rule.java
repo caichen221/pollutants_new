@@ -1,9 +1,6 @@
 package com.iscas.templet.view.validator;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -18,6 +15,7 @@ import java.util.Map;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Builder
 public class Rule implements Serializable {
     protected boolean required = false; //是否必须填写值
     protected String reg; //正则表达式

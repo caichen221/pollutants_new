@@ -1,9 +1,6 @@
 package com.iscas.templet.view.table;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.*;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
  **/
 @Data
 @ToString(callSuper = true)
+@Builder
 public class TableHeaderResponseData implements Serializable {
     /*表头列信息*/
     protected List<TableField> cols;

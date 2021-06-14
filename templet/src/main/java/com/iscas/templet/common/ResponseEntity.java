@@ -1,9 +1,6 @@
 package com.iscas.templet.common;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -19,6 +16,7 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Builder
 public class ResponseEntity<T> implements Serializable {
 
     /**

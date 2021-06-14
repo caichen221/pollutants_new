@@ -126,4 +126,6 @@ include 'samples:distributed-transaction:transaction-rocketmq:transaction-rocket
 findProject(':samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-notify-server1')?.name = 'transaction-rocketmq-notify-server1'
 include 'samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-notify-server2'
 findProject(':samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-notify-server2')?.name = 'transaction-rocketmq-notify-server2'
+include 'samples:springboot-samples'
+findProject(':samples:springboot-samples')?.name = 'springboot-samples'
 

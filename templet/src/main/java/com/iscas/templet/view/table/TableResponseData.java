@@ -1,5 +1,6 @@
 package com.iscas.templet.view.table;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Builder
 public class TableResponseData<List> implements Serializable{
     /*返回总条目*/
     protected Long rows;

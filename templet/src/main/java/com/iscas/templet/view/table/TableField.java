@@ -1,10 +1,7 @@
 package com.iscas.templet.view.table;
 
 import com.iscas.templet.view.validator.Rule;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -19,6 +16,7 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Builder
 public class TableField implements Serializable{
     /*表字段名称*/
     protected String field;

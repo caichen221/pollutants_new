@@ -19,6 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Builder
 public class ComboboxData<T> implements Serializable {
     /*label*/
     protected String label;

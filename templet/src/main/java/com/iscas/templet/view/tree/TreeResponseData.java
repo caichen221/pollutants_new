@@ -1,10 +1,7 @@
 package com.iscas.templet.view.tree;
 
 import com.iscas.templet.view.table.TableResponseData;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.*;
@@ -21,6 +18,7 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Builder
 public class TreeResponseData<T> implements Serializable ,Cloneable{
     /*显示名称*/
     protected String label;
