@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -217,6 +219,65 @@ public class JsonUtilsTests {
         public void setMap(Map<String, String> map) {
             this.map = map;
         }
+    }
+
+    /**
+     * json序列化为字节数组
+     * */
+    @Test
+    public void testObjectToBytes() throws JsonProcessingException, UnsupportedEncodingException {
+        A<SubA> a = new A<>();
+        SubA subA = new SubA();
+        subA.setName("张三");
+        subA.setDesc("啦啦啦");
+        a.setT(subA);
+        a.setStr("cgwegwegweg");
+
+        final byte[] bytes = JsonUtils.toBytes(a);
+        System.out.println(Arrays.toString(bytes));
+
+        Object o = JsonUtils.fromJson(new String(bytes, "utf-8"), A.class, SubA.class);
+        System.out.println(o);
+    }
+
+    /**
+     * json序列化到输出流
+     * */
+    @Test
+    public void testObjectToOutputStream() throws JsonProcessingException, UnsupportedEncodingException {
+        A<SubA> a = new A<>();
+        SubA subA = new SubA();
+        subA.setName("张三");
+        subA.setDesc("啦啦啦");
+        a.setT(subA);
+        a.setStr("cgwegwegweg");
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        JsonUtils.toOutputStream(os, a);
+        final byte[] bytes = os.toByteArray();
+        System.out.println(Arrays.toString(bytes));
+
+        Object o = JsonUtils.fromJson(new String(bytes, "utf-8"), A.class, SubA.class);
+        System.out.println(o);
+    }
+
+    /**
+     * json序列化到文件
+     * */
+    @Test
+    public void testObjectToFile() throws IOException {
+        A<SubA> a = new A<>();
+        SubA subA = new SubA();
+        subA.setName("张三");
+        subA.setDesc("啦啦啦");
+        a.setT(subA);
+        a.setStr("cgwegwegweg");
+        File file = File.createTempFile("test", ".json");
+        file.deleteOnExit();
+        JsonUtils.toFile(file, a);
+        final List<String> strings = Files.readAllLines(file.toPath());
+        strings.forEach(System.out::println);
+        file.delete();
     }
 
 }

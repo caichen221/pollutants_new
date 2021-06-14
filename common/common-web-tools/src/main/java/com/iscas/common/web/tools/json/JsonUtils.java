@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -101,54 +101,6 @@ public class JsonUtils {
             this.subClazz = subClazz;
         }
     }
-
-    /**
-     * 嵌套一层泛型序列化
-     */
-    public static <T> T fromJson(String json, Class mainClass, Class subClass) {
-        try {
-            JavaType javaType = getMapper().getTypeFactory().constructParametricType(mainClass, subClass);
-            return getMapper().readValue(json, javaType);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 嵌套泛型序列化
-     */
-    public static <T> T fromJson(String json, ParametricTypes parametricTypes) {
-        try {
-//            getMapper().getTypeFactory().constructParametricType()
-            JavaType javaType = getJavaType(parametricTypes);
-            return getMapper().readValue(json, javaType);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-//        return null;
-    }
-
-    private static JavaType getJavaType(ParametricTypes parametricTypes) {
-        JavaType javaType = null;
-        Class clazz = parametricTypes.getClazz();
-        List<ParametricTypes> subClazz = parametricTypes.getSubClazz();
-        if (CollectionUtils.isEmpty(subClazz)) {
-            Class[] classes = new Class[0];
-            javaType = getMapper().getTypeFactory().constructParametricType(clazz, classes);
-        } else {
-            JavaType[] javaTypes = new JavaType[subClazz.size()];
-            for (int i = 0; i < subClazz.size(); i++) {
-                JavaType jt = getJavaType(subClazz.get(i));
-                javaTypes[i] = jt;
-            }
-            javaType = getMapper().getTypeFactory().constructParametricType(clazz, javaTypes);
-        }
-
-        return javaType;
-    }
-
 
     private static ObjectMapper getMapper() {
         synchronized (JsonUtils.class) {
@@ -370,5 +322,240 @@ public class JsonUtils {
         return JsonCode.getValue(json, String.format("$.%s", key));
     }
 
+    //==========================Json序列化和反序列化扩展方法　add by zqw======================================
+    /**
+     * 嵌套一层泛型序列化
+     * add by zqw
+     */
+    public static <T> T fromJson(String json, Class mainClass, Class subClass) {
+        try {
+            JavaType javaType = getMapper().getTypeFactory().constructParametricType(mainClass, subClass);
+            return getMapper().readValue(json, javaType);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 嵌套泛型序列化
+     *  add by zqw
+     */
+    public static <T> T fromJson(String json, ParametricTypes parametricTypes) {
+        try {
+//            getMapper().getTypeFactory().constructParametricType()
+            JavaType javaType = getJavaType(parametricTypes);
+            return getMapper().readValue(json, javaType);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+//        return null;
+    }
+
+    private static JavaType getJavaType(ParametricTypes parametricTypes) {
+        JavaType javaType = null;
+        Class clazz = parametricTypes.getClazz();
+        List<ParametricTypes> subClazz = parametricTypes.getSubClazz();
+        if (CollectionUtils.isEmpty(subClazz)) {
+            Class[] classes = new Class[0];
+            javaType = getMapper().getTypeFactory().constructParametricType(clazz, classes);
+        } else {
+            JavaType[] javaTypes = new JavaType[subClazz.size()];
+            for (int i = 0; i < subClazz.size(); i++) {
+                JavaType jt = getJavaType(subClazz.get(i));
+                javaTypes[i] = jt;
+            }
+            javaType = getMapper().getTypeFactory().constructParametricType(clazz, javaTypes);
+        }
+
+        return javaType;
+    }
+
+    /**
+     * 对象直接序列化为字节数组
+     * */
+    public static byte[] toBytes(Object object) {
+        try {
+            return getMapper().writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 对象直接序列化到输出流
+     * */
+    public static void toOutputStream(OutputStream os, Object object) {
+        try {
+            getMapper().writeValue(os, object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 对象直接序列化到文件
+     * */
+    public static void toFile(File file, Object object) {
+        try {
+            getMapper().writeValue(file, object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从输入流读取JSON并转化
+     * */
+    public static <T> T fromJson(InputStream is, Class<T> classOfT) {
+        try {
+            return getMapper().readValue(is, classOfT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从输入流读取JSON并转化
+     * */
+    public static <T> T fromJson(InputStream is, TypeReference<T> typeReference) {
+        try {
+            return getMapper().readValue(is, typeReference);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从输入流读取JSON并转化
+     * */
+    public static <T> T fromJson(InputStream is, ParametricTypes parametricTypes) {
+        try {
+            return getMapper().readValue(is, getJavaType(parametricTypes));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从输入流读取JSON并转化
+     * */
+    public static <T> T fromJson(Reader reader, Class<T> classOfT) {
+        try {
+            return getMapper().readValue(reader, classOfT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从输入流读取JSON并转化
+     * */
+    public static <T> T fromJson(Reader reader, TypeReference<T> typeReference) {
+        try {
+            return getMapper().readValue(reader, typeReference);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从输入流读取JSON并转化
+     * */
+    public static <T> T fromJson(Reader reader, ParametricTypes parametricTypes) {
+        try {
+            return getMapper().readValue(reader, getJavaType(parametricTypes));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从文件读取JSON并转化
+     * */
+    public static <T> T fromJson(File file, Class<T> classOfT) {
+        try {
+            return getMapper().readValue(file, classOfT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从文件读取JSON并转化
+     * */
+    public static <T> T fromJson(File file, TypeReference<T> typeReference) {
+        try {
+            return getMapper().readValue(file, typeReference);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从文件读取JSON并转化
+     * */
+    public static <T> T fromJson(File file, ParametricTypes parametricTypes) {
+        try {
+            return getMapper().readValue(file, getJavaType(parametricTypes));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从字节数组读取JSON并转化
+     * */
+    public static <T> T fromJson(byte[] bytes, Class<T> classOfT) {
+        try {
+            return getMapper().readValue(bytes, classOfT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从字节数组读取JSON并转化
+     * */
+    public static <T> T fromJson(byte[] bytes, TypeReference<T> typeReference) {
+        try {
+            return getMapper().readValue(bytes, typeReference);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 从字节数组读取JSON并转化
+     * */
+    public static <T> T fromJson(byte[] bytes, ParametricTypes parametricTypes) {
+        try {
+            return getMapper().readValue(bytes, getJavaType(parametricTypes));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 }
