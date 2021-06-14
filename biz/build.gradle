@@ -44,6 +44,8 @@ dependencies {
 //    api project(":biz-jpa")
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    //devTools 默认不使用
+//    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 }
 

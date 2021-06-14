@@ -1,7 +1,7 @@
-package com.iscas.springboot.samples.jackson.type5;
+package com.iscas.springboot.samples.jackson.type6;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 @Builder
 public class Model {
-    @JsonInclude(value= JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     private Integer id;
     private int age;
     private String name;

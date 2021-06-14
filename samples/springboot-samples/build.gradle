@@ -1,5 +1,6 @@
 
 dependencies {
     api ('org.springframework.boot:spring-boot-starter-web')
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 }
 

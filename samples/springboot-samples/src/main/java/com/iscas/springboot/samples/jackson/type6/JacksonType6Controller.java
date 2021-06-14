@@ -1,4 +1,4 @@
-package com.iscas.springboot.samples.jackson.type5;
+package com.iscas.springboot.samples.jackson.type6;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +14,12 @@ import java.util.Date;
  * @since jdk1.8
  */
 @RestController
-@RequestMapping("/jackson/type5")
-public class JacksonType5Controller {
+@RequestMapping("/jackson/type6")
+public class JacksonType6Controller {
     @GetMapping("/res")
     public Model res() {
         return Model.builder()
+                .id(1)
                 .age(12)
                 .name("xiaoxiao")
                 .createTime(new Date()).build();
