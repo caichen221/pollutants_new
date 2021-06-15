@@ -15,7 +15,8 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TableSetting implements Serializable{
 
     /**否显示复选框*/

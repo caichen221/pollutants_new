@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
-@Builder
+@AllArgsConstructor
 public class ResponseEntity<T> implements Serializable {
 
     /**

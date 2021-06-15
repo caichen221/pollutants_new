@@ -118,6 +118,11 @@ subprojects  {
         testImplementation group: 'org.junit.platform', name: 'junit-platform-runner', version: "${junitPlatformVersion}"
         testImplementation group: 'org.junit.platform', name: 'junit-platform-suite-api', version: "${junitPlatformVersion}"
     }
+
+    test {
+        useJUnitPlatform()
+    }
+
 //    dependencyManagement {
 //        imports {
 //            //依赖管理

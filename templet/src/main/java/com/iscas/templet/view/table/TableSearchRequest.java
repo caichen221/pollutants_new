@@ -1,8 +1,6 @@
 package com.iscas.templet.view.table;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +14,8 @@ import java.util.Map;
  **/
 @Data
 @ToString(callSuper = true)
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TableSearchRequest<T> implements Serializable{
     /*当前页码，默认为1*/
     protected Integer pageNumber = 1;

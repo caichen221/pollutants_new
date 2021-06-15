@@ -16,7 +16,8 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TableField implements Serializable{
     /*表字段名称*/
     protected String field;

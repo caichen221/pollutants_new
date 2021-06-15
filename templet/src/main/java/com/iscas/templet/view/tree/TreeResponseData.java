@@ -18,7 +18,8 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TreeResponseData<T> implements Serializable ,Cloneable{
     /*显示名称*/
     protected String label;

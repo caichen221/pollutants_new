@@ -13,7 +13,8 @@ import java.util.List;
  **/
 @Data
 @ToString(callSuper = true)
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TableHeaderResponseData implements Serializable {
     /*表头列信息*/
     protected List<TableField> cols;

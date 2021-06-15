@@ -15,7 +15,6 @@ import java.io.Serializable;
  **/
 @Data
 @ToString(callSuper = true)
-@Builder
 public class TreeResponse extends ResponseEntity<TreeResponseData> implements Serializable{
 
 }

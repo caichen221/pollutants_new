@@ -1,9 +1,7 @@
 package com.iscas.templet.view.table;
 
 import com.iscas.templet.common.ResponseEntity;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -15,7 +13,6 @@ import java.io.Serializable;
  **/
 @Data
 @ToString(callSuper = true)
-@Builder
 public class TableResponse extends ResponseEntity<TableResponseData> implements Serializable{
     public TableResponse(){}
     public TableResponse(Integer status, String message) {
