@@ -7,8 +7,10 @@ import okio.BufferedSink;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -141,11 +143,27 @@ public class OkHttpCustomClient {
      * @param: mapParams 请求参数键值对
      * @return: okhttp3.Call
      */
-    private Call basePostCall1(String url, Map<String, String> headerMap, Map<String, String> mapParams) {
+    private Call basePostCall1(String url, Map<String, String> headerMap, Map<String, Object> mapParams) {
         FormBody.Builder builder = new FormBody.Builder();
         if (mapParams != null) {
-            for (String key : mapParams.keySet()) {
-                builder.add(key, mapParams.get(key));
+            for (Map.Entry<String, Object> entry : mapParams.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (value != null) {
+                    Class<?> aClass = value.getClass();
+                    if (aClass.isArray()) {
+                        //处理数组
+                        int length = Array.getLength(value);
+                        for (int i = 0; i < length; i++) {
+                            builder.add(key, String.valueOf(Array.get(value, i)));
+                        }
+                    } else if (aClass.isAssignableFrom(Collection.class)) {
+                        Collection collection = (Collection) value;
+                        for (Object o : collection) {
+                            builder.add(key, String.valueOf(o));
+                        }
+                    }
+                }
             }
         }
         Request.Builder requestBuilder = new Request.Builder();
@@ -273,11 +291,27 @@ public class OkHttpCustomClient {
      * @param: mapParams 请求参数键值对
      * @return: okhttp3.Call
      */
-    private Call basePutCall1(String url, Map<String, String> headerMap, Map<String, String> mapParams) {
+    private Call basePutCall1(String url, Map<String, String> headerMap, Map<String, Object> mapParams) {
         FormBody.Builder builder = new FormBody.Builder();
         if (mapParams != null) {
-            for (String key : mapParams.keySet()) {
-                builder.add(key, mapParams.get(key));
+            for (Map.Entry<String, Object> entry : mapParams.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (value != null) {
+                    Class<?> aClass = value.getClass();
+                    if (aClass.isArray()) {
+                        //处理数组
+                        int length = Array.getLength(value);
+                        for (int i = 0; i < length; i++) {
+                            builder.add(key, String.valueOf(Array.get(value, i)));
+                        }
+                    } else if (aClass.isAssignableFrom(Collection.class)) {
+                        Collection collection = (Collection) value;
+                        for (Object o : collection) {
+                            builder.add(key, String.valueOf(o));
+                        }
+                    }
+                }
             }
         }
         Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
@@ -406,7 +440,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: java.lang.String
      */
-    public String doPost(String url, Map<String, String> headerMap, Map<String, String> mapParams) throws IOException {
+    public String doPost(String url, Map<String, String> headerMap, Map<String, Object> mapParams) throws IOException {
         Call call = basePostCall1(url, headerMap, mapParams);
         return call.execute().body().string();
     }
@@ -420,7 +454,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: java.lang.String
      */
-    public String doPost(String url, Map<String, String> mapParams) throws IOException {
+    public String doPost(String url, Map<String, Object> mapParams) throws IOException {
         return doPost(url, (Map<String, String>) null, mapParams);
     }
 
@@ -463,7 +497,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: void
      */
-    public void doPostAsyn(String url, Map<String, String> headerMap, Map<String, String> mapParams,
+    public void doPostAsyn(String url, Map<String, String> headerMap, Map<String, Object> mapParams,
                            Callback callback) throws IOException {
         Call call = basePostCall1(url, headerMap, mapParams);
         call.enqueue(callback);
@@ -479,7 +513,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: void
      */
-    public void doPostAsyn(String url, Map<String, String> mapParams, Callback callback) throws IOException {
+    public void doPostAsyn(String url, Map<String, Object> mapParams, Callback callback) throws IOException {
         doPostAsyn(url, (Map<String, String>) null, mapParams, callback);
     }
 
@@ -748,7 +782,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: java.lang.String
      */
-    public String doPut(String url, Map<String, String> headerMap, Map<String, String> mapParams) throws IOException {
+    public String doPut(String url, Map<String, String> headerMap, Map<String, Object> mapParams) throws IOException {
         Call call = basePutCall1(url, headerMap, mapParams);
         return call.execute().body().string();
     }
@@ -762,7 +796,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: java.lang.String
      */
-    public String doPut(String url, Map<String, String> mapParams) throws IOException {
+    public String doPut(String url, Map<String, Object> mapParams) throws IOException {
         return doPut(url, (Map<String, String>) null, mapParams);
     }
 
@@ -805,7 +839,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: void
      */
-    public void doPutAsyn(String url, Map<String, String> headerMap, Map<String, String> mapParams, Callback callback) throws IOException {
+    public void doPutAsyn(String url, Map<String, String> headerMap, Map<String, Object> mapParams, Callback callback) throws IOException {
         Call call = basePutCall1(url, headerMap, mapParams);
         call.enqueue(callback);
     }
@@ -820,7 +854,7 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: void
      */
-    public void doPutAsyn(String url, Map<String, String> mapParams, Callback callback) throws IOException {
+    public void doPutAsyn(String url, Map<String, Object> mapParams, Callback callback) throws IOException {
         doPutAsyn(url, (Map<String, String>) null, mapParams, callback);
     }
 
