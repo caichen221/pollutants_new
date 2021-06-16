@@ -2,7 +2,7 @@
 dependencies {
 
     // https://mvnrepository.com/artifact/cglib/cglib
-    implementation group: 'cglib', name: 'cglib', version: "${cglibVersion}"
+    api group: 'cglib', name: 'cglib', version: "${cglibVersion}"
 
 }
 //install {

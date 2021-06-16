@@ -75,6 +75,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.github.oshi/oshi-core
     api group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
 
+    api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
+
+
     //==============datasong-client-plus 在私服环境下使用 begin
     api ("com.iscas.datasong:datasong-client-plus:${datasongClientPlusVersion}") {
         exclude module: 'templet'
@@ -84,7 +87,7 @@ dependencies {
     //====================使用datasong-clientjar包时候使用 begin
 //    api("org.apache.httpcomponents:httpmime:4.5.2")
 //    //sql 解析
-//    compile("com.github.jsqlparser:jsqlparser:0.9.6")
+//    compile("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
 //
 //    //thrift
 //    compile("org.apache.thrift:libthrift:0.10.0")

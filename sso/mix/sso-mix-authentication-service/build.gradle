@@ -36,7 +36,7 @@ dependencies {
     api project (":templet")
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-    api 'ch.qos.logback:logback-classic:1.2.3'
+    api "ch.qos.logback:logback-classic:${logbackVersion}"
     //TODO jafu0.4.3与2.4.2不匹配，暂时把springboot版本降低
     api "org.springframework.boot:spring-boot-starter-web:2.4.1"
     api "org.springframework.boot:spring-boot-autoconfigure:2.4.1"
@@ -45,6 +45,7 @@ dependencies {
     api "org.springframework.fu:spring-fu-jafu:${jafuVersion}"
     api "org.springframework.fu:spring-fu-autoconfigure-adapter:${jafuVersion}"
     api group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
+    api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
 
 
 

@@ -1,5 +1,8 @@
 dependencies {
     // https://mvnrepository.com/artifact/co.paralleluniverse/quasar-core
     api group: 'co.paralleluniverse', name: 'quasar-core', version: '0.8.0'
+    api group: 'com.esotericsoftware', name: 'reflectasm', version: "${reflectasmVersion}"
+    api group: 'com.esotericsoftware', name: 'minlog', version: "${minlogVersion}"
+    api group: 'com.esotericsoftware', name: 'kryo', version: "${kryoVersion}"
 
 }

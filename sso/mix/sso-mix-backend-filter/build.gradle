@@ -7,5 +7,7 @@ dependencies {
     api project(":common:common-web-tools")
     api group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
     api "com.squareup.okhttp3:okhttp"
+    api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
+
 
 }

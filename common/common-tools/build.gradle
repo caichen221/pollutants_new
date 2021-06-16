@@ -81,15 +81,17 @@ dependencies {
 //    api group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
 
 
-    api group: 'e-iceblue', name: 'spire.doc.free', version: '3.9.0'
+    api group: 'e-iceblue', name: 'spire.doc.free', version: "${spireDocFreeVersion}"
 //    api group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
 
     // https://mvnrepository.com/artifact/org.javatuples/javatuples
     api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
 
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-    api group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
-    api group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    api group: 'ch.qos.logback', name: 'logback-core', version: "${logbackVersion}"
+    api group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
+    api group: 'com.esotericsoftware', name: 'reflectasm', version: "${reflectasmVersion}"
+    api group: 'com.esotericsoftware', name: 'minlog', version: "${minlogVersion}"
 
 
 }

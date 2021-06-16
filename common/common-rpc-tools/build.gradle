@@ -33,6 +33,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.apache.thrift/libthrift
     api group: 'org.apache.thrift', name: 'libthrift', version: "${libthriftVersion}"
+    api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
 
 
 

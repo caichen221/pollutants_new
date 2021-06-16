@@ -9,5 +9,8 @@ dependencies {
     api "mysql:mysql-connector-java:${mysqlVersion}"
     api "com.graphql-java-kickstart:graphql-spring-boot-starter:${graphqlStarterVersion}"
     api "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlStarterVersion}"
+    // https://mvnrepository.com/artifact/com.esotericsoftware/reflectasm
+    api group: 'com.esotericsoftware', name: 'reflectasm', version: "${reflectasmVersion}"
+
 
 }

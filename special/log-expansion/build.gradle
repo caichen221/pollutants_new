@@ -41,9 +41,8 @@ repositories {
 dependencies {
 //    testCompile group: 'junit', name: 'junit', version: '4.12'
 //    api group:"org.slf4j", name:"slf4j-api",version: "1.7.1"
-    api group:"ch.qos.logback", name:"logback-core",version: "1.1.7"
-    api group:"ch.qos.logback", name:"logback-access",version: "1.1.7"
-//    api group:"ch.qos.logback", name:"logback-classic",version: "1.1.7"
+    api group:"ch.qos.logback", name:"logback-core",version: "${logbackVersion}"
+    api group:"ch.qos.logback", name:"logback-access",version: "${logbackVersion}"
     api fileTree(dir:'libs',include:['*.jar'])
 }
 
@@ -56,8 +55,8 @@ shadowJar {
     classifier = null
     version = null
     dependencies {
-        include(dependency('ch.qos.logback:logback-core:1.1.7'))
-        include(dependency('ch.qos.logback:logback-access:1.1.7'))
+        include(dependency("ch.qos.logback:logback-core:${logbackVersion}"))
+        include(dependency("ch.qos.logback:logback-access:${logbackVersion}"))
         include(dependency(files('libs/logback-classic-1.1.11.jar')))
         include(dependency(files('libs/slf4j-api-1.7.9.jar')))
     }

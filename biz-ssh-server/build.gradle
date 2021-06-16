@@ -2,4 +2,6 @@
 dependencies {
     api project (":special:common-ssh-tools")
     api project (":biz-base")
+    api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
+
 }

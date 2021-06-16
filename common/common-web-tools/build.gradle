@@ -35,6 +35,8 @@ dependencies {
     api ("xom:xom:${xomVersion}")
 
     api "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
+    api group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
+
 
 
 
