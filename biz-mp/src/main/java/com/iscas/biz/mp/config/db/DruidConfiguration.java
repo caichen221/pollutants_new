@@ -9,28 +9,23 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
-import com.atomikos.icatch.jta.UserTransactionImp;
-import com.atomikos.icatch.jta.UserTransactionManager;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
-import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
 import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
-import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
-import org.apache.shardingsphere.api.config.sharding.strategy.InlineShardingStrategyConfiguration;
-import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,15 +37,11 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-import javax.transaction.SystemException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -282,8 +273,12 @@ public class DruidConfiguration implements EnvironmentAware {
 //        factory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
 //                paginationInterceptor() //添加分页功能
 //        });
-        PaginationInterceptor paginationInterceptor = paginationInterceptor();
-        factory.setPlugins(paginationInterceptor);
+        PaginationInnerInterceptor paginationInnerInterceptor = paginationInterceptor();
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(paginationInnerInterceptor);
+        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        factory.setPlugins(interceptor);
+        MybatisPlusInterceptor mybatisPlusInterceptor;
         if (StringUtils.isNotBlank(enumPackages)) {
             factory.setTypeEnumsPackage(enumPackages);
         }
@@ -332,12 +327,22 @@ public class DruidConfiguration implements EnvironmentAware {
         return new SqlSessionFactoryCustomizers(customizers.stream().collect(Collectors.toList()));
     }
 
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public PaginationInterceptor paginationInterceptor() {
+//        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+//        return paginationInterceptor;
+//    }
+
+    /**
+     * mybatis-plus新的分页插件注册方式
+     * */
     @Bean
     @ConditionalOnMissingBean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        return paginationInterceptor;
+    public PaginationInnerInterceptor paginationInterceptor() {
+        return new PaginationInnerInterceptor();
     }
+
 
 
     private GlobalConfig globalConfiguration() {

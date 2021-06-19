@@ -1,4 +1,4 @@
-package com.iscas.biz.mp.service.common;
+package com.iscas.biz.service.common;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -37,6 +37,7 @@ public class MpGenerator {
     private String parentPath;
 
     public void generator() {
+        AutoGenerator mpg = new AutoGenerator();
         GlobalConfig config = new GlobalConfig();
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
         dataSourceConfig.setDbType(DbType.MYSQL)

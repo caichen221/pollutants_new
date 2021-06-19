@@ -27,8 +27,8 @@ dependencies {
 
     api group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
 
-    api "com.baomidou:mybatis-plus-generator:${mybatis_plus_boot_starter_version}"
-    api "com.baomidou:mybatis-plus-dts:${mybatis_plus_boot_starter_version}"
+    api "com.baomidou:mybatis-plus-generator:${mybatis_plus_generator_version}"
+    api "com.baomidou:mybatis-plus-dts:${mybatis_plus_dts_version}"
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
     api group: 'org.apache.velocity', name: 'velocity-engine-core', version: "${velocity_engine_core_version}"
 

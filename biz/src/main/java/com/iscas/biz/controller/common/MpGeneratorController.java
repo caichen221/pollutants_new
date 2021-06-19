@@ -1,7 +1,7 @@
-package com.iscas.biz.mp.table.controller.common;
+package com.iscas.biz.controller.common;
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.service.common.MpGenerator;
+import com.iscas.biz.service.common.MpGenerator;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;

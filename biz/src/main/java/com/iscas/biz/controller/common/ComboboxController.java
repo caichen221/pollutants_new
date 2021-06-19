@@ -41,7 +41,7 @@ public class ComboboxController extends BaseController {
 
     @ApiOperation(value="获取角色下拉列表", notes="获取角色下拉列表")
     @GetMapping("/role")
-    public ResponseEntity saveData() {
+    public ResponseEntity roleCombobox() {
         ResponseEntity response = getResponse();
         List<ComboboxData> combobox = roleService.combobox();
         response.setValue(combobox);

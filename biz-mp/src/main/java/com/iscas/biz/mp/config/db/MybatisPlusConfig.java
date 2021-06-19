@@ -1,13 +1,10 @@
 package com.iscas.biz.mp.config.db;
 
 
-import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 @ConditionalOnMybatis
@@ -54,12 +51,6 @@ public  class MybatisPlusConfig implements EnvironmentAware {
 ////        performanceInterceptor.setWriteInLog(true);
 //        return performanceInterceptor;
 //    }
-
-    /*乐观锁插件*/
-    @Bean
-    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
-        return new OptimisticLockerInterceptor();
-    }
 
     /**
      * 相当于顶部的：

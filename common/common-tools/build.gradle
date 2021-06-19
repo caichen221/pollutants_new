@@ -92,6 +92,7 @@ dependencies {
     api group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
     api group: 'com.esotericsoftware', name: 'reflectasm', version: "${reflectasmVersion}"
     api group: 'com.esotericsoftware', name: 'minlog', version: "${minlogVersion}"
+    api group: 'com.deepoove', name: 'poi-tl', version: "${poiTlVersion}"
 
 
 }

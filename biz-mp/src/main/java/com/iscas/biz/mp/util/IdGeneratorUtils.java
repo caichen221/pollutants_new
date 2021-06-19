@@ -17,7 +17,7 @@ public class IdGeneratorUtils {
                 if (annotationPresent) {
                     TableId annotation = declaredField.getAnnotation(TableId.class);
                     IdType type = annotation.type();
-                    if (Objects.equals(type.name(), IdType.ID_WORKER_STR.name())) {
+                    if (Objects.equals(type.name(), IdType.ASSIGN_ID.name())) {
                         return IdWorker.getIdStr();
                     }
                 }

@@ -234,7 +234,7 @@ public class ExcelUtils {
                         DataFormat format = workbook.createDataFormat();
                         cellStyle.setDataFormat(format.getFormat("@"));
                         headerRow.getCell(j).setCellStyle(cellStyle);
-                        headerRow.getCell(j).setCellType(Cell.CELL_TYPE_STRING);
+                        headerRow.getCell(j).setCellType(CellType.STRING);
                     }
                 }
                 if (list != null && list.size() > 0) {
@@ -264,7 +264,7 @@ public class ExcelUtils {
                                 DataFormat format = workbook.createDataFormat();
                                 cellStyle.setDataFormat(format.getFormat("@"));
                                 newCell.setCellStyle(cellStyle);
-                                newCell.setCellType(Cell.CELL_TYPE_STRING);
+                                newCell.setCellType(CellType.STRING);
                             }
                         }
                     }
@@ -328,7 +328,7 @@ public class ExcelUtils {
                         DataFormat format = workbook.createDataFormat();
                         cellStyle.setDataFormat(format.getFormat("@"));
                         headerRow.getCell(j).setCellStyle(cellStyle);
-                        headerRow.getCell(j).setCellType(HSSFCell.CELL_TYPE_STRING);
+                        headerRow.getCell(j).setCellType(CellType.STRING);
                     }
                 }
                 if (list != null && list.size() > 0) {
@@ -354,7 +354,7 @@ public class ExcelUtils {
                                 HSSFDataFormat format = workbook.createDataFormat();
                                 cellStyle.setDataFormat(format.getFormat("@"));
                                 newCell.setCellStyle(cellStyle);
-                                newCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                                newCell.setCellType(CellType.STRING);
                             }
                         }
                     }
@@ -558,22 +558,22 @@ public class ExcelUtils {
                         }
                         Object value = null;
                         switch (cell.getCellType()) {
-                            case XSSFCell.CELL_TYPE_NUMERIC:
+                            case NUMERIC:
                                 value = cell.getNumericCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_STRING: // 字符串
+                            case STRING: // 字符串
                                 value = cell.getStringCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_BOOLEAN: // Boolean
+                            case BOOLEAN: // Boolean
                                 value = cell.getBooleanCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_FORMULA: // 公式
+                            case FORMULA: // 公式
                                 value = cell.getCellFormula() + "";
                                 break;
-                            case XSSFCell.CELL_TYPE_BLANK: // 空值
+                            case BLANK: // 空值
                                 value = "";
                                 break;
-                            case XSSFCell.CELL_TYPE_ERROR: // 故障
+                            case ERROR: // 故障
                                 value = "非法字符";
                                 break;
                             default:
@@ -619,22 +619,22 @@ public class ExcelUtils {
                         }
                         Object value = null;
                         switch (cell.getCellType()) {
-                            case XSSFCell.CELL_TYPE_NUMERIC:
+                            case NUMERIC:
                                 value = cell.getNumericCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_STRING: // 字符串
+                            case STRING: // 字符串
                                 value = cell.getStringCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_BOOLEAN: // Boolean
+                            case BOOLEAN: // Boolean
                                 value = cell.getBooleanCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_FORMULA: // 公式
+                            case FORMULA: // 公式
                                 value = cell.getCellFormula() + "";
                                 break;
-                            case XSSFCell.CELL_TYPE_BLANK: // 空值
+                            case BLANK: // 空值
                                 value = "";
                                 break;
-                            case XSSFCell.CELL_TYPE_ERROR: // 故障
+                            case ERROR: // 故障
                                 value = "非法字符";
                                 break;
                             default:
@@ -683,22 +683,22 @@ public class ExcelUtils {
                         }
                         Object value = null;
                         switch (cell.getCellType()) {
-                            case XSSFCell.CELL_TYPE_NUMERIC:
+                            case NUMERIC:
                                 value = cell.getNumericCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_STRING: // 字符串
+                            case STRING: // 字符串
                                 value = cell.getStringCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_BOOLEAN: // Boolean
+                            case BOOLEAN: // Boolean
                                 value = cell.getBooleanCellValue();
                                 break;
-                            case XSSFCell.CELL_TYPE_FORMULA: // 公式
+                            case FORMULA: // 公式
                                 value = cell.getCellFormula() + "";
                                 break;
-                            case XSSFCell.CELL_TYPE_BLANK: // 空值
+                            case BLANK: // 空值
                                 value = "";
                                 break;
-                            case XSSFCell.CELL_TYPE_ERROR: // 故障
+                            case ERROR: // 故障
                                 value = "非法字符";
                                 break;
                             default:
@@ -751,22 +751,22 @@ public class ExcelUtils {
                         }
                         Object value = null;
                         switch (cell.getCellType()) {
-                            case HSSFCell.CELL_TYPE_NUMERIC:
+                            case NUMERIC:
                                 value = cell.getNumericCellValue();
                                 break;
-                            case HSSFCell.CELL_TYPE_STRING: // 字符串
+                            case STRING: // 字符串
                                 value = cell.getStringCellValue();
                                 break;
-                            case HSSFCell.CELL_TYPE_BOOLEAN: // Boolean
+                            case BOOLEAN: // Boolean
                                 value = cell.getBooleanCellValue();
                                 break;
-                            case HSSFCell.CELL_TYPE_FORMULA: // 公式
+                            case FORMULA: // 公式
                                 value = cell.getCellFormula() + "";
                                 break;
-                            case HSSFCell.CELL_TYPE_BLANK: // 空值
+                            case BLANK: // 空值
                                 value = "";
                                 break;
-                            case HSSFCell.CELL_TYPE_ERROR: // 故障
+                            case ERROR: // 故障
                                 value = "非法字符";
                                 break;
                             default:
