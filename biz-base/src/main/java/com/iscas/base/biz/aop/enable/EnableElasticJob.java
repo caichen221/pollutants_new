@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * <p>socketIo服务器开关</>
+ * 暂时废弃，guava冲突，暂时用不了了
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -18,6 +18,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(ElasticJobConfig.class)
+@Deprecated
 public @interface EnableElasticJob {
     //是否使用datasource记录操作日志
     boolean withDatasource() default false;
