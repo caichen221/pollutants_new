@@ -39,6 +39,7 @@ buildscript {
 //    }
 //}
 
+
 subprojects  {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
@@ -54,6 +55,11 @@ subprojects  {
     sourceCompatibility = "${javaVersion}".toFloat()
     targetCompatibility = "${javaVersion}".toFloat()
 
+//    configurations.all {
+//        resolutionStrategy {
+//            force 'com.google.guava:guava:29.0-android'
+//        }
+//    }
 //    configurations {
 //        api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
 //        api.exclude group: 'org.apache.tomcat'

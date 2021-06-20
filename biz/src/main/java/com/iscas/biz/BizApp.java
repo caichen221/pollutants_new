@@ -1,5 +1,6 @@
 package com.iscas.biz;
 
+import com.dangdang.elasticjob.lite.autoconfigure.ElasticJobAutoConfiguration;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
@@ -35,7 +36,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 //暂时抛除rabbitmq的自动注册，如果使用代理websocket推送需要去掉
 @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
-        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
+        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, ElasticJobAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
 @ComponentScan(basePackages = {"com.iscas"})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
@@ -50,7 +51,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableSecurity //是否开启rsa接口请求以及返回值的加解密，可在非https下使用，需要在接口使用注解
 @EnableHealthCheck //开启健康检测 readiness liveness
 @EnableDatasongClientPlus //是否开启Datasongclient客户端
-//@EnableSocketio //是否开启Socketio的支持
+@EnableSocketio //是否开启Socketio的支持
 //@EnableElasticJob(withDatasource = true)
 @EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
 @EnableRetry(proxyTargetClass = true) //是否允许方法重试功能

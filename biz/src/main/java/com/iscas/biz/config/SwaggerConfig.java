@@ -1,5 +1,6 @@
 //package com.iscas.biz.config;
 //
+//import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,8 @@
 //import springfox.documentation.service.ApiInfo;
 //import springfox.documentation.spi.DocumentationType;
 //import springfox.documentation.spring.web.plugins.Docket;
-//import springfox.documentation.swagger2.annotations.EnableSwagger2;
+//import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+////import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //
 ///**
 // * swagger配置
@@ -20,7 +22,8 @@
 // * @since jdk1.8
 // */
 //@Configuration
-//@EnableSwagger2
+//@EnableSwagger2WebMvc
+//@EnableKnife4j
 ////@RefreshScope
 //public class SwaggerConfig {
 //    @Value("${swagger.enable: true}")
@@ -32,7 +35,7 @@
 //                .enable(swaggerEnable)
 //                .select()
 //                // 自行修改为自己的包路径
-//                .apis(RequestHandlerSelectors.basePackage("com.iscas.biz.test.controller"))
+//                .apis(RequestHandlerSelectors.basePackage("com.iscas"))
 //                .paths(PathSelectors.any())
 //                .build();
 //    }

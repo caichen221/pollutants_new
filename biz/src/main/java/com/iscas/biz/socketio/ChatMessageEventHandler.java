@@ -8,10 +8,12 @@ import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,8 +23,9 @@ import java.util.concurrent.TimeUnit;
  * @since jdk1.8
  */
 @Component(value= "chatMessageEventHandler")
-@ConditionalOnClass(SocketIOServer.class)
+@ConditionalOnBean(SocketIOServer.class)
 @Slf4j
+@Lazy(true)
 public class ChatMessageEventHandler implements IEventHandler {
     private final SocketIOServer socketIOServer;
     private static int testPushCount = 0;

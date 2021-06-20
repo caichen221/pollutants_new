@@ -75,7 +75,7 @@ public class RoleController extends BaseController {
     @ApiOperation(value="新增角色数据", notes="插入")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "data", value = "新增的数据", required = true, dataType = "Map")
+                    @ApiImplicitParam(name = "data", value = "新增的数据", required = true, paramType = "body", dataTypeClass = Map.class)
             }
     )
     @PostMapping("/data")

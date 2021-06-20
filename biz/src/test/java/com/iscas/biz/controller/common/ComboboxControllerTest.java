@@ -1,5 +1,6 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.BizApp;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +23,11 @@ import javax.annotation.Resource;
  * @date 2021/6/19 20:39
  * @since jdk1.8
  */
-@SpringBootTest
+@SpringBootTest(classes = BizApp.class)
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 public class ComboboxControllerTest {
-    @Resource
+    @Autowired
     private MockMvc mockMvc;
 
     @Test

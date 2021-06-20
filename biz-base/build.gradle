@@ -113,7 +113,9 @@ dependencies {
 
     //knife4j,替代swagger
     api "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
-//    api group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
+//    api group: 'com.github.xiaoymin', name: 'knife4j-spring-boot-starter', version: '2.0.8'
+
+    api group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
     api group: 'org.springframework.retry', name: 'spring-retry'
 
@@ -152,9 +154,6 @@ dependencies {
 
     //    api group: 'com.iscas.log', name: 'log-expansion', version: "${logExpansionVersion}"
 
-    //swagger
-//    api group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
-//    api group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
     // mysql连接
 //    api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
     //mybatis分页插件(基本弃用)

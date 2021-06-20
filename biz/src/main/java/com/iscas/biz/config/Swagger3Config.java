@@ -1,9 +1,14 @@
 package com.iscas.biz.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Lazy;
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -22,12 +27,16 @@ import springfox.documentation.spring.web.plugins.Docket;
  */
 @Configuration
 @EnableOpenApi
+@EnableKnife4j
+@Import(BeanValidatorPluginsConfiguration.class)
+@Lazy(value = false)
 public class Swagger3Config {
     @Value("${swagger.enable: true}")
     private boolean swaggerEnable;
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
+//        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .enable(swaggerEnable)
                 .select()

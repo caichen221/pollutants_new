@@ -8,6 +8,7 @@ import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @since jdk1.8
  */
 @Component(value= "testMessageEventHandler")
-@ConditionalOnClass(SocketIOServer.class)
+@ConditionalOnBean(SocketIOServer.class)
 @Slf4j
 public class TestMessageEventHandler implements IEventHandler {
     private final SocketIOServer socketIOServer;
