@@ -14,6 +14,7 @@ import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -914,23 +915,33 @@ public class ExcelUtils {
                         String dataStr = lines.get(1);
                         for (String elementStr : dataStr.replace(">", ">\n").split("\n")) {
                             if (elementStr.trim().startsWith("<sheetData")) {
+                                int colCount = 100;
+
                                 osw.write("<sheetData>");
 
                                 int[] rowIndex = new int[1];
                                 int times = 0;
                                 //获取数据，在sheetData下写入，直至拿不到数据。
                                 boolean firstWrite = true;
+
                                 while (true) {
                                     ExcelResult excelResult = flowExcelDataProducer.supply(++times, currentSheetName);
                                     if (excelResult == null) {
                                         break;
                                     }
+                                    colCount = excelResult.getHeader().size();
                                     //写入数据
                                     writeData(osw, excelResult, firstWrite, rowIndex);
                                     firstWrite = false;
                                     osw.flush();
                                 }
-                                osw.write("</sheetData>");
+                                osw.write("</sheetData>\n");
+//                                //写入列信息，修改列的格式为文本格式、
+//                                osw.write("<cols>");
+//                                for (int i = 0; i < colCount; i++) {
+//                                    osw.write("<col style=\"1\" width=\"30\" max=\""+(i + 1)+"\" min=\""+(i + 1)+"\"/>");
+//                                }
+//                                osw.write("</cols>");
                             } else {
                                 osw.write(elementStr);
                             }
@@ -982,7 +993,7 @@ public class ExcelUtils {
     }
 
     private static void writeData(OutputStreamWriter osw, ExcelResult excelResult, boolean firstWrite, int[] rowIndex) throws IOException, IntrospectionException, InvocationTargetException, IllegalAccessException {
-        String cellStr = "<c r=\"@wordIndex@@index@\"><v>@data@</v></c>";
+        String cellStr = "<c r=\"@wordIndex@@index@\" s=\"1\" t=\"s\" ><v>@data@</v></c>";
         List content = excelResult.getContent();
         final LinkedHashMap<String, String>  header = excelResult.getHeader();
         //如果是第一次写入，顺带写入表头

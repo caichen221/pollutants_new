@@ -31,8 +31,8 @@ public class FlowExportExcelController {
                             return null;
                         }
                         List<Model> models = new ArrayList<>();
-                        for (int i = 0; i < 100000; i++) {
-                            Model model = new Model("页1-a" + i, "b" + i, "2020-11-12");
+                        for (int i = 0; i < 100; i++) {
+                            Model model = new Model("0.000000000521", "0.00000000000000145" + i, "2020-11-12");
                             models.add(model);
                         }
                         ExcelUtils.ExcelResult<Model> excelResult = new ExcelUtils.ExcelResult<>();
@@ -46,7 +46,7 @@ public class FlowExportExcelController {
                             return null;
                         }
                         List<Model> models = new ArrayList<>();
-                        for (int i = 0; i < 100000; i++) {
+                        for (int i = 0; i < 100; i++) {
                             Model model = new Model("页2-a" + i, "b" + i, "2020-11-12");
                             models.add(model);
                         }

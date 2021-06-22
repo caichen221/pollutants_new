@@ -14,6 +14,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
@@ -33,6 +34,7 @@ import java.util.Map;
 @Aspect
 @Component
 @Slf4j
+@ConditionalOnBean(AbstractAuthService.class)
 public class RequiredRoleAspect implements Constants {
 
     @Autowired

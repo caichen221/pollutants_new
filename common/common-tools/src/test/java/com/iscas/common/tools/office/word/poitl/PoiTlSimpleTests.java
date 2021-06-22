@@ -28,7 +28,7 @@ public class PoiTlSimpleTests {
      * */
     @Test
     public void testSimple() throws IOException {
-        ClassPathResource pathResource = new ClassPathResource("poitl/word-simple.xlsx");
+        ClassPathResource pathResource = new ClassPathResource("poitl/word-simple.docx");
         XWPFTemplate template = XWPFTemplate.compile(pathResource.getStream()).render(
                 new HashMap<String, Object>(){{
                     put("title", "Hi, Simple Word Test");

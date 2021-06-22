@@ -5,6 +5,7 @@ import com.iscas.templet.common.ResponseEntity;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
@@ -32,6 +33,7 @@ import java.io.InputStream;
  */
 @Service
 @Slf4j
+@ConditionalOnBean(value = {JavaMailSender.class, TemplateEngine.class})
 public class SendEmailService {
     @Autowired
     private JavaMailSender javaMailSender;
