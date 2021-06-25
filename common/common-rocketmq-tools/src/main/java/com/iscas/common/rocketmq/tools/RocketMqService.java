@@ -46,7 +46,7 @@ public class RocketMqService {
      * @param tags           标识,多个用||号隔开
      * @param timeout       发送超时时长
      * */
-    public RocketMqService(String namesrvAddr,  String topic, String tags, int timeout) {
+    public RocketMqService(String namesrvAddr, String topic, String tags, int timeout) {
         this.namesrvAddr = namesrvAddr;
         this.topic = topic;
         this.tags = tags;
@@ -78,7 +78,7 @@ public class RocketMqService {
      * @throws Exception
      */
     public List<SendResult> send(String producerGroup, List<String> msgList) throws MQClientException, Exception {
-        return this.send(producerGroup, msgList, false, false, 0);
+        return this.send(producerGroup, msgList, false, null, 0);
     }
 
     /**
@@ -86,21 +86,21 @@ public class RocketMqService {
      * @param producerGroup     生产组
      * @param msgList           消息集合
      * @param isBatch           是否批处理
-     * @param isOrder           是否为顺序消息
+     * @param orderId           顺序编号
      * @param delayTimeLevel    消息等级(延后发送)，为0则立即发送，等级从1到10
      * @return
      * @throws MQClientException
      * @throws Exception
      */
-    public List<SendResult> send(String producerGroup, List<String> msgList, boolean isBatch, boolean isOrder, int delayTimeLevel) throws MQClientException, Exception {
+    public List<SendResult> send(String producerGroup, List<String> msgList, boolean isBatch, Integer orderId, int delayTimeLevel) throws MQClientException, Exception {
         this.producerGroup = producerGroup;
         if (msgList == null || msgList.size()<=0){
             throw new RuntimeException("send rocket topic<" + topic + "> mq message to List<String> is null ...");
         }
         DefaultMQProducer producer = this.createMQProducer();
         List<Message> messageList = new ArrayList<Message>();
-        //生成随机数，保证本批消息发送到topic同一个索引位queue，推荐使用具有业务意义的编号，如：订单号，保证同一个订单业务发送到同一个队列中
-        int order = RandomUtils.nextInt(1000, 10000);
+        //保证本批消息发送到topic同一个索引位queue，推荐使用具有业务意义的编号，如：订单号，保证同一个订单业务发送到同一个队列中
+//        int order = RandomUtils.nextInt(1000, 10000);
         //封装到message对象中
         for (String msg : msgList){
             //delayTimeLevel：定时消息等级，指定的时间后才能传递，不支持任意精度时间。按level等级划分，默认从level=1开始,如果level=0则不延时，具体如messageDelayLevel值
@@ -114,9 +114,9 @@ public class RocketMqService {
             producer.start();
             //是否批量发送，批量发送消息可提高传递小消息的性能
             if (isBatch) {
-                return this.sendMqAlikeList(producer, messageList, isOrder, order);
+                return this.sendMqAlikeList(producer, messageList, orderId);
             }else {
-                return this.sendMqDisaffinityList(producer, messageList, isOrder, order);
+                return this.sendMqDisaffinityList(producer, messageList, orderId);
             }
         }  catch (MQClientException mqce) {
             log.error("send rocket topic<" + topic + "> rocketMq client error:", mqce);
@@ -134,19 +134,18 @@ public class RocketMqService {
      * 快速或顺序发送消息
      * @param producer
      * @param messageList
-     * @param isOrder
-     * @param order
+     * @param orderId
      * @return
      * @throws Exception
      */
-    private List<SendResult> sendMqDisaffinityList(DefaultMQProducer producer, List<Message> messageList, boolean isOrder, int order) throws Exception{
+    private List<SendResult> sendMqDisaffinityList(DefaultMQProducer producer, List<Message> messageList, Integer orderId) throws Exception{
         List<SendResult> sendResultList = new ArrayList<SendResult>();
         for (Message m : messageList){
             try {
-                if (isOrder){
+                if (orderId != null){
                     //顺序发送，适用场景：订单的下单、待支付、已支付、待打包、已发货等，一定要保证消息顺序消费
                     //对所有队例总数取模计算，获得索引位上的队列
-                    sendResultList.add(producer.send(m, (list, message, o) -> list.get((Integer) o % list.size()), order));
+                    sendResultList.add(producer.send(m, (list, message, o) -> list.get((Integer) o % list.size()), orderId));
                 }else {
                     sendResultList.add(producer.send(m));
                 }
@@ -168,18 +167,17 @@ public class RocketMqService {
      * 使用限制:同一批次的消息应具有：相同的主题，相同的waitStoreMsgOK，并且不支持计划。一批消息的总大小不得超过1M
      * @param producer
      * @param messageList
-     * @param isOrder
-     * @param order
+     * @param orderId 顺序编号
      * @return
      * @throws Exception
      */
-    private List<SendResult> sendMqAlikeList(DefaultMQProducer producer, List<Message> messageList, boolean isOrder, int order) throws Exception{
-        if (isOrder){
+    private List<SendResult> sendMqAlikeList(DefaultMQProducer producer, List<Message> messageList, Integer orderId) throws Exception{
+        if (orderId != null){
             //顺序发送，适用场景：订单的下单、待支付、已支付、待打包、已发货等，一定要保证消息顺序消费
             //注意：如果新的topic，此处获取topic下的队列会出错，请先建立topic
             List<MessageQueue> list = producer.fetchPublishMessageQueues(topic);
             //对所有队例总数取模计算，获得索引位上的队列
-            return Arrays.asList(producer.send(messageList, list.get(order % list.size())));
+            return Arrays.asList(producer.send(messageList, list.get(orderId % list.size())));
         }else {
             return Arrays.asList(producer.send(messageList));
         }
@@ -228,8 +226,8 @@ public class RocketMqService {
      * @throws MQClientException
      * @throws Exception
      */
-    public void pullMq(String consumerGroup, HeaderInterface headerInterface) throws MQClientException, Exception {
-        this.pullMq(consumerGroup, headerInterface, false, false);
+    public void pull(String consumerGroup, HeaderInterface headerInterface) throws MQClientException, Exception {
+        this.pull(consumerGroup, headerInterface, false, false);
     }
     /**
      * 监听MQ队列，拉取MQ消息并进行消费(支持广播消费模式)
@@ -240,7 +238,7 @@ public class RocketMqService {
      * @throws MQClientException
      * @throws Exception
      */
-    public void pullMq(String consumerGroup, HeaderInterface headerInterface, boolean isBroadcasting, boolean isOrder) throws MQClientException, Exception {
+    public void pull(String consumerGroup, HeaderInterface headerInterface, boolean isBroadcasting, boolean isOrder) throws MQClientException, Exception {
         this.consumerGroup = consumerGroup;
         //消费者的组名
         DefaultMQPushConsumer consumer = this.createMqConsumer(isBroadcasting);
@@ -322,25 +320,5 @@ public class RocketMqService {
         }));
     }
 
-//    public static void main(String[] args) throws Exception {
-//        // tag="pushA || pushB || pushC" 用||隔开表示多个tag消息都可以接收,null或*表示主题所有队列，但是发送MQ一条消息只能有一个tag标签
-//        RocketMqUtils rocketMqUtils = new RocketMqUtils("192.168.1.1:9876;192.168.1.2:9876", "test-topic-04", "pushA",3000);
-//        //生产消息
-//        List<String> msgList = new ArrayList<String>();
-//        for (int i = 0;i<10;i++){
-//            msgList.add("order_" + UUID.randomUUID().toString());
-//            if ((i + 1) % 10 == 0) {
-//                TimeUnit.SECONDS.sleep(3);
-//            }
-//        }
-//        //发送同步消息
-//        rocketMqUtils.sendMq("cluster-test-group", msgList, false, true, 3);
-//
-//        //消费消息,如果多个消费者线程（应用）consumerGroup相同，则天然具备了负载均衡消费topic消息能力
-////        rocketMqUtils.pullMq("test-consumer-group", (message)->{
-////            String messageBody = new String(message.getBody(), RemotingHelper.DEFAULT_CHARSET);
-////            System.out.println("消费响应：tag : " + message.getTags() + ",  msgBody : " + messageBody);//输出消息内容
-////        }, true);
-//    }
 
 }
