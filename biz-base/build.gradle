@@ -99,6 +99,8 @@ dependencies {
 
     api ("com.github.kuhn-he:elastic-job-lite-spring-boot-starter:${elasticJobVersion}")
 
+    api "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasyptStarterVersion}"
+
 
     // mysql连接
     api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"

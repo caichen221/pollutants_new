@@ -59,6 +59,15 @@ public class TestPropertyResource extends BaseController {
     @Value("#{'aa'.matches('.+')}")
     private boolean matches;
 
+    @Value("#{systemProperties['user.dir']}")
+    private String userDir;
+
+    @Value("#{systemProperties['java.home']}")
+    private String javaHome;
+
+    @Value("${user_default_pwd}")
+    private String defaultPwd;
+
     @GetMapping
     public ResponseEntity testPropertyResource() {
         System.out.println("张三年龄：" + age);
@@ -75,6 +84,8 @@ public class TestPropertyResource extends BaseController {
         System.out.println("--测试spel#条件运算:" + condition);
         System.out.println("--测试spel#正则运算:" + matches);
         System.out.println("--测试spel#map:" + a);
+        System.out.println("--测试spel#javahome:" + javaHome);
+        System.out.println("--测试spel#userdir:" + userDir);
         return getResponse();
     }
 }
