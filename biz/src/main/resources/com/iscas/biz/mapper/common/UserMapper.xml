@@ -15,17 +15,17 @@
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
     select *
-    from user
+    from user_info
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
 
   <update id="updatePwd" parameterType="com.iscas.biz.domain.common.User">
-    update user set user_pwd = #{userPwd,jdbcType=VARCHAR}
+    update user_info set user_pwd = #{userPwd,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 
   <select id="selectUserByIds" resultMap="BaseResultMap" parameterType="java.util.List">
-    select * from user where user_id in
+    select * from user_info where user_id in
     <foreach collection="list" item="id" open="(" close=")" separator=",">
       #{id, jdbcType=INTEGER}
     </foreach>
