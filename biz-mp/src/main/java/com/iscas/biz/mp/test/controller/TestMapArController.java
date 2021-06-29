@@ -2,12 +2,15 @@ package com.iscas.biz.mp.test.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
+import com.iscas.biz.mp.test.mapper.TestMpArMapper;
 import com.iscas.biz.mp.test.model.TestMpAr;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
@@ -20,6 +23,8 @@ import java.util.List;
 @RestController
 @ConditionalOnMybatis
 public class TestMapArController extends BaseController {
+    @Autowired
+    private TestMpArMapper testMpArMapper;
 
     @PostMapping("/insert")
     public ResponseEntity insert() {
@@ -57,6 +62,24 @@ public class TestMapArController extends BaseController {
         TestMpAr testMpAr = new TestMpAr();
         testMpAr.setId(1);
         testMpAr.deleteById();
+        return response;
+    }
+
+
+    @GetMapping("/nested")
+    public ResponseEntity nested() {
+        ResponseEntity response = getResponse();
+
+        QueryWrapper<TestMpAr> queryWrapper = new QueryWrapper<>();
+        queryWrapper.and(new Consumer<QueryWrapper<TestMpAr>>() {
+            @Override
+            public void accept(QueryWrapper<TestMpAr> testMpArQueryWrapper) {
+                testMpArQueryWrapper.like("name", "11")
+                        .or().like("name", "111");
+            }
+        }).in("id", 49);
+        List<TestMpAr> testMpArs = testMpArMapper.selectList(queryWrapper);
+        response.setValue(testMpArs);
         return response;
     }
 
