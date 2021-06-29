@@ -17,6 +17,10 @@ buildscript {
             url "${spring2Url}"
             allowInsecureProtocol = true
         }
+        maven {
+            url "${gradlePluginUrl}"
+            allowInsecureProtocol = true
+        }
         jcenter()
         mavenCentral()
 
@@ -24,6 +28,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${gradleProtobufGenerateVersion}")
+        classpath "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0"
 //        classpath "se.transmode.gradle:gradle-docker:${gradle_docker_version}"
     }
 }
@@ -112,6 +117,9 @@ subprojects  {
         compileOnly "org.projectlombok:lombok"
         testAnnotationProcessor "org.projectlombok:lombok"
         testCompileOnly "org.projectlombok:lombok"
+
+
+
 
         //junit
         testImplementation ("junit:junit:${junitVersion}")

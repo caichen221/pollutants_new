@@ -3,7 +3,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/cglib/cglib
     api group: 'cglib', name: 'cglib', version: "${cglibVersion}"
-
 }
 //install {
 //    repositories.mavenInstaller {

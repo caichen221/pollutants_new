@@ -128,4 +128,7 @@ include 'samples:distributed-transaction:transaction-rocketmq:transaction-rocket
 findProject(':samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-notify-server2')?.name = 'transaction-rocketmq-notify-server2'
 include 'samples:springboot-samples'
 findProject(':samples:springboot-samples')?.name = 'springboot-samples'
+include 'pluggable-annotation-processing'
+include 'special:pluggable-annotation-processing'
+findProject(':special:pluggable-annotation-processing')?.name = 'pluggable-annotation-processing'
 

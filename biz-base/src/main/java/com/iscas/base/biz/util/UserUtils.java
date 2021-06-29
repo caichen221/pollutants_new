@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 用户工具类
@@ -20,6 +21,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 public class UserUtils {
+
     private UserUtils() {}
     /**
      * 获取当前登录的用户名
