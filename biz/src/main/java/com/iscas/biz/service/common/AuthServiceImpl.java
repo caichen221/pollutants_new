@@ -24,6 +24,7 @@ import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.view.tree.TreeResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -47,12 +51,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @ConditionalOnMybatis
 public class AuthServiceImpl extends AbstractAuthService {
+    private static final String CACHE_KEY_LOGIN_ERROR_COUNT = "CACHE_KEY_LOGIN_ERROR_COUNT";
+    private static final String CACHE_KEY_USER_LOCK = "CACHE_KEY_USER_LOCK";
+    private static final int MAX_LOGIN_ERROR_COUNT = 5;
     private final IAuthCacheService authCacheService;
     private final ResourceMapper resourceMapper;
     private final RoleMapper roleMapper;
     private final MenuMapper menuMapper;
     private final UserMapper userMapper;
     private final MenuService menuService;
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+
 
     public AuthServiceImpl(IAuthCacheService authCacheService, ResourceMapper resourceMapper,
                            RoleMapper roleMapper, MenuMapper menuMapper, UserMapper userMapper, MenuService menuService) {
@@ -212,6 +221,20 @@ public class AuthServiceImpl extends AbstractAuthService {
             e.printStackTrace();
             throw new LoginException("非法登陆", e.getMessage());
         }
+        String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
+        String userLoginErrorCountKey = CACHE_KEY_LOGIN_ERROR_COUNT + "_" + username;
+        if (authCacheService.get(userLockedKey) != null) {
+            throw new LoginException("用户登录连续失败次数过多，已被锁定，解锁时间2分钟");
+        }
+        Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey);
+        if (errCount != null && errCount >= MAX_LOGIN_ERROR_COUNT) {
+            authCacheService.set(userLockedKey, "locked");
+            scheduledExecutorService.scheduleWithFixedDelay(() -> {
+                authCacheService.remove(userLockedKey);
+                authCacheService.remove(userLoginErrorCountKey);
+            }, 0, 120, TimeUnit.SECONDS);
+            throw new LoginException("用户登录连续失败次数过多，已被锁定，解锁时间2分钟");
+        }
 //        User dbUser = null;
         User dbUser = userMapper.selectByUserName(username);
 //        User dbUser = userService.getOne(queryWrapper);
@@ -229,6 +252,9 @@ public class AuthServiceImpl extends AbstractAuthService {
             }
 
             if (!verify) {
+                Integer count = (Integer) authCacheService.get(userLoginErrorCountKey);
+                int errorCount = count == null ? 1 : count + 1;
+                authCacheService.set(userLoginErrorCountKey, errorCount);
                 throw new LoginException("密码错误");
             }
 
@@ -295,6 +321,9 @@ public class AuthServiceImpl extends AbstractAuthService {
                 dbUser.setUserPwd(null);
                 //创建一个虚拟session
                 CustomSession.setAttribute(sessionId, SESSION_USER, dbUser);
+
+                authCacheService.remove(userLockedKey);
+                authCacheService.remove(userLoginErrorCountKey);
 
                 //处理多用户登陆的问题
 //                if (username != null) {

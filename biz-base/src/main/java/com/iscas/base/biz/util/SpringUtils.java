@@ -21,7 +21,49 @@ public class SpringUtils {
         return getRequest().getServletContext();
     }
 
-    /*获取request*/
+    /**
+     * 获取request header
+     * */
+    public static String getReqHeader(String headerName) {
+        HttpServletRequest request = getRequest();
+        return request.getHeader(headerName);
+    }
+
+    /**
+     * 获取response header
+     * */
+    public static String getResHeader(String headerName) {
+        HttpServletResponse response = getResponse();
+        return response.getHeader(headerName);
+    }
+
+    /**
+     * 设置response header
+     * */
+    public static void setResHeader(String headerName, String headerVal) {
+        HttpServletResponse response = getResponse();
+        response.setHeader(headerName, headerVal);
+    }
+
+    /**
+     * 设置request attribute
+     * */
+    public static void setReqAttr(String key, Object val) {
+        HttpServletRequest request = getRequest();
+        request.setAttribute(key, val);
+    }
+
+    /**
+     * 获取request attribute
+     * */
+    public static <T> T getReqAttr(String key, Class<T> val) {
+        HttpServletRequest request = getRequest();
+        return (T) request.getAttribute(key);
+    }
+
+    /**
+     * 获取request
+     * */
     public static HttpServletRequest getRequest(){
         HttpServletRequest request = null;
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -31,7 +73,9 @@ public class SpringUtils {
         return request;
     }
 
-    /*获取response*/
+    /**
+     * 获取response
+     * */
     public static HttpServletResponse getResponse(){
         HttpServletResponse response = null;
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -41,6 +85,9 @@ public class SpringUtils {
         return response;
     }
 
+    /**
+     * 获取session
+     * */
     public static HttpSession getSession(){
         HttpServletRequest request = getRequest();
         if(request != null){
@@ -49,6 +96,9 @@ public class SpringUtils {
         return null;
     }
 
+    /**
+     * 获取session
+     * */
     public static HttpSession getSession(boolean flag){
         HttpServletRequest request = getRequest();
         if(request != null){
@@ -57,6 +107,9 @@ public class SpringUtils {
         return null;
     }
 
+    /**
+     * 获取客户端地址
+     * */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static String getIpAddr() {
         HttpServletRequest request = getRequest();
