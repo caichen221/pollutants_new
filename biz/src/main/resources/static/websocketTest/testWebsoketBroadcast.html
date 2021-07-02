@@ -14,8 +14,8 @@
         //订阅消息
         function subscribe() {
 
-            stompClient.subscribe('/queue/message', function(response){
-                console(response);
+            stompClient.subscribe('/topic/getResponse', function(response){
+                console.log(response);
                 alert("/topic/getResponse 你接收到的消息为:" + response);
             });
 
@@ -28,7 +28,7 @@
 
             stompClient.connect({
                     //这里可以改成token
-                    Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjIxOTg1NjQxNjAsImlhdCI6MTUzMTg5NzUwMCwidXNlcm5hbWUiOiJ6cXcxMSJ9.VFR2EKUx5BTYLDkDogiLA9LfNVoPjOzQ3rTWoEy7He4' // 携带客户端信息
+                    Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjI1MTk2MjQ4LCJleHAiOjE2MjUyODI2NDgsImlhdCI6MTYyNTE5NjI0OCwidXNlcm5hbWUiOiJhZG1pbiJ9.7c0kQNZuXcYALlH1C8aqday8TNAQcSoquSjczKsF76o' // 携带客户端信息
                 },
                 function connectCallback(frame) {
                     // 连接成功时（服务器响应 CONNECTED 帧）的回调方法

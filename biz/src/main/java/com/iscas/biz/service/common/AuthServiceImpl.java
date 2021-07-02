@@ -224,7 +224,7 @@ public class AuthServiceImpl extends AbstractAuthService {
         String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
         String userLoginErrorCountKey = CACHE_KEY_LOGIN_ERROR_COUNT + "_" + username;
         if (authCacheService.get(userLockedKey) != null) {
-            throw new LoginException("用户登录连续失败次数过多，已被锁定，解锁时间2分钟");
+            throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
         Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey);
         if (errCount != null && errCount >= MAX_LOGIN_ERROR_COUNT) {
@@ -233,7 +233,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                 authCacheService.remove(userLockedKey);
                 authCacheService.remove(userLoginErrorCountKey);
             }, 0, 120, TimeUnit.SECONDS);
-            throw new LoginException("用户登录连续失败次数过多，已被锁定，解锁时间2分钟");
+            throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
 //        User dbUser = null;
         User dbUser = userMapper.selectByUserName(username);

@@ -151,6 +151,7 @@
     <logger name="net.javacrumbs.shedlock.core.DefaultLockingTaskExecutor" level="INFO" />
     <logger name="com.atomikos.jdbc.AbstractDataSourceBean" level="WARN" />
     <logger name="com.atomikos.jdbc.AtomikosConnectionProxy" level="ERROR" />
+    <logger name="org.springframework.boot.actuate.mail" level="ERROR" />
     <logger name="root" level="DEBUG" />
 
 

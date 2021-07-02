@@ -1,6 +1,6 @@
 2、添加motan rpc工具
 3、springboot2.4.1websocket推送的问题------------------------已经解决
-4、JarsperReport
+4、JarsperReport----------------不实现
 5、web-flux samples---------------------------完成
 6、r2dbc------------------编写了samples
 7、jooq https://blog.csdn.net/qq_39940674/article/details/92763997----------完成
@@ -23,7 +23,7 @@
 20、SMAL2协议  https://blog.csdn.net/xuliang1265/article/details/103212969
 
 ==============2021-04-23========================
-21、shardingSphere
+21、shardingSphere-------------实现了ShardingJdbc
 
 =============2021-04-26=====================
 22、引入微信等登陆方式
