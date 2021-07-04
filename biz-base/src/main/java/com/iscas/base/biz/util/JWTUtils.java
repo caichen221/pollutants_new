@@ -9,9 +9,8 @@ import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.common.tools.core.date.DateRaiseUtils;
-import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 
 import javax.servlet.http.Cookie;
@@ -85,7 +84,7 @@ public class JWTUtils {
             }
         }
         if (token == null) {
-            throw new AuthorizationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+            throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
 
         //如果token不为null,校验token
@@ -97,15 +96,15 @@ public class JWTUtils {
                 throw new ValidTokenException("token 校验失败");
             }
         } catch (ValidTokenException e) {
-            throw new AuthorizationRuntimeException("未获取到当前登录的用户信息");
+            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         } catch (UnsupportedEncodingException e) {
-            throw new AuthorizationRuntimeException("未获取到当前登录的用户信息");
+            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
         IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
 //        String tokenx = (String) CaffCacheUtils.get("user-token" + username);
         String tokenx = (String) authCacheService.get("user-token" + username);
         if(!Objects.equals(token, tokenx)){
-            throw new AuthorizationRuntimeException("身份认证信息有误", "token有误或已被注销");
+            throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }
         return username;
     }

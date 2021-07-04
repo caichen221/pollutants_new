@@ -121,9 +121,9 @@ public class ExceptionAdivisor {
         return responseEntity;
     }
 
-    @ExceptionHandler(value = AuthorizationRuntimeException.class)
+    @ExceptionHandler(value = AuthenticationRuntimeException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity loginRuntimeException(AuthorizationRuntimeException e){
+    public ResponseEntity loginRuntimeException(AuthenticationRuntimeException e){
         ResponseEntity responseEntity = new ResponseEntity(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
         responseEntity.setDesc(e.getMsgDetail() != null ? e.getMsgDetail() : getMessage(e));
         responseEntity.setMessage(e.getMessage());
@@ -141,6 +141,18 @@ public class ExceptionAdivisor {
     @ExceptionHandler(value = AuthorizationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity to403Exception(AuthorizationException e){
+        ResponseEntity responseEntity = new ResponseEntity(HttpStatus.FORBIDDEN.value(), e.getMessage());
+        responseEntity.setDesc(e.getMsgDetail() != null ? e.getMsgDetail() : getMessage(e));
+        log.error("异常", e);
+        setResponseCros();
+        setResponseInfo(responseEntity);
+        AuthContextHolder.removeContext();
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = AuthorizationRuntimeException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity to403Exception(AuthorizationRuntimeException e){
         ResponseEntity responseEntity = new ResponseEntity(HttpStatus.FORBIDDEN.value(), e.getMessage());
         responseEntity.setDesc(e.getMsgDetail() != null ? e.getMsgDetail() : getMessage(e));
         log.error("异常", e);

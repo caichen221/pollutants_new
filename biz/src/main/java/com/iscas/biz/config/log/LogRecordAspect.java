@@ -8,7 +8,7 @@ import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.LogInfo;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -49,7 +49,7 @@ public class LogRecordAspect implements Constants {
         String username = "";
         try{
             username = JWTUtils.getLoginUsername();
-        }catch (AuthorizationRuntimeException e){
+        }catch (AuthenticationRuntimeException e){
             username = "unknown";
         }
 

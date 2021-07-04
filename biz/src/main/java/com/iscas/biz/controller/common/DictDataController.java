@@ -8,10 +8,9 @@ import com.iscas.biz.config.log.LogType;
 import com.iscas.biz.config.log.OperateType;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.DictDataService;
-import com.iscas.datasong.lib.response.data.SearchDataResponse;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableSearchRequest;
@@ -108,7 +107,7 @@ public class DictDataController extends BaseController {
         String username;
         try {
             username = JWTUtils.getLoginUsername();
-        } catch (AuthorizationRuntimeException e) {
+        } catch (AuthenticationRuntimeException e) {
             username = "unknown";
         }
         return username;

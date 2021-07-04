@@ -1,7 +1,7 @@
 package com.iscas.base.biz.controller.common;
 
 import com.iscas.base.biz.util.AuthContextHolder;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
@@ -83,8 +83,8 @@ public class ErrorPageController {
             if(cause != null && cause instanceof MultiPartParserDefinition.FileTooLargeException){
                 throw new BaseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception)attribute).getMessage());
             }
-        } else if (attribute != null && attribute instanceof AuthorizationRuntimeException) {
-            throw (AuthorizationRuntimeException) attribute;
+        } else if (attribute != null && attribute instanceof AuthenticationRuntimeException) {
+            throw (AuthenticationRuntimeException) attribute;
         }
         throw (Exception) attribute;
     }

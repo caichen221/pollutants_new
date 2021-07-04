@@ -13,7 +13,7 @@ import com.iscas.biz.mapper.common.LogInfoMapper;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.LogInfoService;
 import com.iscas.biz.service.common.ParamService;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
         String username;
         try {
             username = JWTUtils.getLoginUsername();
-        } catch (AuthorizationRuntimeException e) {
+        } catch (AuthenticationRuntimeException e) {
             username = "unknown";
         }
         if (param == null) {

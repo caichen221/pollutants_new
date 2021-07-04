@@ -3,14 +3,13 @@ package com.iscas.base.biz.util;
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.common.web.tools.cookie.CookieUtils;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 用户工具类
@@ -38,7 +37,7 @@ public class UserUtils {
             }
         }
         if (token == null) {
-            throw new AuthorizationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+            throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
 
         //如果token不为null,校验token
@@ -50,9 +49,9 @@ public class UserUtils {
                 throw new ValidTokenException("token 校验失败");
             }
         } catch (ValidTokenException e) {
-            throw new AuthorizationRuntimeException("未获取到当前登录的用户信息");
+            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         } catch (UnsupportedEncodingException e) {
-            throw new AuthorizationRuntimeException("未获取到当前登录的用户信息");
+            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
 //        String tokenx = (String) CaffCacheUtils.get("user-token" + username);
 //        if(!Objects.equals(token, tokenx)){

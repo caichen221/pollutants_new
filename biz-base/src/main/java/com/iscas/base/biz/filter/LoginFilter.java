@@ -9,6 +9,7 @@ import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.common.web.tools.cookie.CookieUtils;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +64,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             e.printStackTrace();
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :获取角色信息失败", e);
-            throw new AuthorizationRuntimeException("获取角色信息失败", "获取角色信息失败");
+            throw new AuthenticationRuntimeException("获取角色信息失败", "获取角色信息失败");
         }
 
         Collection<Url> urls = urlMap.values();
@@ -92,7 +93,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 //                OutputUtils.output(response, 401, "未携带身份认证信息",
 //                        "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
 //                return;
-                throw new AuthorizationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+                throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
             }
             authContext.setToken(token);
             IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
@@ -100,7 +101,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             if(authCacheService.get(token) == null){
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :token有误或已被注销");
-                throw new AuthorizationRuntimeException("身份认证信息有误", "token有误或已被注销");
+                throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
             }
             //如果token不为null,校验token
             String username = null;
@@ -111,7 +112,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 e.printStackTrace();
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :校验token出错");
-                throw new AuthorizationRuntimeException("校验身份信息出错", "校验token出错");
+                throw new AuthenticationRuntimeException("校验身份信息出错", "校验token出错");
             }
             List<Role> roles = authService.getRoles(username);
             authContext.setRoles(roles);
@@ -134,7 +135,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             if (roles == null) {
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                         " :token中携带的用户或其角色信息不存在");
-                throw new AuthorizationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
+                throw new AuthenticationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
             }
             for (Role role : roles) {
 //                if (role == null) {

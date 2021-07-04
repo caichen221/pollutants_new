@@ -87,10 +87,10 @@ dependencies {
     //====================使用datasong-clientjar包时候使用 begin
 //    api("org.apache.httpcomponents:httpmime:4.5.2")
 //    //sql 解析
-//    compile("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
+//    api("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
 //
 //    //thrift
-//    compile("org.apache.thrift:libthrift:0.10.0")
+//    api("org.apache.thrift:libthrift:0.10.0")
     //====================使用datasong-clientjar包时候使用 end
 
 
@@ -133,6 +133,9 @@ dependencies {
 //    //使用redis
 //    api group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-redis-jedis', version: "${shedlockVersion}"
 
+
+    //引入cas-client
+    api group: 'org.jasig.cas.client', name: 'cas-client-core', version: '3.6.2'
 
 
 

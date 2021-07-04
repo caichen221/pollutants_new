@@ -257,24 +257,30 @@ public class AuthServiceImpl extends AbstractAuthService {
                 authCacheService.set(userLoginErrorCountKey, errorCount);
                 throw new LoginException("密码错误");
             }
+            //生成token
+            createToken(response, username, responseEntity, expire, cookieExpire, userLockedKey, userLoginErrorCountKey);
 
-            String token = null;
-            try {
-                String sessionId = UUID.randomUUID().toString();
-                token = JWTUtils.createToken(username, expire);
-                //清除以前的TOKEN
-                //暂时加上这个处理
+        }
+    }
+
+    public void createToken(HttpServletResponse response, String username, ResponseEntity responseEntity, int expire, int cookieExpire, String userLockedKey, String userLoginErrorCountKey) throws LoginException {
+        String token = null;
+        try {
+            String sessionId = UUID.randomUUID().toString();
+            token = JWTUtils.createToken(username, expire);
+            //清除以前的TOKEN
+            //暂时加上这个处理
 //                String tokenold = (String) CaffCacheUtils.get("user-token" + username);
-                String tokenold = (String) authCacheService.get("user-token" + username);
-                if (tokenold != null) {
+            String tokenold = (String) authCacheService.get("user-token" + username);
+            if (tokenold != null) {
 //                    CaffCacheUtils.remove(tokenold);
-                    authCacheService.remove(tokenold);
-                }
+                authCacheService.remove(tokenold);
+            }
 //                CaffCacheUtils.set("user-token" + username, token);
-                authCacheService.set("user-token" + username, token);
+            authCacheService.set("user-token" + username, token);
 
-                CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
-                List<Role> roles = getRoles(username);
+            CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
+            List<Role> roles = getRoles(username);
 //                Map<String, Role> auth = getAuth();
 //                List<Role> roles = new ArrayList<>();
 //                if (roleKey != null) {
@@ -286,46 +292,44 @@ public class AuthServiceImpl extends AbstractAuthService {
 //                    }
 //                }
 
-                Map map = new HashMap<>(2 << 2);
-                List<String> menus = new ArrayList<>();
-                List<Menu> menuList = new ArrayList<>();
-                for (Role role : roles) {
-                    if (Objects.equals(role.getName(), Constants.SUPER_ROLE_KEY)) {
-                        //超级管理员角色
-                        List<Menu> dbMenus = getMenus();
-                        if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
-                    } else {
-                        List<Menu> roleMenus = role.getMenus();
-                        if (roleMenus != null) menuList.addAll(roleMenus);
-                    }
+            Map map = new HashMap<>(2 << 2);
+            List<String> menus = new ArrayList<>();
+            List<Menu> menuList = new ArrayList<>();
+            for (Role role : roles) {
+                if (Objects.equals(role.getName(), Constants.SUPER_ROLE_KEY)) {
+                    //超级管理员角色
+                    List<Menu> dbMenus = getMenus();
+                    if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
+                } else {
+                    List<Menu> roleMenus = role.getMenus();
+                    if (roleMenus != null) menuList.addAll(roleMenus);
                 }
-                if (CollectionUtils.isNotEmpty(menuList)) {
-                    menuList.add(new Menu("-1","首页"));
-                    menus = menuList.stream().map(ml -> ml.getName()).distinct().collect(Collectors.toList());
-                    //修改返回菜单的数据结构
-                    TreeResponseData<com.iscas.biz.domain.common.Menu> tree = menuService.getTree();
-                    TreeResponseData<com.iscas.biz.domain.common.Menu> finalMenus = getFinalMenus(tree, menus);
-                    map.put("menu", finalMenus);
-                }
+            }
+            if (CollectionUtils.isNotEmpty(menuList)) {
+                menuList.add(new Menu("-1","首页"));
+                menus = menuList.stream().map(ml -> ml.getName()).distinct().collect(Collectors.toList());
+                //修改返回菜单的数据结构
+                TreeResponseData<com.iscas.biz.domain.common.Menu> tree = menuService.getTree();
+                TreeResponseData<com.iscas.biz.domain.common.Menu> finalMenus = getFinalMenus(tree, menus);
+                map.put("menu", finalMenus);
+            }
 
 //                map.put("menu", menus);
-                map.put(Constants.TOKEN_KEY, token);
+            map.put(Constants.TOKEN_KEY, token);
 
 //                map.put("role", role);
 //                map.put("roleId", map.get("orgId"));
-                map.put("userId", dbUser.getUserId());
-                map.put("username", dbUser.getUserName());
-                map.put("userRealName", dbUser.getUserRealName());
 
-                responseEntity.setValue(map);
-                dbUser.setUserPwd(null);
-                //创建一个虚拟session
-                CustomSession.setAttribute(sessionId, SESSION_USER, dbUser);
+            map.put("username", username);
 
-                authCacheService.remove(userLockedKey);
-                authCacheService.remove(userLoginErrorCountKey);
+            responseEntity.setValue(map);
+            //创建一个虚拟session
+            CustomSession.setAttribute(sessionId, SESSION_USER, username);
 
-                //处理多用户登陆的问题
+            authCacheService.remove(userLockedKey);
+            authCacheService.remove(userLoginErrorCountKey);
+
+            //处理多用户登陆的问题
 //                if (username != null) {
 //                    synchronized (username.intern()) {
 //                        User dbUser1 = userService.getById(dbUser.getId());
@@ -350,18 +354,17 @@ public class AuthServiceImpl extends AbstractAuthService {
 //                    }
 //                }
 
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                throw new LoginException("登录时创建token异常", e);
-            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new LoginException("登录时创建token异常", e);
+        }
 //            catch (AuthConfigException e) {
 //                e.printStackTrace();
 //                throw new LoginException("读取权限配置信息出错", e);
 //            }
-            catch (IOException e) {
-                e.printStackTrace();
-                throw new LoginException("登录异常", e);
-            }
+        catch (IOException e) {
+            e.printStackTrace();
+            throw new LoginException("登录异常", e);
         }
     }
 

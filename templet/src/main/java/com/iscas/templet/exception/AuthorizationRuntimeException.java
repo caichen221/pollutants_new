@@ -1,7 +1,7 @@
 package com.iscas.templet.exception;
 
 /**
- *
+ * 权限校验错误
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2018/10/26 17:54
