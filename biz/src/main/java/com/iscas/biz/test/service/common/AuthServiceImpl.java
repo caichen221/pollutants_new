@@ -262,11 +262,11 @@
 //                token = JWTUtils.createToken(username, expire);
 //                //清除以前的TOKEN
 //                //暂时加上这个处理
-//                String tokenold = (String) CaffCacheUtils.get("user-token" + username);
+//                String tokenold = (String) CaffCacheUtils.get("user-token:" + username);
 //                if (tokenold != null) {
 //                    CaffCacheUtils.remove(tokenold);
 //                }
-//                CaffCacheUtils.set("user-token" + username, token);
+//                CaffCacheUtils.set("user-token:" + username, token);
 //
 //                CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
 //                String roleKey = getRoles(username);

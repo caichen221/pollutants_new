@@ -7,6 +7,8 @@ import cn.hutool.core.date.DateUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 先进先出缓存测试
  *
@@ -29,5 +31,15 @@ public class FIFOCacheTest {
         String value4 = fifoCache.get("key4");
         Assertions.assertTrue(null == value1);
         Assertions.assertEquals("value4", value4);
+    }
+
+
+    @Test
+    public void test2() throws InterruptedException {
+        Cache<String,String> fifoCache = CacheUtil.newFIFOCache(3);
+        fifoCache.put("a", "a", DateUnit.SECOND.getMillis() * 3);
+        System.out.println(fifoCache.get("a"));
+        TimeUnit.SECONDS.sleep(1);
+        System.out.println(fifoCache.get("a"));
     }
 }

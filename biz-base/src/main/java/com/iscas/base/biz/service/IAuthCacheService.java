@@ -12,4 +12,13 @@ public interface IAuthCacheService {
     void remove(String key);
     void set(String key, Object value);
     Object get(String key);
+
+    void rpush(String key, String value);
+
+    String lpop(String key);
+
+    int llen(String key);
+
+    boolean listContains(String key, String value);
+
 }

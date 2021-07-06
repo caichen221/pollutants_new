@@ -92,8 +92,8 @@ public class JWTUtils {
 //            throw new AuthorizationRuntimeException("未获取到当前登录的用户信息");
 //        }
 //        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
-////        String tokenx = (String) CaffCacheUtils.get("user-token" + username);
-//        String tokenx = (String) authCacheService.get("user-token" + username);
+////        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);
+//        String tokenx = (String) authCacheService.get("user-token:" + username);
 //        if(!Objects.equals(token, tokenx)){
 //            throw new AuthorizationRuntimeException("身份认证信息有误", "token有误或已被注销");
 //        }

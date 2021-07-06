@@ -3,11 +3,14 @@ package com.iscas.base.biz.config.redis.cache;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iscas.base.biz.config.auth.TokenProps;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
@@ -38,10 +41,17 @@ public class RedisCacheConfig {
     @Value("${spring.cache.redis.time-to-live:2000000}")
     private int timeToLive;
 
+    @Value("${login.random.data.cache.time-to-live}")
+    private int randomTimeToLive;
+
+    @Autowired
+    private TokenProps tokenProps;
+
     /**
      * 序列化配置
      */
-    @Bean
+    @Bean("redisTemplate")
+    @Primary
     public RedisTemplate<String, Serializable> redisTemplate (LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Serializable> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
@@ -51,7 +61,8 @@ public class RedisCacheConfig {
     }
 
 
-    @Bean
+    @Bean("cacheManager")
+    @Primary
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         return new RedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
                 this.getRedisCacheConfigurationWithTtl(timeToLive), // 默认策略，未配置的 key 会使用这个
@@ -61,9 +72,9 @@ public class RedisCacheConfig {
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
-        redisCacheConfigurationMap.put("auth", this.getRedisCacheConfigurationWithTtl(3000));
+        redisCacheConfigurationMap.put("auth", this.getRedisCacheConfigurationWithTtl((int) (tokenProps.getExpire().getSeconds())));
         redisCacheConfigurationMap.put("test", this.getRedisCacheConfigurationWithTtl(18000));
-        redisCacheConfigurationMap.put("test", this.getRedisCacheConfigurationWithTtl(18000));
+        redisCacheConfigurationMap.put("loginCache", this.getRedisCacheConfigurationWithTtl(randomTimeToLive));
         return redisCacheConfigurationMap;
     }
 

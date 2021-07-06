@@ -2,6 +2,7 @@ package com.iscas.base.biz.util;
 
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.FIFOCache;
 import cn.hutool.core.date.DateUnit;
 import com.iscas.base.biz.service.common.SpringService;
 import org.springframework.cache.CacheManager;

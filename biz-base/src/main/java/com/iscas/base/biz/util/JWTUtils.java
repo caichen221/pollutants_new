@@ -101,11 +101,17 @@ public class JWTUtils {
             throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
         IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
-//        String tokenx = (String) CaffCacheUtils.get("user-token" + username);
-        String tokenx = (String) authCacheService.get("user-token" + username);
-        if(!Objects.equals(token, tokenx)){
+//        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);
+
+        //修改为支持用户多会话模式
+        if (!authCacheService.listContains("user-token:" + username, token)) {
             throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }
+
+//        String tokenx = (String) authCacheService.get("user-token:" + username);
+//        if(!Objects.equals(token, tokenx)){
+//            throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
+//        }
         return username;
     }
 

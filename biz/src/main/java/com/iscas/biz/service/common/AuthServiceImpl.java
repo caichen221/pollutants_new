@@ -270,14 +270,14 @@ public class AuthServiceImpl extends AbstractAuthService {
             token = JWTUtils.createToken(username, expire);
             //清除以前的TOKEN
             //暂时加上这个处理
-//                String tokenold = (String) CaffCacheUtils.get("user-token" + username);
-            String tokenold = (String) authCacheService.get("user-token" + username);
-            if (tokenold != null) {
-//                    CaffCacheUtils.remove(tokenold);
-                authCacheService.remove(tokenold);
-            }
-//                CaffCacheUtils.set("user-token" + username, token);
-            authCacheService.set("user-token" + username, token);
+            //todo 修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
+//            String tokenold = (String) authCacheService.get("user-token:" + username);
+//            if (tokenold != null) {
+//                authCacheService.remove(tokenold);
+//            }
+//            authCacheService.set("user-token:" + username, token);
+            authCacheService.rpush("user-token:" + username, token);
+
 
             CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
             List<Role> roles = getRoles(username);
