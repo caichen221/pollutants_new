@@ -87,6 +87,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.javatuples/javatuples
     api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
 
+    //线程亲和性调度
+    api group: 'net.openhft', name: 'affinity', version: "${affinityVersion}"
+
+
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
     api group: 'ch.qos.logback', name: 'logback-core', version: "${logbackVersion}"
     api group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
