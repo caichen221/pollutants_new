@@ -131,4 +131,6 @@ findProject(':samples:springboot-samples')?.name = 'springboot-samples'
 include 'pluggable-annotation-processing'
 include 'special:pluggable-annotation-processing'
 findProject(':special:pluggable-annotation-processing')?.name = 'pluggable-annotation-processing'
+include 'samples:h2-samples'
+findProject(':samples:h2-samples')?.name = 'h2-samples'
 

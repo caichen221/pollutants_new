@@ -10,7 +10,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,4 +185,5 @@ public class AuthCacheService implements IAuthCacheService {
     private RedisCacheManager castToRedisCacheManager() {
         return (RedisCacheManager) cacheManager;
     }
+
 }
