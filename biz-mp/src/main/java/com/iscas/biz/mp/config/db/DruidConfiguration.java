@@ -37,9 +37,11 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,6 +63,8 @@ public class DruidConfiguration implements EnvironmentAware {
     private String idType;
     @Value("${mybatis-plus.type-enums-package}")
     private String enumPackages;
+//    @Value("${mp.mapper.locations}")
+//    private String mapMapperLocations;
     private final String basePath = "spring.datasource.druid.";
     private Environment environment;
     @Autowired
@@ -278,13 +282,24 @@ public class DruidConfiguration implements EnvironmentAware {
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         factory.setPlugins(interceptor);
-        MybatisPlusInterceptor mybatisPlusInterceptor;
         if (StringUtils.isNotBlank(enumPackages)) {
             factory.setTypeEnumsPackage(enumPackages);
         }
         factory.setGlobalConfig(globalConfiguration());
         sqlSessionFactoryCustomizers.customize(configuration, factory);
         factory.setTransactionFactory(new MultiDataSourceTransactionFactory());
+        //mapper config path
+        String mpMapperLocations = environment.getProperty("mp.mapper.locations");
+        if (StringUtils.isNotEmpty(mpMapperLocations)) {
+            Arrays.stream(mpMapperLocations.split(","))
+                    .forEach(location -> {
+                        try {
+                            factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(location));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
         return factory.getObject();
     }
 

@@ -1,4 +1,4 @@
-package com.iscas.opendistro;
+package com.iscas.samples.xpack;
 
 import java.sql.*;
 
@@ -9,9 +9,9 @@ import java.sql.*;
  * @date 2021/4/22 18:09
  * @since jdk1.8
  */
-public class Test {
+public class ConnectionSamples {
     public static void main(String[] args) throws SQLException {
-        String url = "jdbc:elasticsearch://localhost:9200";
+        String url = "jdbc:es://http://127.0.0.1:9200";
 
         Connection con = DriverManager.getConnection(url);
         Statement st = con.createStatement();

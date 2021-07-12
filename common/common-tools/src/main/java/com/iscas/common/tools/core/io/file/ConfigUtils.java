@@ -2,8 +2,7 @@ package com.iscas.common.tools.core.io.file;
 
 import lombok.Cleanup;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -32,5 +31,15 @@ public class ConfigUtils {
         } catch (IOException e) {
             throw new RuntimeException(String.format("从配置文件:[%s]读取配置参数:[%s]出错", fileName, key), e);
         }
+    }
+
+    /**
+     * 读取jar包外部或内部的配置文件
+     *`
+     * */
+    public static InputStream getInOutConfigStream(String uri) throws FileNotFoundException {
+        String filePath = System.getProperty("user.dir") + uri;
+        File file = new File(filePath);
+        return file.exists() ? new FileInputStream(file) : ConfigUtils.class.getResourceAsStream(uri);
     }
 }

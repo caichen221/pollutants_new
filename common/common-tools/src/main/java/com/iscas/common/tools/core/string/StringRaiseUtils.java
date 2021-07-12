@@ -38,6 +38,41 @@ public class StringRaiseUtils {
         return str;
     }
 
+    /**
+     * 破折号后的字符转为驼峰
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/7/9
+     * @param str
+     * @throws
+     * @return java.lang.String
+     */
+    public static String dashToHump(String str) {
+        String result = null;
+        if (str == null || "".equalsIgnoreCase(str)) {
+            result = str;
+        } else {
+            StringBuilder sb = new StringBuilder();
+            boolean flag = false;
+
+            for (int i = 0; i < str.length(); i++) {
+                char ch = str.charAt(i);
+                if (i != 0 && '-' == ch) {
+                    flag = true;
+                } else {
+                    if (flag == true) {
+                        ch = Character.toUpperCase(ch);
+                    }
+                    flag = false;
+                }
+                if (ch != '-') {
+                    sb.append(ch);
+                }
+            }
+            result = sb.toString();
+        }
+        return result;
+    }
 
     /**
      * 将字符串的下划线转为驼峰命名
