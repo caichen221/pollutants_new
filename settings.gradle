@@ -133,4 +133,6 @@ include 'special:pluggable-annotation-processing'
 findProject(':special:pluggable-annotation-processing')?.name = 'pluggable-annotation-processing'
 include 'samples:h2-samples'
 findProject(':samples:h2-samples')?.name = 'h2-samples'
+include 'special:biz-data-rest'
+findProject(':special:biz-data-rest')?.name = 'biz-data-rest'
 

@@ -36,7 +36,8 @@ public class AtomikosTestService {
     }
 
     public void test2() {
-        db1TestService.test2();
+        boolean b = db1TestService.test2();
+        System.out.println(b);
         db2TestService.test2();
         dynamicMapper.insert("insert into ws_data(type) values('BUSINESS')");
         throw new RuntimeException("出错啦");

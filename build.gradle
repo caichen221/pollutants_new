@@ -118,9 +118,6 @@ subprojects  {
         testAnnotationProcessor "org.projectlombok:lombok"
         testCompileOnly "org.projectlombok:lombok"
 
-
-
-
         //junit
         testImplementation ("junit:junit:${junitVersion}")
 
