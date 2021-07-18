@@ -6,10 +6,14 @@ import okhttp3.*;
 import okio.BufferedSink;
 import org.apache.poi.ss.formula.functions.T;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +46,46 @@ public class OkHttpCustomClient {
                             .connectTimeout(okHttpConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
                             .connectionPool(new ConnectionPool(okHttpConfig.getMaxIdleConnection(), okHttpConfig.getKeepAliveDuration(), TimeUnit.MINUTES))
                             .retryOnConnectionFailure(true)
+                            .sslSocketFactory(createSSLSocketFactory(), new TrustAllCerts( ))
+                            .hostnameVerifier(new TrustAllHostnameVerifier())
 //                            .cache(cache)
                             .build();
                 }
             }
         }
+    }
+
+
+    private static class TrustAllCerts implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }
+
+    private static class TrustAllHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    }
+
+    private static SSLSocketFactory createSSLSocketFactory() {
+        SSLSocketFactory ssfFactory = null;
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
+
+            ssfFactory = sc.getSocketFactory();
+        } catch (Exception e) {
+        }
+        return ssfFactory;
     }
 
 
@@ -346,7 +385,7 @@ public class OkHttpCustomClient {
      * @param: fromJsonHandler JSON字符串处理接口
      * @return: java.lang.Object
      */
-    public Object fromJson(String result, OkHttpCustomClient.FromJsonHandler fromJsonHandler) {
+    public Object fromJson(String result, FromJsonHandler fromJsonHandler) {
         return fromJsonHandler.fromJson(result);
     }
 
