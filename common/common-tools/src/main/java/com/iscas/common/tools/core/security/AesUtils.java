@@ -136,7 +136,4 @@ public final class AesUtils {
     public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception {
         return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(base64Decode(encryptStr), decryptKey);
     }
-
-
-
 }

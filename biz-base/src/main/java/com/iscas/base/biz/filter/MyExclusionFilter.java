@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurationImportFilter;
 import org.springframework.boot.autoconfigure.AutoConfigurationMetadata;
+import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Objects;
 
@@ -31,9 +33,10 @@ public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFac
     public boolean[] match(String[] autoConfigurationClasses, AutoConfigurationMetadata autoConfigurationMetadata) {
         boolean[] matches = new boolean[autoConfigurationClasses.length];
         for (int i = 0; i < matches.length; i++) {
-            //如果是Springboot-admin-client的自动配置类，查看是否允许使用
+
             if (Objects.equals(SpringBootAdminClientAutoConfiguration.class.getName(),
                     autoConfigurationClasses[i])) {
+                //如果是Springboot-admin-client的自动配置类，查看是否允许使用
                 try {
                     DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) beanFactory;
                     Map<String, Object> beansWithAnnotation = defaultListableBeanFactory.getBeansWithAnnotation(EnableSpringBootAdminClient.class);
@@ -43,6 +46,18 @@ public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFac
                     matches[i] = true;
                 }
 
+            } else if (Objects.equals(JtaAutoConfiguration.class.getName(),
+                    autoConfigurationClasses[i])) {
+                //如果是JtaAutoConfiguration的自动配置类，查看是否允许使用
+                try {
+                    DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) beanFactory;
+                    Class<? extends Annotation> aClass = (Class<? extends Annotation>) Class.forName("com.iscas.biz.mp.aop.enable.EnableAtomikos");
+                    Map<String, Object> beansWithAnnotation = defaultListableBeanFactory.getBeansWithAnnotation(aClass);
+                    matches[i] = CollectionUtil.isNotEmpty(beansWithAnnotation);
+                } catch (Exception e) {
+                    System.err.println("查找EnableAtomikos注解出错");
+                    matches[i] = true;
+                }
             } else {
                 matches[i] = true;
             }
