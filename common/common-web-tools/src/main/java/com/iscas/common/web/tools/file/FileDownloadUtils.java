@@ -104,15 +104,17 @@ public class FileDownloadUtils {
      */
     public static void downFile(HttpServletRequest request, HttpServletResponse response, File file,
                                 String name) throws Exception{
+
         Long fileLength = file.length();// 文件的长度
         if (fileLength != 0) {
             response.reset();
-            response.setContentType("application/force-download;charset=utf-8");
+//            response.setContentType("application/force-download;charset=utf-8");
             String fileName = transFileName(name, request);
-            response.setHeader(
-                    "Content-disposition",
-                    "attachment; filename="
-                            +fileName);
+//            response.setHeader(
+//                    "Content-disposition",
+//                    "attachment; filename="
+//                            +fileName);
+            setResponseHeader(request, response, fileName);
             response.setHeader("Content-Length", String.valueOf(fileLength));
             try(
                     FileInputStream fis = new FileInputStream(file);
@@ -144,12 +146,13 @@ public class FileDownloadUtils {
         Long fileLength = new File(path).length();// 文件的长度
         if (fileLength != 0) {
             response.reset();
-            response.setContentType("application/force-download;charset=utf-8");
+//            response.setContentType("application/force-download;charset=utf-8");
             String fileName = transFileName(name, request);
-            response.setHeader(
-                    "Content-disposition",
-                    "attachment; filename="
-                            +fileName);
+//            response.setHeader(
+//                    "Content-disposition",
+//                    "attachment; filename="
+//                            +fileName);
+            setResponseHeader(request, response, fileName);
             response.setHeader("Content-Length", String.valueOf(fileLength));
             BandWidthLimiter bandwidthLimiter = new BandWidthLimiter(maxRate);
             try(
@@ -205,12 +208,13 @@ public class FileDownloadUtils {
         Long fileLength = new File(path).length();// 文件的长度
         if (fileLength != 0) {
             response.reset();
-            response.setContentType("application/force-download;charset=utf-8");
+//            response.setContentType("application/force-download;charset=utf-8");
             String fileName = transFileName(name, request);
-            response.setHeader(
-                    "Content-disposition",
-                    "attachment; filename="
-                            +fileName);
+//            response.setHeader(
+//                    "Content-disposition",
+//                    "attachment; filename="
+//                            +fileName);
+            setResponseHeader(request, response, fileName);
             response.setHeader("Content-Length", String.valueOf(fileLength));
             BandWidthLimiter bandwidthLimiter = new BandWidthLimiter(maxRate);
             try{
@@ -247,7 +251,7 @@ public class FileDownloadUtils {
      */
     public static void downByStream(HttpServletRequest request, HttpServletResponse response, InputStream inputStream,
                                     String name) throws Exception {
-        setResponseHeader(request,response,name);
+        setResponseHeader(request,response,transFileName(name, request));
         try(
                 BufferedInputStream bis = new BufferedInputStream(inputStream);
                 // 输出流

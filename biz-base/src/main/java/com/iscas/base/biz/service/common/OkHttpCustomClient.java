@@ -29,6 +29,9 @@ public class OkHttpCustomClient {
     private volatile OkHttpClient client;
     private OkHttpProps okHttpConfig;
 
+    public OkHttpClient getClient() {
+        return client;
+    }
 
     //    private final  Gson gson = new Gson();
     //    private static File file = new File("F:/general");

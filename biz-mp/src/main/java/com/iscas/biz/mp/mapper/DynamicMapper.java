@@ -24,6 +24,12 @@ import java.util.Map;
 public interface DynamicMapper<T> extends BaseMapper {
 
     @Select("${sql}" )
+    <T> T selectOne(@Param("sql") String sql, Class<T> tClass);
+
+    @Select("${sql}" )
+    <T> List<T> select(@Param("sql") String sql, Class<T> tClass);
+
+    @Select("${sql}" )
     Map selectOne(@Param("sql") String sql);
 
     @Select("${sql}" )
