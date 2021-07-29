@@ -426,8 +426,12 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doGet(String url, Map<String, String> headerMap) throws IOException {
+        return doGetWithBody(url, headerMap).string();
+    }
+
+    public ResponseBody doGetWithBody(String url, Map<String, String> headerMap) throws IOException {
         Call call = baseGetCall(url, headerMap);
-        return call.execute().body().string();
+        return call.execute().body();
     }
 
     /**
@@ -439,7 +443,11 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doGet(String url) throws IOException {
-        return doGet(url, (Map<String, String>) null);
+        return doGetWithBody(url).string();
+    }
+
+    public ResponseBody doGetWithBody(String url) throws IOException {
+        return doGetWithBody(url, (Map<String, String>) null);
     }
 
 
@@ -456,7 +464,6 @@ public class OkHttpCustomClient {
     public void doGetAsyn(String url, Map<String, String> headerMap, Callback callback) throws IOException {
         Call call = baseGetCall(url, headerMap);
         call.enqueue(callback);
-        ;
     }
 
     /**
@@ -483,8 +490,12 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doPost(String url, Map<String, String> headerMap, Map<String, Object> mapParams) throws IOException {
+        return doPostWithBody(url, headerMap, mapParams).string();
+    }
+
+    public ResponseBody doPostWithBody(String url, Map<String, String> headerMap, Map<String, Object> mapParams) throws IOException {
         Call call = basePostCall1(url, headerMap, mapParams);
-        return call.execute().body().string();
+        return call.execute().body();
     }
 
     /**
@@ -497,7 +508,11 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doPost(String url, Map<String, Object> mapParams) throws IOException {
-        return doPost(url, (Map<String, String>) null, mapParams);
+        return doPostWithBody(url, (Map<String, String>) null, mapParams).string();
+    }
+
+    public String doPostWithBody(String url, Map<String, Object> mapParams) throws IOException {
+        return doPostWithBody(url, mapParams);
     }
 
     /**
@@ -511,8 +526,12 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doPost(String url, Map<String, String> headerMap, String jsonParams) throws IOException {
+        return doPostWithBody(url, headerMap, jsonParams).string();
+    }
+
+    public ResponseBody doPostWithBody(String url, Map<String, String> headerMap, String jsonParams) throws IOException {
         Call call = basePostCall2(url, headerMap, jsonParams);
-        return call.execute().body().string();
+        return call.execute().body();
     }
 
     /**
@@ -525,7 +544,11 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doPost(String url, String jsonParams) throws IOException {
-        return doPost(url, (Map<String, String>) null, jsonParams);
+        return doPostWithBody(url, jsonParams).string();
+    }
+
+    public ResponseBody doPostWithBody(String url, String jsonParams) throws IOException {
+        return doPostWithBody(url, (Map<String, String>) null, jsonParams);
     }
 
     /**
@@ -603,8 +626,13 @@ public class OkHttpCustomClient {
      */
     public String doFile(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos, Map<String, String> params)
             throws IOException, IllegalArgumentException {
+        return doFileWithBody(url, headerMap, uploadInfos, params).string();
+    }
+
+    public ResponseBody doFileWithBody(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos, Map<String, String> params)
+            throws IOException, IllegalArgumentException {
         Call call = baseFileCall(url, headerMap, uploadInfos, params);
-        return call.execute().body().string();
+        return call.execute().body();
 
     }
 
@@ -621,6 +649,10 @@ public class OkHttpCustomClient {
      */
     public String doFile(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
         return doFile(url, (Map<String, String>) null, uploadInfos, params);
+    }
+
+    public ResponseBody doFileWithBody(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
+        return doFileWithBody(url, (Map<String, String>) null, uploadInfos, params);
     }
 
     /**
@@ -825,8 +857,12 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doPut(String url, Map<String, String> headerMap, Map<String, Object> mapParams) throws IOException {
+        return doPutWithBody(url, headerMap, mapParams).string();
+    }
+
+    public ResponseBody doPutWithBody(String url, Map<String, String> headerMap, Map<String, Object> mapParams) throws IOException {
         Call call = basePutCall1(url, headerMap, mapParams);
-        return call.execute().body().string();
+        return call.execute().body();
     }
 
     /**
@@ -842,6 +878,10 @@ public class OkHttpCustomClient {
         return doPut(url, (Map<String, String>) null, mapParams);
     }
 
+    public ResponseBody doPutWithBody(String url, Map<String, Object> mapParams) throws IOException {
+        return doPutWithBody(url, (Map<String, String>) null, mapParams);
+    }
+
     /**
      * @param url        请求URL
      * @param headerMap  header键值对
@@ -853,8 +893,12 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doPut(String url, Map<String, String> headerMap, String jsonParams) throws IOException {
+        return doPutWithBody(url, headerMap, jsonParams).string();
+    }
+
+    public ResponseBody doPutWithBody(String url, Map<String, String> headerMap, String jsonParams) throws IOException {
         Call call = basePutCall2(url, headerMap, jsonParams);
-        return call.execute().body().string();
+        return call.execute().body();
     }
 
     /**
@@ -868,6 +912,10 @@ public class OkHttpCustomClient {
      */
     public String doPut(String url, String jsonParams) throws IOException {
         return doPut(url, (Map<String, String>) null, jsonParams);
+    }
+
+    public ResponseBody doPutWithBody(String url, String jsonParams) throws IOException {
+        return doPutWithBody(url, (Map<String, String>) null, jsonParams);
     }
 
     /**
@@ -941,9 +989,12 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doDelete(String url, Map<String, String> headerMap) throws IOException {
+        return doDeleteWithBody(url, headerMap).string();
+    }
 
+    public ResponseBody doDeleteWithBody(String url, Map<String, String> headerMap) throws IOException {
         Call call = baseDeleteCall(url, headerMap);
-        return call.execute().body().string();
+        return call.execute().body();
     }
 
     /**
@@ -956,6 +1007,10 @@ public class OkHttpCustomClient {
      */
     public String doDelete(String url) throws IOException {
         return doDelete(url, (Map<String, String>) null);
+    }
+
+    public ResponseBody doDeleteWithBody(String url) throws IOException {
+        return doDeleteWithBody(url, (Map<String, String>) null);
     }
 
     /**
