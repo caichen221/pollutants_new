@@ -5,6 +5,7 @@ import com.iscas.base.biz.config.okhttp.OkHttpProps;
 import okhttp3.*;
 import okio.BufferedSink;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.net.ssl.*;
 import java.io.*;
