@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,4 +33,6 @@ public class OkHttpCustomClientTest {
         String res = okHttpCustomClient.doGet("https://www.12306.cn/index/");
         System.out.println(res);
     }
+
+
 }

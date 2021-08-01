@@ -4,8 +4,6 @@ package com.iscas.base.biz.service.common;//package com.iscas.cmi.service;
 import com.iscas.base.biz.config.okhttp.OkHttpProps;
 import okhttp3.*;
 import okio.BufferedSink;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -273,12 +271,12 @@ public class OkHttpCustomClient {
                             RequestBody.create(mediaType, new File((String) data)));
                 } else if (data instanceof File) {
                     //文件类型
-                    MediaType mediaType = MediaType.parse("application/octet-stream");
+                    MediaType mediaType = MediaType.parse("multipart/form-data");
                     builder.addFormDataPart(formKey, fileName,
                             RequestBody.create(mediaType, (File) data));
                 } else if (data instanceof byte[]) {
                     //文件字节流
-                    MediaType mediaType = MediaType.parse("application/octet-stream");
+                    MediaType mediaType = MediaType.parse("multipart/form-data");
                     builder.addFormDataPart(formKey, fileName,
                             RequestBody.create(mediaType, (byte[]) data));
                 } else if (data instanceof InputStream || InputStream.class.isAssignableFrom(((Object) data).getClass())) {
@@ -287,7 +285,7 @@ public class OkHttpCustomClient {
                     RequestBody requestBody = new RequestBody() {
                         @Override
                         public MediaType contentType() {
-                            return MediaType.parse("application/octet-stream");
+                            return MediaType.parse("multipart/form-data");
                         }
 
                         @Override
@@ -625,12 +623,12 @@ public class OkHttpCustomClient {
      * @exception: IllegalArgumentException 参数异常
      * @return: java.lang.String
      */
-    public String doFile(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos, Map<String, String> params)
+    public String doUpload(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos, Map<String, String> params)
             throws IOException, IllegalArgumentException {
-        return doFileWithBody(url, headerMap, uploadInfos, params).string();
+        return doUploadWithBody(url, headerMap, uploadInfos, params).string();
     }
 
-    public ResponseBody doFileWithBody(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos, Map<String, String> params)
+    public ResponseBody doUploadWithBody(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos, Map<String, String> params)
             throws IOException, IllegalArgumentException {
         Call call = baseFileCall(url, headerMap, uploadInfos, params);
         return call.execute().body();
@@ -648,12 +646,12 @@ public class OkHttpCustomClient {
      * @exception: IllegalArgumentException 参数异常
      * @return: java.lang.String
      */
-    public String doFile(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
-        return doFile(url, (Map<String, String>) null, uploadInfos, params);
+    public String doUpload(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
+        return doUpload(url, (Map<String, String>) null, uploadInfos, params);
     }
 
-    public ResponseBody doFileWithBody(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
-        return doFileWithBody(url, (Map<String, String>) null, uploadInfos, params);
+    public ResponseBody doUploadWithBody(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
+        return doUploadWithBody(url, (Map<String, String>) null, uploadInfos, params);
     }
 
     /**
@@ -669,7 +667,7 @@ public class OkHttpCustomClient {
      * @exception: IllegalArgumentException 参数异常
      * @return: void
      */
-    public void doFileAsyn(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos,
+    public void doUploadAsyn(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos,
                            Map<String, String> params, Callback callback) throws IOException, IllegalArgumentException {
         Call call = baseFileCall(url, headerMap, uploadInfos, params);
         call.enqueue(callback);
@@ -687,9 +685,9 @@ public class OkHttpCustomClient {
      * @exception: IllegalArgumentException 参数异常
      * @return: void
      */
-    public void doFileAsyn(String url, List<UploadInfo> uploadInfos, Map<String, String> params
+    public void doUploadAsyn(String url, List<UploadInfo> uploadInfos, Map<String, String> params
             , Callback callback) throws IOException {
-        doFileAsyn(url, (Map<String, String>) null, uploadInfos, params, callback);
+        doUploadAsyn(url, (Map<String, String>) null, uploadInfos, params, callback);
     }
 
     /**
@@ -702,8 +700,8 @@ public class OkHttpCustomClient {
      * @exception: InterruptedException 线程打断异常
      * @return: boolean
      */
-    public boolean downFile(String url, final String fileDir, final String fileName) throws InterruptedException {
-        return downFile(url, null, fileDir, fileName);
+    public boolean doDownload(String url, final String fileDir, final String fileName) throws IOException {
+        return doDownload(url, null, fileDir, fileName);
     }
 
     /**
@@ -717,44 +715,57 @@ public class OkHttpCustomClient {
      * @exception: InterruptedException 线程打断异常
      * @return: boolean
      */
-    public boolean downFile(String url, Map<String, String> headerMap,
-                            final String fileDir, final String fileName) throws InterruptedException {
+    public boolean doDownload(String url, Map<String, String> headerMap,
+                              final String fileDir, final String fileName) throws IOException {
         Boolean[] result = new Boolean[1];
         result[0] = null;
         Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
         Request request = requestBuilder.build();
         Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                result[0] = false;
+        byte[] buf = new byte[2048];
+        int len = 0;
+        File file = new File(fileDir, fileName);
+        try (
+                InputStream is = call.execute().body().byteStream();
+                FileOutputStream fos = new FileOutputStream(file);
+        ) {
+            while ((len = is.read(buf)) != -1) {
+                fos.write(buf, 0, len);
             }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                byte[] buf = new byte[2048];
-                int len = 0;
-                File file = new File(fileDir, fileName);
-                try (
-                        InputStream is = response.body().byteStream();
-                        FileOutputStream fos = new FileOutputStream(file);
-                ) {
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                    }
-                    fos.flush();
-                    result[0] = true;
-                }
-            }
-        });
-        while (true) {
-            if (result[0] != null) {
-                break;
-            } else {
-                TimeUnit.MILLISECONDS.sleep(50);
-            }
+            fos.flush();
         }
-        return result[0];
+        return true;
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                result[0] = false;
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                byte[] buf = new byte[2048];
+//                int len = 0;
+//                File file = new File(fileDir, fileName);
+//                try (
+//                        InputStream is = response.body().byteStream();
+//                        FileOutputStream fos = new FileOutputStream(file);
+//                ) {
+//                    while ((len = is.read(buf)) != -1) {
+//                        fos.write(buf, 0, len);
+//                    }
+//                    fos.flush();
+//                    result[0] = true;
+//                }
+//            }
+//        });
+//        while (true) {
+//            if (result[0] != null) {
+//                break;
+//            } else {
+//                TimeUnit.MILLISECONDS.sleep(50);
+//            }
+//        }
+//        return result[0];
     }
 
     /**
@@ -765,8 +776,8 @@ public class OkHttpCustomClient {
      * @exception: InterruptedException 线程打断异常
      * @return: java.io.InputStream
      */
-    public InputStream downFile(String url) throws InterruptedException {
-        return downFile(url, null);
+    public InputStream doDownload(String url) throws IOException {
+        return doDownload(url, null);
     }
 
     /**
@@ -778,7 +789,7 @@ public class OkHttpCustomClient {
      * @exception: InterruptedException 线程打断异常
      * @return: java.io.InputStream
      */
-    public InputStream downFile(String url, Map<String, String> headerMap) throws InterruptedException {
+    public InputStream doDownload(String url, Map<String, String> headerMap) throws IOException {
         Boolean[] flag = new Boolean[1];
         flag[0] = null;
         InputStream[] iss = new InputStream[1];
@@ -786,28 +797,29 @@ public class OkHttpCustomClient {
         Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
         Request request = requestBuilder.build();
         Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                flag[0] = false;
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = null;
-                is = response.body().byteStream();
-                iss[0] = is;
-                flag[0] = true;
-            }
-        });
-        while (true) {
-            if (flag[0] != null) {
-                break;
-            } else {
-                TimeUnit.MILLISECONDS.sleep(50);
-            }
-        }
-        return iss[0];
+        return call.execute().body().byteStream();
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                flag[0] = false;
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                InputStream is = null;
+//                is = response.body().byteStream();
+//                iss[0] = is;
+//                flag[0] = true;
+//            }
+//        });
+//        while (true) {
+//            if (flag[0] != null) {
+//                break;
+//            } else {
+//                TimeUnit.MILLISECONDS.sleep(50);
+//            }
+//        }
+//        return iss[0];
     }
 
 
@@ -820,7 +832,7 @@ public class OkHttpCustomClient {
      * @date: 2018/3/19 10:56
      * @return: void
      */
-    public void downFileAsyn(String url, Map<String, String> headerMap, Callback callback) {
+    public void doDownloadAsyn(String url, Map<String, String> headerMap, Callback callback) {
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.url(url);
         if (headerMap != null) {
@@ -843,8 +855,8 @@ public class OkHttpCustomClient {
      * @date: 2018/3/19 10:56
      * @return: void
      */
-    public void downFileAsyn(String url, Callback callback) {
-        downFileAsyn(url, null, callback);
+    public void doDownloadAsyn(String url, Callback callback) {
+        doDownloadAsyn(url, null, callback);
     }
 
     /**

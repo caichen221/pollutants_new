@@ -34,7 +34,7 @@ public class TestFileController {
         //UploadInfo 构造函数第三个参数为上传form表单的key
         OkHttpCustomClient.UploadInfo<InputStream> uploadInfo = new OkHttpCustomClient.UploadInfo(file.getInputStream(), file.getName(), "file");
         List<OkHttpCustomClient.UploadInfo> uploadInfos = Arrays.asList(uploadInfo);
-        String s = okHttpCustomClient.doFile("http://192.168.100.88:7776/satelite/regulation/import", uploadInfos, new HashMap<>());
+        String s = okHttpCustomClient.doUpload("http://192.168.100.88:7776/satelite/regulation/import", uploadInfos, new HashMap<>());
         return s;
     }
 }

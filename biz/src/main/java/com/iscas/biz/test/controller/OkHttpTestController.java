@@ -4,11 +4,15 @@ import com.iscas.base.biz.config.okhttp.OkHttpProps;
 import com.iscas.base.biz.service.common.OkHttpCustomClient;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.web.tools.file.FileDownloadUtils;
+import com.iscas.templet.common.BaseController;
+import com.iscas.templet.common.ResponseEntity;
 import okhttp3.*;
 import org.apache.velocity.runtime.directive.contrib.For;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,13 +29,24 @@ import java.util.concurrent.TimeUnit;
  * @since jdk1.8
  */
 @RestController
-@RequestMapping("/test/okhttp/flow")
-public class OkHttpFlowTestController {
+@RequestMapping("/test/okhttp")
+public class OkHttpTestController extends BaseController {
 
     @GetMapping
     public void download() throws Exception {
         FileDownloadUtils.downFile(SpringUtils.getRequest(), SpringUtils.getResponse(),
                 "D:\\文档资料\\_部署安装\\离线安装k8s\\1、安装k8s集群\\1.20.2安装.zip", "test.zip");
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity upload(MultipartFile myFile) {
+        System.out.println(myFile);
+        return getResponse();
+    }
+
+    @GetMapping("/download")
+    public void download2() throws Exception {
+        FileDownloadUtils.downFile(SpringUtils.getRequest(), SpringUtils.getResponse(), "D:/test.xls", "test.xls");
     }
 
 //    public static void main(String[] args) throws IOException, InterruptedException {
