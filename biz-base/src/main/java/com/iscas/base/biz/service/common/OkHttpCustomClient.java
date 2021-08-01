@@ -1024,10 +1024,9 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: java.lang.String
      */
-    public String doDeleteAsyn(String url, Map<String, String> headerMap, Callback callback) throws IOException {
-
+    public void doDeleteAsyn(String url, Map<String, String> headerMap, Callback callback) throws IOException {
         Call call = baseDeleteCall(url, headerMap);
-        return call.execute().body().string();
+        call.enqueue(callback);
     }
 
     /**
@@ -1039,8 +1038,8 @@ public class OkHttpCustomClient {
      * @exception: IOException IO异常
      * @return: java.lang.String
      */
-    public String doDeleteAsyn(String url, Callback callback) throws IOException {
-        return doDeleteAsyn(url, (Map<String, String>) null, callback);
+    public void doDeleteAsyn(String url, Callback callback) throws IOException {
+        doDeleteAsyn(url, (Map<String, String>) null, callback);
     }
 
 
