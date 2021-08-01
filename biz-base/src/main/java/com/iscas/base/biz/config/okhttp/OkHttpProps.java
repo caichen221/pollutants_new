@@ -22,5 +22,8 @@ public class OkHttpProps {
     private int maxIdleConnection = 15 ; //最大空闲数目
     private long keepAliveDuration = 5 ; //keep alive保持时间 分钟
 
+    /**拦截器类的前限定名*/
+    private String interceptorClasses;
+
 
 }

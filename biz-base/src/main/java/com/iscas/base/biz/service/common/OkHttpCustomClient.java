@@ -2,20 +2,21 @@ package com.iscas.base.biz.service.common;//package com.iscas.cmi.service;
 
 
 import com.iscas.base.biz.config.okhttp.OkHttpProps;
+import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
+import com.iscas.common.tools.exception.lambda.ThrowingConsumer;
 import okhttp3.*;
 import okio.BufferedSink;
 
 import javax.net.ssl.*;
 import java.io.*;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,21 +43,33 @@ public class OkHttpCustomClient {
         if (client == null) {
             synchronized (OkHttpCustomClient.class) {
                 if (client == null) {
-                    client = new OkHttpClient().newBuilder()
+                    OkHttpClient.Builder builder = new OkHttpClient().newBuilder()
                             .readTimeout(okHttpConfig.getReadTimeout(), TimeUnit.MILLISECONDS)
                             .writeTimeout(okHttpConfig.getWriteTimeout(), TimeUnit.MILLISECONDS)
                             .connectTimeout(okHttpConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
                             .connectionPool(new ConnectionPool(okHttpConfig.getMaxIdleConnection(), okHttpConfig.getKeepAliveDuration(), TimeUnit.MINUTES))
                             .retryOnConnectionFailure(true)
-                            .sslSocketFactory(createSSLSocketFactory(), new TrustAllCerts( ))
-                            .hostnameVerifier(new TrustAllHostnameVerifier())
-//                            .cache(cache)
-                            .build();
+                            //.cache(cache)
+                            .sslSocketFactory(createSSLSocketFactory(), new TrustAllCerts())
+                            .hostnameVerifier(new TrustAllHostnameVerifier());
+
+                    //注册拦截器,暂时只支持默认构造函数构造
+                    if (okHttpConfig.getInterceptorClasses() != null) {
+                        Arrays.stream(okHttpConfig.getInterceptorClasses().split(","))
+                                .map(className -> {
+                                    try {
+                                        return Class.forName(className).getConstructor().newInstance();
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).forEach(interceptor -> builder.addInterceptor((Interceptor) interceptor));
+                    }
+
+                    client = builder.build();
                 }
             }
         }
     }
-
 
     private static class TrustAllCerts implements X509TrustManager {
         @Override
