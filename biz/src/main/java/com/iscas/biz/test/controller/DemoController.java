@@ -2,6 +2,7 @@ package com.iscas.biz.test.controller;
 
 import cn.hutool.core.io.IoUtil;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.common.web.tools.json.JsonObject;
 import com.iscas.common.web.tools.json.JsonUtils;
@@ -34,7 +35,7 @@ public class DemoController {
     public String tx() {
         CookieUtils.setCookie(SpringUtils.getResponse(), "mykey", "myvalue", 10000);
         System.out.println("tx");
-        return "tx";
+        return RandomStringUtils.randomStr(1024 *1024);
     }
 
     @ApiOperation(value="[测试/李爽] 测试测试哈哈", notes="create by:朱全文 2020-02-21")

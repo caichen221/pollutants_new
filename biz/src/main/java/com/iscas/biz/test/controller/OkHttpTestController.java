@@ -46,7 +46,7 @@ public class OkHttpTestController extends BaseController {
 
     @GetMapping("/download")
     public void download2() throws Exception {
-        FileDownloadUtils.downFile(SpringUtils.getRequest(), SpringUtils.getResponse(), "D:/test.xls", "test.xls");
+        FileDownloadUtils.downFile(SpringUtils.getRequest(), SpringUtils.getResponse(), "D:\\测试离线环境\\nexus-3.16.1-02-win64.zip", "test.zip");
     }
 
 //    public static void main(String[] args) throws IOException, InterruptedException {
