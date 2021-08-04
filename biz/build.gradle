@@ -43,7 +43,7 @@ dependencies {
     //引入jpa,如果引入了这个模块
 //    api project(":biz-jpa")
 
-    implementation group: 'org.webjars', name: 'jquery', version: "${jqueryVersion}"
+    api group: 'org.webjars', name: 'jquery', version: "${jqueryVersion}"
 
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
