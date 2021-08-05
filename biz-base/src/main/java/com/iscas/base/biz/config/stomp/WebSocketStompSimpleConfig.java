@@ -22,6 +22,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 //@Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
+    public static StompEndpointRegistry endpointRegistry;
     @Autowired
     private CrosProps crosProps;
     /**
@@ -37,7 +38,7 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins(crosProps.getOrigin())
                 .withSockJS();
-
+        endpointRegistry = registry;
 
     }
 
