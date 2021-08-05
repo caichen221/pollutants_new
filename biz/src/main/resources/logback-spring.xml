@@ -95,6 +95,40 @@
         </filter>
     </appender>
 
+    <appender name="ASYNC-FILEINFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 当队列的剩余容量小于这个阈值并且当前日志level为 TRACE, DEBUG or INFO ，则丢弃这些日志。 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>1024</queueSize>
+        <!-- 新增这行为了打印栈堆信息 -->
+        <includeCallerData>true</includeCallerData>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEINFO"/>
+    </appender>
+
+    <appender name="ASYNC-FILEWARN" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 当队列的剩余容量小于这个阈值并且当前日志level为 TRACE, DEBUG or INFO ，则丢弃这些日志。 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>1024</queueSize>
+        <!-- 新增这行为了打印栈堆信息 -->
+        <includeCallerData>true</includeCallerData>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEWARN"/>
+    </appender>
+
+    <appender name="ASYNC-FILEERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 当队列的剩余容量小于这个阈值并且当前日志level为 TRACE, DEBUG or INFO ，则丢弃这些日志。 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>1024</queueSize>
+        <!-- 新增这行为了打印栈堆信息 -->
+        <includeCallerData>true</includeCallerData>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEERROR"/>
+    </appender>
+
+
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
@@ -158,9 +192,9 @@
 
     <!-- 生产环境下，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->
     <root level="DEBUG">
-        <appender-ref ref="FILEERROR" />
-        <appender-ref ref="FILEWARN" />
-        <appender-ref ref="FILEINFO" />
+        <appender-ref ref="ASYNC-FILEERROR" />
+        <appender-ref ref="ASYNC-FILEWARN" />
+        <appender-ref ref="ASYNC-FILEINFO" />
         <!-- 生产环境将请stdout去掉 -->
         <appender-ref ref="STDOUT" />
     </root>
