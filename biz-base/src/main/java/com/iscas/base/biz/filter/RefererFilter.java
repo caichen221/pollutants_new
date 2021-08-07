@@ -1,7 +1,8 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.templet.exception.AuthorizationRuntimeException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,9 +19,12 @@ import java.net.MalformedURLException;
  * @date 2021/8/7 13:47
  * @since jdk1.8
  */
-public class RefererFilter extends OncePerRequestFilter {
-    @Value("#{'${referer-allow-domains}'.split(',')}")
+public class RefererFilter extends OncePerRequestFilter{
     private String[] allowDomains;
+
+    public RefererFilter(String[] allowDomains) {
+        this.allowDomains = allowDomains;
+    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String referer = request.getHeader("referer");
@@ -28,14 +32,14 @@ public class RefererFilter extends OncePerRequestFilter {
         // 验证非get请求
         if (!"GET".equals(request.getMethod())) {
             if (referer == null) {
-                throw new AuthorizationRuntimeException("不允许的请求", "请求头未携带referer");
+                throw new AuthorizationRuntimeException("referer校验失败，不允许的请求", "请求头未携带referer");
             }
             java.net.URL url = null;
             try {
                 url = new java.net.URL(referer);
             } catch (MalformedURLException e) {
                 // URL解析异常
-                throw new AuthorizationRuntimeException("不允许的请求", "referer求无法解析");
+                throw new AuthorizationRuntimeException("referer校验失败，不允许的请求", "referer求无法解析");
             }
             // 首先判断请求域名和referer域名是否相同,如果相同不用作判断了
             if (!host.equals(url.getHost())) {
@@ -50,10 +54,11 @@ public class RefererFilter extends OncePerRequestFilter {
                     }
                 }
                 if (!flag) {
-                    throw new AuthorizationRuntimeException("不允许跨站请求", "referer不在白名单内");
+                    throw new AuthorizationRuntimeException("referer校验失败，不允许跨站请求", "referer不在白名单内");
                 }
             }
         }
         filterChain.doFilter(request, response);
     }
+
 }

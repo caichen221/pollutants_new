@@ -26,4 +26,7 @@ public class TokenProps {
     private Duration expire = Duration.ofMinutes(14440);
     /** token保存在cookie的时间(毫秒)*/
     private int cookieExpire = -1;
+
+    /**是否将token存入cookie*/
+    private boolean cookieStore;
 }

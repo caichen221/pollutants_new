@@ -60,7 +60,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableShardingJdbc //是否开启分库分表
 @EnableSpringBootAdminClient //是否开启springboot-admin客户端，如果不使用可以关闭，防止一直连接admin服务
 //@EnableCustomCasClient //是否开启自定义的Cas客户端
-//@EnableCheckReferer //是否校验referer，需配合配置文件内的域名白名单
+@EnableCheckReferer //是否校验referer，需配合配置文件内的域名白名单
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

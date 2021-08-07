@@ -1,11 +1,13 @@
 package com.iscas.biz.service.common;
 
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
@@ -278,8 +280,10 @@ public class AuthServiceImpl extends AbstractAuthService {
 //            authCacheService.set("user-token:" + username, token);
             authCacheService.rpush("user-token:" + username, token);
 
-
-            CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
+            TokenProps tokenProps = SpringService.getBean(TokenProps.class);
+            if (tokenProps.isCookieStore()) {
+                CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
+            }
             List<Role> roles = getRoles(username);
 //                Map<String, Role> auth = getAuth();
 //                List<Role> roles = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.iscas.base.biz.config.referer;
 
 import com.iscas.base.biz.filter.RefererFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
@@ -13,11 +14,13 @@ import org.springframework.core.Ordered;
  * @since jdk1.8
  */
 public class RefererFilterConfig {
+    @Value("#{'${referer-allow-domains}'.split(',')}")
+    private String[] allowDomains;
     @Bean
     public FilterRegistrationBean refereFilterRegistrationBean() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 4);
-        filterRegistrationBean.setFilter(new RefererFilter());
+        filterRegistrationBean.setFilter(new RefererFilter(allowDomains));
         return filterRegistrationBean;
     }
 }
