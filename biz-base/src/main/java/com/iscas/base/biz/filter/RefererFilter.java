@@ -1,0 +1,59 @@
+package com.iscas.base.biz.filter;
+
+import com.iscas.templet.exception.AuthorizationRuntimeException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+/**
+ *
+ * @author zhuquanwen
+ * @vesion 1.0
+ * @date 2021/8/7 13:47
+ * @since jdk1.8
+ */
+public class RefererFilter extends OncePerRequestFilter {
+    @Value("#{'${referer-allow-domains}'.split(',')}")
+    private String[] allowDomains;
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String referer = request.getHeader("referer");
+        String host = request.getServerName();
+        // 验证非get请求
+        if (!"GET".equals(request.getMethod())) {
+            if (referer == null) {
+                throw new AuthorizationRuntimeException("不允许的请求", "请求头未携带referer");
+            }
+            java.net.URL url = null;
+            try {
+                url = new java.net.URL(referer);
+            } catch (MalformedURLException e) {
+                // URL解析异常
+                throw new AuthorizationRuntimeException("不允许的请求", "referer求无法解析");
+            }
+            // 首先判断请求域名和referer域名是否相同,如果相同不用作判断了
+            if (!host.equals(url.getHost())) {
+                // 如果不等，判断是否在白名单中
+                boolean flag = false;
+                if (allowDomains != null) {
+                    for (String s : allowDomains) {
+                        if (s.equals(url.getHost())) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if (!flag) {
+                    throw new AuthorizationRuntimeException("不允许跨站请求", "referer不在白名单内");
+                }
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
