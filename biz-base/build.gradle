@@ -135,7 +135,11 @@ dependencies {
 
 
     //引入cas-client
-    api group: 'org.jasig.cas.client', name: 'cas-client-core', version: '3.6.2'
+    api group: 'org.jasig.cas.client', name: 'cas-client-core', version: "${casClientVersion}"
+
+    //retrofit
+    api group: 'com.github.lianjiatech', name: 'retrofit-spring-boot-starter', version: "${retrofitVersion}"
+
 
 
 
