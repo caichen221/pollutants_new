@@ -18,10 +18,10 @@ import java.util.Map;
 
 /**
  *
- *  测试远程被调用的feign接口
+ *  测试远程被调用的retrofit接口
  * @author zhuquanwen
  * @vesion 1.0
- * @date 2021/4/13 9:26
+ * @date 2021/08/09 9:26
  * @since jdk1.8
  */
 @RestController

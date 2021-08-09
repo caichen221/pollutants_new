@@ -2,19 +2,17 @@ package com.iscas.biz.mp.util;
 
 import java.sql.*;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * jdbc操作工具类
- *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/5/30 9:29
  * @since jdk1.8
  */
 public class JdbcUtils {
-    private JdbcUtils() {}
 
+    private JdbcUtils() {}
 
     public static Connection getConnection(String driverClassName, String url, String username, String password) throws ClassNotFoundException, SQLException {
         Class.forName(driverClassName);
