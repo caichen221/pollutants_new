@@ -21,13 +21,7 @@ import java.util.Map;
  */
 @Repository
 @ConditionalOnMybatis
-public interface DynamicMapper<T> extends BaseMapper {
-
-    @Select("${sql}" )
-    <T> T selectOne(@Param("sql") String sql, Class<T> tClass);
-
-    @Select("${sql}" )
-    <T> List<T> select(@Param("sql") String sql, Class<T> tClass);
+public interface DynamicMapper extends BaseMapper {
 
     @Select("${sql}" )
     Map selectOne(@Param("sql") String sql);

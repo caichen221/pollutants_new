@@ -5,7 +5,7 @@ import okhttp3.MediaType;
 
 import java.util.Map;
 
-public interface FeignInterface {
+public interface FeignApi {
     @RequestLine("GET /test/feign/remote/t1?name={name}")
     ResponseEntity remoteT1(@Param("name") String username);
 

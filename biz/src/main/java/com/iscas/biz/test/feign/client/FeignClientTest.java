@@ -6,30 +6,29 @@ import feign.Request;
 import feign.Retryer;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 
 public class FeignClientTest {
     public static void main(String[] args) {
-        FeignInterface feignInterface = Feign.builder()
+        FeignApi feignApi = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
 //                .decoder(new StringDecoder())
                 .options(new Request.Options(1000, 3500))
                 .retryer(new Retryer.Default(5000, 5000, 3))
-                .target(FeignInterface.class, "http://localhost:7901/demo");
-        ResponseEntity res1 = feignInterface.remoteT1("zhansan");
+                .target(FeignApi.class, "http://localhost:7901/demo");
+        ResponseEntity res1 = feignApi.remoteT1("zhansan");
         System.out.println(res1);
-        ResponseEntity res2 = feignInterface.remoteT2("zhansan");
+        ResponseEntity res2 = feignApi.remoteT2("zhansan");
         System.out.println(res2);
         HashMap<String, Object> map = new HashMap<>();
         map.put("name", "zhangsan");
-        ResponseEntity res3 = feignInterface.remoteT3(map);
+        ResponseEntity res3 = feignApi.remoteT3(map);
         System.out.println(res3);
-        ResponseEntity res4 = feignInterface.remoteT4(map);
+        ResponseEntity res4 = feignApi.remoteT4(map);
         System.out.println(res4);
-        ResponseEntity res5 = feignInterface.remoteT5(map);
+        ResponseEntity res5 = feignApi.remoteT5(map);
         System.out.println(res5);
     }
 
