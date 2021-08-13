@@ -35,27 +35,10 @@ import static com.iscas.base.biz.config.Constants.SESSION_LOGIN_KEY;
 @RestControllerAdvice
 @Component
 @Slf4j
-//@CrossOrigin
 public class ExceptionAdivisor {
     @Autowired
     private CrosProps crosProps;
 
-    private void setResponseInfo(ResponseEntity responseEntity){
-        HttpServletRequest request = SpringUtils.getRequest();
-        Long start = null;
-        try {
-            start = StaticInfo.START_TIME_THREAD_LOCAL.get();
-        } finally {
-            StaticInfo.START_TIME_THREAD_LOCAL.remove();
-        }
-        if (Objects.nonNull(start)) {
-            responseEntity.setTookInMillis(System.currentTimeMillis() - start);
-        }
-        if(request != null){
-            String requestURI = request.getRequestURI();
-            responseEntity.setRequestURL(requestURI);
-        }
-    }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -256,6 +239,26 @@ public class ExceptionAdivisor {
             }
         }
         return message;
+    }
+
+    /**
+     * 设置好事等信息
+     * */
+    private void setResponseInfo(ResponseEntity responseEntity){
+        HttpServletRequest request = SpringUtils.getRequest();
+        Long start = null;
+        try {
+            start = StaticInfo.START_TIME_THREAD_LOCAL.get();
+        } finally {
+            StaticInfo.START_TIME_THREAD_LOCAL.remove();
+        }
+        if (Objects.nonNull(start)) {
+            responseEntity.setTookInMillis(System.currentTimeMillis() - start);
+        }
+        if(request != null){
+            String requestURI = request.getRequestURI();
+            responseEntity.setRequestURL(requestURI);
+        }
     }
 
 

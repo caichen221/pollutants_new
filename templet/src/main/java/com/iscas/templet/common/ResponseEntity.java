@@ -1,11 +1,11 @@
 package com.iscas.templet.common;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: zhuquanwen
@@ -22,16 +22,21 @@ public class ResponseEntity<T> implements Serializable {
     /**
      * http状态码
      */
-//    protected Integer status;
+    protected Integer status = 200;
     /**
-     * 状态信息
+     * 给予用户提示的信息
      */
     protected String message;
 
     /**
-     * 服务器内部错误描述
+     * 出现错误的详细描述(调试)
      */
     protected String desc;
+
+    /**
+     * 异常堆栈信息
+     * */
+    protected String stackTrace;
 
     /**
      * 返回值
@@ -43,8 +48,15 @@ public class ResponseEntity<T> implements Serializable {
      */
     protected String requestURL;
 
+    /**
+     * 当前接口访问耗时
+     * */
     protected long tookInMillis;
 
+    /**
+     * 过时的参数，未来会删除
+     * */
+    @Deprecated
     protected int total;
 
     public ResponseEntity(Integer status, String message) {
