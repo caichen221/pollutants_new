@@ -1,6 +1,7 @@
 package com.iscas.biz.config;
 
 import com.iscas.base.biz.config.StaticInfo;
+import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class ControllerAspect {
     /**
      * 定义拦截规则：拦截com.iscas.biz.controller..*(..))包下面的所有类中
      */
-    @Pointcut("execution(* com.iscas.biz.controller..*.*(..))")
+    @Pointcut("execution(* com.iscas.biz.controller..*.*(..)) || execution(* com.iscas.biz.test.controller..*.*(..))")
     public void controllerMethodPointcut() {
     }
 
@@ -61,6 +62,7 @@ public class ControllerAspect {
             return result;
         } finally {
             StaticInfo.START_TIME_THREAD_LOCAL.remove();
+            AuthContextHolder.removeContext();
         }
 
     }

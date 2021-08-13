@@ -45,4 +45,16 @@ public interface Constants {
     /**字典缓存名称*/
     String CACHE_DICT_NAME = "dict";
 
+    /**跨域允许Origin的key*/
+    String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+
+    /**跨域允许Credentials的key*/
+    String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+
+    /**跨域允许Methods的key*/
+    String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+
+    /**跨域允许Methods的key*/
+    String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+
 }

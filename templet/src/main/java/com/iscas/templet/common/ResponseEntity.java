@@ -61,15 +61,15 @@ public class ResponseEntity<T> implements Serializable {
 
     public ResponseEntity(Integer status, String message) {
         super();
-//        this.status = status;
+        this.status = status;
         this.message = message;
     }
 
     public ResponseEntity() {
         super();
-//        this.status = 200;
         this.message = "操作成功";
     }
+
     public ResponseEntity(String message){
         super();
         this.message = message;
