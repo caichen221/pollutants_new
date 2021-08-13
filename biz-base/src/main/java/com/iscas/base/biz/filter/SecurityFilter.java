@@ -1,5 +1,6 @@
 package com.iscas.base.biz.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,9 +18,14 @@ import java.io.IOException;
  * @since jdk1.8
  */
 @Component
+@Slf4j
 public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if(logger.isDebugEnabled()){
+            log.debug("进入 SecurityFilter 过滤器");
+        }
+
         //设置X-Content-Type-Options，如果通过 script 参考检索到的响应中接收到 "nosniff" 指令，则浏览器不会加载“script”文件，
         // 除非 MIME 类型匹配以下值之一：application/ecmascript、application/javascript、application/x-javascript
         //text/ecmascript、text/javascript、text/jscript、text/x-javascript、text/vbs、text/vbscript"

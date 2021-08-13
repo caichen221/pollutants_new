@@ -1,6 +1,7 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.templet.exception.AuthorizationRuntimeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +20,7 @@ import java.net.MalformedURLException;
  * @date 2021/8/7 13:47
  * @since jdk1.8
  */
+@Slf4j
 public class RefererFilter extends OncePerRequestFilter{
     private String[] allowDomains;
 
@@ -27,6 +29,9 @@ public class RefererFilter extends OncePerRequestFilter{
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if(logger.isDebugEnabled()){
+            log.debug("进入 RefererFilter 过滤器");
+        }
         String referer = request.getHeader("referer");
         String host = request.getServerName();
         // 验证非get请求

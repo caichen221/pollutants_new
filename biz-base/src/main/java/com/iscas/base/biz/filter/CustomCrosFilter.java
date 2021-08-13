@@ -2,6 +2,7 @@ package com.iscas.base.biz.filter;
 
 
 import com.iscas.base.biz.config.cros.CrosProps;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsProcessor;
@@ -28,6 +29,7 @@ import java.util.Map;
  * @Date: 2018/3/20 15:12
  * @Modified:
  **/
+@Slf4j
 public class CustomCrosFilter extends CorsFilter {
     private final CorsConfigurationSource configSource;
     private CorsProcessor processor = new DefaultCorsProcessor();
@@ -36,6 +38,9 @@ public class CustomCrosFilter extends CorsFilter {
     List<String> ignoreUrlPrefixMapList = new ArrayList<>();
     public CustomCrosFilter(CorsConfigurationSource configSource, CrosProps crosProps) {
         super(configSource);
+        if (log.isDebugEnabled()) {
+            log.debug("进入 CustomCrosFilter 过滤器");
+        }
         Assert.notNull(configSource, "CorsConfigurationSource must not be null");
         this.configSource = configSource;
         this.crosProps = crosProps;
