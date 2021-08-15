@@ -38,6 +38,7 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins(crosProps.getOrigin())
                 .withSockJS();
+//                .setClientLibraryUrl("http://localhost:7901/demo/websocketTest/sockjs.js");
         endpointRegistry = registry;
 
     }

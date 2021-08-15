@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Websocket广播通信测试</title>
-    <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
-    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <!--<script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>-->
+    <script src="stomp.js"></script>
+    <!--<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>-->
+    <script src="sockjs.js"></script>
     <script>
-        var socket = new SockJS("http://localhost:7901/demo/webSocketServer");
+        var socket = new SockJS("https://localhost:8181/demo2/webSocketServer");
         var stompClient = Stomp.over(socket);
         window.onload = function () {
             connect();
@@ -28,7 +30,7 @@
 
             stompClient.connect({
                     //这里可以改成token
-                    Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjI1MTk2MjQ4LCJleHAiOjE2MjUyODI2NDgsImlhdCI6MTYyNTE5NjI0OCwidXNlcm5hbWUiOiJhZG1pbiJ9.7c0kQNZuXcYALlH1C8aqday8TNAQcSoquSjczKsF76o' // 携带客户端信息
+                    Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNjI4OTA4ODE2LCJleHAiOjE2Mjg5OTUyMTYsImlhdCI6MTYyODkwODgxNiwidXNlcm5hbWUiOiJhZG1pbiJ9.8DnSctEGqKf6xYVM1SF2ktLyV_K2MHSABeWzkoAfczk' // 携带客户端信息
                 },
                 function connectCallback(frame) {
                     // 连接成功时（服务器响应 CONNECTED 帧）的回调方法

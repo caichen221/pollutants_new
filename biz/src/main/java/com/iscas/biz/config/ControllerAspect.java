@@ -40,24 +40,28 @@ public class ControllerAspect {
         StaticInfo.START_TIME_THREAD_LOCAL.set(start);
         HttpServletRequest request = SpringUtils.getRequest();
         // 记录下请求内容
-        log.debug("URL : " + request.getRequestURL().toString());
-        log.debug("HTTP_METHOD : " + request.getMethod());
-        log.debug("IP : " + request.getRemoteAddr());
-        log.debug("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        log.debug("ARGS : " + Arrays.toString(joinPoint.getArgs()));
+        if (request != null) {
+            log.debug("URL : " + request.getRequestURL().toString());
+            log.debug("HTTP_METHOD : " + request.getMethod());
+            log.debug("IP : " + request.getRemoteAddr());
+            log.debug("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+            log.debug("ARGS : " + Arrays.toString(joinPoint.getArgs()));
+        }
+
         try {
             Object result = joinPoint.proceed();
-
-            //如果是ResponseEntity类型那么直接注入值
-            if (result != null && result instanceof ResponseEntity) {
-                ResponseEntity responseEntity = (ResponseEntity) result;
-                responseEntity.setTookInMillis(System.currentTimeMillis() - start);
-                //注入requestURL
-                responseEntity.setRequestURL(request.getRequestURI());
-            }
-            // 处理完请求，返回内容
-            if (result != null) {
-                log.debug(new StringBuilder().append("Response:").append(result).toString());
+            if (request != null) {
+                //如果是ResponseEntity类型那么直接注入值
+                if (result != null && result instanceof ResponseEntity) {
+                    ResponseEntity responseEntity = (ResponseEntity) result;
+                    responseEntity.setTookInMillis(System.currentTimeMillis() - start);
+                    //注入requestURL
+                    responseEntity.setRequestURL(request.getRequestURI());
+                }
+                // 处理完请求，返回内容
+                if (result != null) {
+                    log.debug(new StringBuilder().append("Response:").append(result).toString());
+                }
             }
             return result;
         } finally {
