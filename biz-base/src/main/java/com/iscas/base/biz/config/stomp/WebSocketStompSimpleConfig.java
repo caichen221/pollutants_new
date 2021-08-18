@@ -2,14 +2,12 @@ package com.iscas.base.biz.config.stomp;
 
 import com.iscas.base.biz.config.cros.CrosProps;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
+import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 /**
@@ -25,6 +23,8 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
     public static StompEndpointRegistry endpointRegistry;
     @Autowired
     private CrosProps crosProps;
+    @Value("${ws.sockjs.enabled:true}")
+    private boolean wsSockJsEnabled;
     /**
      * 注册stomp的端点
      */
@@ -34,10 +34,13 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
         // 在网页上我们就可以通过这个链接
         // http://localhost:8080/webSocketServer
         // 来和服务器的WebSocket连接
-        registry.addEndpoint("/webSocketServer", "/webSsh")
+        StompWebSocketEndpointRegistration stompWebSocketEndpointRegistration = registry.addEndpoint("/webSocketServer", "/webSsh")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins(crosProps.getOrigin())
-                .withSockJS();
+                .setAllowedOrigins(crosProps.getOrigin());
+        if (wsSockJsEnabled) {
+            stompWebSocketEndpointRegistration.withSockJS();
+        }
+//                .withSockJS();
 //                .setClientLibraryUrl("http://localhost:7901/demo/websocketTest/sockjs.js");
         endpointRegistry = registry;
 

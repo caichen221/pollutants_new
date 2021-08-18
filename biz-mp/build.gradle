@@ -1,6 +1,4 @@
 
-apply plugin: 'war'
-
 dependencies {
     //导入基础工具工程
     api project (":common:common-tools")
