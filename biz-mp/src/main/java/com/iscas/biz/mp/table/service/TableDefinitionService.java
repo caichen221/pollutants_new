@@ -750,7 +750,6 @@ public class TableDefinitionService {
 			}
 			responseEntity.setValue(item.get(primaryKey));
 		}catch (BaseException e){
-			e.printStackTrace();
 			throw e;
 		}finally {
 			responseEntity.setTookInMillis(System.currentTimeMillis() - start);
