@@ -1,4 +1,3 @@
-
 apply plugin: 'war'
 
 
@@ -6,6 +5,10 @@ configurations {
     api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     api.exclude group: 'org.apache.tomcat'
     api.exclude group: 'org.apache.tomcat.embed'
+    api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    api.exclude group: 'ch.qos.logback', module: 'logback-access'
+    api.exclude group: 'ch.qos.logback', module: 'logback-classic'
+    api.exclude group: 'ch.qos.logback', module: 'logback-core'
 }
 
 bootJar {
@@ -39,7 +42,7 @@ dependencies {
 
     //引入mybatis,如果引入了这个模块，
     api project(":biz-mp")
-    
+
     //引入jpa,如果引入了这个模块
 //    api project(":biz-jpa")
 
