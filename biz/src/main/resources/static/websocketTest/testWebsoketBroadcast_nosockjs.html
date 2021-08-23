@@ -11,7 +11,7 @@
         //var socket = new SockJS("https://localhost:8181/demo2/webSocketServer");
 		//var socket = new SockJS("http://192.168.100.88:7901/demo/webSocketServer");
         //var stompClient = Stomp.over(socket);
-        var stompClient = Stomp.client("wss://192.168.100.88:8181/demo2/webSocketServer");
+        var stompClient = Stomp.client("ws://192.168.100.88:8181/demo2/webSocketServer");
         window.onload = function () {
             connect();
         }
