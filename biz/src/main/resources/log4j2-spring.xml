@@ -143,18 +143,178 @@
         </RollingFile>
 
 
-        <Async name="Async" includeLocation="true" additivity="false">
+        <!--<Async name="Async" includeLocation="true" additivity="false">
             <AppenderRef ref="infoFileAppender"/>
             <AppenderRef ref="warnFileAppender"/>
             <AppenderRef ref="errorFileAppender"/>
             <AppenderRef ref="consoleAppender"/>
-        </Async>
+        </Async>-->
     </Appenders>
 
 
+    <Loggers>
+        <AsyncLogger name="org.apache.http" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="io.lettuce" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="io.netty" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.quartz" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springdoc" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="druid.sql" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="io.undertow" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="sun.rmi" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.sun.mail" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="javax.management" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="de.codecentric" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.hibernate.validator" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.mybatis.spring.mapper" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.xnio" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="springfox" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.baomidou" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="io.micrometer.core" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="Validator" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.neo4j" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.apache.zookeeper" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.apache.curator" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="oshi.util" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="net.javacrumbs" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.atomikos" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+
+        <AsyncRoot level="debug" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncRoot>
+    </Loggers>
+
     <!--Logger 节点用来单独指定日志的形式，比如要为指定包下的 class 指定不同的日志级别等。-->
     <!--然后定义 loggers，只有定义了 logger 并引入的 appender，appender 才会生效-->
-    <Loggers>
+    <!--<Loggers>
 
         <Logger name="java.sql" level="debug" additivity="false">
             <AppenderRef ref="Async"/>
@@ -278,9 +438,15 @@
         <Logger name="org.springframework.core" level="info" additivity="false">
             <AppenderRef ref="Async"/>
         </Logger>
+        <Logger name="org.springframework.jdbc" level="info" additivity="false">
+            <AppenderRef ref="Async"/>
+        </Logger>
+        <Logger name="org.springframework.messaging" level="info" additivity="false">
+            <AppenderRef ref="Async"/>
+        </Logger>
 
 
-        <!-- 根日志设置 -->
+        &lt;!&ndash; 根日志设置 &ndash;&gt;
         <Root level="debug" additivity="false">
             <AppenderRef ref="Async"/>
         </Root>
@@ -288,7 +454,7 @@
 
 
 
-    </Loggers>
+    </Loggers>-->
 
 
 </configuration>

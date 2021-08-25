@@ -71,13 +71,8 @@ public class TestMapArController extends BaseController {
         ResponseEntity response = getResponse();
 
         QueryWrapper<TestMpAr> queryWrapper = new QueryWrapper<>();
-        queryWrapper.and(new Consumer<QueryWrapper<TestMpAr>>() {
-            @Override
-            public void accept(QueryWrapper<TestMpAr> testMpArQueryWrapper) {
-                testMpArQueryWrapper.like("name", "11")
-                        .or().like("name", "111");
-            }
-        }).in("id", 49);
+        queryWrapper.and(testMpArQueryWrapper -> testMpArQueryWrapper.like("name", "11")
+                .or().like("name", "111")).in("id", 49);
         List<TestMpAr> testMpArs = testMpArMapper.selectList(queryWrapper);
         response.setValue(testMpArs);
         return response;

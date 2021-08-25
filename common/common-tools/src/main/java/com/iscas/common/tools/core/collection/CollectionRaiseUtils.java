@@ -1,7 +1,10 @@
 package com.iscas.common.tools.core.collection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 集合扩展工具类
@@ -51,4 +54,35 @@ public class CollectionRaiseUtils {
     public static boolean isNotEmpty(Collection collection) {
         return !isEmpty(collection);
     }
+
+    /**
+     * 将一个集合按照一个条件分割
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/8/23
+     * @param list 待分割的集合
+     * @param predicate 分割条件
+     * @throws
+     * @return java.util.List<java.util.List>
+     */
+    public static List<List> split(List list, Predicate<Object> predicate) {
+        List<List> result = new ArrayList<>();
+        List tmpList = new ArrayList();
+        for (Object o : list) {
+            if (predicate.test(o)) {
+                if (tmpList.size() >0) {
+                    result.add(tmpList);
+                    tmpList = new ArrayList();
+                }
+            } else {
+                tmpList.add(o);
+            }
+        }
+        if (tmpList.size() > 0) {
+            result.add(tmpList);
+        }
+        return result;
+    }
+
+
 }
