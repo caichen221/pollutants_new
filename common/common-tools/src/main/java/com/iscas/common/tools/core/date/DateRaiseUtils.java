@@ -2,6 +2,8 @@ package com.iscas.common.tools.core.date;
 
 import com.iscas.common.tools.constant.MonthEnum;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -14,6 +16,17 @@ import java.util.Date;
 public class DateRaiseUtils {
 
     private DateRaiseUtils(){}
+
+
+    /**
+     * 将格林威治时间格式的字符串转为时间毫秒数
+     * 时间字符串例如：Wed, 25 Aug 2021 02:46:52 GMT
+     * */
+    public static long convertGMTToMs(String gmtStr) {
+        ZonedDateTime zdt = ZonedDateTime.parse(gmtStr, DateTimeFormatter.RFC_1123_DATE_TIME);
+        return zdt.toInstant().toEpochMilli();
+    }
+
 
     /**
      * 获取当前日期里的年份

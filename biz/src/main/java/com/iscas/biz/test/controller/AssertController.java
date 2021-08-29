@@ -1,5 +1,6 @@
 package com.iscas.biz.test.controller;
 
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ public class AssertController {
     @GetMapping("/test")
     public String test() {
         String str = null;
+        String ipAddr = SpringUtils.getIpAddr();
         AssertObjUtils.assertNotNull(str, "str 不能为null");
         return str;
     }

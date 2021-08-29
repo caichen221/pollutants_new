@@ -1,4 +1,4 @@
-package com.iscas.biz.controller;
+package com.iscas.biz.test.controller;
 
 
 import com.iscas.biz.domain.common.User;
