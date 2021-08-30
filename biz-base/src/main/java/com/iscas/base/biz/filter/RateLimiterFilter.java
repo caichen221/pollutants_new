@@ -40,8 +40,8 @@ public class RateLimiterFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (log.isDebugEnabled()) {
-            log.debug("进入 RateLimiterFilter 过滤器");
+        if (log.isTraceEnabled()) {
+            log.trace("进入 RateLimiterFilter 过滤器");
         }
 
         String contextPath = request.getContextPath();

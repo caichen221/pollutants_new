@@ -22,8 +22,8 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(logger.isDebugEnabled()){
-            log.debug("进入 SecurityFilter 过滤器");
+        if(logger.isTraceEnabled()){
+            log.trace("进入 SecurityFilter 过滤器");
         }
 
         //设置X-Content-Type-Options，如果通过 script 参考检索到的响应中接收到 "nosniff" 指令，则浏览器不会加载“script”文件，

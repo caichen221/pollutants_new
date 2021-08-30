@@ -31,8 +31,8 @@ public class XssFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException,ServletException {
-        if(logger.isDebugEnabled()){
-            logger.debug("进入 xss filter 过滤器");
+        if(logger.isTraceEnabled()){
+            logger.trace("进入 xss filter 过滤器");
         }
 
         HttpServletRequest req = (HttpServletRequest) request;

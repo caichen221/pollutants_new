@@ -343,6 +343,11 @@
             <AppenderRef ref="consoleAppender"/>
         </AsyncLogger>
 
+        <AsyncLogger name="org.springframework.boot.actuate.mail.MailHealthIndicator" level="error" includeLocation="true" additivity="false">
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+
         <AsyncLogger name="com.iscas.biz.config.log.AccessLogInterceptor" level="debug" includeLocation="true" additivity="false">
             <AppenderRef ref="accessAppender"/>
             <AppenderRef ref="consoleAppender"/>

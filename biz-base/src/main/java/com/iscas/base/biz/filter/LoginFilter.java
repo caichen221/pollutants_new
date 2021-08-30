@@ -53,8 +53,8 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (log.isDebugEnabled()) {
-            log.debug("进入 LoginFilter 过滤器");
+        if (log.isTraceEnabled()) {
+            log.trace("进入 LoginFilter 过滤器");
         }
         String contextPath = request.getContextPath();
         AuthContext authContext = new AuthContext();
