@@ -1,10 +1,9 @@
 package com.iscas.biz.service.common;
 
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
-import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,7 +25,7 @@ import java.util.List;
 public class WsService {
     private WsDataMapper getWsDataMapper() {
         try {
-            return SpringService.getBean(WsDataMapper.class);
+            return SpringUtils.getBean(WsDataMapper.class);
         } catch (Exception e) {
             return null;
         }

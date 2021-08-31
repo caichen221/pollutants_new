@@ -1,6 +1,5 @@
 package com.iscas.base.biz.util;
 
-import com.iscas.base.biz.service.common.SpringService;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
@@ -16,7 +15,7 @@ import java.util.Optional;
 public class CacheUtils {
 
     public static CacheManager getCacheManager() {
-        return SpringService.getBean(CacheManager.class);
+        return SpringUtils.getBean(CacheManager.class);
     }
 
     /**

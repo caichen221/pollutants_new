@@ -1,6 +1,6 @@
 package com.iscas.biz.service.common;
 
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.*;
 import com.iscas.biz.mp.mapper.DynamicMapper;
@@ -152,7 +152,7 @@ public class MenuService {
     })
     public int addMenu(Menu menu) throws ValidDataException {
         AssertObjUtils.assertNull(menu.getMenuId(), "请求参数有误，menuId必须为空");
-        ValidatePropDistinctUtils.validateFromMysql(SpringService.getBean(DynamicMapper.class), "menu", "menu_name", menu.getMenuName());
+        ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(DynamicMapper.class), "menu", "menu_name", menu.getMenuName());
         Date date = new Date();
         menu.setMenuCreateTime(date)
                 .setMenuUpdateTime(date);

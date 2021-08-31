@@ -1,6 +1,6 @@
 package com.iscas.base.biz.schedule;
 
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
@@ -42,7 +42,7 @@ public class SchedulingRunnable implements Runnable {
         long startTime = System.currentTimeMillis();
 
         try {
-            Object target = SpringService.getBean(beanName);
+            Object target = SpringUtils.getBean(beanName);
 
             Method method = null;
             if (null != params && params.length > 0) {

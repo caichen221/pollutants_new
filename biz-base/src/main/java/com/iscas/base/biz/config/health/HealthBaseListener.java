@@ -1,6 +1,6 @@
 package com.iscas.base.biz.config.health;
 
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 
 /**
  *
@@ -16,7 +16,7 @@ public class HealthBaseListener {
         if (healthCheckHandler == null) {
             synchronized (LivenessStateListener.class) {
                 if (healthCheckHandler == null) {
-                    healthCheckHandler = SpringService.getApplicationContext().getBean(IHealthCheckHandler.class);
+                    healthCheckHandler = SpringUtils.getApplicationContext().getBean(IHealthCheckHandler.class);
                 }
             }
         }

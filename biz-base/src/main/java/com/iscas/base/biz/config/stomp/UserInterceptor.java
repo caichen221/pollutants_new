@@ -1,26 +1,12 @@
 package com.iscas.base.biz.config.stomp;
 
-import com.auth0.jwt.interfaces.Claim;
-import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.templet.exception.ValidTokenException;
-import com.iscas.base.biz.model.auth.User;
-import com.iscas.base.biz.util.JWTUtils;
-import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-
-import javax.servlet.http.HttpSession;
-import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  *用户拦截器
@@ -34,7 +20,7 @@ public class UserInterceptor implements ChannelInterceptor {
         if (userAccessor == null) {
             synchronized (UserInterceptor.class) {
                 if (userAccessor == null) {
-                    userAccessor = SpringService.getApplicationContext().getBean(UserAccessor.class);
+                    userAccessor = SpringUtils.getApplicationContext().getBean(UserAccessor.class);
                 }
             }
         }

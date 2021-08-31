@@ -7,10 +7,10 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
@@ -26,7 +26,6 @@ import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.view.tree.TreeResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -280,7 +279,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 //            authCacheService.set("user-token:" + username, token);
             authCacheService.rpush("user-token:" + username, token);
 
-            TokenProps tokenProps = SpringService.getBean(TokenProps.class);
+            TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
             if (tokenProps.isCookieStore()) {
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
             }

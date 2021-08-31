@@ -1,5 +1,9 @@
 package com.iscas.base.biz.util;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -14,8 +18,9 @@ import java.net.UnknownHostException;
  * spring相关操作工具类
  * @auth zhuquanwen
  **/
-public class SpringUtils {
-    private SpringUtils(){}
+@Component
+public class SpringUtils implements ApplicationContextAware {
+    private static ApplicationContext applicationContext;
 
     public static ServletContext getServletContext(){
         return getRequest().getServletContext();
@@ -149,4 +154,21 @@ public class SpringUtils {
         return ipAddress;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        SpringUtils.applicationContext = applicationContext;
+    }
+
+    public static ApplicationContext getApplicationContext() {
+        return SpringUtils.applicationContext;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getBean(String name) throws BeansException {
+        return (T) applicationContext.getBean(name);
+    }
+
+    public static <T> T getBean(Class<T> tClass) throws BeansException {
+        return (T) applicationContext.getBean(tClass);
+    }
 }

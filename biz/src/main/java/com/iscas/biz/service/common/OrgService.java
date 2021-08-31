@@ -1,6 +1,6 @@
 package com.iscas.biz.service.common;
 
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.Org;
 import com.iscas.biz.domain.common.OrgRoleExample;
 import com.iscas.biz.domain.common.OrgRoleKey;
@@ -127,7 +127,7 @@ public class OrgService {
     })
     public int addOrg(Org org) throws ValidDataException {
         AssertObjUtils.assertNull(org.getOrgId(), "请求参数有误，orgId必须为空");
-        ValidatePropDistinctUtils.validateFromMysql(SpringService.getBean(DynamicMapper.class), "org", "org_name", org.getOrgName());
+        ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(DynamicMapper.class), "org", "org_name", org.getOrgName());
         Date date = new Date();
         org.setOrgCreateTime(date)
                 .setOrgUpdateTime(date);

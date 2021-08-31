@@ -7,7 +7,6 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.common.tools.core.date.DateRaiseUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
@@ -16,7 +15,9 @@ import com.iscas.templet.exception.ValidTokenException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JWT工具类
@@ -48,13 +49,13 @@ public class JWTUtils {
 
         //将token缓存起来
 //        CaffCacheUtils.set(token, iatDate);
-        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
         authCacheService.set(token, iatDate);
         return token;
     }
     public static Map<String, Claim> verifyToken(String token) throws UnsupportedEncodingException, ValidTokenException {
 //        Object obj = CaffCacheUtils.get(token);
-        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
         Object obj = authCacheService.get(token);
         if(obj == null){
             throw new ValidTokenException("登录凭证校验失败","token:" + token + "不存在或已经被注销");
@@ -100,7 +101,7 @@ public class JWTUtils {
         } catch (UnsupportedEncodingException e) {
             throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
-        IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
 //        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);
 
         //修改为支持用户多会话模式

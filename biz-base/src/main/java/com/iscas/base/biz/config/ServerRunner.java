@@ -2,7 +2,7 @@ package com.iscas.base.biz.config;
 
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -39,7 +39,7 @@ public class ServerRunner implements CommandLineRunner {
                         //获取期待的类名
                         String className = ns.substring(1) + "MessageEventHandler";
                         try {
-                            Object bean = SpringService.getBean(className);
+                            Object bean = SpringUtils.getBean(className);
                             Optional.ofNullable(bean).ifPresent(socketIONamespace::addListeners);
                         } catch (Exception e) {
 

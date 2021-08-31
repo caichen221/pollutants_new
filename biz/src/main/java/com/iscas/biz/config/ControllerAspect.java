@@ -60,7 +60,7 @@ public class ControllerAspect {
                 }
                 // 处理完请求，返回内容
                 if (result != null) {
-                    log.debug(new StringBuilder().append("Response:").append(result).toString());
+                    log.trace(new StringBuilder().append("Response:").append(result).toString());
                 }
             }
             return result;

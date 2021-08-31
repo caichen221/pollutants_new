@@ -1,6 +1,6 @@
 package com.iscas.biz.test.filter;
 
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
@@ -21,7 +21,7 @@ public class TestWsTask {
 
     private WsDataMapper getWsDataMapper() {
         try {
-            return SpringService.getBean(WsDataMapper.class);
+            return SpringUtils.getBean(WsDataMapper.class);
         } catch (Exception e) {
             return null;
         }

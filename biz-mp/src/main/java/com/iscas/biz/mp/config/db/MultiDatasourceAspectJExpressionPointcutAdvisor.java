@@ -47,7 +47,7 @@ public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefi
         advisor.setExpression(pointcut);
         advisor.setAdvice((MethodInterceptor) invocation -> {
             try {
-                log.info("正在访问{}数据源...", dbType);
+                log.debug("正在访问{}数据源...", dbType);
                 DbContextHolder.setDbType(dbType);
                 return invocation.proceed();
             } finally {

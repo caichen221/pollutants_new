@@ -1,9 +1,7 @@
 package com.iscas.base.biz.config.elasticjob;
 
 
-import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
-import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
@@ -15,7 +13,7 @@ import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.iscas.base.biz.service.common.SpringService;
+import com.iscas.base.biz.util.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,9 +53,9 @@ public class ElasticJobHandler {
         LiteJobConfiguration jobConfig = simpleJobConfigBuilder(jobName, clazz, shardingTotalCount, cron, jobParameter, shardingItemParameters)
                 .overwrite(true).build();
         if (jobEventConfiguration == null) {
-            new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, elasticJobListener).init();
+            new SpringJobScheduler(SpringUtils.getBean(clazz), zookeeperRegistryCenter, jobConfig, elasticJobListener).init();
         } else {
-            new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, jobEventConfiguration, elasticJobListener).init();
+            new SpringJobScheduler(SpringUtils.getBean(clazz), zookeeperRegistryCenter, jobConfig, jobEventConfiguration, elasticJobListener).init();
         }
     }
 
@@ -78,9 +76,9 @@ public class ElasticJobHandler {
         LiteJobConfiguration jobConfig = dataFlowJobConfigBuilder(jobName, clazz, shardingTotalCount, cron, jobParameter, shardingItemParameters, streamingProcess)
                 .overwrite(true).build();
         if (jobEventConfiguration == null) {
-            new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, elasticJobListener).init();
+            new SpringJobScheduler(SpringUtils.getBean(clazz), zookeeperRegistryCenter, jobConfig, elasticJobListener).init();
         } else {
-            new SpringJobScheduler(SpringService.getBean(clazz), zookeeperRegistryCenter, jobConfig, jobEventConfiguration, elasticJobListener).init();
+            new SpringJobScheduler(SpringUtils.getBean(clazz), zookeeperRegistryCenter, jobConfig, jobEventConfiguration, elasticJobListener).init();
         }
     }
 

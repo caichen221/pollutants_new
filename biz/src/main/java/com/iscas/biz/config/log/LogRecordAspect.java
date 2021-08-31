@@ -3,7 +3,6 @@ package com.iscas.biz.config.log;
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.log.LogRecordConfig;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.SpringUtils;
@@ -43,7 +42,7 @@ public class LogRecordAspect implements Constants {
 
     private Object handle(ProceedingJoinPoint joinPoint, LogRecord logRecord) throws Throwable {
         StringBuilder desc = new StringBuilder();
-        IStoreLogService storeLog = SpringService.getApplicationContext().getBean(IStoreLogService.class);
+        IStoreLogService storeLog = SpringUtils.getApplicationContext().getBean(IStoreLogService.class);
         LogInfo logInfo = new LogInfo();
         //从token里取出userName
         String username = "";

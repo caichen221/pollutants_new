@@ -6,8 +6,8 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.AuthContextHolder;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.AuthorizationRuntimeException;
@@ -99,7 +99,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
             }
             authContext.setToken(token);
-            IAuthCacheService authCacheService = SpringService.getApplicationContext().getBean(IAuthCacheService.class);
+            IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
 //            if(CaffCacheUtils.get(token) == null){
             if(authCacheService.get(token) == null){
                 log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +

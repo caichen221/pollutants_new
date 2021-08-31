@@ -2,9 +2,7 @@ package com.iscas.base.biz.util;
 
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.FIFOCache;
 import cn.hutool.core.date.DateUnit;
-import com.iscas.base.biz.service.common.SpringService;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -24,10 +22,10 @@ public class LoginCacheUtils {
 
     public static String put(String secretKey) {
         UUID uuid = UUID.randomUUID();
-        Environment environment = SpringService.getApplicationContext().getBean(Environment.class);
+        Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
         String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
         int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
-        CacheManager cacheManager = SpringService.getApplicationContext().getBean(CacheManager.class);
+        CacheManager cacheManager = SpringUtils.getApplicationContext().getBean(CacheManager.class);
         if (cacheManager instanceof RedisCacheManager) {
             org.springframework.cache.Cache loginCache = cacheManager.getCache("loginCache");
             if (loginCache == null) throw new RuntimeException("找不到loginCache");
@@ -38,7 +36,7 @@ public class LoginCacheUtils {
         return uuid.toString();
     }
     public static String get(String uuid) {
-        CacheManager cacheManager = SpringService.getApplicationContext().getBean(CacheManager.class);
+        CacheManager cacheManager = SpringUtils.getApplicationContext().getBean(CacheManager.class);
         if (cacheManager instanceof RedisCacheManager) {
             org.springframework.cache.Cache loginCache = cacheManager.getCache("loginCache");
             if (loginCache == null) return null;
@@ -51,7 +49,7 @@ public class LoginCacheUtils {
     }
 
     public static void remove(String uuid) {
-        CacheManager cacheManager = SpringService.getApplicationContext().getBean(CacheManager.class);
+        CacheManager cacheManager = SpringUtils.getApplicationContext().getBean(CacheManager.class);
         if (cacheManager instanceof RedisCacheManager) {
             org.springframework.cache.Cache loginCache = cacheManager.getCache("loginCache");
             if (loginCache == null) return;

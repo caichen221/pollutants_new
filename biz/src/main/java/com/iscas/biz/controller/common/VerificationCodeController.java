@@ -4,7 +4,6 @@ import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.LoginCacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.BaseController;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
@@ -28,7 +26,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,7 +71,7 @@ public class VerificationCodeController extends BaseController {
         // 将验证码存于session中,分布式部署需要共享session，或存入共享存储中
 //        request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
         //存入内存
-        Environment environment = SpringService.getApplicationContext().getBean(Environment.class);
+        Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
         String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
         fifoCache.put(Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText, TimeUnit.SECONDS.toMillis(Long.parseLong(loginRandomCacheTime)));
         BufferedImage bi = producer.createImage(capText);
