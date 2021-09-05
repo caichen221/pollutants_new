@@ -1,6 +1,5 @@
 package com.iscas.biz.mapper.common;
 
-import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.domain.common.RoleOprationKey;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;

@@ -34,9 +34,46 @@ public interface RoleMapper {
 
     int updateByPrimaryKey(Role record);
 
-    @Select("select DISTINCT t1.role_id, t7.resource_id from role t1, role_menu t2, menu t3, menu_opration t4, opration t5, opration_resource t6, resource t7 \n" +
-            "\twhere t1.role_id = t2.role_id and t2.menu_id = t3.menu_id and t3.menu_id = t4.menu_id\n" +
-            "  and t4.op_id = t5.op_id and t5.op_id = t6.op_id and t6.resource_id = t7.resource_id order by t1.role_id")
+//    @Select("select DISTINCT t1.role_id, t7.resource_id from role t1, role_menu t2, menu t3, menu_opration t4, opration t5, opration_resource t6, resource t7 \n" +
+//            "\twhere t1.role_id = t2.role_id and t2.menu_id = t3.menu_id and t3.menu_id = t4.menu_id\n" +
+//            "  and t4.op_id = t5.op_id and t5.op_id = t6.op_id and t6.resource_id = t7.resource_id order by t1.role_id")
+    @Select("SELECT DISTINCT\n" +
+            "\tt1.role_id,\n" +
+            "\tt7.resource_id\n" +
+            "FROM\n" +
+            "\trole t1,\n" +
+            "\trole_menu t2,\n" +
+            "\tmenu t3,\n" +
+            "\tmenu_opration t4,\n" +
+            "\topration t5,\n" +
+            "\topration_resource t6,\n" +
+            "\tresource t7\n" +
+            "WHERE\n" +
+            "\tt1.role_id = t2.role_id\n" +
+            "AND t2.menu_id = t3.menu_id\n" +
+            "AND t3.menu_id = t4.menu_id\n" +
+            "AND t4.op_id = t5.op_id\n" +
+            "AND t5.op_id = t6.op_id\n" +
+            "AND t6.resource_id = t7.resource_id\n" +
+            "\n" +
+            "union\n" +
+            "\n" +
+            "SELECT DISTINCT\n" +
+            "\tt8.role_id,\n" +
+            "\tt12.resource_id\n" +
+            "FROM\n" +
+            "\trole t8,\n" +
+            "\trole_opration t9,\n" +
+            "\topration t10,\n" +
+            "\topration_resource t11,\n" +
+            "\tresource t12\n" +
+            "WHERE\n" +
+            "\tt8.role_id = t9.role_id\n" +
+            "AND t9.op_id = t10.op_id\n" +
+            "AND t10.op_id = t11.op_id\n" +
+            "AND t11.resource_id = t12.resource_id\n" +
+            "\n" +
+            "order by role_id")
     List<Map> selectRoleResource();
 
 
