@@ -1,5 +1,6 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.RoleService;
 import com.iscas.templet.common.BaseController;
@@ -62,7 +63,7 @@ public class RoleController extends BaseController {
     @ApiOperation(value="获取角色的菜单树", notes="获取角色的菜单树")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "roeId", value = "角色id", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
             }
     )
     @GetMapping("/menu/tree")
@@ -77,10 +78,11 @@ public class RoleController extends BaseController {
     @ApiOperation(value="修改角色的菜单树", notes="修改角色的菜单树")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "roeId", value = "角色id", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "treeResponseData", value = "角色菜单树", required = true, dataType = "TreeResponseData"),
+                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
             }
     )
-    @PostMapping("/menu/tree")
+    @PutMapping("/menu/tree")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
@@ -95,13 +97,33 @@ public class RoleController extends BaseController {
     @ApiOperation(value="获取角色对应的操作权限", notes="获取角色对应的操作权限")
     @ApiImplicitParams(
             {
-                    @ApiImplicitParam(name = "roeId", value = "角色id", required = true, dataType = "Integer")
+                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
             }
     )
     @GetMapping("/opration")
-    public ResponseEntity getOpration(@RequestBody TreeResponseData treeResponseData, Integer roleId) {
+    public ResponseEntity getOpration(Integer roleId) {
         ResponseEntity response = getResponse();
-        roleService.updateMenuTree(treeResponseData, roleId);
+        List<Opration> oprations = roleService.getOprations(roleId);
+        response.setValue(oprations);
+        return response;
+    }
+
+    @ApiOperation(value="修改角色对应的操作权限", notes="修改角色对应的操作权限")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "oprations", value = "操作权限", required = true, dataType = "List"),
+                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+            }
+    )
+    @PutMapping("/opration")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
+    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, Integer roleId) {
+        ResponseEntity response = getResponse();
+        roleService.editOpration(oprations, roleId);
         return response;
     }
 

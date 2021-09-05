@@ -1,12 +1,10 @@
 package com.iscas.biz.service.common;
 
 import com.iscas.base.biz.config.Constants;
-import com.iscas.biz.domain.common.Menu;
-import com.iscas.biz.domain.common.Role;
-import com.iscas.biz.domain.common.RoleMenuExample;
-import com.iscas.biz.domain.common.RoleMenuKey;
+import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mapper.common.RoleMenuMapper;
+import com.iscas.biz.mapper.common.RoleOprationMapper;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
@@ -34,11 +32,13 @@ public class RoleService {
     private final RoleMapper roleMapper;
     private final RoleMenuMapper roleMenuMapper;
     private final MenuService menuService;
+    private final RoleOprationMapper roleOprationMapper;
 
-    public RoleService(RoleMapper roleMapper, RoleMenuMapper roleMenuMapper, MenuService menuService) {
+    public RoleService(RoleMapper roleMapper, RoleMenuMapper roleMenuMapper, MenuService menuService, RoleOprationMapper roleOprationMapper) {
         this.roleMapper = roleMapper;
         this.roleMenuMapper = roleMenuMapper;
         this.menuService = menuService;
+        this.roleOprationMapper = roleOprationMapper;
     }
 
     public List<ComboboxData> combobox() {
@@ -111,4 +111,20 @@ public class RoleService {
         }
     }
 
+    public List<Opration> getOprations(Integer roleId) {
+        return roleMapper.selectOprationByRoleId(roleId);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void editOpration(List<Opration> oprations, Integer roleId) {
+        Role role = roleMapper.selectByPrimaryKey(roleId);
+        AssertObjUtils.assertNotNull(role, StringRaiseUtils.format("角色ID：{}不存在", roleId));
+        //判断超级管理员角色
+        AssertObjUtils.assertNotEquals(role.getRoleName(), Constants.SUPER_ROLE_KEY, "超级管理员角色不允许修改");
+        roleOprationMapper.deleteByRoleId(roleId);
+        if (CollectionUtils.isNotEmpty(oprations)) {
+            List<RoleOprationKey> roleOprationKeys = oprations.stream().map(opration -> new RoleOprationKey(roleId, opration.getOpId())).collect(Collectors.toList());
+            roleOprationMapper.insertBatch(roleOprationKeys);
+        }
+    }
 }

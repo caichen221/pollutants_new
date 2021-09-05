@@ -18,6 +18,10 @@ buildscript {
             allowInsecureProtocol = true
         }
         maven {
+            url "${aliyunGradleUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
             url "${gradlePluginUrl}"
             allowInsecureProtocol = true
         }

@@ -146,7 +146,7 @@
     </update>
     <insert id="insertBatch" parameterType="java.util.List">
         insert into role_menu (role_id, menu_id) values
-        <foreach collection="roleMenus" item="roleMenu">
+        <foreach collection="roleMenus" item="roleMenu" separator=",">
             (#{roleMenu.roleId,jdbcType=INTEGER}, #{roleMenu.menuId,jdbcType=INTEGER})
         </foreach>
     </insert>
