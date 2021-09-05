@@ -23,4 +23,11 @@ public class StringRaiseUtilsTests {
         String request_param = StringRaiseUtils.convertToUnderline("requestParam");
         Assertions.assertEquals("request_param", request_param);
     }
+
+    @Test
+    public void test3() {
+        String str = StringRaiseUtils.format("a:{},b:{}", "1", "2");
+        Assertions.assertEquals("a:1,b:2", str);
+    }
+
 }

@@ -3,6 +3,7 @@ package com.iscas.common.tools.core.string;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -173,6 +174,16 @@ public class StringRaiseUtils {
             }
         }
         return true;
+    }
+
+    /**将字符串格式化，像log的一样，使用{}替换*/
+    public static String format(String str, Object... objs) {
+        if (objs != null) {
+            for (Object obj : objs) {
+                str = str.replaceFirst("\\{\\}", obj.toString());
+            }
+        }
+        return str;
     }
 
 }

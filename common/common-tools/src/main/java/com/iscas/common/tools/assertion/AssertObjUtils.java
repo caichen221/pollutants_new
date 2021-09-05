@@ -2,6 +2,8 @@ package com.iscas.common.tools.assertion;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 /**
  * 对象断言
  *
@@ -73,6 +75,40 @@ public class AssertObjUtils {
      */
     public static void assertEmpty(Object obj, String msg) {
         if (obj != null && StringUtils.isNotEmpty(obj.toString())) {
+            throw new AssertRuntimeException(msg);
+        }
+    }
+
+    /**
+     * 断言obj1与obj2相等，如果不相等，抛出异常
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/09/02
+     * @param obj1 待判断对象1
+     * @param obj2 待判断对象2
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
+    public static void assertEquals(Object obj1, Object obj2, String msg) {
+        if (!Objects.equals(obj1, obj2)) {
+            throw new AssertRuntimeException(msg);
+        }
+    }
+
+    /**
+     * 断言obj1与obj2不相等，如果相等，抛出异常
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2020/09/02
+     * @param obj1 待判断对象1
+     * @param obj2 待判断对象2
+     * @param msg 错误描述
+     * @throws
+     * @return void
+     */
+    public static void assertNotEquals(Object obj1, Object obj2, String msg) {
+        if (Objects.equals(obj1, obj2)) {
             throw new AssertRuntimeException(msg);
         }
     }

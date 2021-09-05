@@ -93,7 +93,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(childOrgIds)) {
                 StringBuilder dynamicSqlBuilder = new StringBuilder();
                 dynamicSqlBuilder.append(" user_id in (");
-                dynamicSqlBuilder.append("select distinct t1.user_id from user t1, org_user t2, org t3 where t1.user_id = t2.user_id and t2.org_id = t3.org_id and t3.org_id in ");
+                dynamicSqlBuilder.append("select distinct t1.user_id from user_info t1, org_user t2, org t3 where t1.user_id = t2.user_id and t2.org_id = t3.org_id and t3.org_id in ");
                 StringJoiner stringJoiner = new StringJoiner(",", "(", ")");
                 for (Integer childOrgId : childOrgIds) {
                     stringJoiner.add(childOrgId + "");

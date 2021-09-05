@@ -23,4 +23,6 @@ public interface RoleMenuMapper {
     int updateByExampleSelective(@Param("record") RoleMenuKey record, @Param("example") RoleMenuExample example);
 
     int updateByExample(@Param("record") RoleMenuKey record, @Param("example") RoleMenuExample example);
+
+    int insertBatch(@Param("roleMenus") List<RoleMenuKey> roleMenus);
 }

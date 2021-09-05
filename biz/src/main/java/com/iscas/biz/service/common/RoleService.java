@@ -1,15 +1,24 @@
 package com.iscas.biz.service.common;
 
+import com.iscas.base.biz.config.Constants;
+import com.iscas.biz.domain.common.Menu;
 import com.iscas.biz.domain.common.Role;
+import com.iscas.biz.domain.common.RoleMenuExample;
+import com.iscas.biz.domain.common.RoleMenuKey;
 import com.iscas.biz.mapper.common.RoleMapper;
+import com.iscas.biz.mapper.common.RoleMenuMapper;
+import com.iscas.common.tools.assertion.AssertObjUtils;
+import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
 import com.iscas.templet.view.table.ComboboxData;
+import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -23,9 +32,13 @@ import java.util.stream.Collectors;
 @Service
 public class RoleService {
     private final RoleMapper roleMapper;
+    private final RoleMenuMapper roleMenuMapper;
+    private final MenuService menuService;
 
-    public RoleService(RoleMapper roleMapper) {
+    public RoleService(RoleMapper roleMapper, RoleMenuMapper roleMenuMapper, MenuService menuService) {
         this.roleMapper = roleMapper;
+        this.roleMenuMapper = roleMenuMapper;
+        this.menuService = menuService;
     }
 
     public List<ComboboxData> combobox() {
@@ -41,4 +54,61 @@ public class RoleService {
         }
         return new ArrayList<>();
     }
+
+    public TreeResponseData getMenuTree(Integer roleId) {
+        Role role = roleMapper.selectByPrimaryKey(roleId);
+        AssertObjUtils.assertNotNull(role, StringRaiseUtils.format("角色ID：{}不存在", roleId));
+
+        TreeResponseData<Menu> tree = menuService.getTree();
+        RoleMenuExample roleMenuExample = new RoleMenuExample();
+        roleMenuExample.createCriteria().andRoleIdEqualTo(roleId);
+        List<RoleMenuKey> roleMenuKeys = roleMenuMapper.selectByExample(roleMenuExample);
+        if (CollectionUtils.isNotEmpty(roleMenuKeys)) {
+            List<Integer> menuIds = roleMenuKeys.stream().map(RoleMenuKey::getMenuId).collect(Collectors.toList());
+            selectTree(tree, menuIds);
+        }
+        return tree;
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void updateMenuTree(TreeResponseData treeResponseData, Integer roleId) {
+        Role role = roleMapper.selectByPrimaryKey(roleId);
+        AssertObjUtils.assertNotNull(role, StringRaiseUtils.format("角色ID：{}不存在", roleId));
+        //判断超级管理员角色
+        AssertObjUtils.assertNotEquals(role.getRoleName(), Constants.SUPER_ROLE_KEY, "超级管理员角色不允许修改");
+        List<Integer> menuIds = new ArrayList<>();
+        getSelectedMenuIds(treeResponseData, menuIds);
+
+        //先删除表role_menu中所有role_id为传入的roleId的值，再插入新的
+        RoleMenuExample roleMenuExample = new RoleMenuExample();
+        roleMenuExample.createCriteria().andRoleIdEqualTo(roleId);
+        roleMenuMapper.deleteByExample(roleMenuExample);
+        if (CollectionUtils.isNotEmpty(menuIds)) {
+            roleMenuMapper.insertBatch(menuIds.stream().map(menuId -> new RoleMenuKey(roleId, menuId)).collect(Collectors.toList()));
+        }
+    }
+
+    private void selectTree(TreeResponseData<Menu> tree, List<Integer> menuIds) {
+        Object id = tree.getId();
+        if (id != null && menuIds.contains(id)) {
+            tree.setSelected(true);
+        }
+        List<TreeResponseData<Menu>> children = tree.getChildren();
+        if (CollectionUtils.isNotEmpty(children)) {
+            children.forEach(tr -> selectTree(tr, menuIds));
+        }
+    }
+
+    private void getSelectedMenuIds(TreeResponseData treeResponseData, List<Integer> menuIds) {
+        if (treeResponseData.getSelected() && !Objects.equals(treeResponseData.getId(), -1)) {
+            menuIds.add((Integer) treeResponseData.getId());
+        }
+        List<TreeResponseData> children = treeResponseData.getChildren();
+        if (CollectionUtils.isNotEmpty(children)) {
+            for (TreeResponseData child : children) {
+                getSelectedMenuIds(child, menuIds);
+            }
+        }
+    }
+
 }

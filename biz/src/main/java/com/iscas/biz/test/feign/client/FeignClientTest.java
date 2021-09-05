@@ -1,5 +1,6 @@
 package com.iscas.biz.test.feign.client;
 
+import com.iscas.biz.test.feign.interceptor.FeignRequestInterceptor;
 import com.iscas.templet.common.ResponseEntity;
 import feign.Feign;
 import feign.Request;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 public class FeignClientTest {
     public static void main(String[] args) {
         FeignApi feignApi = Feign.builder()
+                .requestInterceptor(new FeignRequestInterceptor())
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
 //                .decoder(new StringDecoder())

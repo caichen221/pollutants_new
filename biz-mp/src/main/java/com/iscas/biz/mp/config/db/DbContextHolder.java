@@ -1,5 +1,8 @@
 package com.iscas.biz.mp.config.db;
 
+import java.util.LinkedList;
+import java.util.Objects;
+
 /**
  *
  * @author zhuquanwen
@@ -8,13 +11,18 @@ package com.iscas.biz.mp.config.db;
  * @since jdk1.8
  */
 public class DbContextHolder {
-    private static final ThreadLocal CONTEXT_HOLDER = new ThreadLocal<>();
+    private static final ThreadLocal<LinkedList<String>> CONTEXT_HOLDER = new ThreadLocal<>();
     /**
      * 设置数据源
      * @param dbType
      */
     public static void setDbType(String dbType) {
-        CONTEXT_HOLDER.set(dbType);
+        LinkedList<String> dbTypeStack = CONTEXT_HOLDER.get();
+        if (dbTypeStack == null) {
+            dbTypeStack = new LinkedList<>();
+            CONTEXT_HOLDER.set(dbTypeStack);
+        }
+        dbTypeStack.push(dbType);
     }
 
     /**
@@ -22,14 +30,24 @@ public class DbContextHolder {
      * @return
      */
     public static String getDbType() {
-        return (String) CONTEXT_HOLDER.get();
+        LinkedList<String> dbTypeStack = CONTEXT_HOLDER.get();
+        if (!Objects.isNull(dbTypeStack) && dbTypeStack.size() > 0) {
+            return dbTypeStack.peek();
+        }
+        return null;
     }
 
     /**
      * 清除上下文数据
      */
     public static void clearDbType() {
-        CONTEXT_HOLDER.remove();
+        LinkedList<String> dbTypeStack = CONTEXT_HOLDER.get();
+        if (Objects.isNull(dbTypeStack) || dbTypeStack.size() <= 1) {
+            CONTEXT_HOLDER.remove();
+        } else {
+            dbTypeStack.removeFirst();
+        }
     }
+
 }
 

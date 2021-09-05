@@ -5,6 +5,13 @@ public class RoleMenuKey {
 
     private Integer menuId;
 
+    public RoleMenuKey() {}
+
+    public RoleMenuKey(Integer roleId, Integer menuId) {
+        this.roleId = roleId;
+        this.menuId = menuId;
+    }
+
     public Integer getRoleId() {
         return roleId;
     }

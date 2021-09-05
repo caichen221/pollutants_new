@@ -1,11 +1,13 @@
 package com.iscas.biz.controller.common;
 
 import com.iscas.biz.mp.table.service.TableDefinitionService;
+import com.iscas.biz.service.common.RoleService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableSearchRequest;
+import com.iscas.templet.view.tree.TreeResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,9 +34,11 @@ import java.util.Map;
 public class RoleController extends BaseController {
     private String tableIdentity = "role";
     private final TableDefinitionService tableDefinitionService;
+    private final RoleService roleService;
 
-    public RoleController(TableDefinitionService tableDefinitionService) {
+    public RoleController(TableDefinitionService tableDefinitionService, RoleService roleService) {
         this.tableDefinitionService = tableDefinitionService;
+        this.roleService = roleService;
     }
 
     @ApiOperation(value="获取表头", notes="不带数据，带下拉列表")
@@ -53,6 +57,52 @@ public class RoleController extends BaseController {
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
         return tableDefinitionService.getData(tableIdentity, request, null);
+    }
+
+    @ApiOperation(value="获取角色的菜单树", notes="获取角色的菜单树")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "roeId", value = "角色id", required = true, dataType = "Integer")
+            }
+    )
+    @GetMapping("/menu/tree")
+    public ResponseEntity getMenuTree(Integer roleId) {
+        ResponseEntity response = getResponse();
+        TreeResponseData treeResponseData = roleService.getMenuTree(roleId);
+        response.setValue(treeResponseData);
+        return response;
+    }
+
+
+    @ApiOperation(value="修改角色的菜单树", notes="修改角色的菜单树")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "roeId", value = "角色id", required = true, dataType = "Integer")
+            }
+    )
+    @PostMapping("/menu/tree")
+    @Caching(evict = {
+            @CacheEvict(value = "auth", key = "'url_map'"),
+            @CacheEvict(value = "auth", key = "'menus'"),
+            @CacheEvict(value = "auth", key = "'role_map'")
+    })
+    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, Integer roleId) {
+        ResponseEntity response = getResponse();
+        roleService.updateMenuTree(treeResponseData, roleId);
+        return response;
+    }
+
+    @ApiOperation(value="获取角色对应的操作权限", notes="获取角色对应的操作权限")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "roeId", value = "角色id", required = true, dataType = "Integer")
+            }
+    )
+    @GetMapping("/opration")
+    public ResponseEntity getOpration(@RequestBody TreeResponseData treeResponseData, Integer roleId) {
+        ResponseEntity response = getResponse();
+        roleService.updateMenuTree(treeResponseData, roleId);
+        return response;
     }
 
     @ApiOperation(value="删除角色数据", notes="根据主键删除数据")
