@@ -116,6 +116,7 @@ dependencies {
     //feign
     api group: 'io.github.openfeign', name: 'feign-core', version: "${feignVersion}"
     api group: 'io.github.openfeign', name: 'feign-jackson', version: "${feignVersion}"
+    api group: 'io.github.openfeign.form', name: 'feign-form', version: "${feignFormVersion}"
 
     //knife4j,替代swagger
     api "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"

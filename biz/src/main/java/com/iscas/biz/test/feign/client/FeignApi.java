@@ -24,4 +24,8 @@ public interface FeignApi {
     @Headers({"Content-Type: application/x-www-form-urlencoded","Accept: application/json"})
     ResponseEntity remoteT5(@QueryMap Map<String, Object> params);
 
+    @RequestLine("POST /test/feign/remote/t6")
+    @Headers({"Content-Type: application/x-www-form-urlencoded","Accept: application/json"})
+    ResponseEntity remoteT6(@QueryMap Map<String, Object> params);
+
 }

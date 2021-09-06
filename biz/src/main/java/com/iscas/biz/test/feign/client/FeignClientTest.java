@@ -5,6 +5,7 @@ import com.iscas.templet.common.ResponseEntity;
 import feign.Feign;
 import feign.Request;
 import feign.Retryer;
+import feign.form.FormEncoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 
@@ -14,7 +15,7 @@ public class FeignClientTest {
     public static void main(String[] args) {
         FeignApi feignApi = Feign.builder()
                 .requestInterceptor(new FeignRequestInterceptor())
-                .encoder(new JacksonEncoder())
+                .encoder(new FormEncoder(new JacksonEncoder()))
                 .decoder(new JacksonDecoder())
 //                .decoder(new StringDecoder())
                 .options(new Request.Options(1000, 3500))

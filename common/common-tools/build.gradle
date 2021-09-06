@@ -92,12 +92,12 @@ dependencies {
 
 
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-    api group: 'ch.qos.logback', name: 'logback-core', version: "${logbackVersion}"
-    api group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: "${logbackVersion}"
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
     api group: 'com.esotericsoftware', name: 'reflectasm', version: "${reflectasmVersion}"
     api group: 'com.esotericsoftware', name: 'minlog', version: "${minlogVersion}"
     api group: 'com.deepoove', name: 'poi-tl', version: "${poiTlVersion}"
-
+    api("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
 
 }
 

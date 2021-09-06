@@ -60,7 +60,9 @@ public class ScannerUtils {
                 String protocol = url.getProtocol();
                 // 如果是以文件的形式保存在服务器上
                 if ("file".equals(protocol)) {
-                    log.debug("============file类型的扫描");
+                    if (log.isDebugEnabled()) {
+                        log.debug("============file类型的扫描");
+                    }
                     // 获取包的物理路径
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
                     // 以文件的方式扫描整个包下的文件 并添加到集合中
@@ -69,7 +71,9 @@ public class ScannerUtils {
                     String packageName1 = "";
                     // 如果是jar包文件
                     // 定义一个JarFile
-                    log.debug("=============jar类型的扫描");
+                    if (log.isDebugEnabled()) {
+                        log.debug("=============jar类型的扫描");
+                    }
                     JarFile jar;
                     try{
                         // 获取jar
@@ -100,13 +104,15 @@ public class ScannerUtils {
                                     if (name.endsWith(".class") && !entry.isDirectory()) {
                                         // 去掉后面的".class" 获取真正的类名
                                         String className = name.substring(packageName1.length() + 1, name.length() - 6);
+                                        Class<?> aClass = null;
                                         try{
                                             // 添加到classes
-                                            classes.add(Class.forName(packageName1+ '.' + className));
-                                        }catch (ClassNotFoundException e){
-                                            // log
-                                            // .error("添加用户自定义视图类错误 找不到此类的.class文件");
-                                            e.printStackTrace();
+                                            aClass = Class.forName(packageName1 + '.' + className);
+                                        }catch (Exception e){
+                                            log.warn("加载类出错", e);
+                                        }
+                                        if (aClass != null) {
+                                            classes.add(aClass);
                                         }
                                     }
                                 }
