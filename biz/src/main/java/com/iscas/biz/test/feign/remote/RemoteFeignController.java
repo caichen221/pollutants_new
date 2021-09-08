@@ -1,7 +1,6 @@
 package com.iscas.biz.test.feign.remote;
 
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.biz.test.retrofit.RemoteRetrofitController;
 import com.iscas.common.web.tools.file.FileDownloadUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -65,7 +64,7 @@ public class RemoteFeignController extends BaseController {
     }
 
     @PostMapping("/t6")
-    public ResponseEntity t6(RemoteRetrofitController.RetrofitTestModel model) {
+    public ResponseEntity t6(RetrofitTestModel model) {
         ResponseEntity response = getResponse();
         response.setValue(model);
         return response;
@@ -98,6 +97,13 @@ public class RemoteFeignController extends BaseController {
         response.setValue(file1.toString());
         return response;
     }
+//    @PostMapping("/t11")
+//    public ResponseEntity t11(MultipartFile[] file1) {
+//        ResponseEntity response = getResponse();
+//        response.setValue(file1.toString());
+//        return response;
+//    }
+
 
     @PostMapping("/t11")
     public ResponseEntity t11() throws ServletException, IOException {
@@ -113,7 +119,7 @@ public class RemoteFeignController extends BaseController {
         return response;
     }
 
-    @PostMapping("/t12")
+    @GetMapping("/t12")
     public void t12() throws Exception {
         FileDownloadUtils.downFile(SpringUtils.getRequest(), SpringUtils.getResponse(),
                 "D:/test-sp/aaa.html", "aaa.html");

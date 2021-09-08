@@ -10,6 +10,22 @@ buildscript {
             allowInsecureProtocol = true
         }
         maven {
+            url "${aliyunGoogleUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aliyunGradlePluginUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aliyunSpringUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aiyunSpringPluginUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
             url "${springUrl}"
             allowInsecureProtocol = true
         }
@@ -18,7 +34,7 @@ buildscript {
             allowInsecureProtocol = true
         }
         maven {
-            url "${aliyunGradleUrl}"
+            url "${aliyunGrailsUrl}"
             allowInsecureProtocol = true
         }
         maven {
@@ -56,8 +72,11 @@ subprojects  {
     apply plugin: 'io.spring.dependency-management'
 //    apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
     apply plugin: 'java-library'
-    group = 'com.iscas'
+//    group = 'cn.ac.iscas.newframe'
+    //发布至maven中央仓库必须与gitee的子域名一致，所以暂时智能用这个group
+    group = 'io.gitee.quanwenz'
     //版本号定义规则：开发中： <版本号(x.x.x)>-<当天日期>-<当天更新的小序号>
     //发布版本：x.x.x-RELEASE
     version = "${newframeVersion}"
@@ -93,6 +112,14 @@ subprojects  {
             allowInsecureProtocol = true
         }
         maven {
+            url "${aliyunGoogleUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aliyunSpringUrl}"
+            allowInsecureProtocol = true
+        }
+        maven {
             url "${springUrl}"
             allowInsecureProtocol = true
         }
@@ -102,6 +129,10 @@ subprojects  {
         }
         maven {
             url "${spring3Url}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${aliyunGrailsUrl}"
             allowInsecureProtocol = true
         }
         maven {
@@ -152,12 +183,45 @@ subprojects  {
         from sourceSets.main.allJava
         archiveClassifier = 'sources'
     }
+    task javadocJar(type: Jar) {
+        from javadoc
+        classifier = 'javadoc'
+    }
     sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
 
     //上传至nexus
+//    publishing {
+//        publications {
+//            maven(MavenPublication) {
+//                groupId project.group
+//                artifactId project.name
+//                version project.version
+//                //若是war包，就写components.web,若是jar包，就写components.java
+//                from components.java
+////                artifact shadowJar
+//                artifact sourcesJar
+//            }
+//        }
+//        repositories {
+//            maven {
+//                allowInsecureProtocol = true
+//                if (project.version.endsWith('-SNAPSHOT')) {
+//                    url = "http://172.16.10.190:8081/repository/maven-snapshots/"
+//                } else {
+//                    url = "http://172.16.10.190:8081/repository/maven-releases/"
+//                }
+//
+//                credentials {
+//                    username 'admin'
+//                    password 'admin123'
+//                }
+//            }
+//        }
+//    }
+
     publishing {
         publications {
-            maven(MavenPublication) {
+            mavenJava(MavenPublication) {
                 groupId project.group
                 artifactId project.name
                 version project.version
@@ -165,26 +229,66 @@ subprojects  {
                 from components.java
 //                artifact shadowJar
                 artifact sourcesJar
+                artifact javadocJar
+                pom {
+                    // 构件名称
+                    // 区别于artifactId，可以理解为artifactName
+                    name = 'newframe'
+
+                    // 构件描述
+                    description = 'newframe快速开发框架'
+                    // 构件主页
+                    url = 'https://gitee.com/quanwenz/newframe'
+                    // 许可证名称和地址
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    // 开发者信息
+                    developers {
+                        developer {
+                            name = 'iscas'
+                            email = 'quanwen@iscas.ac.cn'
+                        }
+                    }
+                    // 版本控制仓库地址
+                    scm {
+                        url = 'https://gitee.com/quanwenz/newframe'
+                        connection = 'scm:git:https://gitee.com/quanwenz/newframe.git'
+                        developerConnection = 'scm:git:https://gitee.com/quanwenz/newframe.git'
+                    }
+                }
             }
         }
+        // 定义发布到哪里
         repositories {
             maven {
-                allowInsecureProtocol = true
-                if (project.version.endsWith('-SNAPSHOT')) {
-                    url = "http://172.16.10.190:8081/repository/maven-snapshots/"
-                } else {
-                    url = "http://172.16.10.190:8081/repository/maven-releases/"
-                }
-
+                name 'newframeRepository'
+//                url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
                 credentials {
-                    username 'admin'
-                    password 'admin123'
+                    // 这里就是之前在issues.sonatype.org注册的账号
+                    username = "${sonatypeUsername}"
+                    password = "${sonatypePassword}"
                 }
             }
         }
     }
 
+    signing {
+        sign publishing.publications.mavenJava
+    }
 
+
+    javadoc {
+        // <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        // 防止本地打开中文乱码
+//        options.addStringOption("charset", "UTF-8")
+        options.encoding = "UTF-8"
+        failOnError = false
+    }
 }
 
 
