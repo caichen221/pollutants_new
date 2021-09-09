@@ -11,6 +11,7 @@ import com.iscas.common.tools.constant.StrConstantEnum;
  * @since jdk1.8
  */
 public class IpValidUtils {
+
     private static String PERIOD = StrConstantEnum.PERIOD.getValue();
     private static String COLON = StrConstantEnum.COLON.getValue();
     private static String COLON2 = StrConstantEnum.COLON.getValue().concat(StrConstantEnum.COLON.getValue());

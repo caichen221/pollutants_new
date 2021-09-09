@@ -1,6 +1,6 @@
 
 dependencies {
-    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    //codec
     api group: 'commons-codec', name: 'commons-codec', version:"${codecVersion}"
     // https://mvnrepository.com/artifact/org.ostermiller/utils
     api group: 'org.ostermiller', name: 'utils', version: "${ostermillerVersion}"
@@ -89,6 +89,12 @@ dependencies {
 
     //线程亲和性调度
     api group: 'net.openhft', name: 'affinity', version: "${affinityVersion}"
+
+    //map struct
+    api group: 'org.mapstruct', name: 'mapstruct', version: "${mapStructVersion}"
+    api group: 'org.mapstruct', name: 'mapstruct-processor', version: "${mapStructVersion}"
+
+
 
 
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
