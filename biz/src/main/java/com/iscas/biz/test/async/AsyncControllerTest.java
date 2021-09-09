@@ -23,13 +23,13 @@ import java.util.concurrent.Future;
 @RequestMapping("/async/test")
 public class AsyncControllerTest {
 
-    @Async("wsExecutor")
+    @Async("asyncExecutor")
     public Future<String> testAsync1() {
         // do something ...
         return new AsyncResult<>("lalalala");
     }
 
-    @Async("wsExecutor")
+    @Async("asyncExecutor")
     public Future<String> testAsync2() {
         // do something ...
         return new AsyncResult<>("yayayaya");

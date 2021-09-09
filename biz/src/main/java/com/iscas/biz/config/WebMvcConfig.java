@@ -1,11 +1,11 @@
 package com.iscas.biz.config;
 
 import com.iscas.biz.config.log.AccessLogInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.servlet.config.annotation.*;
 
 /**
  *
@@ -16,6 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    @Autowired
+    @Qualifier("asyncExecutor")
+    private ThreadPoolTaskExecutor asyncExecutor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -38,6 +41,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**");
 //                .excludePathPatterns("/login","/userLogin")
 //                .excludePathPatterns("/image/**");
+    }
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setTaskExecutor(asyncExecutor);
     }
 }
 

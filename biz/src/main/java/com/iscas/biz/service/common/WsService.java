@@ -62,7 +62,7 @@ public class WsService {
         messagingTemplate.convertAndSendToUser(wsData.getUserIdentity(), wsData.getDestination(), wsData);
     }
 
-//    @Async("wsExecutor")
+//    @Async("asyncExecutor")
     public void storeToDb(WsData wsData) {
         com.iscas.biz.domain.common.WsData dbWsData = com.iscas.biz.domain.common.WsData.convert(wsData);
         getWsDataMapper().insert(dbWsData);
@@ -74,7 +74,7 @@ public class WsService {
         p2p(wsData1);
     }
 
-    @Async("wsExecutor")
+    @Async("asyncExecutor")
     public void ack(String msgId) {
         if (getWsDataMapper() == null) {
             return;
