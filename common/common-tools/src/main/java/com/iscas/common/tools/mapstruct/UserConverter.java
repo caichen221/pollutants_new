@@ -1,7 +1,7 @@
 package com.iscas.common.tools.mapstruct;
 
-import org.mapstruct.MapMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -16,7 +16,8 @@ import org.mapstruct.factory.Mappers;
 public interface UserConverter {
     UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
 
-    @MapMapping
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "realName", target = "realName")
     TestUserVO1 toTestUserVO1(TestUserDTO testUser);
 
 //    TestUserVO2 toTestUserVO2(TestUserDTO testUser);
