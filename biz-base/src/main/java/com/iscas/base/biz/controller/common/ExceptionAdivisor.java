@@ -118,6 +118,12 @@ public class ExceptionAdivisor implements Constants {
         return res(HttpStatus.FORBIDDEN.value(), e.getMessage(), e);
     }
 
+    @ExceptionHandler(value = RequestTimeoutRuntimeException.class)
+    @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
+    public ResponseEntity to408(BaseRuntimeException e){
+        return res(HttpStatus.REQUEST_TIMEOUT.value(), e.getMessage(), e);
+    }
+
     @ExceptionHandler(value = BaseException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(BaseException e){

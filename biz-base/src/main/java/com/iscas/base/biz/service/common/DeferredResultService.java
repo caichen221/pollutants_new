@@ -3,6 +3,7 @@ package com.iscas.base.biz.service.common;
 import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -37,7 +38,8 @@ public class DeferredResultService {
         deferredResult.onTimeout(() -> {
             //从等待处理的请求Map中移除
             deferredResultMap.remove(requestMark);
-            deferredResult.setResult(new ResponseEntity().setStatus(HttpStatus.REQUEST_TIMEOUT.value()).setMessage("请求超时"));
+//            deferredResult.setResult(new ResponseEntity().setStatus(HttpStatus.REQUEST_TIMEOUT.value()).setMessage("请求超时"));
+            deferredResult.setErrorResult(new RequestTimeoutRuntimeException("请求超时"));
         });
 
         //将setResult的消费者存入map
