@@ -92,10 +92,9 @@ dependencies {
 
     //map struct
     api group: 'org.mapstruct', name: 'mapstruct', version: "${mapStructVersion}"
-    api group: 'org.mapstruct', name: 'mapstruct-processor', version: "${mapStructVersion}"
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "${mapStructVersion}"
+    testAnnotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "${mapStructVersion}"
     api group: 'org.mapstruct', name: 'mapstruct-jdk8', version: "${mapStructVersion}"
-
-
 
 
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"

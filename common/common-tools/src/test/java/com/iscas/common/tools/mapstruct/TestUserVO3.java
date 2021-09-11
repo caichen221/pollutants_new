@@ -4,16 +4,15 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * 测试角色
  *
  * @author zhuquanwen
  * @vesion 1.0
- * @date 2021/9/9 16:52
+ * @date 2021/9/11 19:26
  * @since jdk1.8
  */
 @Data
 @Accessors(chain = true)
-public class TestRoleDTO {
-    private Integer id;
-    private String name;
+public class TestUserVO3 {
+    private String realName;
+    private TestRoleDTO role;
 }

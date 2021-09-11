@@ -23,6 +23,8 @@ public class TestUserVO2 {
     private String email;
     private String phone;
     private Date createTime;
+    private String createTimeStr;
+    private String createTimeExpression;
     private List<TestRoleDTO> roleList;
 
 }
