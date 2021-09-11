@@ -52,7 +52,7 @@ public class SseControllerTest {
     public String push(String id, String content) throws IOException {
         SseEmitter sseEmitter = sseCache.get(id);
         if (sseEmitter != null) {
-            sseEmitter.send(content);
+            sseEmitter.send(SseEmitter.event().name("msg").data("后端发送消息：" + content));
         }
         return "over";
     }
