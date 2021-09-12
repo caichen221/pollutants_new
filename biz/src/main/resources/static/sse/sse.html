@@ -21,6 +21,7 @@
         text += '\n' + e.data;
         console.log(e);
         document.getElementById('result').innerText = text;
+        //source.close();
     })
     source.onerror = function(e) {
         if (e.readyState == EventSource.CLOSE) {
