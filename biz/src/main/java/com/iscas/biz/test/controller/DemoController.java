@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.Cleanup;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -131,5 +132,16 @@ public class DemoController {
                   .set("version","0.0.1")
                   .set("cache_refresh", 1);
         return jsonObject.toJson();
+    }
+
+    @PostMapping("/test/form")
+    public String testForm(TestBean testBean) {
+        return "success";
+    }
+
+    @Data
+    static class TestBean {
+        private String key;
+        private MultipartFile file;
     }
 }

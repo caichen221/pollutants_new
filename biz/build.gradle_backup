@@ -91,7 +91,7 @@ bootBuildImage {
 //    applicationName = project.name
 //    tag = "library/${applicationName}"
 //    tagVersion = jar.archiveVersion
-//    volume('/tmp')
+//    bindVolume('/tmp')
 //    addFile("${jar.archiveBaseName}-${jar.archiveVersion}.jar", "app.jar")
 //    entryPoint(["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", 'app.jar'])
 //    exposePort(8080)

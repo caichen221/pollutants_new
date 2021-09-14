@@ -128,11 +128,12 @@ include 'samples:distributed-transaction:transaction-rocketmq:transaction-rocket
 findProject(':samples:distributed-transaction:transaction-rocketmq:transaction-rocketmq-notify-server2')?.name = 'transaction-rocketmq-notify-server2'
 include 'samples:springboot-samples'
 findProject(':samples:springboot-samples')?.name = 'springboot-samples'
-include 'pluggable-annotation-processing'
 include 'special:pluggable-annotation-processing'
 findProject(':special:pluggable-annotation-processing')?.name = 'pluggable-annotation-processing'
 include 'samples:h2-samples'
 findProject(':samples:h2-samples')?.name = 'h2-samples'
 include 'special:biz-data-rest'
 findProject(':special:biz-data-rest')?.name = 'biz-data-rest'
+include 'common:common-docker-tools'
+findProject(':common:common-docker-tools')?.name = 'common-docker-tools'
 
