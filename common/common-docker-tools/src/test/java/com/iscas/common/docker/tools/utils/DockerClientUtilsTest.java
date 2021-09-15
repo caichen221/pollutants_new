@@ -3,6 +3,7 @@ package com.iscas.common.docker.tools.utils;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.AccessMode;
+import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Volume;
 import com.iscas.common.docker.tools.model.CreateContainerReq;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author zhuquanwen
@@ -50,6 +52,54 @@ public class DockerClientUtilsTest {
                 .setBindVolumes(Arrays.asList(new CreateContainerReq.BindVolume().setBind("/tmp").setVol("/tmp").setAccessMode(AccessMode.DEFAULT)))
         );
         System.out.println(containerRes);
+    }
+
+    /**
+     * 测试启动容器
+     */
+    @Test
+    public void testStartDocker() {
+        DockerClientUtils.startContainer(dockerClient, "a1dddcde0097");
+    }
+
+    /**
+     * 测试停止容器
+     */
+    @Test
+    public void testStopDocker() {
+        DockerClientUtils.stopContainer(dockerClient, "a1dddcde0097");
+    }
+
+    /**
+     * 测试删除容器
+     */
+    @Test
+    public void testRemoveDocker() {
+        DockerClientUtils.removeContainer(dockerClient, "a1dddcde0097");
+    }
+
+    /**
+     * 测试运行容器
+     */
+    @Test
+    public void testRunDocker() {
+        CreateContainerReq createContainerReq = new CreateContainerReq()
+                .setImageName("nginx:latest")
+                .setPorts(Arrays.asList(new CreateContainerReq.Port().setBindPort(8080).setExposedPort(80)))
+                .setContainerName("nginx-test")
+                .setEnvs(Arrays.asList("key1=val1", "key2=val2"))
+//                        .setEntrypoints(Arrays.asList("java -jar xxx.jar"))
+                .setBindVolumes(Arrays.asList(new CreateContainerReq.BindVolume().setBind("/tmp").setVol("/tmp").setAccessMode(AccessMode.DEFAULT)));
+        DockerClientUtils.runContainer(dockerClient, createContainerReq );
+    }
+
+    /**
+     * 测试查询容器信息
+     */
+    @Test
+    public void testListDocker() {
+        List<Container> containers = DockerClientUtils.listContainer(dockerClient);
+        System.out.println(containers);
     }
 
 

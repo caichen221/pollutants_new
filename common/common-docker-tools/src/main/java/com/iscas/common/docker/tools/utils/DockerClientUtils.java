@@ -81,6 +81,16 @@ public class DockerClientUtils {
         return connectDocker(host, API_VERSION);
     }
 
+    /**
+     * 创建容器
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/9/15
+     * @param client 容器客户端
+     * @param createContainerReq 创建容器请求
+     * @throws
+     * @return com.github.dockerjava.api.command.CreateContainerResponse
+     */
     public static CreateContainerResponse createContainer(DockerClient client, CreateContainerReq createContainerReq) {
         CreateContainerCmd containerCmd = client.createContainerCmd(createContainerReq.getImageName());
 
@@ -117,6 +127,47 @@ public class DockerClientUtils {
 
         //创建
         return containerCmd.exec();
+    }
+
+    /**
+     * 启动容器
+     * @param client
+     * @param containerId 容器ID
+     */
+    public static void startContainer(DockerClient client,String containerId){
+        client.startContainerCmd(containerId).exec();
+    }
+
+    /**
+     * 运行容器(创建并启动容器)
+     * @param client
+     * @param createContainerReq 创建容器的信息
+     */
+    public static void runContainer(DockerClient client, CreateContainerReq createContainerReq) {
+        CreateContainerResponse containerRes = createContainer(client, createContainerReq);
+        Optional.ofNullable(containerRes).ifPresent(ccr -> startContainer(client, ccr.getId()));
+    }
+
+    /**
+     * 停止容器
+     * @param client
+     * @param containerId 容器ID
+     */
+    public static void stopContainer(DockerClient client,String containerId){
+        client.stopContainerCmd(containerId).exec();
+    }
+
+    /**
+     * 删除容器
+     * @param client
+     * @param containerId
+     */
+    public static void removeContainer(DockerClient client,String containerId){
+        client.removeContainerCmd(containerId).exec();
+    }
+
+    public static List<Container> listContainer(DockerClient client) {
+        return client.listContainersCmd().exec();
     }
 
 }
