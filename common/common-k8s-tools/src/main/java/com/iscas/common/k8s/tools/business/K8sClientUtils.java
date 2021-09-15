@@ -49,7 +49,7 @@ public class K8sClientUtils {
         k8sConfig.setApiServerPath(APISERVER_PATH)
                 .setCaPath(CA_PATH)
                 .setToken(TOKEN);
-        K8sClient.setDefaultConfig(k8sConfig);
+        K8sClient.setConfig(k8sConfig);
     }
 
     /**
@@ -134,7 +134,7 @@ public class K8sClientUtils {
         kcHealthTcpParam.setPort(port);
         kcHealthTcpParam.setTimeout(30);
         kcHealthTcpParam.setInitialDelaySeconds(startTime + 10);
-        readinessProbe.setHealthParam(kcHealthTcpParam);
+        readinessProbe.setHealthTcpParam(kcHealthTcpParam);
         kcContainer.setReadinessProbe(readinessProbe);
 
         KcLivenessProbe livenessProbe = new KcLivenessProbe();
@@ -144,7 +144,7 @@ public class K8sClientUtils {
         kcHealthTcpParam2.setTimeout(30);
         kcHealthTcpParam2.setPeriodSeconds(15);
         kcHealthTcpParam2.setInitialDelaySeconds(startTime + 10);
-        livenessProbe.setHealthParam(kcHealthTcpParam2);
+        livenessProbe.setHealthTcpParam( kcHealthTcpParam2);
 
         kcContainer.setLivenessProbe(livenessProbe);
         kcContainer.setReadinessProbe(readinessProbe);

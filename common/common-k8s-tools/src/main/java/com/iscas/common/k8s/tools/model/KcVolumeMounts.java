@@ -26,13 +26,13 @@ public class KcVolumeMounts {
     private String mountPath;
 
     /**
-     * 数据卷
+     * 子目录
      * */
     private String subPath;
 
     /**
      * 读写模式
      * */
-    private boolean readOnly = true;
+    private boolean readOnly = false;
 
 }

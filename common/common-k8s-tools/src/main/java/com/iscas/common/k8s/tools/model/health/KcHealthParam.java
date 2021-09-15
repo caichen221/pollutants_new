@@ -16,25 +16,25 @@ public class KcHealthParam {
     /**
      * 延迟探测时间（秒）
      * */
-    protected int initialDelaySeconds;
+    protected Integer initialDelaySeconds;
 
     /**
      * 执行测试频率(默认为10， 最小为1)
      * */
-    protected int periodSeconds = 10;
+    protected Integer periodSeconds = 10;
 
     /**
      * 超时时间(秒)
      * */
-    protected int timeout;
+    protected Integer timeout;
 
     /**
      * 健康阈值(默认为1，最小为1)
      * */
-    protected int healthThreshold = 1;
+    protected Integer healthThreshold = 1;
 
     /**
      * 不健康阈值(默认为3，最小为1)
      * */
-    protected int unHealthThreshold = 3;
+    protected Integer unHealthThreshold = 3;
 }

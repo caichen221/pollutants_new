@@ -16,21 +16,21 @@ public class KcResource {
     /**
      * cpu最小 M
      * */
-    private int cpuMin;
+    private Integer cpuMin;
 
     /**
      * cpu最大
      * */
-    private int cpuMax;
+    private Integer cpuMax;
 
     /**
      * 内存最小 M
      * */
-    private int memoryMin;
+    private Integer memoryMin;
 
     /**
      * 内存最大 M
      * */
-    private int memoryMax;
+    private Integer memoryMax;
 
 }

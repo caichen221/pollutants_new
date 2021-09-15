@@ -17,11 +17,16 @@ public class KcVoNfsParam extends KcVolumeParam{
     /**
      * nfs-server地址
      * */
-    private String nfsServerAddress;
+    private String server;
 
     /**
      * nfs path
      * */
-    private String nfsPath;
+    private String path;
+
+    /**
+     * 是否只读
+     * */
+    private boolean readOnly = false;
 
 }

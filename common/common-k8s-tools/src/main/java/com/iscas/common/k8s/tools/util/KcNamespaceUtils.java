@@ -1,10 +1,14 @@
 package com.iscas.common.k8s.tools.util;
 
 import com.iscas.common.k8s.tools.K8sClient;
+import com.iscas.common.k8s.tools.cfg.K8sConstants;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import com.iscas.common.k8s.tools.model.KcNamespace;
 import com.iscas.common.tools.core.date.DateSafeUtils;
-import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.Namespace;
+import io.fabric8.kubernetes.api.model.NamespaceList;
+import io.fabric8.kubernetes.api.model.NamespaceStatus;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
 import io.fabric8.kubernetes.client.dsl.Resource;
@@ -42,7 +46,8 @@ public class KcNamespaceUtils {
             name = metadata.getName();
             String creationTimestamp = metadata.getCreationTimestamp();
             try {
-                createTime  = DateSafeUtils.parse(creationTimestamp, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+                createTime  = DateSafeUtils.parse(creationTimestamp, K8sConstants.TIME_PATTERN);
+                createTime = CommonUtils.timeOffset(createTime);
                 runTimeStr = CommonUtils.getTimeDistance(createTime);
             } catch (ParseException e) {
                 throw new K8sClientException("创建时间类型转换出错", e);
@@ -68,7 +73,7 @@ public class KcNamespaceUtils {
     public static List<KcNamespace> getNamespaces() throws K8sClientException {
         List<KcNamespace> kcNamespaces = null;
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        NonNamespaceOperation<Namespace, NamespaceList, DoneableNamespace, Resource<Namespace, DoneableNamespace>> namespaces = kc.namespaces();
+        NonNamespaceOperation<Namespace, NamespaceList, Resource<Namespace>> namespaces = kc.namespaces();
         if (namespaces != null) {
             NamespaceList namespaceList = namespaces.list();
             if (namespaceList != null) {
@@ -92,9 +97,9 @@ public class KcNamespaceUtils {
     public static KcNamespace getNamespace(String nsName) throws K8sClientException {
         KcNamespace kcNamespace = null;
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        NonNamespaceOperation<Namespace, NamespaceList, DoneableNamespace, Resource<Namespace, DoneableNamespace>> namespaces = kc.namespaces();
+        NonNamespaceOperation<Namespace, NamespaceList, Resource<Namespace>> namespaces = kc.namespaces();
         if (namespaces != null) {
-            Resource<Namespace, DoneableNamespace> nsResource = namespaces.withName(nsName);
+            Resource<Namespace> nsResource = namespaces.withName(nsName);
             if (nsResource != null) {
                 Namespace ns = nsResource.get();
                 if (ns != null) {
@@ -110,11 +115,16 @@ public class KcNamespaceUtils {
      */
     public static void createNamespace(String nsName) {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        kc.namespaces().createNew()
-                .withNewMetadata()
-                .withName(nsName)
-                .endMetadata()
-                .done();
+        Namespace namespace = new Namespace();
+        ObjectMeta objectMeta = new ObjectMeta();
+        objectMeta.setName(nsName);
+        namespace.setMetadata(objectMeta);
+        kc.namespaces().create(namespace);
+//        kc.namespaces().createNew()
+//                .withNewMetadata()
+//                .withName(nsName)
+//                .endMetadata()
+//                .done();
     }
 
     /**
@@ -122,7 +132,7 @@ public class KcNamespaceUtils {
      */
     public static void deleteNamespace(String nsName) {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        Resource<Namespace, DoneableNamespace> nsResource = kc.namespaces().withName(nsName);
+        Resource<Namespace> nsResource = kc.namespaces().withName(nsName);
         if (nsResource != null) {
             nsResource.delete();
         }

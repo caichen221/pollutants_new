@@ -21,5 +21,9 @@ public class KcVoHostPathParam extends KcVolumeParam {
    /**
     * 类型 EmptyString / DirectoryOrCreate / Directory / FileOrCreate / File / Socket / CharDevice / BlockDevice
     * */
-   private String type;
+   private KcVoHostPathType type;
+
+   public enum KcVoHostPathType {
+      EmptyString, DirectoryOrCreate, Directory, FileOrCreate, File, Socket, CharDevice, BlockDevice;
+   }
 }

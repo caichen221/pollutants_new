@@ -50,17 +50,42 @@ public class KcNodeBaseInfo {
     /**
      * CPU
      * */
-    private String cpu;
+    private double cpu = 0;
+
+    /**
+     * 已使用的CPU资源
+     * */
+    private double usedCpu = 0;
+
+    /**
+     * 内存
+     * */
+    private long memory = 0;
+
+    /**
+     * 已使用的内存资源
+     * */
+    private long usedMemory = 0;
 
     /**
      * 短暂存储
      * */
-    private String transientStorage;
+    private long transientStorage = 0;
+
+    /**
+     * 已使用的本地存储资源
+     * */
+    private long usedTransientStorage = 0;
 
     /**
      *  最大容器组数量
      * */
-    private Integer maxPods;
+    private Integer maxPods = 0;
+
+    /**
+     * 已经使用的容器组
+     * */
+    private Integer usedPods = 0;
 
     /**
      * 容器组CIDR

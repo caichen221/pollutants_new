@@ -1,10 +1,12 @@
 package com.iscas.common.k8s.tools.model.deployment;
 
 import com.iscas.common.k8s.tools.model.KcContainer;
-import com.iscas.common.k8s.tools.model.node.KcNodeRuntimeInfo;
+import com.iscas.common.k8s.tools.model.volume.KcVolume;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +59,7 @@ public class KcDeployment {
     /**
      * 初始化容器信息
      * */
-    private KcContainer initContainer;
+    private List<KcContainer> initContainer;
 
     /**
      * 重启策略 Always / OnFailure / Never
@@ -68,4 +70,16 @@ public class KcDeployment {
      * 镜像拉取的秘钥
      * */
     private String imagePullSecret;
+
+    private Deployment deploymentItem;
+
+    /**
+     * 资源限制
+     * */
+//    private KcResource resources;
+
+    /**
+     * 数据卷
+    * */
+    private List<KcVolume> volumes = new ArrayList<>();
 }

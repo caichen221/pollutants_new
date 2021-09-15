@@ -3,6 +3,7 @@ package com.iscas.common.k8s.tools.model.node;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,11 +51,16 @@ public class KcNode {
     /**
      * 容器组（pod）信息，
      * */
-    private List<KcNodePod> pods;
+    private List<KcNodePod> pods = new ArrayList<>();
 
     /**
      * 镜像信息
      * */
     private List<KcNodeImage> images;
+
+    /**
+     * 是否为master节点
+     * */
+    private boolean master = false;
 
 }

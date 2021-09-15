@@ -1,4 +1,4 @@
-//package com.iscas.common.k8s.tools;
+package com.iscas.common.k8s.tools;//package com.iscas.common.k8s.tools;
 //
 //import com.iscas.common.tools.core.date.DateSafeUtils;
 //import io.fabric8.kubernetes.api.model.*;

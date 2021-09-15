@@ -2,6 +2,7 @@ package com.iscas.common.k8s.tools.model;
 
 import com.iscas.common.k8s.tools.model.health.KcLivenessProbe;
 import com.iscas.common.k8s.tools.model.health.KcReadinessProbe;
+import com.iscas.common.k8s.tools.model.pod.KcPodContainerVoMount;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -53,7 +54,7 @@ public class KcContainer {
     /**
      * 挂载点
      * */
-    private List<KcVolumeMounts> volumeMounts;
+    private List<KcPodContainerVoMount> volumeMounts;
 
     /**
      * 就绪检查

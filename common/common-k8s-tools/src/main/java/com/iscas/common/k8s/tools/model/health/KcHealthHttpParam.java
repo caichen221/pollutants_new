@@ -28,12 +28,14 @@ public class KcHealthHttpParam extends KcHealthParam {
     /**
      * 端口
      * */
-    private int port;
+    private Integer port;
 
     /**
      * HTTP请求头
      * */
     private Map<String, String> headers;
+
+    private String host;
 
 
 }

@@ -19,17 +19,34 @@ public class K8sClient {
     private K8sClient() {
     }
     private volatile static KubernetesClient kc = null;
-    private static K8sConfig defaultK8sConfig = null;
+    private static K8sConfig k8sConfig = null;
+    private static Config fabric8Config = null;
 
-    public static void setDefaultConfig(K8sConfig k8sConfig) {
-        defaultK8sConfig = k8sConfig;
+    public static void setConfig(K8sConfig k8sConfig) {
+        K8sClient.k8sConfig = k8sConfig;
+    }
+
+    public static void setFabric8Config(Config config) {
+        K8sClient.fabric8Config = config;
+    }
+
+    public static K8sConfig getConfig() {
+        return k8sConfig;
+    }
+
+    public static Config getFabric8Config() {
+        return fabric8Config;
     }
 
     public static KubernetesClient getInstance() {
-        if (defaultK8sConfig == null) {
+        if (k8sConfig == null && fabric8Config == null) {
             throw new K8sCleintRuntimeException("k8s客户端配置为空");
         }
-        return getInstance(defaultK8sConfig);
+        //优先读取/root/.kube/config的配置
+        if (fabric8Config != null) {
+            return getInstanceByFaric8Config(fabric8Config);
+        }
+        return getInstance(k8sConfig);
     }
 
 //    public static KubernetesClient getInstance(K8sConfig k8sConfig) {
@@ -68,6 +85,14 @@ public class K8sClient {
                     .withApiVersion(k8sConfig.getApiVersion())
                     //這是k8s的master節點地址，端口如果沒改應該也是6443
                     .withMasterUrl(k8sConfig.getApiServerPath()).build();
+            KubernetesClient kc = new DefaultKubernetesClient(config);
+            return kc;
+        }
+
+    }
+
+    public static KubernetesClient getInstanceByFaric8Config(Config config) {
+        synchronized (K8sClient.class) {
             KubernetesClient kc = new DefaultKubernetesClient(config);
             return kc;
         }

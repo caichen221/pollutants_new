@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * deployment基本信息
@@ -31,6 +30,11 @@ public class KcDepBaseInfo {
      * 标签
      * */
     private List<String[]> labels;
+
+    /**
+     * matchLabels
+     * */
+    private List<String[]> matchLabels;
 
     /**
      *  annotations

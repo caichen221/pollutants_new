@@ -13,14 +13,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class KcLivenessProbe {
-    /**
-     * 就绪检测类型 HTTP / TCP / COMMAND
-     * */
-    private String type;
+public class KcLivenessProbe extends KcProbe {
 
-    /**
-     * 参数
-     * */
-    private KcHealthParam healthParam;
 }
