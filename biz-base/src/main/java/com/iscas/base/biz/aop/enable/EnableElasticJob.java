@@ -1,7 +1,7 @@
 package com.iscas.base.biz.aop.enable;
 
-import com.iscas.base.biz.config.elasticjob.ElasticJobConfig;
-import com.iscas.base.biz.config.socketio.SocketioConfig;
+import com.iscas.base.biz.config.elasticjob.v3.ElasticJobConfig;
+import com.iscas.base.biz.config.elasticjob.v3.ElasticRegCenterConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -17,8 +17,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(ElasticJobConfig.class)
-@Deprecated
+@Import({ElasticJobConfig.class, ElasticRegCenterConfig.class})
 public @interface EnableElasticJob {
     //是否使用datasource记录操作日志
     boolean withDatasource() default false;

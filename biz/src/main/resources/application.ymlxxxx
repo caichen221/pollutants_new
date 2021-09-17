@@ -1,0 +1,19 @@
+server:
+  servlet:
+    context-path: /demo
+  http2:
+    #开启http2协议支持
+    enabled: true
+  #https/http端口,如果未启动https，就是http端口，
+  port: 7901
+
+  ################################HTTPS配置#############################################
+  #http转https端口,启用时改为true
+  ssl:
+    enabled: false
+    #证书生成方法参照项目目录下https证书生成.txt
+    key-store: classpath:httpsKey.p12
+    key-alias: undertowhttps
+    key-store-password: 123456
+  http:
+    port: 7902

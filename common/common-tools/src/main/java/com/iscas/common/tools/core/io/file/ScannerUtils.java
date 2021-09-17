@@ -39,7 +39,13 @@ public class ScannerUtils {
 //
 //
 //    }
+
     public static Set<Class<?>> getClasses(String pack){
+        return getClasses(pack, true);
+    }
+
+
+    public static Set<Class<?>> getClasses(String pack, boolean ignore$){
 
         // 第一个class类的集合
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
@@ -101,7 +107,7 @@ public class ScannerUtils {
                                 // 如果可以迭代下去 并且是一个包
                                 if ((idx != -1) || recursive) {
                                     // 如果是一个.class文件 而且不是目录
-                                    if (name.endsWith(".class") && !entry.isDirectory()) {
+                                    if (name.endsWith(".class") && !entry.isDirectory() && !name.contains("$")) {
                                         // 去掉后面的".class" 获取真正的类名
                                         String className = name.substring(packageName1.length() + 1, name.length() - 6);
                                         Class<?> aClass = null;

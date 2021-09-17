@@ -1,6 +1,5 @@
 package com.iscas.biz;
 
-import com.dangdang.elasticjob.lite.autoconfigure.ElasticJobAutoConfiguration;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
@@ -8,8 +7,6 @@ import com.iscas.base.biz.config.stomp.WsPushType;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
-import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
-import de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
@@ -22,7 +19,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -37,7 +33,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 //暂时抛除rabbitmq的自动注册，如果使用代理websocket推送需要去掉
 @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
-        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, ElasticJobAutoConfiguration.class})
+        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
 @ComponentScan(basePackages = {"com.iscas"})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
@@ -53,7 +49,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableHealthCheck //开启健康检测 readiness liveness
 @EnableDatasongClientPlus //是否开启Datasongclient客户端
 @EnableSocketio //是否开启Socketio的支持
-//@EnableElasticJob(withDatasource = true)
+//@EnableElasticJob(withDatasource = false) //更新为elastic-job3.0后暂不支持日志记录到数据库
 @EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
 @EnableRetry(proxyTargetClass = true) //是否允许方法重试功能
 @EnableAtomikos //开启Atomikos分布式事务（有些数据库需要给权限）

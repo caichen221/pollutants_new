@@ -99,7 +99,8 @@ dependencies {
 
     api "com.corundumstudio.socketio:netty-socketio:${nettySocketioVersion}"
 
-    api ("com.github.kuhn-he:elastic-job-lite-spring-boot-starter:${elasticJobVersion}")
+//    api ("com.github.kuhn-he:elastic-job-lite-spring-boot-starter:${elasticJobVersion}")
+    api group: 'org.apache.shardingsphere.elasticjob', name: 'elasticjob-lite-core', version: "${elasticJobVersionV3}"
 
     api "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasyptStarterVersion}"
 

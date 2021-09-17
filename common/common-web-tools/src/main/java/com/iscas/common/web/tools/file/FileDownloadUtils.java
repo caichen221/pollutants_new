@@ -63,7 +63,7 @@ public class FileDownloadUtils {
     }
     public static void setResponseHeader(HttpServletRequest request, HttpServletResponse response, String name) throws Exception {
         response.reset();
-        response.setContentType("application/octet-stream;charset=utf-8"); // 改成输出excel文件
+        response.setContentType("application/octet-stream;charset=utf-8"); // 改成文件下载
         String fileName = transFileName(name, request);
         response.setHeader(
                 "Content-disposition",
