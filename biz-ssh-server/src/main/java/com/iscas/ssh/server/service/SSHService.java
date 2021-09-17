@@ -140,7 +140,7 @@ public class SSHService {
                     try {
                         connectToSSH(sshConnection, finalWebSSHData);
                     } catch (JSchException | IOException e) {
-                        log.error("webssh连接异常", e.getMessage());
+                        log.error("webssh连接异常", e);
                         try {
                             sendMessage(webSSHData.getConnectionId(), e.getMessage() == null ? "   connect error".getBytes(StandardCharsets.UTF_8) :
                                     ("   " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
@@ -158,7 +158,7 @@ public class SSHService {
                 try {
                     transToSSH(sshConnection.getChannel(), command);
                 } catch (IOException e) {
-                    log.error("webssh连接异常", e.getMessage());
+                    log.error("webssh连接异常", e);
                     try {
                         sendMessage(webSSHData.getConnectionId(), e.getMessage() == null ? "   connect error".getBytes(StandardCharsets.UTF_8) :
                                 ("   " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
