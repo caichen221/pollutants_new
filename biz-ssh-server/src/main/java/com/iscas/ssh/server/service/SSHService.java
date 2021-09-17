@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.*;
@@ -140,6 +141,12 @@ public class SSHService {
                         connectToSSH(sshConnection, finalWebSSHData);
                     } catch (JSchException | IOException e) {
                         log.error("webssh连接异常", e.getMessage());
+                        try {
+                            sendMessage(webSSHData.getConnectionId(), e.getMessage() == null ? "   connect error".getBytes(StandardCharsets.UTF_8) :
+                                    ("   " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                         close(connectionId);
                     }
                 }
@@ -152,6 +159,12 @@ public class SSHService {
                     transToSSH(sshConnection.getChannel(), command);
                 } catch (IOException e) {
                     log.error("webssh连接异常", e.getMessage());
+                    try {
+                        sendMessage(webSSHData.getConnectionId(), e.getMessage() == null ? "   connect error".getBytes(StandardCharsets.UTF_8) :
+                                ("   " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                     close(connectionId);
                 }
             } else {
