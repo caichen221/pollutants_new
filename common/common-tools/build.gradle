@@ -104,6 +104,7 @@ dependencies {
     api group: 'com.esotericsoftware', name: 'minlog', version: "${minlogVersion}"
     api group: 'com.deepoove', name: 'poi-tl', version: "${poiTlVersion}"
     api("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
+    api "com.lmax:disruptor:${disruptorVersion}"
 
 }
 
