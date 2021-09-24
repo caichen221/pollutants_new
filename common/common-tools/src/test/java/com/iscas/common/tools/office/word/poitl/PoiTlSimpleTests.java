@@ -209,4 +209,44 @@ public class  PoiTlSimpleTests {
         tmpFile.delete();
     }
 
+    /**
+     * 测试西光所的一个模板
+     *
+     */
+    @Test
+    public void xiguangTest() throws IOException {
+        ClassPathResource pathResource = new ClassPathResource("poitl/xiguang-template.docx");
+        XWPFTemplate template = XWPFTemplate.compile(pathResource.getStream()).render(
+                new HashMap<String, Object>(){{
+                    //标题
+                    put("title", "某某光电设备健康状态信息汇报");
+                    //系统名称
+                    put("systemName", "某某光电设备");
+                    //时间阶段
+                    put("timeRange", "2020.12.1~2021.08.06");
+                    //故障数目
+                    put("breakdownSum", "20");
+                    //图片
+                    put("pic1", Pictures.ofStream(new ClassPathResource("poitl/test.jpg").getStream(), PictureType.JPEG).size(200, 200).create());
+                    //内容
+                    put("content", "1）\t1分系统：健康状态良好，啦啦啦啦啦啦啦啦啦，预计可靠性95%，预计寿命10年\n" +
+                            "2）\t2分系统：健康状态良好，预计可靠性80%，预计寿命15年\n" +
+                            "3）\t3分系统：健康状态良好，预计可靠性70%，预计寿命20年\n" +
+                            "4）\t4分系统：健康状态良好，预计可靠性70%，预计寿命20年\n" +
+                            "5）\t5分系统：健康状态良好，预计可靠性70%，预计寿命20年\n" +
+                            "6）\t6分系统：健康状态良好，预计可靠性70%，预计寿命20年\n" +
+                            "7）\t7分系统：健康状态良好，预计可靠性70%，预计寿命20年\n" +
+                            "8）\t8分系统：健康状态良好，预计可靠性70%，预计寿命20年\n"
+                    );
+                    //维护建议
+                    put("content2", "违规围观围观围观为各位灌灌灌灌灌灌灌灌围观围观围观为各位围观围观为普工奖品为冠军庞伟哦工具欧文\n\t围观围观围观为给我，为各位公文管家婆为各位公文管家婆围观围观围观为");
+
+                }});
+        File tmpFile = File.createTempFile("xiguang-simple", ".docx");
+        tmpFile.deleteOnExit();
+        template.writeAndClose(new FileOutputStream(tmpFile));
+        tmpFile.delete();
+    }
+
+
 }
