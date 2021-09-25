@@ -99,9 +99,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 List<Role> roles = authService.getRoles(username);
                 authContext.setRoles(roles);
 
-//            boolean userFlag = authService.validUsername(username);
-//            User user = userService.findByUsername(username);
-
                 //如果是超级管理员角色super,直接跳过认证，认为他具有所有权限
                 if (roles != null) {
                     if (roles.stream().anyMatch(role1 -> Objects.equals(role1.getName(), Constants.SUPER_ROLE_KEY))) {

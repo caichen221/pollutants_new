@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.google.gson.Gson;
 import com.iscas.base.biz.config.ratelimiter.RateLimiterProps;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     private RateLimiter rateLimiter = null;
     private List<String> staticUrls;
 
-    public RateLimiterFilter(RateLimiterProps rateLimiterProps){
+    public RateLimiterFilter(RateLimiterProps rateLimiterProps) {
         this.rateLimiterProps = rateLimiterProps;
         this.staticUrls = rateLimiterProps.getStaticUrl();
         rateLimiter = RateLimiter.create(rateLimiterProps.getPermitsPerSecond());
@@ -47,35 +48,15 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         String contextPath = request.getContextPath();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-        if(!CollectionUtils.isEmpty(staticUrls)){
-            for (String url: staticUrls) {
-                if(antPathMatcher.match(contextPath  + url, request.getRequestURI())){
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
+        if (!CollectionUtils.isEmpty(staticUrls) && staticUrls.stream().anyMatch(url -> antPathMatcher.match(contextPath + url, request.getRequestURI()))) {
+            return;
         }
-
 
         if (!rateLimiter.tryAcquire(rateLimiterProps.getMaxWait().toMillis(), TimeUnit.MILLISECONDS)) {
             //获取令牌失败，并且超过超时时间
             log.warn(request.getRemoteAddr() + "访问" + request.getRequestURI() + "获取令牌失败");
-            ResponseEntity responseEntity = new ResponseEntity(500,"服务器繁忙,请求超时");
-            Gson gson = new Gson();
-            try {
-                //返回服务器繁忙提示
-                response.setContentType("application/json; charset=utf-8");
-                response.setCharacterEncoding("UTF-8");
-                response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                ServletOutputStream pw = response.getOutputStream();
-                pw.write(gson.toJson(responseEntity).getBytes("UTF-8"));
-                pw.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }else{
-            filterChain.doFilter(request, response);
+            throw new RequestTimeoutRuntimeException("服务器繁忙,请求超时");
         }
-
+        filterChain.doFilter(request, response);
     }
 }
