@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.elasticjob;
+package com.iscas.base.biz.config.elasticjob.v3;
 
 import com.iscas.base.biz.aop.enable.EnableElasticJob;
 import org.apache.commons.collections4.MapUtils;

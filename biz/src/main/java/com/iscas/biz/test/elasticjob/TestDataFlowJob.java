@@ -2,7 +2,7 @@
 //
 //import com.dangdang.ddframe.job.api.ShardingContext;
 //import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
-//import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
+//import com.iscas.base.biz.config.elasticjob.v3.ConditionalOnElasticJob;
 //import com.iscas.common.tools.core.random.RandomStringUtils;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.stereotype.Component;

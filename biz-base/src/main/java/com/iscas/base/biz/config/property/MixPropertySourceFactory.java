@@ -24,9 +24,8 @@ public class MixPropertySourceFactory extends DefaultPropertySourceFactory {
         if (sourceName != null && (sourceName.endsWith(".yml") || sourceName.endsWith(".yaml"))) {
             //将yaml文件转为properties
             return new PropertiesPropertySource(name, convert(resource));
-        } else {
-            return super.createPropertySource(name, resource);
         }
+        return super.createPropertySource(name, resource);
     }
 
     private Properties convert(EncodedResource encodedResource) {

@@ -24,6 +24,7 @@ public class TokenProps {
     /**token过期时间(分钟)*/
     @DurationUnit(ChronoUnit.MINUTES)
     private Duration expire = Duration.ofMinutes(14440);
+
     /** token保存在cookie的时间(毫秒)*/
     private int cookieExpire = -1;
 

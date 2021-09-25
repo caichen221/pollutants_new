@@ -3,10 +3,10 @@ package com.iscas.biz.config.log;
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.log.LogRecordConfig;
-import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.LogInfo;
+import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +55,7 @@ public class LogRecordAspect implements Constants {
         HttpServletRequest request = SpringUtils.getRequest();
         logInfo.setLogType(logRecord.type().getValue())
                 .setOperateType(logRecord.operateType().getValue())
-                .setOperateTime(DateTimeUtils.getDateStr(new Date()))
+                .setOperateTime(DateSafeUtils.format(new Date()))
                 .setOperateUser(StringUtils.isNotBlank(username) ? username : "unknown")
                 .setRequestUrl(request.getRequestURI());
 

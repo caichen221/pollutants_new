@@ -1,6 +1,6 @@
 package com.iscas.biz.test.elasticjob.v3;
 
-import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
+import com.iscas.base.biz.config.elasticjob.v3.ConditionalOnElasticJob;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;

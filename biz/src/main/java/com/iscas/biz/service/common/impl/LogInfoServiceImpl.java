@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
 import com.iscas.base.biz.util.CacheUtils;
-import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.domain.common.LogInfo;
 import com.iscas.biz.domain.common.Param;
@@ -13,6 +12,7 @@ import com.iscas.biz.mapper.common.LogInfoMapper;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.LogInfoService;
 import com.iscas.biz.service.common.ParamService;
+import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +80,7 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
                     .setParamType("系统类")
                     .setParamDesc("根据该参数清除之前的访问日志数据")
                     .setCreateBy(username)
-                    .setCreateTime(DateTimeUtils.getDateStr(new Date()));
+                    .setCreateTime(DateSafeUtils.format(new Date()));
             paramService.save(data);
         } else {
             if (param.getParamValue().equals(holdPeriod)) {
@@ -90,7 +90,7 @@ public class LogInfoServiceImpl extends ServiceImpl<LogInfoMapper, LogInfo> impl
             Param updateParam = new Param()
                     .setParamValue(holdPeriod)
                     .setUpdateBy(username)
-                    .setUpdateTime(DateTimeUtils.getDateStr(new Date()));
+                    .setUpdateTime(DateSafeUtils.format(new Date()));
             paramService.update(updateParam, wrapper);
         }
         //放入缓存

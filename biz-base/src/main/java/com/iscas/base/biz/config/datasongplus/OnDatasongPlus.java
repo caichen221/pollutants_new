@@ -23,9 +23,8 @@ public class OnDatasongPlus extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> beansWithAnnotation = context.getBeanFactory().getBeansWithAnnotation(EnableDatasongClientPlus.class);
-        boolean match = MapUtils.isNotEmpty(beansWithAnnotation);
-        return match ? ConditionOutcome.match(message.foundExactly("EnableDatasongPlus")) :
+        Map<String, Object> enableDatasongClientPluseMap = context.getBeanFactory().getBeansWithAnnotation(EnableDatasongClientPlus.class);
+        return MapUtils.isNotEmpty(enableDatasongClientPluseMap) ? ConditionOutcome.match(message.foundExactly("EnableDatasongPlus")) :
                 ConditionOutcome.noMatch(message.because("not EnableDatasongPlus"));
     }
 }

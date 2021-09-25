@@ -1,6 +1,6 @@
 //package com.iscas.biz.test.elasticjob;
 //
-//import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
+//import com.iscas.base.biz.config.elasticjob.v3.ConditionalOnElasticJob;
 //import com.iscas.base.biz.config.elasticjob.ElasticJobHandler;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.RequestMapping;

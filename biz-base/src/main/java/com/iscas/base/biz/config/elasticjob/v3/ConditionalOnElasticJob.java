@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.elasticjob;
+package com.iscas.base.biz.config.elasticjob.v3;
 
 import org.springframework.context.annotation.Conditional;
 

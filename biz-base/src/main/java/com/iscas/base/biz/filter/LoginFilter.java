@@ -7,6 +7,7 @@ import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.AuthContextHolder;
+import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
@@ -23,10 +24,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  *
@@ -58,113 +56,87 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
         }
         String contextPath = request.getContextPath();
         AuthContext authContext = new AuthContext();
-        Map<String, Url> urlMap = null;
-        Map<String, Role> roleMap = null;
         try {
-            urlMap = authService.getUrls();
-            roleMap  = authService.getAuth();
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-                    " :获取角色信息失败", e);
-            throw new AuthenticationRuntimeException("获取角色信息失败", "获取角色信息失败");
-        }
-
-        Collection<Url> urls = urlMap.values();
-        boolean needFlag = false;
-        for (Url url : urls) {
-            if (pathMatcher.match(contextPath + url.getName(), request.getRequestURI())) {
-                needFlag = true;
-                break;
-            }
-        }
-        //如果找到匹配的urlx
-        if (needFlag) {
-            //首先判断Authorization 中有没有上传信息
-            String token = null;
-            token = request.getHeader(TOKEN_KEY);
-            if (token == null) {
-                //尝试从cookie中拿author
-                Cookie cookie = CookieUtils.getCookieByName(request, TOKEN_KEY);
-                if (cookie != null) {
-                    token = cookie.getValue();
-                }
-            }
-            if (token == null) {
-                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-                        " :header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
-//                OutputUtils.output(response, 401, "未携带身份认证信息",
-//                        "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
-//                return;
-                throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
-            }
-            authContext.setToken(token);
-            IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-//            if(CaffCacheUtils.get(token) == null){
-            if(authCacheService.get(token) == null){
-                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-                        " :token有误或已被注销");
-                throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
-            }
-            //如果token不为null,校验token
-            String username = null;
+            Map<String, Url> urlMap = null;
+//        Map<String, Role> roleMap = null;
             try {
-                username = authService.verifyToken(token);
-                authContext.setUsername(username);
-            } catch (ValidTokenException e) {
-                e.printStackTrace();
-                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-                        " :校验token出错");
-                throw new AuthenticationRuntimeException("校验身份信息出错", "校验token出错");
+                urlMap = authService.getUrls();
+//            roleMap  = authService.getAuth();
+            } catch (Exception e) {
+//            log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
+//                    " :获取角色信息失败", e);
+                throw new AuthenticationRuntimeException("获取角色信息失败", "获取角色信息失败");
             }
-            List<Role> roles = authService.getRoles(username);
-            authContext.setRoles(roles);
+
+            Collection<Url> urls = urlMap.values();
+            //判断请求的URL是否在配置了权限的URL中
+            boolean needFlag = urls.stream().anyMatch(url -> pathMatcher.match(contextPath + url.getName(), request.getRequestURI()));
+            //如果找到匹配的urlx
+            if (needFlag) {
+                String token = AuthUtils.getToken();
+                if (token == null) {
+//                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
+//                        " :header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+                    throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+                }
+                authContext.setToken(token);
+                IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
+                if (authCacheService.get(token) == null) {
+//                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
+//                        " :token有误或已被注销");
+                    throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
+                }
+                //如果token不为null,校验token
+                String username = null;
+                try {
+                    username = authService.verifyToken(token);
+                    authContext.setUsername(username);
+                } catch (ValidTokenException e) {
+//                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
+//                        " :校验token出错");
+                    throw new AuthenticationRuntimeException("校验身份信息出错", "校验token出错");
+                }
+                List<Role> roles = authService.getRoles(username);
+                authContext.setRoles(roles);
 
 //            boolean userFlag = authService.validUsername(username);
 //            User user = userService.findByUsername(username);
 
-            //如果是超级管理员角色super,直接跳过认证，认为他具有所有权限
-            if(roles != null){
-                for (Role role1 : roles) {
-                    String name = role1.getName();
-                    if (Objects.equals(name, Constants.SUPER_ROLE_KEY)) {
+                //如果是超级管理员角色super,直接跳过认证，认为他具有所有权限
+                if (roles != null) {
+                    if (roles.stream().anyMatch(role1 -> Objects.equals(role1.getName(), Constants.SUPER_ROLE_KEY))) {
                         authContext.setSuper(true);
+                        AuthContextHolder.setContext(authContext);
                         filterChain.doFilter(request, response);
                         return;
                     }
                 }
-            }
-
-            if (roles == null) {
-                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-                        " :token中携带的用户或其角色信息不存在");
-                throw new AuthenticationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
-            }
-            for (Role role : roles) {
-//                if (role == null) {
-//                    log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-//                            " :未获取到用户角色信息");
-//                    throw new AuthorizationRuntimeException("未获取到用户角色信息", "未获取到用户角色信息");
-//                }
-                List<Url> urlsx = role.getUrls();
-                if (!CollectionUtils.isEmpty(urlsx)){
-                    for (Url url : urlsx) {
-                        if (pathMatcher.match(contextPath + url.getName(), request.getRequestURI())) {
+                if (roles == null) {
+//                log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
+//                        " :token中携带的用户或其角色信息不存在");
+                    throw new AuthenticationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
+                }
+                for (Role role : roles) {
+                    List<Url> urlsx = role.getUrls();
+                    if (!CollectionUtils.isEmpty(urlsx)) {
+                        if (urlsx.stream().anyMatch(url -> pathMatcher.match(contextPath + url.getName(), request.getRequestURI()))) {
+                            AuthContextHolder.setContext(authContext);
                             filterChain.doFilter(request, response);
                             return;
                         }
                     }
                 }
 
+                //失败了返回信息
+                throw new AuthorizationRuntimeException("鉴权失败");
             }
-
-            //失败了返回信息
-            log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() + " :鉴权失败");
-            throw new AuthorizationRuntimeException("鉴权失败");
-        } else {
+            //上面没有报错，或者没有执行doFilter，说明此请求不需要权限
             authContext.setNeedPermission(false);
+            AuthContextHolder.setContext(authContext);
+            filterChain.doFilter(request, response);
+        } finally {
+            AuthContextHolder.setContext(authContext);
         }
-        AuthContextHolder.setContext(authContext);
-        filterChain.doFilter(request, response);
     }
+
 }

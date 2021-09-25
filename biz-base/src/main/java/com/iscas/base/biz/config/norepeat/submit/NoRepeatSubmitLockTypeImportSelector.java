@@ -30,9 +30,6 @@ public class NoRepeatSubmitLockTypeImportSelector implements ImportSelector {
 
         NoRepeatSubmitLockType lockType = attributes.getEnum("lockType");
         switch (lockType) {
-            case NONE: {
-                return new String[] {NoRepeatSubmitNoneConfig.class.getName()};
-            }
             case JVM: {
                 return new String[] {NoRepeatSubmitJVMConfig.class.getName()};
             }

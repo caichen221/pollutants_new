@@ -1,6 +1,5 @@
 package com.iscas.base.biz.config.socketio;
 
-import com.iscas.base.biz.aop.enable.EnableDatasongClientPlus;
 import com.iscas.base.biz.aop.enable.EnableSocketio;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
@@ -22,9 +21,8 @@ public class OnSocketIo extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> beansWithAnnotation = context.getBeanFactory().getBeansWithAnnotation(EnableSocketio.class);
-        boolean match = MapUtils.isNotEmpty(beansWithAnnotation);
-        return match ? ConditionOutcome.match(message.foundExactly("EnableSocketio")) :
+        Map<String, Object> enableSocketioMap = context.getBeanFactory().getBeansWithAnnotation(EnableSocketio.class);
+        return MapUtils.isNotEmpty(enableSocketioMap) ? ConditionOutcome.match(message.foundExactly("EnableSocketio")) :
                 ConditionOutcome.noMatch(message.because("not EnableSocketio"));
     }
 }

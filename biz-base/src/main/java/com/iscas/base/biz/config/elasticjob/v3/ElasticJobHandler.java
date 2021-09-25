@@ -1,6 +1,5 @@
 package com.iscas.base.biz.config.elasticjob.v3;
 
-import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;

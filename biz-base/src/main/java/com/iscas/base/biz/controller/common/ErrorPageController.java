@@ -24,9 +24,7 @@ public class ErrorPageController {
     @RequestMapping(value = "/401", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity to401(){
-        ResponseEntity responseEntity = new ResponseEntity();
-        responseEntity.setStatus(401);
-        responseEntity.setMessage("未登录");
+        ResponseEntity responseEntity = new ResponseEntity(401, "未登录");
         AuthContextHolder.removeContext();
         return responseEntity;
     }
@@ -34,9 +32,7 @@ public class ErrorPageController {
     @RequestMapping(value = "/403", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity to403(){
-        ResponseEntity responseEntity = new ResponseEntity();
-        responseEntity.setStatus(403);
-        responseEntity.setMessage("没有权限");
+        ResponseEntity responseEntity = new ResponseEntity(403, "没有权限");
         AuthContextHolder.removeContext();
         return responseEntity;
     }
@@ -44,28 +40,22 @@ public class ErrorPageController {
     @RequestMapping(value = "/404", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity to404(){
-        ResponseEntity responseEntity = new ResponseEntity();
-        responseEntity.setStatus(404);
+        ResponseEntity responseEntity = new ResponseEntity(404, "找不到资源");
         AuthContextHolder.removeContext();
-        responseEntity.setMessage("找不到资源");
         return responseEntity;
     }
 
     @RequestMapping(value = "/502", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity to502(){
-        ResponseEntity responseEntity = new ResponseEntity();
-        responseEntity.setStatus(502);
-        responseEntity.setMessage("网关错误");
+        ResponseEntity responseEntity = new ResponseEntity(502, "网关错误");
         AuthContextHolder.removeContext();
         return responseEntity;
     }
     @RequestMapping(value = "/400", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(){
-        ResponseEntity responseEntity = new ResponseEntity();
-        responseEntity.setStatus(400);
-        responseEntity.setMessage("请求无效");
+        ResponseEntity responseEntity = new ResponseEntity(400, "请求无效");
         AuthContextHolder.removeContext();
         return responseEntity;
     }

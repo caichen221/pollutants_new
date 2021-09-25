@@ -62,6 +62,14 @@ public class DateSafeUtils {
     public static String format(Date date, String pattern) {
         return getSdf(pattern).format(date);
     }
+
+    /**
+     * 使用默认的格式化方式yyyy-MM-dd HH:mm:ss
+     * */
+    public static String format(Date date) {
+        return format(date, PATTERN);
+    }
+
     /**
      * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
      * 如果新的线程中没有SimpleDateFormat，才会new一个
@@ -72,5 +80,12 @@ public class DateSafeUtils {
      */
     public static Date parse(String dateStr, String pattern) throws ParseException {
         return getSdf(pattern).parse(dateStr);
+    }
+
+    /**
+     * 使用默认的格式化方式yyyy-MM-dd HH:mm:ss
+     * */
+    public static Date parse(String dateStr) throws ParseException {
+        return parse(dateStr, PATTERN);
     }
 }

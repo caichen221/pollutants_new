@@ -21,10 +21,10 @@ public class ErrorPageConfig implements ErrorPageRegistrar {
     @Override
     public void registerErrorPages(ErrorPageRegistry registry) {
         log.info("-----------错误页面路径配置------------");
-        registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404"));
-        registry.addErrorPages(new ErrorPage(HttpStatus.FORBIDDEN, "/403"));
-        registry.addErrorPages(new ErrorPage(HttpStatus.BAD_REQUEST, "/400"));
-        registry.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500"));
+        registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404"),
+                new ErrorPage(HttpStatus.FORBIDDEN, "/403"),
+                new ErrorPage(HttpStatus.BAD_REQUEST, "/400"),
+                new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500"));
         log.info("-----------错误页面路径配置结束------------");
     }
 }

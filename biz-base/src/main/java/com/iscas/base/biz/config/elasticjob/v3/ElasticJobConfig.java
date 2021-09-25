@@ -1,13 +1,11 @@
 package com.iscas.base.biz.config.elasticjob.v3;
 
-import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJobWithDatasource;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;

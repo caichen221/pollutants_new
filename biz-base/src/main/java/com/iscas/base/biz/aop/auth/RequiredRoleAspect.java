@@ -5,6 +5,7 @@ import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.service.AbstractAuthService;
+import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthorizationException;
@@ -49,20 +50,8 @@ public class RequiredRoleAspect implements Constants {
         }
         //获取request对象
         HttpServletRequest request = SpringUtils.getRequest();
-        HttpServletResponse response = SpringUtils.getResponse();
-        Role role = null;
-        Map<String, Role> roleMap = null;
-        roleMap  = authService.getAuth();
         //首先判断Authorization 中有没有上传信息
-        String token = null;
-        token = request.getHeader(TOKEN_KEY);
-        if (token == null) {
-            //尝试从cookie中拿author
-            Cookie cookie = CookieUtils.getCookieByName(request, TOKEN_KEY);
-            if (cookie != null) {
-                token = cookie.getValue();
-            }
-        }
+        String token = AuthUtils.getToken();
         if (token == null) {
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
@@ -75,19 +64,7 @@ public class RequiredRoleAspect implements Constants {
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :token中携带的用户或其角色信息不存在");
             throw new AuthorizationException("获取角色信息出错", "token中携带的用户或其角色信息不存在");
-
         }
-
-//        String[] roles = requiredRole.value();
-//        if(!ArrayRaiseUtils.contains(roles, roleKey)){
-//            log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
-//                    " :权限校验失败");
-////            OutputUtils.output(response, 403, "权限校验失败",
-////                    "权限校验失败，此登录用户不含有:" + Arrays.toString(roles) + "中任意一个角色" );
-////            return null;
-//            throw new AuthorizationException("权限校验失败", "权限校验失败，此登录用户不含有:\" + Arrays.toString(roles) + \"中任意一个角色");
-//
-//        }
         return joinPoint.proceed();
     }
 }

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * 自定义跨域过滤器，可以通过springboot auto config 配置
  *
  * @Author: zhuquanwen
@@ -36,6 +35,7 @@ public class CustomCrosFilter extends CorsFilter {
     private CrosProps crosProps;
     private Map<String, String> ignoreUrlAllMatchMap = new HashMap<>();
     List<String> ignoreUrlPrefixMapList = new ArrayList<>();
+
     public CustomCrosFilter(CorsConfigurationSource configSource, CrosProps crosProps) {
         super(configSource);
         if (log.isDebugEnabled()) {
@@ -44,21 +44,19 @@ public class CustomCrosFilter extends CorsFilter {
         Assert.notNull(configSource, "CorsConfigurationSource must not be null");
         this.configSource = configSource;
         this.crosProps = crosProps;
-        if(crosProps.getIgnoreUrls() != null){
-            for (String urlStr: crosProps.getIgnoreUrls()){
-                if(urlStr.endsWith("/*")){
-                    ignoreUrlPrefixMapList.add(urlStr.substring(0,urlStr.lastIndexOf("/*")));
-                }else if("/**".equals(urlStr)){
-                    ignoreUrlPrefixMapList.add(urlStr.substring(0,urlStr.lastIndexOf("/**")));
-                }
-                else{
-                    ignoreUrlAllMatchMap.put(urlStr , urlStr);
+        if (crosProps.getIgnoreUrls() != null) {
+            for (String urlStr : crosProps.getIgnoreUrls()) {
+                if (urlStr.endsWith("/*")) {
+                    ignoreUrlPrefixMapList.add(urlStr.substring(0, urlStr.lastIndexOf("/*")));
+                } else if ("/**".equals(urlStr)) {
+                    ignoreUrlPrefixMapList.add(urlStr.substring(0, urlStr.lastIndexOf("/**")));
+                } else {
+                    ignoreUrlAllMatchMap.put(urlStr, urlStr);
                 }
             }
         }
 
     }
-
 
     public void setCorsProcessor(CorsProcessor processor) {
         Assert.notNull(processor, "CorsProcessor must not be null");
@@ -89,16 +87,16 @@ public class CustomCrosFilter extends CorsFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean ignoreMath(HttpServletRequest request){
+    private boolean ignoreMath(HttpServletRequest request) {
         boolean flag = false;
         String contextPath = request.getContextPath();
         String uri = request.getRequestURI();
         String uri1 = uri.substring(uri.indexOf(contextPath) + contextPath.length());
-        if(ignoreUrlAllMatchMap.get(uri1) != null){
+        if (ignoreUrlAllMatchMap.get(uri1) != null) {
             flag = true;
-        }else{
-            for (String urlStr : ignoreUrlPrefixMapList){
-                if(uri1.startsWith(urlStr)){
+        } else {
+            for (String urlStr : ignoreUrlPrefixMapList) {
+                if (uri1.startsWith(urlStr)) {
                     flag = true;
                     break;
                 }
@@ -106,5 +104,4 @@ public class CustomCrosFilter extends CorsFilter {
         }
         return flag;
     }
-
 }

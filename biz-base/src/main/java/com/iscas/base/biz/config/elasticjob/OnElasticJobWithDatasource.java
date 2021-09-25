@@ -12,13 +12,14 @@ import org.springframework.util.MultiValueMap;
 import java.util.Map;
 
 /**
- *
+ * 升级至3.0暂时不支持配置
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/4/1 9:41
  * @since jdk1.8
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 21)
+@Deprecated
 public class OnElasticJobWithDatasource extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {

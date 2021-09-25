@@ -25,9 +25,8 @@ public class OnShedLock extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> beansWithAnnotation = context.getBeanFactory().getBeansWithAnnotation(EnableShedLock.class);
-        boolean match = MapUtils.isNotEmpty(beansWithAnnotation);
-        return match ? ConditionOutcome.match(message.foundExactly("EnableShedLock")) :
+        Map<String, Object> enableShedLockMap = context.getBeanFactory().getBeansWithAnnotation(EnableShedLock.class);
+        return MapUtils.isNotEmpty(enableShedLockMap) ? ConditionOutcome.match(message.foundExactly("EnableShedLock")) :
                 ConditionOutcome.noMatch(message.because("not EnableShedLock"));
     }
 }

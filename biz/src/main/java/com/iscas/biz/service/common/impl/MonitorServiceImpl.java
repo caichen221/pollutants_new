@@ -2,14 +2,14 @@ package com.iscas.biz.service.common.impl;
 
 import cn.hutool.json.JSONObject;
 import com.iscas.base.biz.util.CaffCacheUtils;
-import com.iscas.base.biz.util.DateTimeUtils;
+import com.iscas.base.biz.util.CloneUtils;
+import com.iscas.base.biz.util.RegexUtils;
 import com.iscas.biz.model.common.monitor.jvm.JvmExtraMonitor;
 import com.iscas.biz.model.common.monitor.jvm.JvmMonitor;
 import com.iscas.biz.model.common.monitor.sys.SysExtraMonitor;
 import com.iscas.biz.model.common.monitor.sys.SysMonitor;
 import com.iscas.biz.service.common.MonitorService;
-import com.iscas.base.biz.util.CloneUtils;
-import com.iscas.base.biz.util.RegexUtils;
+import com.iscas.common.tools.core.date.DateSafeUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -48,7 +48,7 @@ public class MonitorServiceImpl implements MonitorService {
                                     if (!(fieldValue instanceof Date)) {
                                         cacheValue = RegexUtils.getStartNumber(fieldValue.toString());
                                     } else {//时间类型
-                                        cacheValue = DateTimeUtils.getDateStr((Date) fieldValue);
+                                        cacheValue = DateSafeUtils.format((Date) fieldValue);
                                     }
                                 }
                                 LinkedList<String> valueCache = dataCache.computeIfAbsent(fieldName, a -> new LinkedList<>());

@@ -1,13 +1,13 @@
 package com.iscas.biz.controller.common;
 
 import com.google.common.collect.ImmutableMap;
-import com.iscas.base.biz.util.DateTimeUtils;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.config.log.LogRecord;
 import com.iscas.biz.config.log.LogType;
 import com.iscas.biz.config.log.OperateType;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.ParamService;
+import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
@@ -87,7 +87,7 @@ public class ParamController extends BaseController {
     @PostMapping("/data")
     @LogRecord(type = LogType.SYSTEM, desc = "新增参数", operateType = OperateType.add)
     public ResponseEntity saveData(@RequestBody Map<String, Object> data) throws ValidDataException {
-        ImmutableMap<String, Object> forceItem = ImmutableMap.of("create_by", getUsername(), "create_time", DateTimeUtils.getDateStr(new Date()));
+        ImmutableMap<String, Object> forceItem = ImmutableMap.of("create_by", getUsername(), "create_time", DateSafeUtils.format(new Date()));
         return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
     }
 
@@ -102,7 +102,7 @@ public class ParamController extends BaseController {
     @LogRecord(type = LogType.SYSTEM, desc = "修改参数", operateType = OperateType.update)
     public ResponseEntity editData(@RequestBody Map<String, Object> data)
             throws ValidDataException {
-        ImmutableMap<String, Object> forceItem = ImmutableMap.of("update_by", getUsername(), "update_time", DateTimeUtils.getDateStr(new Date()));
+        ImmutableMap<String, Object> forceItem = ImmutableMap.of("update_by", getUsername(), "update_time", DateSafeUtils.format(new Date()));
         return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
     }
 

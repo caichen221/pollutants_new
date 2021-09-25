@@ -1,6 +1,6 @@
 package com.iscas.biz.test.elasticjob.v3;//package com.iscas.biz.test.elasticjob;
 
-import com.iscas.base.biz.config.elasticjob.ConditionalOnElasticJob;
+import com.iscas.base.biz.config.elasticjob.v3.ConditionalOnElasticJob;
 import com.iscas.base.biz.config.elasticjob.v3.ElasticJobEntity;
 import com.iscas.base.biz.config.elasticjob.v3.ElasticJobHandler;
 import com.iscas.base.biz.filter.started.AbstractStartedFilter;

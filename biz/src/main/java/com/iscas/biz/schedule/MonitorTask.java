@@ -2,11 +2,11 @@ package com.iscas.biz.schedule;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
-import com.iscas.base.biz.util.DateTimeUtils;
+import com.iscas.base.biz.util.MathUtils;
 import com.iscas.biz.model.common.monitor.jvm.*;
 import com.iscas.biz.model.common.monitor.sys.*;
 import com.iscas.biz.service.common.MonitorService;
-import com.iscas.base.biz.util.MathUtils;
+import com.iscas.common.tools.core.date.DateSafeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ public class MonitorTask {
 
         JvmExtraMonitor extraMonitor = new JvmExtraMonitor();
         extraMonitor.setName(JvmInfoUtils.getName())
-                .setStartTime(DateTimeUtils.getDateStr(new Date(JvmInfoUtils.getStartTime())))
+                .setStartTime(DateSafeUtils.format(new Date(JvmInfoUtils.getStartTime())))
                 .setVendor(JvmInfoUtils.getVendor())
                 .setVersion(JvmInfoUtils.getVersion())
                 .setTotalHeapMemory(convertFileSizeGB(heapMemoryUsage.getMax(), "B"))
