@@ -79,7 +79,6 @@ dependencies {
     api group: 'com.github.oshi', name: 'oshi-core', version: '5.3.7'
 
     api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
-    api group: 'io.github.openfeign.form', name: 'feign-form', version: "${feignFormVersion}"
 
 
     //==============datasong-client-plus 在私服环境下使用 begin
