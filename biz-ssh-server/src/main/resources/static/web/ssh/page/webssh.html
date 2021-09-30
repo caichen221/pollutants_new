@@ -15,6 +15,7 @@
     --图片样式
     <link rel="stylesheet" type="text/css" href="../easyui/demo/demo.css">
     <script src="../easyui/jquery.min.js"></script>
+    <script src="../js/element-listener.js"></script>
     <script src="../easyui/jquery.easyui.min.js"></script>
     <script src="../easyui/locale/easyui-lang-zh_CN.js"></script>
     --使用语言
@@ -258,9 +259,11 @@
 
         function openTerminal(options) {
             var client = new WSSHClient();
+            let size = getColsAndRows(options.terminalId);
+            options.size = size;
             var term = new Terminal({
-                cols: 97,
-                rows: 50,
+                cols: size.cols,
+                rows: size.rows,
                 cursorBlink: true, // 光标闪烁
                 cursorStyle: "block", // 光标样式  null | 'block' | 'underline' | 'bar'
                 scrollback: 800, //回滚
@@ -268,15 +271,19 @@
                 screenKeys: true
             });
             let terminalId = options.terminalId;
-            // term.on('resize', size => {
-            //     socket.send('resize', [size.cols, size.rows]);
-            // })
+            //窗口大小变化
+            $("#" + terminalId).resize(function(){
+                let changedSize = getColsAndRows(terminalId);
+                client.sendSize(options.connectionId, changedSize);
+                term.resize(changedSize.cols, changedSize.rows);
+            })
 
             term.on('data', function (data) {
                 //键盘输入时的回调函数
                 client.sendClientData(options.connectionId, data);
             });
             term.open(document.getElementById(terminalId));
+            term.resize(size.cols, size.rows);
             //在页面上显示连接中...
             term.write('Connecting...');
             //执行连接操作
@@ -301,7 +308,18 @@
             });
         }
 
-
+        function getColsAndRows(id) {
+          // 暂时不用
+          let element = document.getElementById(id);
+          let width = element.clientWidth;
+          let height = element.clientHeight;
+          return {
+            "width": width,
+            "height": height,
+            "cols": parseInt(width/10),
+            "rows": parseInt(height/17)
+          }
+        }
     </script>
 
 </head>

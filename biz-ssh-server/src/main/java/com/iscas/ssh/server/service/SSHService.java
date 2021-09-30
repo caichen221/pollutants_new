@@ -221,9 +221,13 @@ public class SSHService {
         session.connect(connectionTimeout * 1000);
 
         //开启shell通道
-        Channel channel = session.openChannel("shell");
+        ChannelShell channel = (ChannelShell) session.openChannel("shell");
         //通道连接 超时时间3s
         channel.connect(channelTimeout * 1000);
+
+        //设置窗口大小
+        channel.setPtySize(webSSHData.getSize().getCols(), webSSHData.getSize().getRows(),
+                webSSHData.getSize().getWidth(), webSSHData.getSize().getHeight());
 
         //设置channel
         sshConnection.setChannel(channel);
@@ -538,5 +542,17 @@ public class SSHService {
             }
         }
         sftp.rmdir(path);
+    }
+
+    public void resize(WebSSHData sshData) throws BaseException {
+        SSHConnection sshConnection = sshMap.get(sshData.getConnectionId());
+        if (sshConnection != null) {
+            ChannelShell channel = (ChannelShell) sshConnection.getChannel();
+            //设置窗口大小
+            channel.setPtySize(sshData.getSize().getCols(), sshData.getSize().getRows(),
+                    sshData.getSize().getWidth(), sshData.getSize().getHeight());
+        } else {
+            throw new BaseException("连接不存在");
+        }
     }
 }

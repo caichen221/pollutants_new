@@ -79,6 +79,11 @@ WSSHClient.prototype.sendClientData = function (connectionId, data) {
     stompClient.send("/app/command", {}, JSON.stringify({"operate": "command", "command": data, "connectionId": connectionId}))
 }
 
+WSSHClient.prototype.sendSize = function (connectionId, data) {
+    //改变屏幕size
+    stompClient.send("/app/resize", {}, JSON.stringify({ "size": data, "connectionId": connectionId}))
+}
+
 var client = new WSSHClient();
 
 function randomString(e) {

@@ -22,4 +22,7 @@ public class WebSSHData {
     private String command = "";
 
     private String connectionId;
+
+    private TerminalSize size;
+
 }
