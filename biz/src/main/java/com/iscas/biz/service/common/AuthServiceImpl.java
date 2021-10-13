@@ -216,8 +216,8 @@ public class AuthServiceImpl extends AbstractAuthService {
         }
         LoginCacheUtils.remove(key);
         try {
-            username = AesUtils.aesDecrypt(username, loginKey);
-            pwd = AesUtils.aesDecrypt(pwd, loginKey);
+            username = AesUtils.aesDecrypt(username, loginKey).trim();
+            pwd = AesUtils.aesDecrypt(pwd, loginKey).trim();
         } catch (Exception e) {
             e.printStackTrace();
             throw new LoginException("非法登陆", e.getMessage());

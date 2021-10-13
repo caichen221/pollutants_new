@@ -45,7 +45,7 @@ public class ControllerAspect {
             log.debug("HTTP_METHOD : " + request.getMethod());
             log.debug("IP : " + request.getRemoteAddr());
             log.debug("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-            log.debug("ARGS : " + Arrays.toString(joinPoint.getArgs()));
+            log.trace("ARGS : " + Arrays.toString(joinPoint.getArgs()));
         }
 
         try {
