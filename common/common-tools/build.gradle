@@ -105,6 +105,8 @@ dependencies {
     api group: 'com.deepoove', name: 'poi-tl', version: "${poiTlVersion}"
     api("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
     api "com.lmax:disruptor:${disruptorVersion}"
+    api group: 'de.schlichtherle.truelicense', name: 'truelicense-core', version: "${truelicenseVersion}"
+
 
 }
 
