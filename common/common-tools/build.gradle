@@ -107,7 +107,6 @@ dependencies {
     api "com.lmax:disruptor:${disruptorVersion}"
     api group: 'de.schlichtherle.truelicense', name: 'truelicense-core', version: "${truelicenseVersion}"
 
-
 }
 
 //install {
