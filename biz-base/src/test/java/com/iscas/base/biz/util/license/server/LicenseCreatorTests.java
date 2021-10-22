@@ -79,6 +79,7 @@ public class LicenseCreatorTests {
 
         //证书失效时间
         licenseCreatorParam.setExpiryTime(new Date(System.currentTimeMillis() + 10L * 356 * 24 * 3600 * 1000));
+//        licenseCreatorParam.setExpiryTime(new Date(System.currentTimeMillis() + 20 * 1000));
 
         //用户类型
         licenseCreatorParam.setConsumerType("User");
