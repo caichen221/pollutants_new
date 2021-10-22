@@ -1,4 +1,4 @@
-package com.iscas.base.biz.license;
+package com.iscas.base.biz.util.license;
 
 
 import java.net.InetAddress;
@@ -100,7 +100,6 @@ public abstract class AbstractServerInfos {
                 }
             }
         }
-
         return result;
     }
 
@@ -114,30 +113,28 @@ public abstract class AbstractServerInfos {
      * @since 1.0.0
      */
     protected String getMacByInetAddress(InetAddress inetAddr) {
+        byte[] mac = new byte[0];
         try {
-            byte[] mac = NetworkInterface.getByInetAddress(inetAddr).getHardwareAddress();
-            StringBuffer stringBuffer = new StringBuffer();
+            mac = NetworkInterface.getByInetAddress(inetAddr).getHardwareAddress();
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
 
-            for (int i = 0; i < mac.length; i++) {
-                if (i != 0) {
-                    stringBuffer.append("-");
-                }
-
-                //将十六进制byte转化为字符串
-                String temp = Integer.toHexString(mac[i] & 0xff);
-                if (temp.length() == 1) {
-                    stringBuffer.append("0" + temp);
-                } else {
-                    stringBuffer.append(temp);
-                }
+        for (int i = 0; i < mac.length; i++) {
+            if (i != 0) {
+                stringBuffer.append("-");
             }
 
-            return stringBuffer.toString().toUpperCase();
-        } catch (SocketException e) {
-            e.printStackTrace();
+            //将十六进制byte转化为字符串
+            String temp = Integer.toHexString(mac[i] & 0xff);
+            if (temp.length() == 1) {
+                stringBuffer.append("0" + temp);
+            } else {
+                stringBuffer.append(temp);
+            }
         }
-
-        return null;
+        return stringBuffer.toString().toUpperCase();
     }
 
 }

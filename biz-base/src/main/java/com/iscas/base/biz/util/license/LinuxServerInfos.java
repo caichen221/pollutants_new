@@ -1,4 +1,4 @@
-package com.iscas.base.biz.license;
+package com.iscas.base.biz.util.license;
 
 import org.apache.commons.lang3.StringUtils;
 

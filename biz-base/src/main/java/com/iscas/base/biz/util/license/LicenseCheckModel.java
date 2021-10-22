@@ -1,4 +1,4 @@
-package com.iscas.base.biz.license;
+package com.iscas.base.biz.util.license;
 
 import java.io.Serializable;
 import java.util.List;
