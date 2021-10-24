@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class AuthCacheService implements IAuthCacheService {
+    private static final String CACHE_AUTH = "auth";
     private final CacheManager cacheManager;
 
     @Autowired(required = false)
@@ -47,7 +48,7 @@ public class AuthCacheService implements IAuthCacheService {
             CaffCacheUtils.remove(key);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Cache authCache = redisCacheManager.getCache("auth");
+            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
             if (authCache == null) return;
             authCache.evict(key);
         }
@@ -59,7 +60,7 @@ public class AuthCacheService implements IAuthCacheService {
             CaffCacheUtils.set(key, value);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Cache authCache = redisCacheManager.getCache("auth");
+            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
             if (authCache == null) {
                 throw new RuntimeException("找不到缓存：auth");
             }
@@ -73,7 +74,7 @@ public class AuthCacheService implements IAuthCacheService {
             return CaffCacheUtils.get(key);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Cache authCache = redisCacheManager.getCache("auth");
+            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
             if (authCache == null) {
                 return null;
             }

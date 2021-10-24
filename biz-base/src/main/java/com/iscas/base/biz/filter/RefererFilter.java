@@ -2,8 +2,6 @@ package com.iscas.base.biz.filter;
 
 import com.iscas.templet.exception.AuthorizationRuntimeException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -12,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  *
@@ -44,19 +44,15 @@ public class RefererFilter extends OncePerRequestFilter{
                 url = new java.net.URL(referer);
             } catch (MalformedURLException e) {
                 // URL解析异常
-                throw new AuthorizationRuntimeException("referer校验失败，不允许的请求", "referer求无法解析");
+                throw new AuthorizationRuntimeException("referer校验失败，不允许的请求", "请求头中referer无法解析");
             }
             // 首先判断请求域名和referer域名是否相同,如果相同不用作判断了
             if (!host.equals(url.getHost())) {
                 // 如果不等，判断是否在白名单中
                 boolean flag = false;
                 if (allowDomains != null) {
-                    for (String s : allowDomains) {
-                        if (s.equals(url.getHost())) {
-                            flag = true;
-                            break;
-                        }
-                    }
+                    java.net.URL finalUrl = url;
+                    flag = Arrays.stream(allowDomains).anyMatch(domain -> Objects.equals(domain, finalUrl.getHost()));
                 }
                 if (!flag) {
                     throw new AuthorizationRuntimeException("referer校验失败，不允许跨站请求", "referer不在白名单内");

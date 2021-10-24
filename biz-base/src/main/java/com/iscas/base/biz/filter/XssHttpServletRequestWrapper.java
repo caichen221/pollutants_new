@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.Arrays;
 
 /**
  *
@@ -30,7 +31,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getParameter(String name) {
-        if(("content".equals(name) || name.endsWith("WithHtml")) && !isIncludeRichText){
+        if(StringUtils.equalsAny("content", "WithHtml") && !isIncludeRichText){
             return super.getParameter(name);
         }
         name = JsoupUtils.clean(name);
@@ -45,9 +46,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     public String[] getParameterValues(String name) {
         String[] arr = super.getParameterValues(name);
         if(arr != null){
-            for (int i=0;i<arr.length;i++) {
-                arr[i] = JsoupUtils.clean(arr[i]);
-            }
+            Arrays.stream(arr).forEach(JsoupUtils::clean);
         }
         return arr;
     }

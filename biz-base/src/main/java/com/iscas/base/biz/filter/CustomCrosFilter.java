@@ -15,10 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * 自定义跨域过滤器，可以通过springboot auto config 配置
@@ -33,8 +32,8 @@ public class CustomCrosFilter extends CorsFilter {
     private final CorsConfigurationSource configSource;
     private CorsProcessor processor = new DefaultCorsProcessor();
     private CrosProps crosProps;
-    private Map<String, String> ignoreUrlAllMatchMap = new HashMap<>();
-    List<String> ignoreUrlPrefixMapList = new ArrayList<>();
+    private Set<String> ignoreUrlAllMatchSet = new HashSet<>();
+    Set<String> ignoreUrlPrefixSet = new HashSet<>();
 
     public CustomCrosFilter(CorsConfigurationSource configSource, CrosProps crosProps) {
         super(configSource);
@@ -47,16 +46,17 @@ public class CustomCrosFilter extends CorsFilter {
         if (crosProps.getIgnoreUrls() != null) {
             for (String urlStr : crosProps.getIgnoreUrls()) {
                 if (urlStr.endsWith("/*")) {
-                    ignoreUrlPrefixMapList.add(urlStr.substring(0, urlStr.lastIndexOf("/*")));
+                    ignoreUrlPrefixSet.add(urlStr.substring(0, urlStr.lastIndexOf("/*")));
                 } else if ("/**".equals(urlStr)) {
-                    ignoreUrlPrefixMapList.add(urlStr.substring(0, urlStr.lastIndexOf("/**")));
+                    ignoreUrlPrefixSet.add(urlStr.substring(0, urlStr.lastIndexOf("/**")));
                 } else {
-                    ignoreUrlAllMatchMap.put(urlStr, urlStr);
+                    ignoreUrlAllMatchSet.add(urlStr);
                 }
             }
         }
 
     }
+
 
     public void setCorsProcessor(CorsProcessor processor) {
         Assert.notNull(processor, "CorsProcessor must not be null");
@@ -88,20 +88,13 @@ public class CustomCrosFilter extends CorsFilter {
     }
 
     private boolean ignoreMath(HttpServletRequest request) {
-        boolean flag = false;
         String contextPath = request.getContextPath();
         String uri = request.getRequestURI();
         String uri1 = uri.substring(uri.indexOf(contextPath) + contextPath.length());
-        if (ignoreUrlAllMatchMap.get(uri1) != null) {
-            flag = true;
-        } else {
-            for (String urlStr : ignoreUrlPrefixMapList) {
-                if (uri1.startsWith(urlStr)) {
-                    flag = true;
-                    break;
-                }
-            }
+        if (ignoreUrlAllMatchSet.contains(uri1)) {
+            return true;
         }
-        return flag;
+        return ignoreUrlPrefixSet.stream().anyMatch(uri1::startsWith);
     }
+
 }

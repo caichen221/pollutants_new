@@ -32,10 +32,10 @@ public class OkHttpProps {
     private long keepAliveDuration = 5;
 
     /**每个域名下最多允许的请求*/
-    private long maxRequests = 100;
+    private int maxRequests = 100;
 
     /**最大允许请求数*/
-    private long maxRequestsPerHost = 100;
+    private int maxRequestsPerHost = 100;
 
     /**拦截器类的全限定名*/
     private String interceptorClasses;

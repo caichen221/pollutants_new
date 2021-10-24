@@ -66,6 +66,8 @@ public class OkHttpCustomClient {
                     }
 
                     client = builder.build();
+                    client.dispatcher().setMaxRequests(okHttpConfig.getMaxRequests());
+                    client.dispatcher().setMaxRequestsPerHost(okHttpConfig.getMaxRequestsPerHost());
                 }
             }
         }

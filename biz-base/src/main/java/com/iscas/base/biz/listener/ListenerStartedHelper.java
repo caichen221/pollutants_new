@@ -45,14 +45,7 @@ public class ListenerStartedHelper {
             Collections.sort(startedFilterList, (o1, o2) -> {
                 StartedFilterComponent annotation1 = AnnotationUtils.findAnnotation(o1.getClass(), StartedFilterComponent.class);
                 StartedFilterComponent annotation2 = AnnotationUtils.findAnnotation(o2.getClass(), StartedFilterComponent.class);
-
-//                StartedFilterComponent annotation1 = o1.getClass().getAnnotation(StartedFilterComponent.class);
-//                StartedFilterComponent annotation2 = o2.getClass().getAnnotation(StartedFilterComponent.class);
-                if (Objects.equals(annotation1.order(), annotation2.order())) {
-                    return -1;
-                } else {
-                    return annotation1.order() < annotation2.order() ? -1 : 1;
-                }
+                return annotation1.order() <= annotation2.order() ? -1 : 1;
             });
 
             log.debug("==================设置每个“启动后过滤器”的下一个过滤器的实体====================");

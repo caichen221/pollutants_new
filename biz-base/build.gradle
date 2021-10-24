@@ -8,6 +8,15 @@ apply plugin: 'war'
 //
 //}
 
+configurations {
+
+    api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//    api.exclude group: 'ch.qos.logback', module: 'logback-access'
+    api.exclude group: 'ch.qos.logback', module: 'logback-classic'
+//    api.exclude group: 'ch.qos.logback', module: 'logback-core'
+}
+
+
 dependencies {
     //导入基础工具工程
     api project (":common:common-tools")

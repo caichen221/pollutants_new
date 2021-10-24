@@ -21,14 +21,7 @@ public class CustomSession {
     private CustomSession() {}
 
     private static String getSessionId() {
-        String token = SpringUtils.getRequest().getHeader(Constants.TOKEN_KEY);
-        if (token == null) {
-            //尝试从cookie中拿author
-            Cookie cookie = CookieUtils.getCookieByName(SpringUtils.getRequest(), Constants.TOKEN_KEY);
-            if (cookie != null) {
-                token = cookie.getValue();
-            }
-        }
+        String token = AuthUtils.getToken();
         String sessionId = null;
         try {
             Map<String, Claim> stringClaimMap = JWTUtils.verifyToken(token);
