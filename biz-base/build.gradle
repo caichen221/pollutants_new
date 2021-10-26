@@ -128,7 +128,6 @@ dependencies {
 
     //knife4j,替代swagger
     api "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
-//    api group: 'com.github.xiaoymin', name: 'knife4j-spring-boot-starter', version: '2.0.8'
 
     api group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 

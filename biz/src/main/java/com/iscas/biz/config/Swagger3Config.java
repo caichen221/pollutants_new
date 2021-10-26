@@ -1,5 +1,6 @@
 package com.iscas.biz.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  */
 @Configuration
 @EnableOpenApi
-//@EnableKnife4j
+@EnableKnife4j
 @Import(BeanValidatorPluginsConfiguration.class)
 @Lazy(value = false)
 public class Swagger3Config {

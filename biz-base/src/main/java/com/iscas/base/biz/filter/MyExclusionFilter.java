@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurationImportFilter;
 import org.springframework.boot.autoconfigure.AutoConfigurationMetadata;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
@@ -27,8 +30,9 @@ import java.util.Objects;
  * @date 2021/6/3 18:09
  * @since jdk1.8
  */
-public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFactoryAware {
+public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFactoryAware, EnvironmentAware {
     private BeanFactory beanFactory;
+    private Environment environment;
     @Override
     public boolean[] match(String[] autoConfigurationClasses, AutoConfigurationMetadata autoConfigurationMetadata) {
         boolean[] matches = new boolean[autoConfigurationClasses.length];
@@ -58,6 +62,10 @@ public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFac
                     System.err.println("查找EnableAtomikos注解出错");
                     matches[i] = true;
                 }
+            } else if (Objects.equals(RedisAutoConfiguration.class.getName(), autoConfigurationClasses[i])) {
+                //判断是否注册redis
+                String property = environment.getProperty("spring.cache.type");
+                matches[i] = Objects.equals("redis", property);
             } else {
                 matches[i] = true;
             }
@@ -68,5 +76,10 @@ public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFac
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 }

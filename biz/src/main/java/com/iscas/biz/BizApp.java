@@ -68,8 +68,6 @@ public class BizApp extends SpringBootServletInitializer {
 //        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);
         log.info("==========服务已启动=================");
-        String[] beanNamesForType = SpringUtils.getApplicationContext().getBeanNamesForType(ApiResourceController.class);
-        System.out.println(beanNamesForType);
     }
 
     /**
