@@ -49,6 +49,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
 
         if (!CollectionUtils.isEmpty(staticUrls) && staticUrls.stream().anyMatch(url -> antPathMatcher.match(contextPath + url, request.getRequestURI()))) {
+            filterChain.doFilter(request, response);
             return;
         }
 

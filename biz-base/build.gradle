@@ -152,7 +152,7 @@ dependencies {
     //retrofit
     api group: 'com.github.lianjiatech', name: 'retrofit-spring-boot-starter', version: "${retrofitVersion}"
     api 'org.springframework.boot:spring-boot-starter-log4j2'
-    annotationProcessor 'org.springframework:spring-context-indexer'
+//    annotationProcessor 'org.springframework:spring-context-indexer'
 
 
 
