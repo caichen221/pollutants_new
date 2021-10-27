@@ -1,9 +1,0 @@
-
-dependencies {
-    api ('org.springframework.boot:spring-boot-starter-web')
-    api ('org.springframework.boot:spring-boot-starter-jersey')
-    //文件上传处理
-    api 'org.glassfish.jersey.media:jersey-media-multipart'
-    api project(":templet")
-
-}

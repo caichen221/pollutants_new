@@ -1,8 +1,0 @@
-jar {
-    manifest {
-        attributes("Premain-Class": "com.iscas.java.agent.samples.AgentClass")
-    }
-}
-dependencies {
-    api 'org.javassist:javassist:3.25.0-GA'
-}

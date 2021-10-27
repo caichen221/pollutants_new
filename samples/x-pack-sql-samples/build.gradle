@@ -1,4 +1,0 @@
-
-dependencies {
-    implementation 'org.elasticsearch.plugin:x-pack-sql-jdbc:7.13.3'
-}

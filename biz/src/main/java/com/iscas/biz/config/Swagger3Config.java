@@ -48,8 +48,8 @@ public class Swagger3Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("swagger3-文档")
-                .description("")
+                .title("newframe-接口文档")
+                .description("基于swagger3的在线接口文档，如不喜欢此风格，可尝试使用http://IP:PORT/context-path/doc.html")
                 //服务条款网址
                 //.termsOfServiceUrl("http://blog.csdn.net/forezp")
                 .version("1.0")

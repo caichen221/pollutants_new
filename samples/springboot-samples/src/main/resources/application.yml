@@ -1,5 +1,0 @@
-server:
-  port: 5678
-spring:
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
