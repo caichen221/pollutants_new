@@ -37,4 +37,6 @@ include 'common:common-rocketmq-tools'
 findProject(':common:common-rocketmq-tools')?.name = 'common-rocketmq-tools'
 include 'common:common-docker-tools'
 findProject(':common:common-docker-tools')?.name = 'common-docker-tools'
+include 'common:common-etcd-tools'
+findProject(':common:common-etcd-tools')?.name = 'common-etcd-tools'
 

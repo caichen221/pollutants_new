@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -464,6 +467,22 @@ public class ReflectUtils {
         return map;
     }
 
+    /**
+     * 获取MethodHandle
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/10/27
+     * @param returnClass 返回值Class对象-void用void.class
+     * @param clazz 方法所在的类
+     * @param methodName 方法名
+     * @param parameterClasses 方法参数类型
+     * @throws
+     * @return java.lang.invoke.MethodHandle
+     */
+    public static MethodHandle getMethodHandle(Class returnClass, Class clazz, String methodName, Class ... parameterClasses) throws NoSuchMethodException, IllegalAccessException {
+        MethodType methodType = MethodType.methodType(returnClass, parameterClasses);
+        return MethodHandles.lookup().findVirtual(clazz, methodName, methodType);
+    }
 
 
     private static void getNeedFields(Map map, Object obj, Class clazz, String... needFields) throws IllegalAccessException {

@@ -1,7 +1,6 @@
 package com.iscas.common.web.tools.file;
 
 
-
 import com.iscas.common.web.tools.file.limiter.BandWidthLimiter;
 import com.iscas.common.web.tools.file.limiter.LimiterOutputStream;
 import com.iscas.common.web.tools.util.IOUtils;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -21,107 +21,138 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since jdk1.8
  */
 public class FileDownloadUtils {
-    /**私有的构造方法*/
-    private FileDownloadUtils(){
+    /**
+     * 私有的构造方法
+     */
+    private FileDownloadUtils() {
     }
-    /**当前正在下载文件的连接数，作文件下载限流使用*/
+
+    /**
+     * 当前正在下载文件的连接数，作文件下载限流使用
+     */
     public static AtomicInteger onlineDownloadNumber = new AtomicInteger(0);
 
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static String transFileName(String fileName, HttpServletRequest request) throws Exception{
-        String agent = request.getHeader("USER-AGENT");
-        //fileName = fileName.trim();       //去首尾空格
-        //根据文件头判断请求来自的浏览器，以便有针对性的对文件名转码
-        if(null != agent && -1 != agent.indexOf("theworld")){   //世界之窗
-            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");    //解决下载的文件名中含有小括号转变义符%28%29
-        }else if(null != agent && -1 != agent.indexOf("MSIE 8.0")){ //IE8
-            String lenFileName = URLEncoder.encode(fileName, "UTF-8");
-            if (lenFileName.length() > 150) {    //文件名长度是否大于150个字符
-                fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
-            } else {
-                fileName = URLEncoder.encode(fileName,"UTF-8").replace("+","%20");
-            }
-        }else if(null != agent && -1 != agent.indexOf("MSIE 7.0") && -1 != agent.indexOf("SE 2.X MetaSr 1.0")){ //sogo浏览器
-            fileName = URLEncoder.encode(fileName,"UTF-8").replace("+","%20");
-        }else if(null != agent && (-1 != agent.indexOf("SV1") || -1 != agent.indexOf("360SE"))){    //360安全浏览器
-            String lenFileName = URLEncoder.encode(fileName, "UTF-8");
-            if (lenFileName.length() > 150) {    //文件名长度是否大于150个字符
-                fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
-            } else {
-                fileName = URLEncoder.encode(fileName,"UTF-8").replace("+","%20");
-            }
-        }else if(null != agent && -1 != agent.indexOf("Chrome")){   //google
-            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");    //解决下载的文件名中含有小括号转变义符%28%29
-        }else if(null != agent && -1 != agent.indexOf("Firefox")){  //Firefox
-            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
-        }else if(null != agent && -1 != agent.indexOf("Safari")){   //Firefox
-            fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
-        }else { //其它浏览器
-            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
+//    public static String transFileName(String fileName, HttpServletRequest request) throws Exception {
+//        String agent = request.getHeader("USER-AGENT");
+//        //fileName = fileName.trim();       //去首尾空格
+//        //根据文件头判断请求来自的浏览器，以便有针对性的对文件名转码
+//        if (null != agent && -1 != agent.indexOf("theworld")) {   //世界之窗
+//            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");    //解决下载的文件名中含有小括号转变义符%28%29
+//        } else if (null != agent && -1 != agent.indexOf("MSIE 8.0")) { //IE8
+//            String lenFileName = URLEncoder.encode(fileName, "UTF-8");
+//            if (lenFileName.length() > 150) {    //文件名长度是否大于150个字符
+//                fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
+//            } else {
+//                fileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+//            }
+//        } else if (null != agent && -1 != agent.indexOf("MSIE 7.0") && -1 != agent.indexOf("SE 2.X MetaSr 1.0")) { //sogo浏览器
+//            fileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+//        } else if (null != agent && (-1 != agent.indexOf("SV1") || -1 != agent.indexOf("360SE"))) {    //360安全浏览器
+//            String lenFileName = URLEncoder.encode(fileName, "UTF-8");
+//            if (lenFileName.length() > 150) {    //文件名长度是否大于150个字符
+//                fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
+//            } else {
+//                fileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+//            }
+//        } else if (null != agent && -1 != agent.indexOf("Chrome")) {   //google
+//            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");    //解决下载的文件名中含有小括号转变义符%28%29
+//        } else if (null != agent && -1 != agent.indexOf("Firefox")) {  //Firefox
+//            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
+//        } else if (null != agent && -1 != agent.indexOf("Safari")) {   //Firefox
+//            fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
+//        } else { //其它浏览器
+//            fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1");
+//        }
+//        return fileName;
+//    }
+
+    public static String getContentDispositionVal(HttpServletRequest request, String name) throws UnsupportedEncodingException {
+        String val = null;
+        String requestHeader = request.getHeader("User-Agent");
+        if (-1 < requestHeader.indexOf("MSIE 6.0") || -1 < requestHeader.indexOf("MSIE 7.0")) {
+            // IE6, IE7 浏览器
+            val = "attachment;filename=" + new String(name.getBytes(), "ISO8859-1");
+        } else if (-1 < requestHeader.indexOf("MSIE 8.0")) {
+            // IE8
+            val = "attachment;filename=" + URLEncoder.encode(name, "UTF-8");
+        } else if (-1 < requestHeader.indexOf("MSIE 9.0")) {
+            // IE9
+            val = "attachment;filename=" + URLEncoder.encode(name, "UTF-8");
+        } else if (-1 < requestHeader.indexOf("Chrome")) {
+            // 谷歌
+            val = "attachment;filename*=UTF-8''" + URLEncoder.encode(name, "UTF-8");
+        } else if (-1 < requestHeader.indexOf("Safari")) {
+            // 苹果
+            val = "attachment;filename=" + new String(name.getBytes(), "ISO8859-1");
+        } else {
+            // 火狐或者其他的浏览器
+            val = "attachment;filename*=UTF-8''" + URLEncoder.encode(name, "UTF-8");
         }
-        return fileName;
+        return val;
     }
+
     public static void setResponseHeader(HttpServletRequest request, HttpServletResponse response, String name) throws Exception {
         response.reset();
-        response.setContentType("application/octet-stream;charset=utf-8"); // 改成文件下载
-        String fileName = transFileName(name, request);
-        response.setHeader(
-                "Content-disposition",
-                "attachment; filename="
-                        +fileName);
+        // 改成文件下载
+        response.setContentType("application/octet-stream");
+        response.setHeader("content-type", "application/octet-stream");
+        response.setHeader("content-disposition", getContentDispositionVal(request, name));
     }
 
 
     /**
      * http下载文件
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/14
-     * @param request {@link HttpServletRequest}请求
+     *
+     * @param request  {@link HttpServletRequest}请求
      * @param response {@link HttpServletResponse}响应
-     * @param path 要下载的文件路径
-     * @param name 文件名称
-     * @throws Exception
+     * @param path     要下载的文件路径
+     * @param name     文件名称
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/14
+     * @since jdk1.8
      */
     public static void downFile(HttpServletRequest request, HttpServletResponse response, String path,
-                                String name) throws Exception{
+                                String name) throws Exception {
         File file = new File(path);
-        downFile(request, response, file, name );
+        downFile(request, response, file, name);
     }
 
     /**
      * http下载文件
-     * @version 1.0
-     * @since jdk11
-     * @date 2018/7/14
-     * @param request {@link HttpServletRequest}请求
+     *
+     * @param request  {@link HttpServletRequest}请求
      * @param response {@link HttpServletResponse}响应
-     * @param file 要下载的文件
-     * @param name 文件名称
-     * @throws Exception
+     * @param file     要下载的文件
+     * @param name     文件名称
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/14
+     * @since jdk11
      */
     public static void downFile(HttpServletRequest request, HttpServletResponse response, File file,
-                                String name) throws Exception{
+                                String name) throws Exception {
 
         Long fileLength = file.length();// 文件的长度
         if (fileLength != 0) {
             response.reset();
 //            response.setContentType("application/force-download;charset=utf-8");
-            String fileName = transFileName(name, request);
+//            name = transFileName(name, request);
 //            response.setHeader(
 //                    "Content-disposition",
 //                    "attachment; filename="
 //                            +fileName);
-            setResponseHeader(request, response, fileName);
+            setResponseHeader(request, response, name);
             response.setHeader("Content-Length", String.valueOf(fileLength));
-            try(
+            try (
                     FileInputStream fis = new FileInputStream(file);
                     BufferedInputStream bis = new BufferedInputStream(fis);
                     // 输出流
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-            ){
+            ) {
 //               bis.transferTo(bos);
                 IOUtils.transferTo(bis, bos);
             }
@@ -130,39 +161,40 @@ public class FileDownloadUtils {
 
     /**
      * 限流下载文件，需要传入maxRate kb/s  最大下载速率
-     * @version 1.0
-     * @since jdk11
-     * @date 2018/7/16
-     * @param request {@link HttpServletRequest} 请求
+     *
+     * @param request  {@link HttpServletRequest} 请求
      * @param response {@link HttpServletResponse} 响应
-     * @param path 文件位置
-     * @param name 文件名称
-     * @param maxRate 最大下载速率 kb/s
-     * @throws Exception
+     * @param path     文件位置
+     * @param name     文件名称
+     * @param maxRate  最大下载速率 kb/s
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/16
+     * @since jdk11
      */
     public static void downFileWithLimiter(HttpServletRequest request, HttpServletResponse response, String path,
-                                           String name, int maxRate) throws Exception{
+                                           String name, int maxRate) throws Exception {
         Long fileLength = new File(path).length();// 文件的长度
         if (fileLength != 0) {
             response.reset();
 //            response.setContentType("application/force-download;charset=utf-8");
-            String fileName = transFileName(name, request);
+//            name = transFileName(name, request);
 //            response.setHeader(
 //                    "Content-disposition",
 //                    "attachment; filename="
 //                            +fileName);
-            setResponseHeader(request, response, fileName);
+            setResponseHeader(request, response, name);
             response.setHeader("Content-Length", String.valueOf(fileLength));
             BandWidthLimiter bandwidthLimiter = new BandWidthLimiter(maxRate);
-            try(
+            try (
                     FileInputStream fis = new FileInputStream(path);
 //                    LimiterInputStream limiterInput = new LimiterInputStream(fis,bandwidthLimiter);
                     BufferedInputStream bis = new BufferedInputStream(fis);
                     // 输出流
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-                    OutputStream os = new LimiterOutputStream(bos,bandwidthLimiter);
-            ){
+                    OutputStream os = new LimiterOutputStream(bos, bandwidthLimiter);
+            ) {
 //                bis.transferTo(os);
                 IOUtils.transferTo(bis, os);
             }
@@ -174,64 +206,64 @@ public class FileDownloadUtils {
      * <p>设置最大的下载带宽</p><br/>
      * <p>最好不要频繁设置这个带宽，比如服务启动的时候设置一次<p/>
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/14
      * @param maxRate 最大下载带宽 单位kb
      * @return void
+     * @version 1.0
+     * @date 2018/7/14
+     * @since jdk1.8
      */
-    public static void setMaxRate(int maxRate){
+    public static void setMaxRate(int maxRate) {
         BandWidthLimiter.maxBandWith = maxRate;
     }
-
 
 
     /**
      * <p>按照最大下载带宽自动平均分布下载速率<p/> <br/>
      * <p>设置一个服务最大下载带宽,按照当前正在下载的人的数量平均分配下载速率<p/>
-     * @version 1.0
-     * @since jdk11
-     * @date 2018/7/13
-     * @param request {@link HttpServletRequest} 请求
+     *
+     * @param request  {@link HttpServletRequest} 请求
      * @param response {@link HttpServletResponse} 响应
-     * @param path 文件位置
-     * @param name 文件名称
-     * @throws Exception
+     * @param path     文件位置
+     * @param name     文件名称
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/13
      * @see #setMaxRate(int)
+     * @since jdk11
      */
     public static void downFileWithLimiter(HttpServletRequest request, HttpServletResponse response, String path,
-                                                    String name) throws Exception{
+                                           String name) throws Exception {
 
         int onlineNumber = onlineDownloadNumber.incrementAndGet();
-        int maxRate = BandWidthLimiter.maxBandWith/onlineNumber;
+        int maxRate = BandWidthLimiter.maxBandWith / onlineNumber;
         Long fileLength = new File(path).length();// 文件的长度
         if (fileLength != 0) {
             response.reset();
 //            response.setContentType("application/force-download;charset=utf-8");
-            String fileName = transFileName(name, request);
+//            name = transFileName(name, request);
 //            response.setHeader(
 //                    "Content-disposition",
 //                    "attachment; filename="
 //                            +fileName);
-            setResponseHeader(request, response, fileName);
+            setResponseHeader(request, response, name);
             response.setHeader("Content-Length", String.valueOf(fileLength));
             BandWidthLimiter bandwidthLimiter = new BandWidthLimiter(maxRate);
-            try{
-                try(
+            try {
+                try (
                         FileInputStream fis = new FileInputStream(path);
 //                    LimiterInputStream limiterInput = new LimiterInputStream(fis,bandwidthLimiter);
                         BufferedInputStream bis = new BufferedInputStream(fis);
                         // 输出流
                         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-                        OutputStream os = new LimiterOutputStream(bos,bandwidthLimiter);
-                ){
+                        OutputStream os = new LimiterOutputStream(bos, bandwidthLimiter);
+                ) {
 //                    bis.transferTo(os);
                     IOUtils.transferTo(bis, os);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 throw e;
-            }finally{
+            } finally {
                 onlineDownloadNumber.decrementAndGet();
             }
         }
@@ -239,24 +271,26 @@ public class FileDownloadUtils {
 
     /**
      * 通过输入流下载文件
-     * @version 1.0
-     * @since jdk11
-     * @date 2018/7/13
-     * @param request {@link HttpServletRequest} 请求
-     * @param response {@link HttpServletResponse} 响应
+     *
+     * @param request     {@link HttpServletRequest} 请求
+     * @param response    {@link HttpServletResponse} 响应
      * @param inputStream {@link InputStream} 输入流
-     * @param name 文件名称
-     * @throws Exception
+     * @param name        文件名称
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/13
+     * @since jdk11
      */
     public static void downByStream(HttpServletRequest request, HttpServletResponse response, InputStream inputStream,
                                     String name) throws Exception {
-        setResponseHeader(request,response,transFileName(name, request));
-        try(
+//        name = transFileName(name, request);
+        setResponseHeader(request, response, name);
+        try (
                 BufferedInputStream bis = new BufferedInputStream(inputStream);
                 // 输出流
                 BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
-        ){
+        ) {
 //            bis.transferTo(bos);
             IOUtils.transferTo(bis, bos);
         }

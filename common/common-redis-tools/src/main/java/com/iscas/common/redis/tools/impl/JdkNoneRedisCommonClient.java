@@ -83,7 +83,7 @@ public class JdkNoneRedisCommonClient {
 
         //TimeCache中已经使用了Lock，这里使用锁为了保证读取和存入缓存是一个原子操作
         synchronized (lockKey.intern()) {
-            String lock = jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.get(lockKey);
+            String lock = jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.get(lockKey, false);
             if (lock != null) {
                 //锁存在
                 return null;
@@ -113,7 +113,7 @@ public class JdkNoneRedisCommonClient {
         }
         //TimeCache中已经使用了Lock，这里使用锁为了保证读取和删除缓存是一个原子操作
         synchronized (lockKey.intern()) {
-            String identifier2 = jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.get(lockKey);
+            String identifier2 = jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.get(lockKey, false);
             if (null != identifier2 && !Objects.equals(identifier, identifier2)) {
                 //只有加锁的人才能释放锁，如果获取的值跟传入的
                 //identifier不一致，说明这不是自己加的锁，拒绝释放

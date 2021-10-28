@@ -11,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -38,11 +35,11 @@ public class SpringFileDownloadUtils {
      * @throws
      * @return org.springframework.http.ResponseEntity<cn.hutool.core.io.resource.InputStreamResource>
      */
-    public static ResponseEntity<InputStreamResource> download(String fileName, InputStream is) {
+    public static ResponseEntity<InputStreamResource> download(String fileName, InputStream is) throws UnsupportedEncodingException {
         InputStreamResource isr = new InputStreamResource(is);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header("Content-disposition", "attachment; filename=".concat(fileName))
+                .header("Content-disposition", FileDownloadUtils.getContentDispositionVal(SpringUtils.getRequest(),fileName))
                 .body(isr);
     }
 
@@ -56,7 +53,7 @@ public class SpringFileDownloadUtils {
      * @throws
      * @return org.springframework.http.ResponseEntity<cn.hutool.core.io.resource.InputStreamResource>
      */
-    public static ResponseEntity<InputStreamResource> download(String fileName, File file) throws FileNotFoundException {
+    public static ResponseEntity<InputStreamResource> download(String fileName, File file) throws FileNotFoundException, UnsupportedEncodingException {
         return download(fileName, new FileInputStream(file));
     }
 
@@ -71,7 +68,7 @@ public class SpringFileDownloadUtils {
      * @throws
      * @return org.springframework.http.ResponseEntity<cn.hutool.core.io.resource.InputStreamResource>
      */
-    public static ResponseEntity<InputStreamResource> download(String fileName, String filePath) throws FileNotFoundException {
+    public static ResponseEntity<InputStreamResource> download(String fileName, String filePath) throws FileNotFoundException, UnsupportedEncodingException {
         return download(fileName, new FileInputStream(filePath));
     }
 
@@ -85,11 +82,11 @@ public class SpringFileDownloadUtils {
      * @throws
      * @return org.springframework.http.ResponseEntity<cn.hutool.core.io.resource.ByteArrayResource>
      */
-    public static ResponseEntity<ByteArrayResource> download(String fileName, byte[] bytes) {
+    public static ResponseEntity<ByteArrayResource> download(String fileName, byte[] bytes) throws UnsupportedEncodingException {
         ByteArrayResource bar = new ByteArrayResource(bytes);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header("Content-disposition", "attachment; filename=".concat(fileName))
+                .header("Content-disposition", FileDownloadUtils.getContentDispositionVal(SpringUtils.getRequest(), fileName))
                 .body(bar);
     }
 

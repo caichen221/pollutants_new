@@ -1,5 +1,6 @@
 package com.iscas.biz.config;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.iscas.biz.config.log.AccessLogInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
