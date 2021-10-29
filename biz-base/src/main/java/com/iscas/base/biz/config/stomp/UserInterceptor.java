@@ -62,6 +62,8 @@ public class UserInterceptor implements ChannelInterceptor {
             //发送数据
 //            long[] heartbeat = accessor.setH
 //            System.out.println(11111);
+        } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+
         }
 
         return message;
