@@ -6,7 +6,6 @@ import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.model.common.access.AccessLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,6 +29,13 @@ public class AccessLogInterceptor implements HandlerInterceptor {
     /**访问开始时间*/
     private static final String KEY_ACCESS_LOG = "KEY_ACCESS_LOG";
 
+    private String responseHeaderServer;
+
+    public AccessLogInterceptor(String responseHeaderServer) {
+        this.responseHeaderServer = responseHeaderServer;
+    }
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
@@ -41,6 +47,7 @@ public class AccessLogInterceptor implements HandlerInterceptor {
         //将信息绑定在request中
         request.setAttribute(KEY_REQUEST_START_TIME, System.currentTimeMillis());
         request.setAttribute(KEY_ACCESS_LOG, accessLog);
+        response.addHeader("server", responseHeaderServer);
         return true;
     }
 

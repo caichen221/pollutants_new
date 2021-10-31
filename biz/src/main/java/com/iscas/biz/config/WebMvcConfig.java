@@ -4,6 +4,7 @@ import cn.hutool.core.util.ReflectUtil;
 import com.iscas.biz.config.log.AccessLogInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.*;
@@ -20,6 +21,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     @Qualifier("asyncExecutor")
     private ThreadPoolTaskExecutor asyncExecutor;
+    @Value("${response.header.server:newframe/2.0.0}")
+    private String responseHeaderServer;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -38,8 +41,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加拦截器，配置拦截地址
-        registry.addInterceptor(new AccessLogInterceptor())
-                .addPathPatterns("/**");
+        registry.addInterceptor(new AccessLogInterceptor(responseHeaderServer))
+                .addPathPatterns("/**")
+                .excludePathPatterns("/404");
 //                .excludePathPatterns("/login","/userLogin")
 //                .excludePathPatterns("/image/**");
     }
