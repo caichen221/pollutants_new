@@ -2,7 +2,7 @@ package com.iscas.base.biz.controller.common;
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.StaticInfo;
-import com.iscas.base.biz.config.cros.CrosProps;
+import com.iscas.base.biz.config.cors.CorsProps;
 import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.common.tools.assertion.AssertRuntimeException;
 import com.iscas.common.tools.exception.ExceptionUtils;
@@ -33,14 +33,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.iscas.base.biz.config.Constants.SESSION_LOGIN_KEY;
-
 @RestControllerAdvice
 @Component
 @Slf4j
 public class ExceptionAdivisor implements Constants {
     @Autowired
-    private CrosProps crosProps;
+    private CorsProps corsProps;
     @Value("${exception-stack-trace-max-size:500}")
     private int exceptionStackTraceMaxSize;
 
@@ -175,12 +173,12 @@ public class ExceptionAdivisor implements Constants {
         HttpServletResponse response = SpringUtils.getResponse();
         String origin = request.getHeader("Origin");
         if (origin == null || "null".equals(origin)) {
-            origin = crosProps.getOrigin();
+            origin = corsProps.getOrigin();
         }
         response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-        response.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, crosProps.getCredentials());//服务器同意客户端发送cookies
-        response.setHeader(ACCESS_CONTROL_ALLOW_METHODS, crosProps.getMethods());
-        response.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, crosProps.getHeaders());
+        response.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, corsProps.getCredentials());//服务器同意客户端发送cookies
+        response.setHeader(ACCESS_CONTROL_ALLOW_METHODS, corsProps.getMethods());
+        response.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, corsProps.getHeaders());
 
     }
 

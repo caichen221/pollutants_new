@@ -1,7 +1,7 @@
 package com.iscas.base.biz.filter;
 
 
-import com.iscas.base.biz.config.cros.CrosProps;
+import com.iscas.base.biz.config.cors.CorsProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -28,23 +27,23 @@ import java.util.Set;
  * @Modified:
  **/
 @Slf4j
-public class CustomCrosFilter extends CorsFilter {
+public class CustomCorsFilter extends CorsFilter {
     private final CorsConfigurationSource configSource;
     private CorsProcessor processor = new DefaultCorsProcessor();
-    private CrosProps crosProps;
+    private CorsProps corsProps;
     private Set<String> ignoreUrlAllMatchSet = new HashSet<>();
     Set<String> ignoreUrlPrefixSet = new HashSet<>();
 
-    public CustomCrosFilter(CorsConfigurationSource configSource, CrosProps crosProps) {
+    public CustomCorsFilter(CorsConfigurationSource configSource, CorsProps corsProps) {
         super(configSource);
         if (log.isDebugEnabled()) {
             log.debug("进入 CustomCrosFilter 过滤器");
         }
         Assert.notNull(configSource, "CorsConfigurationSource must not be null");
         this.configSource = configSource;
-        this.crosProps = crosProps;
-        if (crosProps.getIgnoreUrls() != null) {
-            for (String urlStr : crosProps.getIgnoreUrls()) {
+        this.corsProps = corsProps;
+        if (corsProps.getIgnoreUrls() != null) {
+            for (String urlStr : corsProps.getIgnoreUrls()) {
                 if (urlStr.endsWith("/*")) {
                     ignoreUrlPrefixSet.add(urlStr.substring(0, urlStr.lastIndexOf("/*")));
                 } else if ("/**".equals(urlStr)) {
@@ -71,14 +70,14 @@ public class CustomCrosFilter extends CorsFilter {
         if (!ignoreMath(request) && CorsUtils.isCorsRequest(request)) {
             String origin = request.getHeader("Origin");
             if (origin == null || "null".equals(origin)) {
-                origin = crosProps.getOrigin();
+                origin = corsProps.getOrigin();
             }
             response.setHeader("Access-Control-Allow-Origin", origin);
             //服务器同意客户端发送cookies
-            response.setHeader("Access-Control-Allow-Credentials", crosProps.getCredentials());
+            response.setHeader("Access-Control-Allow-Credentials", corsProps.getCredentials());
 
-            response.setHeader("Access-Control-Allow-Methods", crosProps.getMethods());
-            response.setHeader("Access-Control-Allow-Headers", crosProps.getHeaders());
+            response.setHeader("Access-Control-Allow-Methods", corsProps.getMethods());
+            response.setHeader("Access-Control-Allow-Headers", corsProps.getHeaders());
 //            response.setHeader("Cache-Control", "no-cach");
             if (CorsUtils.isPreFlightRequest(request)) {
                 return;

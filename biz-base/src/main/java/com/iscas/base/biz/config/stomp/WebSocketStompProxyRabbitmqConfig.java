@@ -1,9 +1,8 @@
 package com.iscas.base.biz.config.stomp;
 
-import com.iscas.base.biz.config.cros.CrosProps;
+import com.iscas.base.biz.config.cors.CorsProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -23,7 +22,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @EnableWebSocketMessageBroker
 public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
     @Autowired
-    private CrosProps crosProps;
+    private CorsProps corsProps;
 
     @Value("${rabbitmq.virtual-host:/}")
     private String virtualHost;
@@ -54,7 +53,7 @@ public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessag
         // 来和服务器的WebSocket连接
         registry.addEndpoint("/webSocketServer", "/webSsh")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins(crosProps.getOrigin())
+                .setAllowedOrigins(corsProps.getOrigin())
                 .withSockJS();
 
         //如果想暴露多个节点,继续addEndpoint就可以

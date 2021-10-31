@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.cros;
+package com.iscas.base.biz.config.cors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@ConfigurationProperties(prefix = "cros")
+@ConfigurationProperties(prefix = "cors")
 @Data
 @NoArgsConstructor
-public class CrosProps {
+public class CorsProps {
     private String origin = "*";
     private String credentials = "true";
     private String methods = "POST, GET, PUT, DELETE, OPTIONS";

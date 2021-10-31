@@ -1,7 +1,6 @@
 package com.iscas.base.biz.config.stomp;
 
 import cn.hutool.core.util.ReflectUtil;
-import com.iscas.base.biz.config.cros.CrosProps;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;

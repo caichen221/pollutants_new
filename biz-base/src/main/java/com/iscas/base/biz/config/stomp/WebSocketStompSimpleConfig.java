@@ -1,9 +1,8 @@
 package com.iscas.base.biz.config.stomp;
 
-import com.iscas.base.biz.config.cros.CrosProps;
+import com.iscas.base.biz.config.cors.CorsProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -22,7 +21,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
     public static StompEndpointRegistry endpointRegistry;
     @Autowired
-    private CrosProps crosProps;
+    private CorsProps corsProps;
     @Value("${ws.sockjs.enabled:true}")
     private boolean wsSockJsEnabled;
     /**
@@ -36,7 +35,7 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
         // 来和服务器的WebSocket连接
         StompWebSocketEndpointRegistration stompWebSocketEndpointRegistration = registry.addEndpoint("/webSocketServer", "/webSsh")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins(crosProps.getOrigin());
+                .setAllowedOrigins(corsProps.getOrigin());
         if (wsSockJsEnabled) {
             stompWebSocketEndpointRegistration.withSockJS();
         }
