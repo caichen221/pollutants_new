@@ -234,7 +234,7 @@ subprojects  {
                     // 构件名称
                     // 区别于artifactId，可以理解为artifactName
                     name = 'newframe'
-
+//                    packaging = 'jar'
                     // 构件描述
                     description = 'newframe快速开发框架'
                     // 构件主页
