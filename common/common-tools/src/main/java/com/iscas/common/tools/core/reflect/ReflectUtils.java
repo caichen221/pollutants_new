@@ -484,6 +484,83 @@ public class ReflectUtils {
         return MethodHandles.lookup().findVirtual(clazz, methodName, methodType);
     }
 
+    /**
+     * 获取静态方法的MethodHandle
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/10/31
+     * @param returnClass 返回值Class对象-void用void.class
+     * @param clazz 方法所在的类
+     * @param methodName 方法名
+     * @param parameterClasses 方法参数类型
+     * @throws
+     * @return java.lang.invoke.MethodHandle
+     */
+    public static MethodHandle getStaticMethodHandle(Class returnClass, Class clazz, String methodName, Class ... parameterClasses) throws NoSuchMethodException, IllegalAccessException {
+        MethodType methodType = MethodType.methodType(returnClass, parameterClasses);
+        return MethodHandles.lookup().findStatic(clazz, methodName, methodType);
+    }
+
+    /**
+     * 获取构造器的MethodHandle
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/10/31
+     * @param clazz 构造器的类
+     * @param parameterClasses 构造器参数
+     * @throws
+     * @return java.lang.invoke.MethodHandle
+     */
+    public static MethodHandle getConstructMethodHandle(Class clazz, Class ... parameterClasses) throws NoSuchMethodException, IllegalAccessException {
+        MethodType methodType = MethodType.methodType(void.class, parameterClasses);
+        return MethodHandles.lookup().findConstructor(clazz, methodType);
+    }
+
+    /**
+     * 获取Getter MethodType
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/10/31
+     * @param clazz 类
+     * @param fieldName 成员变量名
+     * @throws
+     * @return java.lang.invoke.MethodHandle
+     */
+    public static MethodHandle getGetterMethodHandle(Class clazz, String fieldName) throws  IllegalAccessException, NoSuchFieldException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return MethodHandles.lookup().unreflectGetter(field);
+    }
+
+    /**
+     * 获取Setter MethodHandle
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/10/31
+     * @param clazz 构造器的类
+     * @param fieldName 成员变量名
+     * @throws
+     * @return java.lang.invoke.MethodHandle
+     */
+    public static MethodHandle getSetterMethodHandle(Class clazz, String fieldName) throws  IllegalAccessException, NoSuchFieldException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return MethodHandles.lookup().unreflectSetter(field);
+    }
+
+    /**
+     * 通过Method获取 MethodHandle
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/10/31
+     * @param method
+     * @throws
+     * @return java.lang.invoke.MethodHandle
+     */
+    public static MethodHandle getMethodHandle(Method method) throws  IllegalAccessException, NoSuchFieldException {
+        return MethodHandles.lookup().unreflect(method);
+    }
+
 
     private static void getNeedFields(Map map, Object obj, Class clazz, String... needFields) throws IllegalAccessException {
         Field[] fields = clazz.getDeclaredFields();
