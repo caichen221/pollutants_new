@@ -1,6 +1,7 @@
 package com.iscas.common.docker.tools.utils;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.*;
@@ -11,9 +12,12 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import com.iscas.common.docker.tools.model.CreateContainerReq;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,7 +97,6 @@ public class DockerClientUtils {
      */
     public static CreateContainerResponse createContainer(DockerClient client, CreateContainerReq createContainerReq) {
         CreateContainerCmd containerCmd = client.createContainerCmd(createContainerReq.getImageName());
-
         //设置名字
         Optional.ofNullable(createContainerReq.getContainerName()).ifPresent(containerName -> containerCmd.withName(containerName));
 
@@ -165,6 +168,25 @@ public class DockerClientUtils {
     public static void removeContainer(DockerClient client,String containerId){
         client.removeContainerCmd(containerId).exec();
     }
+
+    /**
+     * 构建docker镜像
+     * */
+    public static String buildDocker(DockerClient client, File dockerFileOrFolder, String imageName, String imageTag) {
+        String imageId = client.buildImageCmd(dockerFileOrFolder)
+                .withTags(new HashSet<>(){{
+                    add(imageName + ":" + imageTag);
+                }}).exec(new BuildImageResultCallback(){
+                    @Override
+                    public void onNext(BuildResponseItem item) {
+                        log.debug(item.getStream());
+                        super.onNext(item);
+                    }
+                }).awaitImageId();
+        log.debug("build success,imageId:" + imageId);
+        return imageId;
+    }
+
 
     public static List<Container> listContainer(DockerClient client) {
         return client.listContainersCmd().exec();

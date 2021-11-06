@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
@@ -102,5 +103,13 @@ public class DockerClientUtilsTest {
         System.out.println(containers);
     }
 
+    /**
+     * 测试创建镜像
+     * */
+    @Test
+    public void testBuildImage() {
+        DockerClientUtils.buildDocker(dockerClient, new File("D:\\文档资料\\_部署安装\\离线安装k8s\\17、部署cpaas-manager\\前后台打镜像\\20210402\\frontend"),
+                "test", "0.0.2");
+    }
 
 }
