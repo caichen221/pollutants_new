@@ -49,11 +49,14 @@ class EtcdUtilsTests {
      * */
     @Test
     public void testLock() {
-        Long aLong = EtcdUtils.acquireLock("1234", 100000);
-        System.out.println(aLong);
-        EtcdUtils.releaseLock("1234", aLong);
-        Long aLong1 = EtcdUtils.acquireLock("1234", 100000);
-        System.out.println(aLong1);
+        EtcdUtils.LockData lockData = EtcdUtils.acquireLock("1234", 20);
+        System.out.println(lockData);
+        EtcdUtils.LockData lockDatax = EtcdUtils.acquireLock("1234", 20);
+        System.out.println(lockDatax);
+        boolean b = EtcdUtils.releaseLock("1234", lockData.getLeaseId());
+        System.out.println(b);
+        EtcdUtils.LockData lockData2 = EtcdUtils.acquireLock("1234", 10);
+        System.out.println(lockData2);
     }
 
 }

@@ -7,13 +7,13 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
+import com.github.dockerjava.core.command.PushImageResultCallback;
 import com.github.dockerjava.jaxrs.JerseyDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.iscas.common.docker.tools.model.CreateContainerReq;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -39,10 +39,10 @@ public class DockerClientUtils {
     /**
      * docker httpclient连接信息
      */
-    private static final int READ_TIMEOUT = 1000;
-    private static final int CONNECT_TIMEOUT = 1000;
-    private static final int MAX_TOTAL_CONNECTIONS = 100;
-    private static final int MAX_PER_ROUTE_CONNECTIONS = 10;
+    public static  int READ_TIMEOUT = 1000;
+    public static  int CONNECT_TIMEOUT = 1000;
+    public static  int MAX_TOTAL_CONNECTIONS = 100;
+    public static  int MAX_PER_ROUTE_CONNECTIONS = 10;
 
 
     private DockerClientUtils() {}
@@ -172,21 +172,64 @@ public class DockerClientUtils {
     /**
      * 构建docker镜像
      * */
-    public static String buildDocker(DockerClient client, File dockerFileOrFolder, String imageName, String imageTag) {
+    public static String buildImage(DockerClient client, File dockerFileOrFolder, String imageName, String imageTag) {
         String imageId = client.buildImageCmd(dockerFileOrFolder)
-                .withTags(new HashSet<>(){{
+                .withTags(new HashSet<String>(){{
                     add(imageName + ":" + imageTag);
-                }}).exec(new BuildImageResultCallback(){
+                }})
+                .exec(new BuildImageResultCallback(){
                     @Override
                     public void onNext(BuildResponseItem item) {
                         log.debug(item.getStream());
                         super.onNext(item);
                     }
-                }).awaitImageId();
+                })
+                .awaitImageId();
         log.debug("build success,imageId:" + imageId);
         return imageId;
     }
 
+    /**
+     * 为镜像打标签
+     * */
+    public static void tagImage(DockerClient client, String imageId, String imageName, String imageTag) {
+        client.tagImageCmd(imageId, imageName, imageTag).exec();
+    }
+
+    /**
+     * 推送镜像
+     * */
+    public static void pushImage(DockerClient client, String imageAndTag, String registryAddress,
+                                 String registryUserName, String registryPassword) {
+        AuthConfig authConfig = new AuthConfig()
+                .withUsername(registryUserName)
+                .withPassword(registryPassword)
+                .withRegistryAddress(registryAddress);
+
+        PushImageResultCallback pushImageResultCallback = new PushImageResultCallback() {
+            @Override
+            public void onNext(PushResponseItem item) {
+                log.debug("id:" + item.getId()  +" status: "+item.getStatus());
+                super.onNext(item);
+            }
+            @Override
+            public void onComplete() {
+                log.debug("Image pushed completed!");
+                super.onComplete();
+            }
+        };
+        client.pushImageCmd(imageAndTag)
+                .withAuthConfig(authConfig)
+                .exec(pushImageResultCallback)
+                .awaitSuccess();
+    }
+
+    /**
+     * 删除镜像
+     * */
+    public static void deleteImage(DockerClient client, String imageId) {
+        client.removeImageCmd(imageId).withForce(true).exec();
+    }
 
     public static List<Container> listContainer(DockerClient client) {
         return client.listContainersCmd().exec();

@@ -1,25 +1,26 @@
 package com.iscas.common.etcd.tools.utils;
 
 import com.iscas.common.etcd.tools.exception.EtcdClientException;
-import io.etcd.jetcd.ByteSequence;
-import io.etcd.jetcd.Client;
-import io.etcd.jetcd.ClientBuilder;
-import io.etcd.jetcd.Txn;
+import io.etcd.jetcd.*;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.kv.PutResponse;
 import io.etcd.jetcd.kv.TxnResponse;
 import io.etcd.jetcd.lease.LeaseGrantResponse;
+import io.etcd.jetcd.lock.LockResponse;
 import io.etcd.jetcd.lock.UnlockResponse;
 import io.etcd.jetcd.op.Op;
 import io.etcd.jetcd.options.DeleteOption;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
 import io.netty.handler.ssl.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.net.ssl.SSLException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -44,6 +45,9 @@ public class EtcdUtils {
     private static volatile Client client;
     private static long TIME_OUT = 3000L;
     private static TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
+    private static KV kvClient;
+    private static Lock lockClient;
+    private static Lease leaseClient;
 
     private EtcdUtils() {
     }
@@ -97,8 +101,14 @@ public class EtcdUtils {
                     // 这个authority必填.是服务器端CA设置的可授权访问的host域名之一.
                     // https访问网站的时候，最重要的一环就是验证服务器方的证书的域名是否与我想要访问的域名一致(可查看ETCD概念入门文章了解CA证书生成)
                     builder.sslContext(openSslContext())
+                            .connectTimeout(Duration.ofSeconds(3))
+                            .keepaliveTimeout(Duration.ofSeconds(20))
                             .authority(etcdDomain);
                     client = builder.build();
+                    kvClient = client.getKVClient();
+                    lockClient = client.getLockClient();
+                    leaseClient = client.getLeaseClient();
+
                 }
             }
         }
@@ -140,7 +150,7 @@ public class EtcdUtils {
         ByteSequence byteKey = bytesOf(key);
         GetResponse response = null;
         try {
-            response = client.getKVClient().get(byteKey).get(TIME_OUT, TIME_UNIT);
+            response = kvClient.get(byteKey).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -160,7 +170,7 @@ public class EtcdUtils {
             throw new NullPointerException();
         }
 
-        CompletableFuture<PutResponse> future = client.getKVClient().put(bytesOf(key), bytesOf(value));
+        CompletableFuture<PutResponse> future = kvClient.put(bytesOf(key), bytesOf(value));
         try {
             PutResponse response = future.get(TIME_OUT, TIME_UNIT);
             return null != response;
@@ -187,7 +197,7 @@ public class EtcdUtils {
         if (null == key || "".equals(key)) {
             throw new NullPointerException();
         }
-        CompletableFuture<PutResponse> future = client.getKVClient().put(bytesOf(key), bytesOf(value), PutOption.newBuilder().withLeaseId(leaseId).build());
+        CompletableFuture<PutResponse> future = kvClient.put(bytesOf(key), bytesOf(value), PutOption.newBuilder().withLeaseId(leaseId).build());
         PutResponse putResponse = null;
         try {
             putResponse = future.get(TIME_OUT, TIME_UNIT);
@@ -214,7 +224,7 @@ public class EtcdUtils {
     public static Boolean putAndGrant(String key, String value, long ttl) {
         LeaseGrantResponse leaseGrantResponse = null;
         try {
-            leaseGrantResponse = client.getLeaseClient().grant(ttl).get(TIME_OUT, TIME_UNIT);
+            leaseGrantResponse = leaseClient.grant(ttl).get(TIME_OUT, TIME_UNIT);
             return put(key, value, leaseGrantResponse.getID());
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
@@ -235,7 +245,7 @@ public class EtcdUtils {
      */
     public static void revokeLease(long leaseId) {
         try {
-            client.getLeaseClient().revoke(leaseId).get(TIME_OUT, TIME_UNIT);
+            leaseClient.revoke(leaseId).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -257,7 +267,7 @@ public class EtcdUtils {
         ByteSequence byteKey = bytesOf(key);
         GetResponse response = null;
         try {
-            response = client.getKVClient().get(byteKey).get(TIME_OUT, TIME_UNIT);
+            response = kvClient.get(byteKey).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -284,7 +294,7 @@ public class EtcdUtils {
         GetOption getOption = GetOption.newBuilder().withPrefix(prefixByte).build();
         GetResponse response = null;
         try {
-            response = client.getKVClient().get(prefixByte, getOption).get(TIME_OUT, TIME_UNIT);
+            response = kvClient.get(prefixByte, getOption).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -307,7 +317,7 @@ public class EtcdUtils {
         }
         long deleted = 0;
         try {
-            deleted = client.getKVClient().delete(bytesOf(key)).get(TIME_OUT, TIME_UNIT).getDeleted();
+            deleted = kvClient.delete(bytesOf(key)).get(TIME_OUT, TIME_UNIT).getDeleted();
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -330,7 +340,7 @@ public class EtcdUtils {
 
         long deleted = 0;
         try {
-            deleted = client.getKVClient().delete(prefixByte, deleteOption).get(TIME_OUT, TIME_UNIT).getDeleted();
+            deleted = kvClient.delete(prefixByte, deleteOption).get(TIME_OUT, TIME_UNIT).getDeleted();
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -343,7 +353,7 @@ public class EtcdUtils {
      * 开启事务进行批量增删改操作(发布/回滚操作一定要开启事务执行批量操作)
      */
     public static boolean operationWithTxn(List<String> delKeys, Map<String, String> addOrUpdateKV, String keyPrefix) {
-        Txn txn = client.getKVClient().txn();
+        Txn txn = kvClient.txn();
         if (!CollectionUtils.isEmpty(delKeys)) {
             List<Op.DeleteOp> delOps = new ArrayList<>();
             delKeys.forEach(item -> {
@@ -383,19 +393,21 @@ public class EtcdUtils {
 
     /**
      * 获取锁
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/10/28
-     * @param lockName 锁名称
-     * @param lockTimeoutInMS 锁超时时间
-     * @throws
+     *
+     * @param lockName        锁名称
+     * @param lockTimeoutInSecond 锁超时时间
      * @return java.lang.Long
+     * @throws
+     * @version 1.0
+     * @date 2021/10/28
+     * @since jdk1.8
      */
-    public static Long acquireLock(String lockName, long lockTimeoutInMS) {
+    public static LockData acquireLock(String lockName, long lockTimeoutInSecond) {
+//        return 1L;
         Long leaseId = 0L;
         // 创建一个租约，租约有效期为ttlOfLease
         try {
-            leaseId = client.getLeaseClient().grant(lockTimeoutInMS).get(TIME_OUT, TimeUnit.MILLISECONDS).getID();
+            leaseId = leaseClient.grant(lockTimeoutInSecond).get(TIME_OUT, TimeUnit.MILLISECONDS).getID();
         } catch (InterruptedException | ExecutionException e) {
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -403,7 +415,9 @@ public class EtcdUtils {
         }
         // 执行加锁操作，并为锁对应的key绑定租约
         try {
-            client.getLockClient().lock(bytesOf(lockName), leaseId).get(TIME_OUT, TimeUnit.MILLISECONDS);
+            LockResponse lockResponse = lockClient.lock(bytesOf(lockName), leaseId).get(TIME_OUT, TimeUnit.MILLISECONDS);
+            String lockId = toString(lockResponse.getKey());
+            return new LockData(lockId, leaseId);
         } catch (InterruptedException | ExecutionException e) {
             revokeLease(leaseId);
             throw new EtcdClientException(e.getMessage(), e);
@@ -411,23 +425,26 @@ public class EtcdUtils {
             revokeLease(leaseId);
             return null;
         }
-        return leaseId;
     }
+
+
 
     /**
      * 释放锁
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/10/28
-     * @param lockName 锁名称
-     * @param leaseId 租约ID
-     * @throws
+     *
+     * @param lockId 锁标记
+     * @param leaseId  租约ID
      * @return void
+     * @throws
+     * @version 1.0
+     * @date 2021/10/28
+     * @since jdk1.8
      */
-    public static boolean releaseLock(String lockName, Long leaseId) {
+    public static boolean releaseLock(String lockId, Long leaseId) {
+//        return true;
         try {
             // 释放锁
-            UnlockResponse unlockResponse = client.getLockClient().unlock(bytesOf(lockName)).get(TIME_OUT, TimeUnit.MILLISECONDS);
+            UnlockResponse unlockResponse = lockClient.unlock(bytesOf(lockId)).get(TIME_OUT, TimeUnit.MILLISECONDS);
             if (unlockResponse == null) {
                 return false;
             }
@@ -443,6 +460,13 @@ public class EtcdUtils {
             revokeLease(leaseId);
             throw new EtcdClientException("操作ETCD超时", e);
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class LockData {
+        private String lockKey;
+        private long leaseId;
     }
 
 }

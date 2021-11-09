@@ -3,7 +3,6 @@ package com.iscas.common.etcd.tools.utils;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Connection;
 
 /**
  *
