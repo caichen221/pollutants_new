@@ -6,9 +6,8 @@ import com.iscas.common.harbor.tools.model.ModuleHealth;
 import com.iscas.common.harbor.tools.model.Project;
 import com.iscas.common.harbor.tools.model.Repository;
 import com.iscas.common.harbor.tools.model.Tag;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.List;
  * @date 2020/12/8 18:43
  * @since jdk1.8
  */
-@RunWith(JUnit4.class)
 public class HarborUtilsTests {
 
     /**
@@ -81,5 +79,22 @@ public class HarborUtilsTests {
         tags.forEach(System.out::println);
     }
 
+    /**
+     * 删除一个镜像
+     * */
+    @Test
+    public void test7() throws IOException, CallHarborException {
+        boolean b = HarborUtils.deleteRepo("library/prom/node-exporter");
+        Assertions.assertTrue(b);
+    }
+
+    /**
+     * 删除一个镜像的标签
+     * */
+    @Test
+    public void test8() throws IOException, CallHarborException {
+        boolean b = HarborUtils.deleteRepoTag("library/cpaas-manager-frontend", "0.0.71");
+        Assertions.assertTrue(b);
+    }
 
 }

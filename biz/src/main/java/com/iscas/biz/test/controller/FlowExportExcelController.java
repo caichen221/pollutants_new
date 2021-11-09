@@ -18,7 +18,7 @@ import java.util.*;
 @RequestMapping("/test/flow/export/excel")
 public class FlowExportExcelController {
     @GetMapping
-    public void exportExcel() throws Exception {
+    public void exportExcel() throws Throwable {
         LinkedHashMap<String, String> header = new LinkedHashMap<>();
         header.put("a", "列1");
         header.put("b", "列2");

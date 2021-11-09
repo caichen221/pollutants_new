@@ -103,7 +103,7 @@ public class SpringFileDownloadUtils {
      * @throws Exception
      * @return void
      */
-    public static void createAndDownloadExcel(String fileName, List<String> sheetNames, FlowExcelDataProducer flowExcelDataProducer) throws Exception {
+    public static void createAndDownloadExcel(String fileName, List<String> sheetNames, FlowExcelDataProducer flowExcelDataProducer) throws Throwable {
         if (!fileName.endsWith(".xlsx")) {
             throw new BaseRuntimeException("仅支持xlsx格式的文件");
         }

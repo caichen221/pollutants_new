@@ -34,7 +34,7 @@ import java.util.function.BiFunction;
 public class HarborUtils {
     private static String username = "admin";
     private static String password = "Harbor12345";
-    private static String url = "http://192.168.100.96:80/api";
+    private static String url = "http://172.16.10.160:88/api";
     private static OkHttpCustomClient httpClient = new OkHttpCustomClient(new OkHttpProps());
     private static String dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -170,6 +170,29 @@ public class HarborUtils {
         return tags;
     }
 
+
+    /**
+     * 删除一个镜像，将会把所有标签都删除
+     * */
+    public static boolean deleteRepo(String repoName) throws IOException, CallHarborException {
+        String visitUrl = url + "/repositories/" + repoName;
+        String result = httpClient.doDelete(visitUrl, getCredentialHeader());
+        throwHtmlResultError(result);
+        analyzeResultErrorCode(result, "500", "删除镜像出现未知错误", "401", "未登录", "404", String.format("镜像:[%s]或对应的工程不存在", repoName));
+        return true;
+    }
+
+    /**
+     * 删除一个镜像的标签
+     * */
+    public static boolean deleteRepoTag(String repoName, String tag) throws IOException, CallHarborException {
+        String visitUrl = url + "/repositories/" + repoName + "/tags/" + tag;
+        String result = httpClient.doDelete(visitUrl, getCredentialHeader());
+        throwHtmlResultError(result);
+        analyzeResultErrorCode(result, "500", "删除镜像的标签出现未知错误", "401", "未登录", "404", String.format("镜像:[%s]或对应的工程不存在", repoName));
+        return true;
+    }
+
     private static void throwHtmlResultError(String s) throws CallHarborException {
         if (s != null && s.startsWith("<!DOCTYPE HTML>")) {
             throw new CallHarborException("调用Harbor出错");
@@ -184,6 +207,9 @@ public class HarborUtils {
     }
 
     private static void analyzeResultErrorCode(String s, String ... codeMsg) throws CallHarborException {
+        if (Objects.equals("", s)) {
+            return;
+        }
         Map resultMap = null;
         try {
             if (s.startsWith("[")) return;
