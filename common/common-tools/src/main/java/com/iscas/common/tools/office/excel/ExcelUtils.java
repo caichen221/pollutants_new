@@ -2,6 +2,10 @@ package com.iscas.common.tools.office.excel;
 
 import cn.hutool.core.io.IoUtil;
 import com.iscas.common.tools.core.io.file.FileUtils;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
@@ -12,6 +16,7 @@ import org.apache.poi.xssf.usermodel.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.*;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -31,8 +36,10 @@ import java.util.zip.ZipOutputStream;
  */
 public class ExcelUtils {
 
-    private ExcelUtils(){}
-    public static class ExcelHandlerException extends Exception{
+    private ExcelUtils() {
+    }
+
+    public static class ExcelHandlerException extends Exception {
         public ExcelHandlerException() {
             super();
         }
@@ -56,109 +63,133 @@ public class ExcelUtils {
 
     /**
      * Excel结果类bean
-     * */
-    public static class ExcelResult<T>{
+     */
+    public static class ExcelResult<T> {
         /**
          * sheet名称
-         * */
+         */
         private String sheetName;
-        /**表头键值对 key : en ; value :ch*/
-        private LinkedHashMap<String,String> header;
-        /**Excel数据*/
+        /**
+         * 表头键值对 key : en ; value :ch
+         */
+        private LinkedHashMap<String, String> header;
+        /**
+         * Excel数据
+         */
         private List<T> content;
-        /**列的样式*/
-        private LinkedHashMap<String,Object> cellStyle;
-        /**表头的样式*/
+        /**
+         * 列的样式
+         */
+        private LinkedHashMap<String, Object> cellStyle;
+        /**
+         * 表头的样式
+         */
         private Object headerStyle;
+
         public String getSheetName() {
             return sheetName;
         }
+
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
         }
+
         public LinkedHashMap<String, String> getHeader() {
             return header;
         }
+
         public void setHeader(LinkedHashMap<String, String> header) {
             this.header = header;
         }
+
         public List<T> getContent() {
             return content;
         }
+
         public void setContent(List<T> content) {
             this.content = content;
         }
+
         public LinkedHashMap<String, Object> getCellStyle() {
             return cellStyle;
         }
+
         public void setCellStyle(LinkedHashMap<String, Object> cellStyle) {
             this.cellStyle = cellStyle;
         }
+
         public Object getHeaderStyle() {
             return headerStyle;
         }
+
         public void setHeaderStyle(Object headerStyle) {
             this.headerStyle = headerStyle;
         }
     }
-    /**未定义的字段*/
+
+    /**
+     * 未定义的字段
+     */
     public static String NO_DEFINE = "no_define";
     public static int DEFAULT_COLOUMN_WIDTH = 17;
 
 
     /**
      * Excel写入文件,支持xls
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/14
+     *
      * @param excelResults excel数据
-     * @param path 输出路径
-     * @throws Exception
+     * @param path         输出路径
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/14
+     * @since jdk1.8
      */
-    public static <T> void exportXLSExcel(List<ExcelResult<T>> excelResults , String path) throws Exception{
+    public static <T> void exportXLSExcel(List<ExcelResult<T>> excelResults, String path) throws Exception {
         File file = new File(path);
         try (
                 OutputStream out = new FileOutputStream(file);
         ) {
-            exportXLSExcel(excelResults,DEFAULT_COLOUMN_WIDTH,out);
+            exportXLSExcel(excelResults, DEFAULT_COLOUMN_WIDTH, out);
         }
     }
 
 
     /**
      * Excel写入文件,支持xls
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/14
+     *
      * @param excelResults excel数据
-     * @param colWidth 列宽
-     * @param path 输出路径
-     * @throws Exception
+     * @param colWidth     列宽
+     * @param path         输出路径
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/14
+     * @since jdk1.8
      */
-    public static <T> void exportXLSExcel(List<ExcelResult<T>> excelResults,int colWidth,
-                                          String path) throws Exception{
+    public static <T> void exportXLSExcel(List<ExcelResult<T>> excelResults, int colWidth,
+                                          String path) throws Exception {
         File file = new File(path);
         try (
                 OutputStream out = new FileOutputStream(file);
         ) {
-            exportXLSExcel(excelResults,colWidth,out);
+            exportXLSExcel(excelResults, colWidth, out);
         }
     }
 
     /**
      * Excel写入文件，支持xlsx
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
+     *
      * @param excelResults excel数据
-     * @param path 输出路径
-     * @throws Exception
+     * @param path         输出路径
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/13
+     * @since jdk1.8
      */
-    public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults ,
-                                           String path) throws Exception{
+    public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults,
+                                           String path) throws Exception {
         File file = new File(path);
         try (
                 OutputStream out = new FileOutputStream(file);
@@ -169,39 +200,42 @@ public class ExcelUtils {
 
     /**
      * Excel写入文件，支持xlsx
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
+     *
      * @param excelResults excel数据
-     * @param colWidth 列宽
-     * @param path 输出路径
-     * @throws Exception
+     * @param colWidth     列宽
+     * @param path         输出路径
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/13
+     * @since jdk1.8
      */
-    public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults , int colWidth,
-                                           String path) throws Exception{
+    public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults, int colWidth,
+                                           String path) throws Exception {
         File file = new File(path);
         try (
                 OutputStream out = new FileOutputStream(file);
         ) {
-            exportXLSXExcel(excelResults,colWidth,out);
+            exportXLSXExcel(excelResults, colWidth, out);
         }
     }
 
     /**
      * Excel写入输出流，支持xlsx
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
+     *
      * @param excelResults excel数据
-     * @param colWidth 列宽
-     * @param out {@link OutputStream} 输出流
-     * @throws Exception
+     * @param colWidth     列宽
+     * @param out          {@link OutputStream} 输出流
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/13
+     * @since jdk1.8
      */
-    public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults ,int colWidth, OutputStream out) throws ExcelHandlerException {
+    public static <T> void exportXLSXExcel(List<ExcelResult<T>> excelResults, int colWidth, OutputStream out) throws ExcelHandlerException {
         // 声明一个工作薄
         SXSSFWorkbook workbook = new SXSSFWorkbook();
+        Map<ClassField, MethodHandle> cacheMethod = new HashMap<>();
         try {
             for (Iterator<ExcelResult<T>> i = excelResults.iterator(); i.hasNext(); ) {
                 ExcelResult<T> excelResult = i.next();
@@ -249,9 +283,11 @@ public class ExcelUtils {
                                 cellValue = ((Map) t).get(headers[j]);
                             } else {
                                 //如果是Java对象，利用反射
-                                PropertyDescriptor pd = new PropertyDescriptor(headers[j], t.getClass());
-                                Method getMethod = pd.getReadMethod();//获得get方法
-                                cellValue = getMethod.invoke(t);//执行get方法返回一个Object
+//                                PropertyDescriptor pd = new PropertyDescriptor(headers[j], t.getClass());
+//                                Method getMethod = pd.getReadMethod();//获得get方法
+//                                cellValue = getMethod.invoke(t);//执行get方法返回一个Object
+                                MethodHandle getterMethodHandle = getMehodHandle(t.getClass(), headers[j], cacheMethod);
+                                cellValue = getterMethodHandle.invoke(t);
                             }
                             newCell.setCellValue(cellValue == null ? "" : String.valueOf(cellValue));
                             if (styleMap != null && styleMap.get(headers[j]) != null) {
@@ -273,27 +309,29 @@ public class ExcelUtils {
             }
             workbook.write(out);
             out.flush();
-        } catch (Exception e){
+        } catch (Throwable e) {
             throw new ExcelHandlerException(e);
         }
     }
 
     /**
      * Excel写入输出流，支持xls
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/13
-     * @param results excel数据
+     *
+     * @param results  excel数据
      * @param colWidth 列宽
-     * @param out {@link OutputStream} 输出流
-     * @throws Exception
+     * @param out      {@link OutputStream} 输出流
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2018/7/13
+     * @since jdk1.8
      */
-    public static <T> void exportXLSExcel(List<ExcelResult<T>> results ,int colWidth,
+    public static <T> void exportXLSExcel(List<ExcelResult<T>> results, int colWidth,
                                           OutputStream out) throws ExcelHandlerException {
         try {
             // 声明一个工作薄
             HSSFWorkbook workbook = new HSSFWorkbook();
+            Map<ClassField, MethodHandle> cacheMethod = new HashMap<>();
             for (Iterator<ExcelResult<T>> i = results.iterator(); i.hasNext(); ) {
                 ExcelResult<T> excelResult = i.next();
                 List<T> list = excelResult.getContent();
@@ -342,10 +380,13 @@ public class ExcelUtils {
                             if (t instanceof Map) {
                                 cellValue = ((Map) t).get(headers[j]);
                             } else {
-                                //如果是Java对象，利用反射
-                                PropertyDescriptor pd = new PropertyDescriptor(headers[j], t.getClass());
-                                Method getMethod = pd.getReadMethod();//获得get方法
-                                cellValue = getMethod.invoke(t);//执行get方法返回一个Object
+
+                                MethodHandle getterMethodHandle = getMehodHandle(t.getClass(), headers[j], cacheMethod);
+                                cellValue = getterMethodHandle.invoke(t);
+//                                如果是Java对象，利用反射
+//                                PropertyDescriptor pd = new PropertyDescriptor(headers[j], t.getClass());
+//                                Method getMethod = pd.getReadMethod();//获得get方法
+//                                cellValue = getMethod.invoke(t);//执行get方法返回一个Object
                             }
                             newCell.setCellValue(cellValue == null ? "" : String.valueOf(cellValue));
                             if (styleMap != null && styleMap.get(headers[j]) != null) {
@@ -364,16 +405,12 @@ public class ExcelUtils {
 
             workbook.write(out);
             out.flush();
-        }catch (ExcelHandlerException e){
+        } catch (ExcelHandlerException e) {
             throw e;
-        } catch (Exception e){
+        } catch (Throwable e) {
             throw new ExcelHandlerException(e);
         }
     }
-
-
-
-
 
 
     public static Map<String, Object> readExcelWithHeader(InputStream inputStream) throws ExcelHandlerException {
@@ -384,17 +421,17 @@ public class ExcelUtils {
             if (wb instanceof XSSFWorkbook) {
                 XSSFWorkbook xssfWb = (XSSFWorkbook) wb;
                 LinkedHashMap<String, List<String>> headerMap = readXLSXHeader(xssfWb);
-                LinkedHashMap<String, List<String>> data = readXLSXHeader(xssfWb);
+                LinkedHashMap<String, List<LinkedHashMap>> data = readXLSXData(xssfWb);
                 result.put("header", headerMap);
                 result.put("data", data);
             } else if (wb instanceof HSSFWorkbook) {
                 HSSFWorkbook hssfWb = (HSSFWorkbook) wb;
                 LinkedHashMap<String, List<String>> headerMap = readXLSHeader(hssfWb);
-                LinkedHashMap<String, List<String>> data = readXLSHeader(hssfWb);
+                LinkedHashMap<String, List<LinkedHashMap>> data = readXLSData(hssfWb);
                 result.put("header", headerMap);
                 result.put("data", data);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ExcelHandlerException(e);
         }
 
@@ -404,14 +441,15 @@ public class ExcelUtils {
 
     /**
      * 将一个文件输入的的Excel表头读出来
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/9/18
+     *
      * @param file 文件
-     * @throws
      * @return java.util.List<java.lang.String>
+     * @throws
+     * @version 1.0
+     * @date 2018/9/18
+     * @since jdk1.8
      */
-    public static LinkedHashMap<String, List<String>> readExcelHeader(File file) throws Exception{
+    public static LinkedHashMap<String, List<String>> readExcelHeader(File file) throws Exception {
         try (
                 InputStream is = new FileInputStream(file);
         ) {
@@ -421,12 +459,13 @@ public class ExcelUtils {
 
     /**
      * 将一个输入流输入的的Excel表头读出来
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/9/18
+     *
      * @param is 输入流
-     * @throws
      * @return java.util.List<java.lang.String>
+     * @throws
+     * @version 1.0
+     * @date 2018/9/18
+     * @since jdk1.8
      */
     public static LinkedHashMap<String, List<String>> readExcelHeader(InputStream is) throws ExcelHandlerException {
         LinkedHashMap<String, List<String>> headerMap = new LinkedHashMap<>();
@@ -437,7 +476,7 @@ public class ExcelUtils {
             } else if (wb instanceof HSSFWorkbook) {
                 headerMap = readXLSHeader((HSSFWorkbook) wb);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ExcelHandlerException(e);
         }
         return headerMap;
@@ -447,7 +486,7 @@ public class ExcelUtils {
 
         try (
                 InputStream is = new FileInputStream(path);
-                ){
+        ) {
             readExcelToListMap(is, resultMap);
         } catch (Exception e) {
             throw new ExcelHandlerException(e);
@@ -455,18 +494,17 @@ public class ExcelUtils {
     }
 
 
-
     /**
      * 将EXCEL读取到map中<br/>
      * map以sheet名称为key,以List<Map>为值
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/14
      * @param inputStream 文件输入流
-     * @param resultMap 结果
-     * @throws
+     * @param resultMap   结果
      * @return void
+     * @throws
+     * @version 1.0
+     * @date 2018/7/14
+     * @since jdk1.8
      */
     public static void readExcelToListMap(InputStream inputStream, Map<String, List> resultMap) throws ExcelHandlerException {
         Workbook wb = null;
@@ -487,9 +525,9 @@ public class ExcelUtils {
 
     }
 
-    private static LinkedHashMap<String, List<String>> readXLSHeader(HSSFWorkbook hssfWb){
+    private static LinkedHashMap<String, List<String>> readXLSHeader(HSSFWorkbook hssfWb) {
         LinkedHashMap<String, List<String>> headerMap = new LinkedHashMap<>();
-        for (int i = 0; i < hssfWb.getNumberOfSheets() ; i++) {
+        for (int i = 0; i < hssfWb.getNumberOfSheets(); i++) {
             List<String> headers = new ArrayList<>();
             //读取sheet(页)
             HSSFSheet xssfSheet = hssfWb.getSheetAt(i);
@@ -514,9 +552,9 @@ public class ExcelUtils {
         return headerMap;
     }
 
-    private static LinkedHashMap<String, List<String>> readXLSXHeader(XSSFWorkbook xssfWb){
+    private static LinkedHashMap<String, List<String>> readXLSXHeader(XSSFWorkbook xssfWb) {
         LinkedHashMap<String, List<String>> headerMap = new LinkedHashMap<>();
-        for (int i = 0; i < xssfWb.getNumberOfSheets() ; i++) {
+        for (int i = 0; i < xssfWb.getNumberOfSheets(); i++) {
             List<String> headers = new ArrayList<>();
             //读取sheet(页)
             XSSFSheet xssfSheet = xssfWb.getSheetAt(0);
@@ -539,7 +577,7 @@ public class ExcelUtils {
         return headerMap;
     }
 
-    private LinkedHashMap<String, List<LinkedHashMap>> readXLSXData(XSSFWorkbook wb){
+    private static LinkedHashMap<String, List<LinkedHashMap>> readXLSXData(XSSFWorkbook wb) {
         LinkedHashMap<String, List<LinkedHashMap>> result = new LinkedHashMap<>();
         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
             List<LinkedHashMap> list = new ArrayList<>();
@@ -600,7 +638,7 @@ public class ExcelUtils {
         return result;
     }
 
-    private LinkedHashMap<String, List<LinkedHashMap>> readXLSData(HSSFWorkbook wb){
+    private static LinkedHashMap<String, List<LinkedHashMap>> readXLSData(HSSFWorkbook wb) {
         LinkedHashMap<String, List<LinkedHashMap>> result = new LinkedHashMap<>();
         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
             List<LinkedHashMap> list = new ArrayList<>();
@@ -661,7 +699,7 @@ public class ExcelUtils {
         return result;
     }
 
-    private static void readXLSXToListMap( XSSFWorkbook wb, Map<String, List> resultMap) {
+    private static void readXLSXToListMap(XSSFWorkbook wb, Map<String, List> resultMap) {
         //读取sheet(页)
         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
             List<Map> list = new ArrayList<Map>();
@@ -729,7 +767,8 @@ public class ExcelUtils {
         }
 
     }
-    private static void  readXLSToListMap(HSSFWorkbook wb, Map<String, List> resultMap) {
+
+    private static void readXLSToListMap(HSSFWorkbook wb, Map<String, List> resultMap) {
         //读取sheet(页)
         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
             List<Map> list = new ArrayList<Map>();
@@ -798,7 +837,7 @@ public class ExcelUtils {
 
     }
 
-    public static HSSFCellStyle getHSSFCellStyle(HSSFWorkbook workbook){
+    public static HSSFCellStyle getHSSFCellStyle(HSSFWorkbook workbook) {
         // 单元格样式
         HSSFCellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -813,7 +852,8 @@ public class ExcelUtils {
         cellStyle.setFont(cellFont);
         return cellStyle;
     }
-    public static CellStyle getSXSSFCellStyle(SXSSFWorkbook workbook){
+
+    public static CellStyle getSXSSFCellStyle(SXSSFWorkbook workbook) {
         // 单元格样式
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -828,8 +868,9 @@ public class ExcelUtils {
         cellStyle.setFont(cellFont);
         return cellStyle;
     }
+
     //样式
-    public static HSSFCellStyle getHSSFHeaderStyle(HSSFWorkbook workbook){
+    public static HSSFCellStyle getHSSFHeaderStyle(HSSFWorkbook workbook) {
         // 列头样式
         HSSFCellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -846,8 +887,9 @@ public class ExcelUtils {
         headerStyle.setFont(headerFont);
         return headerStyle;
     }
+
     //样式
-    public static CellStyle getSXSSFHeaderStyle(SXSSFWorkbook workbook){
+    public static CellStyle getSXSSFHeaderStyle(SXSSFWorkbook workbook) {
         // 列头样式
         CellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -867,18 +909,19 @@ public class ExcelUtils {
 
     /**
      * Excel流式写入，不须POI依赖，非空Excel模板暂未做处理，建议使用{@link #flowExportXLSXExcel(List, OutputStream, FlowExcelDataProducer)}
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/06/02
-     * @param sheetNames 多个sheet页的名字
-     * @param os 导出的流，可以为文件流或其他输出流
+     *
+     * @param sheetNames            多个sheet页的名字
+     * @param os                    导出的流，可以为文件流或其他输出流
      * @param flowExcelDataProducer 生成数据的回调，会一直回调，直至返回为null
-     * @param templateExcelFile 模板excel文件，这里必须为空Excel,否则会出问题，  todo 非空Excel模板暂未做处理
-     * @throws Exception
+     * @param templateExcelFile     模板excel文件，这里必须为空Excel,否则会出问题，  todo 非空Excel模板暂未做处理
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2021/06/02
+     * @since jdk1.8
      */
     public static void flowExportXLSXExcel(List<String> sheetNames, OutputStream os,
-                                           FlowExcelDataProducer flowExcelDataProducer, File templateExcelFile) throws IOException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+                                           FlowExcelDataProducer flowExcelDataProducer, File templateExcelFile) throws Throwable {
         //判断sheet页文件的表达式
         String regex = "xl/worksheets/sheet[0-9]+\\.xml";
         //套一层压缩流写出
@@ -963,17 +1006,18 @@ public class ExcelUtils {
 
     /**
      * Excel流式写入，使用POI自动生成Excel空模板，写入，需要POI的依赖
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/06/02
-     * @param sheetNames 多个sheet页的名字
-     * @param os 导出的流，可以为文件流或其他输出流
+     *
+     * @param sheetNames            多个sheet页的名字
+     * @param os                    导出的流，可以为文件流或其他输出流
      * @param flowExcelDataProducer 生成数据的回调，会一直回调，直至返回为null
-     * @throws Exception
      * @return void
+     * @throws Exception
+     * @version 1.0
+     * @date 2021/06/02
+     * @since jdk1.8
      */
     public static void flowExportXLSXExcel(List<String> sheetNames, OutputStream os,
-                                           FlowExcelDataProducer flowExcelDataProducer) throws IOException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+                                           FlowExcelDataProducer flowExcelDataProducer) throws Throwable {
         //通过POI生成一个临时excel，这里可以不用POI，使用一个模板的Excel文件也可以
         File tmpFile = File.createTempFile("tmpExcel", ".xlsx");
         try {
@@ -992,14 +1036,23 @@ public class ExcelUtils {
         }
     }
 
-    private static void writeData(OutputStreamWriter osw, ExcelResult excelResult, boolean firstWrite, int[] rowIndex) throws IOException, IntrospectionException, InvocationTargetException, IllegalAccessException {
+
+    @Data
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    private static class ClassField {
+        private Class tClass;
+        private String field;
+    }
+
+    private static void writeData(OutputStreamWriter osw, ExcelResult excelResult, boolean firstWrite, int[] rowIndex) throws Throwable {
         String cellStr = "<c r=\"@wordIndex@@index@\" s=\"1\" t=\"s\" ><v>@data@</v></c>";
         List content = excelResult.getContent();
-        final LinkedHashMap<String, String>  header = excelResult.getHeader();
+        final LinkedHashMap<String, String> header = excelResult.getHeader();
         //如果是第一次写入，顺带写入表头
         if (firstWrite) {
             int index = 0;
-            osw.write("<row r=\""+ 1 +"\">");
+            osw.write("<row r=\"" + 1 + "\">");
             for (Map.Entry<String, String> entry : header.entrySet()) {
                 String headerCh = entry.getValue();
                 osw.write(cellStr.replace("@wordIndex@", getColNoByIndex(index++))
@@ -1010,14 +1063,14 @@ public class ExcelUtils {
         }
 
         //缓存反射的method
-        Map<String, Method> cachedMethodMap = new HashMap<>();
+        Map<ClassField, MethodHandle> cachedMethodMap = new HashMap<>();
 
         if (content != null) {
             for (int i = 0; i < content.size(); i++) {
                 Object t = content.get(i);
                 ++rowIndex[0];
                 int index = 0;
-                osw.write("<row r=\""+ rowIndex[0] +"\">");
+                osw.write("<row r=\"" + rowIndex[0] + "\">");
                 for (Map.Entry<String, String> entry : header.entrySet()) {
                     Object cellValue = null;
                     if (t instanceof Map) {
@@ -1027,7 +1080,9 @@ public class ExcelUtils {
 //                        PropertyDescriptor pd = new PropertyDescriptor(entry.getKey(), t.getClass());
 //                        Method getMethod = pd.getReadMethod();//获得get方法
 //                        cellValue = getMethod.invoke(t);//执行get方法返回一个Object
-                        cellValue = getReadMethod(cachedMethodMap, entry.getKey(), t.getClass()).invoke(t);
+                        MethodHandle getterMethodHandle = getMehodHandle(t.getClass(), entry.getKey(), cachedMethodMap);
+                        cellValue = getterMethodHandle.invoke(t);
+                        //                        cellValue = getReadMethod(cachedMethodMap, entry.getKey(), t.getClass()).invoke(t);
                     }
                     osw.write(cellStr.replace("@wordIndex@", getColNoByIndex(index++))
                             .replace("@index@", String.valueOf(rowIndex[0])).replace("@data@", cellValue == null ? "" : cellValue.toString()));
@@ -1040,6 +1095,16 @@ public class ExcelUtils {
             }
         }
         osw.flush();
+    }
+
+    private static MethodHandle getMehodHandle(Class tClass, String field, Map<ClassField, MethodHandle> map) throws NoSuchFieldException, IllegalAccessException {
+        ClassField classField = new ClassField(tClass, field);
+        if (map.containsKey(classField)) {
+            return map.get(classField);
+        }
+        MethodHandle methodHandle = ReflectUtils.getGetterMethodHandle(tClass, field);
+        map.put(classField, methodHandle);
+        return methodHandle;
     }
 
     private static Method getReadMethod(Map<String, Method> cachedMethodMap, String key, Class clazz) throws IntrospectionException {
@@ -1056,10 +1121,10 @@ public class ExcelUtils {
 
     /**
      * 下标从0开始，获取对应的Excel列的标号，分别为A B C D ...... 26对应AA，27对应AB，依次类推
-     * */
+     */
     private static String getColNoByIndex(int index) {
         if (index < 26) {
-            return String.valueOf((char)(index + (int) 'A'));
+            return String.valueOf((char) (index + (int) 'A'));
         } else {
             //最多支持26 * 26列，足够了，就这样吧。
             return getColNoByIndex((index - 26) / 26) + getColNoByIndex((index - 26) % 26);

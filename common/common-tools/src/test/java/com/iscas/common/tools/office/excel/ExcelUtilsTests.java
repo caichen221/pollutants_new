@@ -184,7 +184,7 @@ public class ExcelUtilsTests {
     }
 
     @Test
-    public void testFlowExportXLSXExcel() throws IOException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+    public void testFlowExportXLSXExcel() throws Throwable {
         File file = File.createTempFile("testExportExcel", ".xlsx");
         OutputStream os = new FileOutputStream(file);
         file.deleteOnExit();

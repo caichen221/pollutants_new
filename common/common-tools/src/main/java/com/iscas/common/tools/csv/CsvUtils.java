@@ -1,10 +1,15 @@
 package com.iscas.common.tools.csv;
 
 import cn.hutool.core.text.csv.*;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
+import lombok.AllArgsConstructor;
 import lombok.Cleanup;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.beans.PropertyDescriptor;
 import java.io.*;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -110,6 +115,8 @@ public class CsvUtils {
             csvWriter.write(headerLine);
         }
         List content = csvResult.getContent();
+        Map<ClassField, MethodHandle> methodHandleMap = new HashMap<>();
+
         String[][] contentArray = (String[][]) content.stream().map(t ->
             header.entrySet().stream()
                     .map(entry -> {
@@ -117,21 +124,43 @@ public class CsvUtils {
                         if (t instanceof Map) {
                             o = ((Map) t).get(entry.getKey());
                         } else {
-                            //如果是Java对象，利用反射
-                            PropertyDescriptor pd = null;
                             try {
-//                                pd = new PropertyDescriptor(entry.getKey(), t.getClass());
-                                pd = new PropertyDescriptor (( String ) entry.getKey(), t.getClass() );
-                                Method getMethod = pd.getReadMethod();//获得get方法
-                                o = getMethod.invoke(t);//执行get方法返回一个Object
-                            } catch (Exception e) {
+                                MethodHandle methodHandle = methodHandleMap.compute(new ClassField(t.getClass(), entry.getKey()), (k, v) -> {
+                                    try {
+                                        return v == null ?
+                                                ReflectUtils.getGetterMethodHandle(t.getClass(), entry.getKey()) : v;
+                                    } catch (Throwable e) {
+                                        throw new RuntimeException("获取java对象数据的值出错", e);
+                                    }
+                                });
+                                o = methodHandle.invoke(t.getClass());
+                            } catch (Throwable e) {
                                 throw new RuntimeException("获取java对象数据的值出错", e);
                             }
+
+//                            //如果是Java对象，利用反射
+//                            PropertyDescriptor pd = null;
+//                            try {
+////                                pd = new PropertyDescriptor(entry.getKey(), t.getClass());
+//                                pd = new PropertyDescriptor (( String ) entry.getKey(), t.getClass() );
+//                                Method getMethod = pd.getReadMethod();//获得get方法
+//                                o = getMethod.invoke(t);//执行get方法返回一个Object
+//                            } catch (Exception e) {
+//                                throw new RuntimeException("获取java对象数据的值出错", e);
+//                            }
                         }
                         return o == null ? "" : o.toString();
                     }).toArray(String[]::new)
         ).toArray(String[][]::new);
         csvWriter.write(contentArray);
+    }
+
+    @Data
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    private static class ClassField {
+        private Class tClass;
+        private String field;
     }
 
     /**
