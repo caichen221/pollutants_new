@@ -49,15 +49,15 @@ public class MinioServiceTest {
      */
     @Test
     public void makeBucket() throws MinioServiceException {
-        boolean exists = minioService.bucketExists("test-abc");
+        boolean exists = minioService.bucketExists("my-bucket");
         if (exists) {
             try {
-                minioService.makeBucket("test-abc");
+                minioService.makeBucket("my-bucket");
             } catch (Exception e) {
                 Assertions.assertTrue(e instanceof MinioServiceException);
             }
         } else {
-            minioService.makeBucket("test-abc");
+            minioService.makeBucket("my-bucket");
         }
     }
 

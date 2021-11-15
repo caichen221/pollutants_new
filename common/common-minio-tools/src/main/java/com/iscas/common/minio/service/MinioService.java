@@ -8,13 +8,14 @@ import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
-import io.minio.messages.Upload;
-import jdk.internal.util.xml.impl.Input;
 
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author zhuquanwen
