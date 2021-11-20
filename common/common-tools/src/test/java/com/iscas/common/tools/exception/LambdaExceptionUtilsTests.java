@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/2/17 14:19
@@ -60,6 +59,15 @@ public class LambdaExceptionUtilsTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void test31() {
+        list.stream().forEach(LambdaExceptionUtils.lambdaWrapper(i -> {
+            File file = new File(i);
+            FileInputStream fileInputStream = new FileInputStream(file);
+            System.out.println(fileInputStream);
+        }));
     }
 
     @Test
