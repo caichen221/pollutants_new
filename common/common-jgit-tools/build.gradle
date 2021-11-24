@@ -1,0 +1,6 @@
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
+    api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
+
+}

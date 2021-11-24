@@ -39,4 +39,6 @@ include 'common:common-docker-tools'
 findProject(':common:common-docker-tools')?.name = 'common-docker-tools'
 include 'common:common-etcd-tools'
 findProject(':common:common-etcd-tools')?.name = 'common-etcd-tools'
+include 'common:common-jgit-tools'
+findProject(':common:common-jgit-tools')?.name = 'common-jgit-tools'
 

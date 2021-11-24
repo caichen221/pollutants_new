@@ -7,7 +7,7 @@ import io.grpc.Server;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 /**

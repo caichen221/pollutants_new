@@ -111,6 +111,12 @@ dependencies {
     api "com.lmax:disruptor:${disruptorVersion}"
     api group: 'de.schlichtherle.truelicense', name: 'truelicense-core', version: "${truelicenseVersion}"
 
+    api group: 'javax.activation', name: 'activation', version: '1.1.1'
+    api group: 'javax.xml', name: 'jaxb-impl', version: '2.1'
+    api group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+
+
 }
 
 //install {
