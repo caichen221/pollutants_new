@@ -1,4 +1,4 @@
-package com.iscas.base.biz.service.common;//package com.iscas.cmi.service;
+package com.iscas.base.biz.service.common;
 
 
 import com.iscas.base.biz.config.okhttp.OkHttpProps;
