@@ -139,24 +139,23 @@ public class JGitUtilsTest {
 
     @Test
     public void compare() throws JGitException {
-        JGitUtils.compare("张三\n" +
-                "李四\n" +
-                "\n" +
-                "\n" +
-                "王五1\n" +
-                "aaa\n" +
-                "bbb\n" +
-                "\n" +
-                "\n" +
-                "ddx\n" +
-                "\n" +
-                "张三", "张三\n" +
-                "李四\n" +
-                "王五\n" +
-                "aaa\n" +
-                "bbb\n" +
-                "ccc\n" +
-                "ddd");
+        JGitUtils.compare("现在就可以下载镜像测试啦（此镜像为已经打包好的）\n" +
+                "[root@localhost registry-data]# docker pull 192.168.100.94:5000/nginx:1.12.0\n" +
+                "1.12.0: Pulling from nginx\n" +
+                "177c8d195b28: Pull complete \n" +
+                "80407d76f511: Pull complete \n" +
+                "fa697bbf7113: Pull complete \n" +
+                "Digest: sha256:aafd24200549cb5e06f911ed2f174ca5691901544cf4daa364339bcb7cff535e\n" +
+                "Status: Downloaded newer image for 192.168.100.94:5000/nginx:1.12.0",
+                "现在就可以下载镜像测试啦（此镜像为已经打包好的）\n" +
+                        "\n" +
+                        "[root@localhost registry-data]# docker pull 192.168.100.94:5000/nginx:1.12.0\n" +
+                        "1.12.0: Pulling from nginx\n" +
+                        "177c8d195b28: Pull complete \n" +
+                        "80407d76f511: Pull complete \n" +
+                        "fa697bbf7113: Pull complete AO \n" +
+                        "Digest: sha256:aafd24200549cb5e06f911ed2f174ca5691901544cf4daa364339bcb7cff535e\n" +
+                        "Status: Downloaded newer image for 192.168.100.94:5000/nginx:1.12.1");
     }
 
 }

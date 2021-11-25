@@ -8,6 +8,7 @@ import java.util.Map;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * freemarker工具类
@@ -27,8 +28,14 @@ public class FreemarkerUtils {
         // 设置默认编码
         configuration.setDefaultEncoding("UTF-8");
 
-        // 设置模板所在文件夹
-        configuration.setDirectoryForTemplateLoading(new File(templateDirectoryPath));
+        if (templateDirectoryPath.startsWith("classpath:")) {
+            //设置类加载器
+            configuration.setClassLoaderForTemplateLoading(Thread.currentThread().getContextClassLoader(),
+                    StringUtils.substringAfter(templateDirectoryPath, "classpath:"));
+        } else {
+            // 设置模板所在文件夹
+            configuration.setDirectoryForTemplateLoading(new File(templateDirectoryPath));
+        }
 
         // 生成模板对象
         Template template = configuration.getTemplate(templateFileName);

@@ -441,7 +441,7 @@ public class JGitUtils {
                     }
                     if (beginAnalyze) {
                         //开始统计异同
-                        if (s.startsWith(" ")) {
+                        if (s.startsWith(" ") && !(s.startsWith("-") || s.startsWith("+"))) {
                             if (addCompareResult(compareResults, compareResult, olderIndex, newerIndex)) {
                                 compareResult = new CompareResult();
                             }
@@ -478,6 +478,12 @@ public class JGitUtils {
                 (olderIndex != 0 || newerIndex != 0)) {
             compareResult.setCTo(olderIndex);
             compareResult.setPTo(newerIndex);
+            if (compareResult.getPFrom() == null && compareResult.getPTo() != null) {
+                compareResult.setPFrom(compareResult.getPTo());
+            }
+            if (compareResult.getCFrom() == null && compareResult.getCTo() != null) {
+                compareResult.setCFrom(compareResult.getCTo());
+            }
             compareResults.add(compareResult);
             return true;
         }

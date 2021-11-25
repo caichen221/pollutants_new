@@ -36,7 +36,8 @@ dependencies {
 
     api "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
     api group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
-
+    api group: 'com.github.abel533', name: 'ECharts', version: "${echartsVersion}"
+    api group: 'com.google.code.gson', name: 'gson', version: "${gsonVersion}"
 
 
 }
