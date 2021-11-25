@@ -131,9 +131,32 @@ public class JGitUtilsTest {
     }
 
     @Test
-    public void diff() throws GitAPIException, IOException {
-        List<String> diffs = JGitUtils.diff("a642251c32b92d8379ccb52a76a837007bccf915", "347135762942deddd5793f94168162f47372052b",
-                "d:/tmp/jgit");
+    public void diff() throws JGitException {
+        List<String> diffs = JGitUtils.diff("eb53e57f8fdab0fc9ee3115b604f702e6a3f0bf0", "50fcc23cbb8b6234c74cac836022c0e20895a6eb",
+                "C:\\ideaProjects\\newframe\\common\\common-jgit-tools\\tmp\\111");
         System.out.println(diffs);
     }
+
+    @Test
+    public void compare() throws JGitException {
+        JGitUtils.compare("张三\n" +
+                "李四\n" +
+                "\n" +
+                "\n" +
+                "王五1\n" +
+                "aaa\n" +
+                "bbb\n" +
+                "\n" +
+                "\n" +
+                "ddx\n" +
+                "\n" +
+                "张三", "张三\n" +
+                "李四\n" +
+                "王五\n" +
+                "aaa\n" +
+                "bbb\n" +
+                "ccc\n" +
+                "ddd");
+    }
+
 }

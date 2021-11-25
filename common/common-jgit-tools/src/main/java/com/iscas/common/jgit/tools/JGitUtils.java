@@ -1,6 +1,7 @@
 package com.iscas.common.jgit.tools;
 
 import com.iscas.common.jgit.tools.exception.JGitException;
+import com.iscas.common.jgit.tools.model.CompareResult;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
@@ -22,8 +23,10 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author zhuquanwen
@@ -347,32 +350,165 @@ public class JGitUtils {
      * <p>
      * 接下来的几行就是具体的变动内容。它将两个文件的上下文合并显示在一起，每一行前面是一个标志位，''（空）表示无变化（是一个上下文行）、- 表示变动前文件删除的行、+ 表示变动后文件新增的行。
      */
-    public static List<String> diff(String childId, String parentId, String localRepoPath) throws IOException, GitAPIException {
-        Git git = Git.open(new File(localRepoPath + "/.git"));
-        Repository repository = git.getRepository();
-        ObjectReader reader = repository.newObjectReader();
-        CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
+    public static List<String> diff(String childId, String parentId, String localRepoPath) throws JGitException {
+        Git git = null;
+        try {
+            git = Git.open(new File(localRepoPath + "/.git"));
+            Repository repository = git.getRepository();
+            ObjectReader reader = repository.newObjectReader();
+            CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
 
-        ObjectId old = repository.resolve(childId + "^{tree}");
-        ObjectId head = repository.resolve(parentId + "^{tree}");
-        oldTreeIter.reset(reader, old);
-        CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-        newTreeIter.reset(reader, head);
-        List<DiffEntry> diffs = git.diff()
-                .setNewTree(newTreeIter)
-                .setOldTree(oldTreeIter)
-                .call();
-        List<String> diffStrs = new ArrayList<>();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (DiffFormatter df = new DiffFormatter(out)) {
-            df.setRepository(git.getRepository());
-            for (DiffEntry diffEntry : diffs) {
-                df.format(diffEntry);
-                String diffText = out.toString("UTF-8");
-                diffStrs.add(diffText);
-                out.reset();
+            ObjectId old = repository.resolve(childId + "^{tree}");
+            ObjectId head = repository.resolve(parentId + "^{tree}");
+            oldTreeIter.reset(reader, old);
+            CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
+            newTreeIter.reset(reader, head);
+            List<DiffEntry> diffs = git.diff()
+                    .setNewTree(newTreeIter)
+                    .setOldTree(oldTreeIter)
+                    .call();
+            List<String> diffStrs = new ArrayList<>();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (DiffFormatter df = new DiffFormatter(out)) {
+                df.setRepository(git.getRepository());
+                for (DiffEntry diffEntry : diffs) {
+                    df.format(diffEntry);
+                    String diffText = out.toString("UTF-8");
+                    diffStrs.add(diffText);
+                    out.reset();
+                }
+            }
+            return diffStrs;
+        } catch (IOException | GitAPIException e) {
+            throw new JGitException(e);
+        }
+    }
+
+    /**
+     * git branch 获取本地git的分支
+     *
+     * @param newStr：新文本
+     * @param oldStr：旧文本
+     */
+    public static List<CompareResult> compare(String newStr, String oldStr) throws JGitException {
+        File tmpFile = new File("tmp", UUID.randomUUID().toString());
+        if (!tmpFile.exists()) {
+            tmpFile.mkdirs();
+        }
+        List<CompareResult> compareResults = new ArrayList<>();
+        try {
+            String localRepPath = tmpFile.getAbsolutePath();
+            //初始化git
+            gitInit(localRepPath);
+            File file = new File(tmpFile, "compare.txt");
+            String filePath = file.getAbsolutePath();
+
+            writeStr(file, oldStr);
+            //提交旧版本
+            gitAdd("compare.txt", localRepPath);
+            gitCommit("older commit", localRepPath);
+
+//            gitAdd("compare.txt", localRepPath);
+            writeStr(file, newStr);
+            //提交新版本
+            gitCommit("newer commit", localRepPath);
+
+            //获取提交日志
+            Iterable<RevCommit> revCommits = gitLog(localRepPath);
+            //获取最近的两次提交
+            Iterator<RevCommit> iterator = revCommits.iterator();
+            RevCommit revCommit1 = iterator.next();
+            RevCommit revCommit2 = iterator.next();
+            String newId = revCommit1.getName();
+            String oldId = revCommit2.getName();
+            List<String> diff = diff(oldId, newId, localRepPath);
+            String regex = "^@@.*@@$";
+            Pattern pattern = Pattern.compile(regex);
+            if (diff != null) {
+                String diffStr = diff.get(0);
+                String[] diffStrArray = diffStr.split("\n");
+                int olderIndex = 0;
+                int newerIndex = 0;
+                CompareResult compareResult = new CompareResult();
+                boolean beginAnalyze = false;
+                for (String s : diffStrArray) {
+                    if (pattern.matcher(s).matches()) {
+                        beginAnalyze = true;
+                        continue;
+                    }
+                    if (s.contains("No newline at end of file")) {
+                        continue;
+                    }
+                    if (beginAnalyze) {
+                        //开始统计异同
+                        if (s.startsWith(" ")) {
+                            if (addCompareResult(compareResults, compareResult, olderIndex, newerIndex)) {
+                                compareResult = new CompareResult();
+                            }
+                            olderIndex++;
+                            newerIndex++;
+                        } else {
+                            if (s.startsWith("-")) {
+                                olderIndex++;
+                                if (compareResult.getCFrom() == null) {
+                                    compareResult.setCFrom(olderIndex);
+                                }
+                            } else if (s.startsWith("+")) {
+                                newerIndex++;
+                                if (compareResult.getPFrom() == null) {
+                                    compareResult.setPFrom(newerIndex);
+                                }
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
+                }
+                addCompareResult(compareResults, compareResult, olderIndex, newerIndex);
+            }
+            return compareResults;
+        } finally {
+            deleteDir(tmpFile);
+        }
+    }
+
+    private static boolean addCompareResult(List<CompareResult> compareResults, CompareResult compareResult,
+                                         int olderIndex, int newerIndex) {
+        if ((compareResult.getCFrom() != null || compareResult.getPFrom() != null) &&
+                (olderIndex != 0 || newerIndex != 0)) {
+            compareResult.setCTo(olderIndex);
+            compareResult.setPTo(newerIndex);
+            compareResults.add(compareResult);
+            return true;
+        }
+        return false;
+    }
+
+    private static void writeStr(File file, String str) throws JGitException {
+        try (PrintWriter pw = new PrintWriter(file)) {
+            pw.println(str);
+        } catch (IOException e) {
+            throw new JGitException(e);
+        }
+    }
+
+    /**
+     * 递归删除目录下的所有文件及子目录下所有文件
+     *
+     * @param dir 将要删除的文件目录
+     * @return boolean Returns "true" if all deletions were successful.
+     * If a deletion fails, the method stops attempting to
+     * delete and returns "false".
+     */
+    private static void deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            //递归删除目录中的子目录下
+            if (children != null) {
+                Arrays.stream(children).forEach(subDir -> deleteDir(new File(dir, subDir)));
             }
         }
-        return diffStrs;
+        // 目录此时为空，可以删除
+        dir.delete();
     }
 }
