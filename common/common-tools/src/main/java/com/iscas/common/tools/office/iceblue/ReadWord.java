@@ -18,7 +18,8 @@ public class ReadWord {
     public void readWord() {
         //加载Word文档
         Document document = new Document();
-        document.loadFromFile("D:\\文档资料\\登录模块.docx");
+//        document.loadFromFile("D:\\文档资料\\登录模块.docx");
+        document.loadFromFile("D:\\文档资料\\中宣部\\应用软件与系统集成0623.doc");
 
 //        //获取文档中的文本保存为String
 //        String text=document.getText();
@@ -65,7 +66,7 @@ public class ReadWord {
         }
     }
 
-//    public static void main(String[] args) {
-//        new ReadWord().readWord();
-//    }
+    public static void main(String[] args) {
+        new ReadWord().readWord();
+    }
 }

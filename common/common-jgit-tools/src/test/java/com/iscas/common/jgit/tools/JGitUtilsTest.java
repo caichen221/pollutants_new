@@ -1,6 +1,7 @@
 package com.iscas.common.jgit.tools;
 
 import com.iscas.common.jgit.tools.exception.JGitException;
+import com.iscas.common.jgit.tools.model.CompareResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
@@ -139,23 +140,19 @@ public class JGitUtilsTest {
 
     @Test
     public void compare() throws JGitException {
-        JGitUtils.compare("现在就可以下载镜像测试啦（此镜像为已经打包好的）\n" +
-                "[root@localhost registry-data]# docker pull 192.168.100.94:5000/nginx:1.12.0\n" +
-                "1.12.0: Pulling from nginx\n" +
-                "177c8d195b28: Pull complete \n" +
-                "80407d76f511: Pull complete \n" +
-                "fa697bbf7113: Pull complete \n" +
-                "Digest: sha256:aafd24200549cb5e06f911ed2f174ca5691901544cf4daa364339bcb7cff535e\n" +
-                "Status: Downloaded newer image for 192.168.100.94:5000/nginx:1.12.0",
-                "现在就可以下载镜像测试啦（此镜像为已经打包好的）\n" +
+        List<CompareResult> compare = JGitUtils.compare("1.翁违规违规1111\n" +
+                        "2.违规为各位\n" +
                         "\n" +
-                        "[root@localhost registry-data]# docker pull 192.168.100.94:5000/nginx:1.12.0\n" +
-                        "1.12.0: Pulling from nginx\n" +
-                        "177c8d195b28: Pull complete \n" +
-                        "80407d76f511: Pull complete \n" +
-                        "fa697bbf7113: Pull complete AO \n" +
-                        "Digest: sha256:aafd24200549cb5e06f911ed2f174ca5691901544cf4daa364339bcb7cff535e\n" +
-                        "Status: Downloaded newer image for 192.168.100.94:5000/nginx:1.12.1");
+                        "3.违wgwe位\n" +
+                        "\n" +
+                        "4.违规为各位\n" +
+                        "5.wegweg\n" +
+                        "6.wehwweh",
+                "1.翁违规违规\n" +
+                        "2.违规为各位\n" +
+                        "3.违规为各位\n" +
+                        "4.违规为各位");
+        System.out.println(compare);
     }
 
 }
