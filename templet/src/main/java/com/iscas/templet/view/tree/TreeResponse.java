@@ -1,9 +1,9 @@
 package com.iscas.templet.view.tree;
 
 import com.iscas.templet.common.ResponseEntity;
-import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -15,6 +15,13 @@ import java.io.Serializable;
  **/
 @Data
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class TreeResponse extends ResponseEntity<TreeResponseData> implements Serializable{
+
+    /**重写*/
+    public TreeResponse setValue(TreeResponseData treeResponseData) {
+        this.value = treeResponseData;
+        return this;
+    }
 
 }

@@ -55,4 +55,10 @@ public interface MediaType {
      * */
     String VIDEO_MP4 = "video/mp4";
 
+    /**
+     * image/jpeg
+     */
+    String IMAGE_JPEG = "image/jpeg";
+
+
 }

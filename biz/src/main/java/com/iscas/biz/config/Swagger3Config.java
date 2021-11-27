@@ -32,11 +32,14 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class Swagger3Config {
     @Value("${swagger.enable: true}")
     private boolean swaggerEnable;
+
+    private String version = "1.0";
+
     @Bean
-    public Docket api() {
+    public Docket defaultApi() {
         return new Docket(DocumentationType.OAS_30)
-//        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
+                .groupName("默认")
+                .apiInfo(defaultApiInfo())
                 .enable(swaggerEnable)
                 .select()
                 // 自行修改为自己的包路径
@@ -46,13 +49,30 @@ public class Swagger3Config {
                 .build()/*.forCodeGeneration(true)*/;
     }
 
-    private ApiInfo apiInfo() {
+
+    @Bean
+    public Docket authApi() {
+
+        return new Docket(DocumentationType.OAS_30)
+                .groupName("权限相关")
+                .apiInfo(new ApiInfoBuilder().title("权限相关-API")
+                        .description("权限相关API")
+                        .version(version).build())
+                .enable(swaggerEnable)
+                .select()
+                // 自行修改为自己的包路径
+                .apis(RequestHandlerSelectors.basePackage("com.iscas.biz.controller.common.auth"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    private ApiInfo defaultApiInfo() {
         return new ApiInfoBuilder()
                 .title("newframe-接口文档")
-                .description("基于swagger3的在线接口文档，如不喜欢此风格，可尝试使用http://IP:PORT/context-path/doc.html")
+                .description("基于swagger3的在线接口文档，如不喜欢此风格，可尝试使用http://<IP:PORT>/<context-path>/doc.html")
                 //服务条款网址
                 //.termsOfServiceUrl("http://blog.csdn.net/forezp")
-                .version("1.0")
+                .version(version)
                 //.contact(new Contact("帅呆了", "url", "email"))
                 .build();
     }

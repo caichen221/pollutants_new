@@ -9,8 +9,9 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -787,6 +788,21 @@ public class FileUtils {
         }
         Collections.reverse(lines);
         return lines;
+    }
+
+    /**
+     * 获取文件夹下的所有文件,包括子文件和文件夹
+     *
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/11/27
+     * @param file
+     * @throws
+     * @return java.util.List<java.lang.String>
+     */
+    public static File[] listAllFiles(File file) throws IOException {
+        return Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS).map(i-> i.getFileName().toFile())
+                .filter(i -> !i.getName().equals(".") && !i.getName().equals("..")).toArray(File[]::new);
     }
 
 }

@@ -1,10 +1,9 @@
-package com.iscas.biz.controller.common;
+package com.iscas.biz.controller.common.auth;
 
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
-import com.iscas.base.biz.service.common.SpringService;
 import com.iscas.base.biz.util.LoginCacheUtils;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.common.BaseController;
@@ -13,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,11 +58,8 @@ public class LoginController extends BaseController implements Constants {
     public ResponseEntity<Map> preLogin(){
         ResponseEntity<Map> responseEntity = new ResponseEntity<>();
         String data = RandomStringUtils.randomStr(16);
-        String uuid = LoginCacheUtils.put(data);
-        Map map = new HashMap(2 << 2);
-        map.put("key", uuid);
-        map.put("encryKey", data);
-        responseEntity.setValue(map);
+        String uuid = LoginCacheUtils.createCodeAndPut(data);
+        responseEntity.setValue(Map.of("key", uuid, "encryKey", data));
         return responseEntity;
     }
 

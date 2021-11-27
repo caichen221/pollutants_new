@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Org {
 
     @ApiModelProperty("名称")
     @NotNull(message = "组织结构名称不能为空")
+    @Size(min = 2, max = 255, message = "组织机构名称必须介于2-255之间")
     private String orgName;
 
     @ApiModelProperty("父ID")

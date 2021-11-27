@@ -46,7 +46,6 @@ public class ExceptionAdivisor implements Constants {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(MethodArgumentNotValidException e){
-        ResponseEntity res = res(HttpStatus.BAD_REQUEST.value(), "请求参数校验失败", e);
         StringBuilder result = new StringBuilder();
         result.append("error 400 :");
         BindingResult bindingResult = e.getBindingResult();
@@ -59,6 +58,7 @@ public class ExceptionAdivisor implements Constants {
                 result.append(field).append(",").append(msg).append(";");
             }
         }
+        ResponseEntity res = res(HttpStatus.BAD_REQUEST.value(), result.toString(), e);
         res.setDesc(result.toString());
         return res;
     }
@@ -66,7 +66,6 @@ public class ExceptionAdivisor implements Constants {
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(ConstraintViolationException e){
-        ResponseEntity res = res(HttpStatus.BAD_REQUEST.value(), "请求参数校验失败", e);
         StringBuilder result = new StringBuilder();
         result.append("error 400 :");
         Set<ConstraintViolation<?>> cvs = e.getConstraintViolations();
@@ -74,12 +73,20 @@ public class ExceptionAdivisor implements Constants {
             for (ConstraintViolation cv: cvs) {
                 Path path = cv.getPropertyPath();
                 String msg = cv.getMessage();
-                result.append(path).append(",").append(msg).append(";");
+                result/*.append(path).append(",")*/.append(msg).append(";");
 
             }
         }
+        ResponseEntity res = res(HttpStatus.BAD_REQUEST.value(), result.toString(), e);
         res.setDesc(result.toString());
         return res;
+    }
+
+    //将ValidDataException的HTTP状态码改为400
+    @ExceptionHandler(value = ValidDataException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity to400(ValidDataException e){
+        return res(HttpStatus.BAD_REQUEST.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = LoginException.class)

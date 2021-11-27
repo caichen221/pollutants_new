@@ -52,7 +52,7 @@ public class ControllerAspect {
             Object result = joinPoint.proceed();
             if (request != null) {
                 //如果是ResponseEntity类型那么直接注入值
-                if (result != null && result instanceof ResponseEntity) {
+                if (result instanceof ResponseEntity) {
                     ResponseEntity responseEntity = (ResponseEntity) result;
                     responseEntity.setTookInMillis(System.currentTimeMillis() - start);
                     //注入requestURL

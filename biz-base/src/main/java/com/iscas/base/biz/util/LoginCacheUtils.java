@@ -20,8 +20,13 @@ import java.util.UUID;
 public class LoginCacheUtils {
     private static Cache<String,String> fifoCache = CacheUtil.newFIFOCache(1000);
 
-    public static String put(String secretKey) {
+    public static String createCodeAndPut(String secretKey) {
         UUID uuid = UUID.randomUUID();
+        put(uuid.toString(), secretKey);
+        return uuid.toString();
+    }
+
+    public static void put(String key, String value) {
         Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
         String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
         int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
@@ -29,12 +34,12 @@ public class LoginCacheUtils {
         if (cacheManager instanceof RedisCacheManager) {
             org.springframework.cache.Cache loginCache = cacheManager.getCache("loginCache");
             if (loginCache == null) throw new RuntimeException("找不到loginCache");
-            loginCache.put(uuid.toString(), secretKey);
+            loginCache.put(key, value);
         } else {
-            fifoCache.put(uuid.toString(), secretKey, DateUnit.SECOND.getMillis() * loginRandomCacheSenconds);
+            fifoCache.put(key, value, DateUnit.SECOND.getMillis() * loginRandomCacheSenconds);
         }
-        return uuid.toString();
     }
+
     public static String get(String uuid) {
         CacheManager cacheManager = SpringUtils.getApplicationContext().getBean(CacheManager.class);
         if (cacheManager instanceof RedisCacheManager) {
@@ -44,18 +49,18 @@ public class LoginCacheUtils {
             if (valueWrapper == null) return null;
             return (String) valueWrapper.get();
         } else {
-            return fifoCache.get(uuid);
+            return fifoCache.get(uuid, false);
         }
     }
 
-    public static void remove(String uuid) {
+    public static void remove(String key) {
         CacheManager cacheManager = SpringUtils.getApplicationContext().getBean(CacheManager.class);
         if (cacheManager instanceof RedisCacheManager) {
             org.springframework.cache.Cache loginCache = cacheManager.getCache("loginCache");
             if (loginCache == null) return;
-            loginCache.evict(uuid);
+            loginCache.evict(key);
         } else {
-            fifoCache.remove(uuid);
+            fifoCache.remove(key);
         }
 
     }

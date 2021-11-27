@@ -151,7 +151,7 @@ public class MenuService {
             @CacheEvict(value = "auth", key = "'role_map'")
     })
     public int addMenu(Menu menu) throws ValidDataException {
-        AssertObjUtils.assertNull(menu.getMenuId(), "请求参数有误，menuId必须为空");
+        AssertObjUtils.assertNull(menu.getMenuId(), "请求参数有误，menuId不能为空");
         ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(DynamicMapper.class), "menu", "menu_name", menu.getMenuName());
         Date date = new Date();
         menu.setMenuCreateTime(date)

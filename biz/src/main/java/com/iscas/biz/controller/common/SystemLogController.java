@@ -9,10 +9,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,6 +31,7 @@ import java.util.List;
 @Api(tags = "系统日志")
 @RestController
 @RequestMapping("/system/log")
+@Validated
 public class SystemLogController extends BaseController {
     private final SystemLogService systemLogService;
 
@@ -48,16 +53,12 @@ public class SystemLogController extends BaseController {
             }
     )
     @GetMapping("/view")
-    public ResponseEntity viewLog(String filePath, int lines) throws BaseException {
-        List<String> logDatas = null;
+    public ResponseEntity viewLog(@NotBlank(message = "日志文件路径不能为空") String filePath, @Min(value = 1, message = "行数必须大于0") int lines) throws BaseException {
         try {
-            logDatas = systemLogService.viewLog(filePath, lines);
+            return getResponse().setValue(systemLogService.viewLog(filePath, lines));
         } catch (IOException e) {
             throw new BaseException("读取日志数据出错", e);
         }
-        ResponseEntity response = getResponse();
-        response.setValue(logDatas);
-        return response;
     }
 
 }

@@ -5,11 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -21,7 +17,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Configuration
 @EnableAsync
-public class AsyncConfig implements AsyncConfigurer {
+public class AsyncConfig implements AsyncConfigurer, BizConstant {
+    private static int ASYNC_KEEPALIVE_SECONDS = 60;
+
+    private static int  ASYNC_QUEUE_CAPACITY = 20000;
 
     @Bean("asyncExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
@@ -29,8 +28,8 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
         executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors() * 2);
         executor.setQueueCapacity(20000);
-        executor.setKeepAliveSeconds(60);
-        executor.setThreadNamePrefix("asyncExecutor-");
+        executor.setKeepAliveSeconds(ASYNC_KEEPALIVE_SECONDS);
+        executor.setThreadNamePrefix(ASYNC_EXECUTOR_NAME_PREFIX);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         return executor;
     }

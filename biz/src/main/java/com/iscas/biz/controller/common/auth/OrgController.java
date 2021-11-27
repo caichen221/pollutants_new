@@ -1,12 +1,12 @@
-package com.iscas.biz.controller.common;
+package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.domain.common.Org;
 import com.iscas.biz.service.common.OrgService;
+import com.iscas.common.tools.assertion.AssertCollectionUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
-import com.iscas.templet.view.tree.TreeResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,11 +42,7 @@ public class OrgController extends BaseController {
     @ApiOperation(value="[组织机构]获取组织机构树", notes="create by:朱全文 2021-02-20")
     @GetMapping
     public TreeResponse get() throws BaseException {
-        TreeResponse treeResponse = new TreeResponse();
-        treeResponse.setMessage("操作成功");
-        TreeResponseData<Org> treeResponseData = orgService.getTree();
-        treeResponse.setValue(treeResponseData);
-        return treeResponse;
+        return getTreeResponse().setValue(orgService.getTree());
     }
 
     @ApiOperation(value="[组织机构]新增组织机构节点", notes="create by:朱全文 2021-02-20")
@@ -57,10 +53,7 @@ public class OrgController extends BaseController {
     )
     @PostMapping("/node")
     public ResponseEntity addNode(@Valid @RequestBody Org org) throws BaseException {
-        ResponseEntity response = getResponse();
-        int result = orgService.addOrg(org);
-        response.setValue(result);
-        return response;
+        return getResponse().setValue(orgService.addOrg(org));
     }
 
     @ApiOperation(value="[组织机构]修改组织机构节点", notes="create by:朱全文 2021-02-20")
@@ -71,10 +64,7 @@ public class OrgController extends BaseController {
     )
     @PutMapping("/node")
     public ResponseEntity editNode(@Valid @RequestBody Org org) throws BaseException {
-        ResponseEntity response = getResponse();
-        int result = orgService.editOrg(org);
-        response.setValue(result);
-        return response;
+        return getResponse().setValue(orgService.editOrg(org));
     }
 
     @ApiOperation(value="[组织机构]删除组织机构节点", notes="create by:朱全文 2021-02-20")
@@ -91,11 +81,9 @@ public class OrgController extends BaseController {
     })
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) throws BaseException {
-        ResponseEntity response = getResponse();
-        for (Integer orgId : orgIds) {
-            orgService.deleteOrg(orgId);
-        }
-        return response;
+        AssertCollectionUtils.assertCollectionNotEmpty(orgIds, "orgIds不能未空");
+        orgIds.forEach(orgService::deleteOrg);
+        return getResponse();
     }
 
 }
