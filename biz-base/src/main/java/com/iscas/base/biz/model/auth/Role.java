@@ -1,6 +1,7 @@
 package com.iscas.base.biz.model.auth;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @Data
+@Accessors(chain = true)
 public class Role implements Serializable {
     private String key;
     private String name;

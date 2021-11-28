@@ -145,14 +145,12 @@ public class AuthServiceImpl extends AbstractAuthService {
         }
 
         if (CollectionUtils.isNotEmpty(commonRoles)) {
-            result = commonRoles.stream().map(Lambdas.wrapperFunction(r -> {
-                Role role = new Role();
-                role.setKey(String.valueOf(r.getRoleId()));
-                role.setName(r.getRoleName());
-                role.setMenus(menuRoleMap.get(r.getRoleId()));
-                role.setUrls(urlRoleMap.get(r.getRoleId()));
-                return role;
-            })).collect(Collectors.toMap(Role::getKey, r -> r));
+            result = commonRoles.stream().map(Lambdas.wrapperFunction(r ->
+                            new Role().setKey(String.valueOf(r.getRoleId()))
+                                    .setName(r.getRoleName())
+                                    .setMenus(menuRoleMap.get(r.getRoleId()))
+                                    .setUrls(urlRoleMap.get(r.getRoleId()))))
+                    .collect(Collectors.toMap(Role::getKey, r -> r));
         }
         return result;
     }
