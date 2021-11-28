@@ -10,7 +10,7 @@ import java.util.function.*;
  * @date 2021/2/17 14:07
  * @since jdk1.8
  */
-public class LambdaExceptionUtils {
+public class Lambdas {
 
 
     /**
@@ -22,7 +22,7 @@ public class LambdaExceptionUtils {
      * @throws
      * @return java.util.function.Consumer<T>
      */
-    public static <T> Consumer<T> lambdaWrapper(ThrowingConsumer<T> consumer) {
+    public static <T> Consumer<T> wrappeConsumer(ThrowingConsumer<T> consumer) {
         return i -> {
             try {
                 consumer.accept(i);
@@ -41,7 +41,7 @@ public class LambdaExceptionUtils {
      * @throws
      * @return java.util.function.Consumer<T>
      */
-    public static <T, U> BiConsumer<T, U> lambdaWrapper(ThrowingBiConsumer<T, U> consumer) {
+    public static <T, U> BiConsumer<T, U> wrapperBiConsumer(ThrowingBiConsumer<T, U> consumer) {
         return (i, j) -> {
             try {
                 consumer.accept(i, j);
@@ -60,7 +60,7 @@ public class LambdaExceptionUtils {
      * @throws
      * @return java.util.function.Consumer<T>
      */
-    public static <T, R> Function<T, R> lambdaWrapper(ThrowingFunction<T, R> function) {
+    public static <T, R> Function<T, R> wrapperFunction(ThrowingFunction<T, R> function) {
         return i -> {
             try {
                 return function.apply(i);
@@ -79,7 +79,7 @@ public class LambdaExceptionUtils {
      * @throws
      * @return java.util.function.Consumer<T>
      */
-    public static <T> Supplier<T> lambdaWrapper(ThrowingSupplier<T> supplier) {
+    public static <T> Supplier<T> wrapperSupplier(ThrowingSupplier<T> supplier) {
         return () -> {
             try {
                 return (T) supplier.get();
@@ -98,7 +98,7 @@ public class LambdaExceptionUtils {
      * @throws
      * @return java.util.function.Consumer<T>
      */
-    public static <T> Predicate<T> lambdaPredicateWrapper(ThrowingPredicate<T> predicate) {
+    public static <T> Predicate<T> wrapperPredicate(ThrowingPredicate<T> predicate) {
         return i -> {
             try {
                 return predicate.test(i);

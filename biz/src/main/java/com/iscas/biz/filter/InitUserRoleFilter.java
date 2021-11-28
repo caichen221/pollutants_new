@@ -19,10 +19,9 @@ import org.springframework.core.env.Environment;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 /**
- *
- *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2020/4/21 13:50
@@ -59,22 +58,21 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
         }
         User user = userMapper.selectByUserName(Constants.SUPER_USER_KEY);
         if (user == null) {
-            user = new User();
-            user.setUserName(Constants.SUPER_USER_KEY)
+            user = new User().setUserName(Constants.SUPER_USER_KEY)
                     .setUserPwd(MD5Utils.saltMD5(superUserDefaultPwd));
             userMapper.insertUser(user);
         }
         RoleExample roleExample = new RoleExample();
         roleExample.createCriteria().andRoleNameEqualTo(Constants.SUPER_ROLE_KEY);
-        Role role = null;
-        List<Role> superRoles = roleMapper.selectByExample(roleExample);
-        if (CollectionUtils.isNotEmpty(superRoles)) {
-            role = superRoles.get(0);
-        } else {
-            role = new Role();
-            role.setRoleName(Constants.SUPER_ROLE_KEY);
-            roleMapper.insert(role);
-        }
+        Role role = Optional.ofNullable(roleMapper.selectByExample(roleExample))
+                .map(superRoles -> superRoles.size() == 0 ? null : superRoles.get(0))
+                .orElseGet(() -> {
+                    Role rolex = new Role();
+                    rolex.setRoleName(Constants.SUPER_ROLE_KEY);
+                    roleMapper.insert(rolex);
+                    return rolex;
+                });
+
         //超级管理员和超级管理员角色关联
         UserRoleExample userRoleExample = new UserRoleExample();
         userRoleExample.createCriteria().andUserIdEqualTo(user.getUserId())
