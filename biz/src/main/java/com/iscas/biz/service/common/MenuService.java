@@ -47,10 +47,10 @@ public class MenuService {
 
     public TreeResponseData<Menu> getTree() {
         List<Menu> menus = menuMapper.selectByExample(null);
-        TreeResponseData<Menu> root = new TreeResponseData<>();
-        root.setId("-1");
-        root.setValue("root");
-        root.setLabel("菜单");
+        TreeResponseData<Menu> root = new TreeResponseData<Menu>()
+                .setId("-1")
+                .setValue("root")
+                .setLabel("菜单");
         if (CollectionUtils.isNotEmpty(menus)) {
             Map<Integer, List<TreeResponseData<Menu>>> childOrgs = getChildMenus(menus);
             combineNode(null, root, childOrgs);
@@ -80,14 +80,9 @@ public class MenuService {
 
         if (CollectionUtils.isNotEmpty(roleMenuKeys)) {
             for (RoleMenuKey roleMenuKey : roleMenuKeys) {
-                List<Role> roles1 = menuRoleMap.get(roleMenuKey.getMenuId());
-                if (roles1 == null) {
-                    roles1 = new ArrayList<>();
-                    menuRoleMap.put(roleMenuKey.getMenuId(), roles1);
-                }
                 Role role = roleMap.get(roleMenuKey.getRoleId());
                 if (role != null) {
-                    menuRoleMap.get(roleMenuKey.getMenuId()).add(role);
+                    menuRoleMap.putIfAbsent(roleMenuKey.getMenuId(), new ArrayList<>()).add(role);
                 }
             }
         }
@@ -97,24 +92,15 @@ public class MenuService {
         if (CollectionUtils.isNotEmpty(menuOprationMaps)) {
             for (Map oprationMap : menuOprationMaps) {
                 Integer menuId = (Integer) oprationMap.get("menu_id");
-                List<Map> maps = menuOprationMap.get(menuId);
-                if (maps == null) {
-                    maps = new ArrayList<>();
-                    menuOprationMap.put(menuId, maps);
-                }
-                menuOprationMap.get(menuId).add(oprationMap);
+                menuOprationMap.putIfAbsent(menuId, new ArrayList<>()).add(oprationMap);
             }
         }
-
 
         Map<Integer, List<TreeResponseData<Menu>>> childOrgs = new HashMap<>();
         for (Menu menu : menus) {
             Integer menuId = menu.getMenuId();
             Integer menuPid = menu.getMenuPid();
-            if (!childOrgs.containsKey(menuPid)) {
-                List<TreeResponseData<Menu>> treeDatas = new ArrayList<>();
-                childOrgs.put(menuPid, treeDatas);
-            }
+
             TreeResponseData<Menu> treeResponseData = new TreeResponseData<>();
             List<Role> rs = menuRoleMap.get(menuId);
             List<Map> menuOprations = menuOprationMap.get(menuId);
@@ -139,7 +125,7 @@ public class MenuService {
                 menu.setOprationNames(opNameJoiner.toString());
             }
 
-            childOrgs.get(menuPid).add(treeResponseData);
+            childOrgs.putIfAbsent(menuPid, new ArrayList<>()).add(treeResponseData);
         }
         return childOrgs;
     }
@@ -159,6 +145,7 @@ public class MenuService {
         int result = menuMapper.insert(menu);
         List<Integer> roleIds = menu.getRoleIds();
         List<Integer> opIds = menu.getOprationIds();
+
         //配置角色
         insertRoleIds(roleIds, menu);
 

@@ -16,6 +16,7 @@ import com.iscas.templet.view.table.TableResponseData;
 import com.iscas.templet.view.table.TableSearchRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -81,12 +82,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(allOrgs)) {
                 for (Org allOrg : allOrgs) {
                     Integer orgPid = allOrg.getOrgPid();
-                    List<Org> orgs = childOrgMap.get(orgPid);
-                    if (orgs == null) {
-                        orgs = new ArrayList<>();
-                        childOrgMap.put(orgPid, orgs);
-                    }
-                    childOrgMap.get(orgPid).add(allOrg);
+                    childOrgMap.putIfAbsent(orgPid, Lists.newArrayList()).add(allOrg);
                 }
             }
             getAllChildOrgIds(orgId, childOrgMap, childOrgIds);
@@ -114,12 +110,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(userRoleMaps)) {
                 for (Map roleMap : userRoleMaps) {
                     Integer userId = (Integer) roleMap.get("user_id");
-                    List<Map> maps = userRoleMap.get(userId);
-                    if (maps == null) {
-                        maps = new ArrayList<>();
-                        userRoleMap.put(userId, maps);
-                    }
-                    userRoleMap.get(userId).add(roleMap);
+                    userRoleMap.putIfAbsent(userId, Lists.newArrayList()).add(roleMap);
                 }
             }
             for (Map datum : data) {
@@ -147,12 +138,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(orgUserMaps)) {
                 for (Map userMap : orgUserMaps) {
                     Integer userId = (Integer) userMap.get("user_id");
-                    List<Map> maps = orgUserMap.get(userId);
-                    if (maps == null) {
-                        maps = new ArrayList<>();
-                        orgUserMap.put(userId, maps);
-                    }
-                    orgUserMap.get(userId).add(userMap);
+                    orgUserMap.putIfAbsent(userId, Lists.newArrayList()).add(userMap);
                 }
             }
             for (Map datum : data) {
@@ -271,9 +257,7 @@ public class UserService {
     public void deleteCache(List<Object> ids) {
         List<User> users = userMapper.selectUserByIds(ids);
         if (users != null) {
-            for (User user : users) {
-                deleteOneUserCache(user.getUserName());
-            }
+            users.forEach(user -> deleteOneUserCache(user.getUserName()));
         }
     }
 

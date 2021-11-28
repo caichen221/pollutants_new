@@ -14,6 +14,7 @@ import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
@@ -47,10 +48,10 @@ public class OrgService {
 
     public TreeResponseData<Org> getTree() {
         List<Org> orgs = orgMapper.selectByExampleWithBLOBs(null);
-        TreeResponseData<Org> root = new TreeResponseData<>();
-        root.setId("-1");
-        root.setValue("root");
-        root.setLabel("组织机构");
+        TreeResponseData<Org> root = new TreeResponseData<Org>()
+                .setId("-1")
+                .setValue("root")
+                .setLabel("组织机构");
         if (CollectionUtils.isNotEmpty(orgs)) {
             Map<Integer, List<TreeResponseData<Org>>> childOrgs = getChildOrgs(orgs);
             combineNode(null, root, childOrgs);
@@ -80,14 +81,9 @@ public class OrgService {
 
         if (CollectionUtils.isNotEmpty(orgRoleKeys)) {
             for (OrgRoleKey orgRoleKey : orgRoleKeys) {
-                List<Role> roles1 = orgRoleMap.get(orgRoleKey.getOrgId());
-                if (roles1 == null) {
-                    roles1 = new ArrayList<>();
-                    orgRoleMap.put(orgRoleKey.getOrgId(), roles1);
-                }
                 Role role = roleMap.get(orgRoleKey.getRoleId());
                 if (role != null) {
-                    orgRoleMap.get(orgRoleKey.getOrgId()).add(role);
+                    orgRoleMap.putIfAbsent(orgRoleKey.getOrgId(), Lists.newArrayList()).add(role);
                 }
             }
         }
@@ -96,10 +92,7 @@ public class OrgService {
         for (Org org : orgs) {
             Integer orgId = org.getOrgId();
             Integer orgPid = org.getOrgPid();
-            if (!childOrgs.containsKey(orgPid)) {
-                List<TreeResponseData<Org>> treeDatas = new ArrayList<>();
-                childOrgs.put(orgPid, treeDatas);
-            }
+
             TreeResponseData<Org> comboboxData = new TreeResponseData<>();
             List<Role> rs = orgRoleMap.get(orgId);
             comboboxData.setLabel(org.getOrgName())
@@ -114,7 +107,7 @@ public class OrgService {
                 }
                 org.setRoleNames(roleNamesJoiner.toString());
             }
-            childOrgs.get(orgPid).add(comboboxData);
+            childOrgs.putIfAbsent(orgPid, Lists.newArrayList()).add(comboboxData);
         }
         return childOrgs;
     }
@@ -129,8 +122,7 @@ public class OrgService {
         AssertObjUtils.assertNull(org.getOrgId(), "请求参数有误，orgId必须为空");
         ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(DynamicMapper.class), "org", "org_name", org.getOrgName());
         Date date = new Date();
-        org.setOrgCreateTime(date)
-                .setOrgUpdateTime(date);
+        org.setOrgCreateTime(date).setOrgUpdateTime(date);
         int result = orgMapper.insert(org);
         List<Integer> roleIds = org.getRoleIds();
         //配置角色

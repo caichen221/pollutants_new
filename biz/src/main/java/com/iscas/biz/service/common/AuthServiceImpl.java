@@ -169,7 +169,6 @@ public class AuthServiceImpl extends AbstractAuthService {
             username = AesUtils.aesDecrypt(username, loginKey).trim();
             pwd = AesUtils.aesDecrypt(pwd, loginKey).trim();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new LoginException("非法登陆", e.getMessage());
         }
         String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
@@ -186,10 +185,8 @@ public class AuthServiceImpl extends AbstractAuthService {
             }, 0, 120, TimeUnit.SECONDS);
             throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
-//        User dbUser = null;
-        User dbUser = userMapper.selectByUserName(username);
-//        User dbUser = userService.getOne(queryWrapper);
 
+        User dbUser = userMapper.selectByUserName(username);
         if (dbUser == null) {
             throw new LoginException("用户不存在");
         } else {
@@ -197,20 +194,17 @@ public class AuthServiceImpl extends AbstractAuthService {
             boolean verify = false;
             try {
                 verify = MD5Utils.saltVerify(pwd, dbUser.getUserPwd());
+                if (!verify) {
+                    Integer count = (Integer) authCacheService.get(userLoginErrorCountKey);
+                    int errorCount = count == null ? 1 : count + 1;
+                    authCacheService.set(userLoginErrorCountKey, errorCount);
+                    throw new LoginException("密码错误");
+                }
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new LoginException("校验密码出错");
-            }
-
-            if (!verify) {
-                Integer count = (Integer) authCacheService.get(userLoginErrorCountKey);
-                int errorCount = count == null ? 1 : count + 1;
-                authCacheService.set(userLoginErrorCountKey, errorCount);
-                throw new LoginException("密码错误");
             }
             //生成token
             createToken(response, username, responseEntity, expire, cookieExpire, userLockedKey, userLoginErrorCountKey);
-
         }
     }
 
@@ -220,13 +214,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             String sessionId = UUID.randomUUID().toString();
             token = JWTUtils.createToken(username, expire);
             //清除以前的TOKEN
-            //暂时加上这个处理
-            //todo 修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
-//            String tokenold = (String) authCacheService.get("user-token:" + username);
-//            if (tokenold != null) {
-//                authCacheService.remove(tokenold);
-//            }
-//            authCacheService.set("user-token:" + username, token);
+            //修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
             authCacheService.rpush("user-token:" + username, token);
 
             TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
@@ -234,16 +222,6 @@ public class AuthServiceImpl extends AbstractAuthService {
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
             }
             List<Role> roles = getRoles(username);
-//                Map<String, Role> auth = getAuth();
-//                List<Role> roles = new ArrayList<>();
-//                if (roleKey != null) {
-//                    for (String s : roleKey.split(",")) {
-//                        Role role = auth.get(s);
-//                        if (role != null) {
-//                            roles.add(role);
-//                        }
-//                    }
-//                }
 
             Map map = new HashMap<>(2 << 2);
             List<String> menus = new ArrayList<>();
@@ -253,6 +231,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                     //超级管理员角色
                     List<Menu> dbMenus = getMenus();
                     if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
+                    break;
                 } else {
                     List<Menu> roleMenus = role.getMenus();
                     if (roleMenus != null) menuList.addAll(roleMenus);
@@ -260,23 +239,20 @@ public class AuthServiceImpl extends AbstractAuthService {
             }
             if (CollectionUtils.isNotEmpty(menuList)) {
                 menuList.add(new Menu("-1", "首页"));
-                menus = menuList.stream().map(ml -> ml.getName()).distinct().collect(Collectors.toList());
+                //获取菜单名并去重
+                menus = menuList.stream().map(Menu::getName).distinct().collect(Collectors.toList());
                 //修改返回菜单的数据结构
                 TreeResponseData<com.iscas.biz.domain.common.Menu> tree = menuService.getTree();
                 TreeResponseData<com.iscas.biz.domain.common.Menu> finalMenus = getFinalMenus(tree, menus);
                 map.put("menu", finalMenus);
             }
-
-//                map.put("menu", menus);
             map.put(Constants.TOKEN_KEY, token);
-
 //                map.put("role", role);
 //                map.put("roleId", map.get("orgId"));
-
             map.put("username", username);
 
             responseEntity.setValue(map);
-            //创建一个虚拟session
+            //创建一个虚拟session（没用）
             CustomSession.setAttribute(sessionId, SESSION_USER, username);
 
             authCacheService.remove(userLockedKey);
@@ -323,7 +299,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 
     private TreeResponseData<com.iscas.biz.domain.common.Menu> getFinalMenus(TreeResponseData<com.iscas.biz.domain.common.Menu> tree, List<String> menus) {
 
-        Optional.ofNullable(tree).map(t -> t.getData()).ifPresent(t -> {
+        Optional.ofNullable(tree).map(TreeResponseData::getData).ifPresent(t -> {
             tree.setPath(tree.getData().getMenuPage());
         });
 

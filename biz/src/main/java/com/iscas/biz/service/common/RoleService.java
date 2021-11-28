@@ -44,13 +44,11 @@ public class RoleService {
     public List<ComboboxData> combobox() {
         List<Role> roles = roleMapper.selectByExample(null);
         if (CollectionUtils.isNotEmpty(roles)) {
-            return roles.stream().map(Lambdas.wrapperFunction(role -> {
-                ComboboxData comboboxData = new ComboboxData();
-                comboboxData.setLabel(role.getRoleName())
-                        .setValue(role.getRoleId())
-                        .setData(role);
-                return comboboxData;
-            })).collect(Collectors.toList());
+            return roles.stream().map(Lambdas.wrapperFunction(role -> new ComboboxData()
+                    .setLabel(role.getRoleName())
+                    .setValue(role.getRoleId())
+                    .setData(role)
+            )).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
