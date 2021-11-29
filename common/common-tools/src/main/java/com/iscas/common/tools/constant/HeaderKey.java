@@ -35,7 +35,6 @@ public interface HeaderKey {
      * */
     String CONNECTION = "Connection";
 
-
     /**
      *
      * Accept-Encoding
@@ -53,7 +52,6 @@ public interface HeaderKey {
      * */
     String CONTENT_LENGTH = "Content-Length";
 
-
     /**
      * ETag
      * */
@@ -63,4 +61,22 @@ public interface HeaderKey {
      * Upgrade
      * */
     String UPGRADE = "Upgrade";
+
+    /**X-FORWARDED-FOR*/
+    String X_FORWARDED_FOR = "x-forwarded-for";
+
+    /**Proxy-Client-IP*/
+    String PROXY_CLIENT_IP = "Proxy-Client-IP";
+
+    /**WL-Proxy-Client-IP*/
+    String WL_PROXY_CLIENT_IP = "WL-Proxy-Client-IP";
+
+    /**Expires*/
+    String EXPIRES = "Expires";
+
+    /**Cache-Control*/
+    String CACHE_CONTROL = "Cache-Control";
+
+    /**Pragma*/
+    String PRAGMA = "Pragma";
 }

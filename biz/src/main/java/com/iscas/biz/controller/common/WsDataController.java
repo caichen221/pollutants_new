@@ -65,9 +65,8 @@ public class WsDataController extends BaseController {
     )
     @PutMapping("/send/{id}")
     public ResponseEntity getData(@PathVariable Integer id) {
-        ResponseEntity response = getResponse();
         wsService.retry(id);
-        return response;
+        return getResponse();
     }
 
     /**

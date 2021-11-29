@@ -1,6 +1,7 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.config.auth.SkipAuthProps;
 import com.iscas.base.biz.model.auth.AuthContext;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
@@ -15,6 +16,7 @@ import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -37,6 +39,7 @@ import java.util.*;
  **/
 @Slf4j
 public class LoginFilter extends OncePerRequestFilter implements Constants {
+
 
     private AbstractAuthService authService;
 
@@ -69,6 +72,10 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
             Collection<Url> urls = urlMap.values();
             //判断请求的URL是否在配置了权限的URL中
             boolean needFlag = urls.stream().anyMatch(url -> pathMatcher.match(contextPath + url.getName(), request.getRequestURI()));
+            if (needFlag) {
+                needFlag = SpringUtils.getBean(SkipAuthProps.class).getUrls().stream().noneMatch(url -> pathMatcher.match((contextPath + url).replaceAll("/+", "/"), request.getRequestURI()));
+            }
+
             //如果找到匹配的urlx
             if (needFlag) {
                 String token = AuthUtils.getToken();

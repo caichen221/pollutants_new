@@ -1,4 +1,4 @@
-package com.iscas.biz.controller.common;
+package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.UserMapper;
@@ -13,8 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,8 +96,7 @@ public class MyUserController extends BaseController {
             }
     )
     @PutMapping("/data")
-    public ResponseEntity editData(@RequestBody Map<String,Object> data)
-            throws ValidDataException {
+    public ResponseEntity editData(@RequestBody Map<String,Object> data) throws ValidDataException {
         //先删除缓存
         Integer userId = (Integer) data.get("user_id");
         if (userId != null) {
@@ -119,8 +116,7 @@ public class MyUserController extends BaseController {
     @PutMapping("/pwd/{userId:[0-9]+}")
     public ResponseEntity changePwd(@PathVariable Integer userId, @RequestBody Map<String,Object> data)
             throws BaseException, NoSuchAlgorithmException {
-        ResponseEntity response = getResponse();
         userService.changePwd(userId, data);
-        return response;
+        return getResponse();
     }
 }

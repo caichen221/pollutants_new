@@ -46,10 +46,7 @@ public class TokenVerifyUserAccessor implements UserAccessor {
                         if (username == null) {
                             throw new RuntimeException("websocket认证失败");
                         }
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException("websocket认证失败", e);
-                    } catch (ValidTokenException e) {
+                    } catch (UnsupportedEncodingException | ValidTokenException e) {
                         e.printStackTrace();
                         throw new RuntimeException("websocket认证失败", e);
                     }
@@ -57,7 +54,6 @@ public class TokenVerifyUserAccessor implements UserAccessor {
                     user.setUsername(username);
                     accessor.setUser(user);
                 }
-
             }
         }
     }

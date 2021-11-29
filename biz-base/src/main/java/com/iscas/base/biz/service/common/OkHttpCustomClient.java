@@ -2,15 +2,12 @@ package com.iscas.base.biz.service.common;
 
 
 import com.iscas.base.biz.config.okhttp.OkHttpProps;
-import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
-import com.iscas.common.tools.exception.lambda.ThrowingConsumer;
 import okhttp3.*;
 import okio.BufferedSink;
 
 import javax.net.ssl.*;
 import java.io.*;
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.security.SecureRandom;

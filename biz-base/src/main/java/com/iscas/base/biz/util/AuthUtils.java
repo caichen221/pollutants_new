@@ -6,6 +6,7 @@ import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 
+import javax.servlet.http.Cookie;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class AuthUtils {
     public static String getToken() {
         return Optional.ofNullable(SpringUtils.getRequest().getHeader(Constants.TOKEN_KEY))
                 .orElse(Optional.ofNullable(CookieUtils.getCookieByName(SpringUtils.getRequest(), Constants.TOKEN_KEY))
-                        .map(cookie -> cookie.getValue())
+                        .map(Cookie::getValue)
                         .orElse(null));
     }
 

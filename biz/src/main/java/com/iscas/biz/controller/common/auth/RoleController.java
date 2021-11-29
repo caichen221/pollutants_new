@@ -1,4 +1,4 @@
-package com.iscas.biz.controller.common;
+package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import java.util.Map;
 @Api(tags = "角色管理")
 @RestController
 @RequestMapping("/role")
+@org.springframework.validation.annotation.Validated
 public class RoleController extends BaseController {
     private String tableIdentity = "role";
     private final TableDefinitionService tableDefinitionService;
@@ -67,11 +69,8 @@ public class RoleController extends BaseController {
             }
     )
     @GetMapping("/menu/tree")
-    public ResponseEntity getMenuTree(Integer roleId) {
-        ResponseEntity response = getResponse();
-        TreeResponseData treeResponseData = roleService.getMenuTree(roleId);
-        response.setValue(treeResponseData);
-        return response;
+    public ResponseEntity getMenuTree(@NotNull(message = "roleId不能为空") Integer roleId) {
+        return getResponse().setValue(roleService.getMenuTree(roleId));
     }
 
 
@@ -88,10 +87,9 @@ public class RoleController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, Integer roleId) {
-        ResponseEntity response = getResponse();
+    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, @NotNull(message = "roleId不能为空") Integer roleId) {
         roleService.updateMenuTree(treeResponseData, roleId);
-        return response;
+        return getResponse();
     }
 
     @ApiOperation(value="获取角色对应的操作权限", notes="获取角色对应的操作权限")
@@ -101,11 +99,8 @@ public class RoleController extends BaseController {
             }
     )
     @GetMapping("/opration")
-    public ResponseEntity getOpration(Integer roleId) {
-        ResponseEntity response = getResponse();
-        List<Opration> oprations = roleService.getOprations(roleId);
-        response.setValue(oprations);
-        return response;
+    public ResponseEntity getOpration(@NotNull(message = "roleId不能为空") Integer roleId) {
+        return getResponse().setValue(roleService.getOprations(roleId));
     }
 
     @ApiOperation(value="修改角色对应的操作权限", notes="修改角色对应的操作权限")
@@ -121,10 +116,9 @@ public class RoleController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, Integer roleId) {
-        ResponseEntity response = getResponse();
+    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, @NotNull(message = "roleId不能为空") Integer roleId) {
         roleService.editOpration(oprations, roleId);
-        return response;
+        return getResponse();
     }
 
     @ApiOperation(value="删除角色数据", notes="根据主键删除数据")
@@ -177,7 +171,6 @@ public class RoleController extends BaseController {
             throws ValidDataException {
         //修改时间
 //        Map<String, Object> forceItem = new HashMap<>();
-//
 //        forceItem.put("role_update_time", DateSafeUtils.format(new Date(), DateSafeUtils.PATTERN));
         return tableDefinitionService.saveData(tableIdentity, data, false, null, null);
     }

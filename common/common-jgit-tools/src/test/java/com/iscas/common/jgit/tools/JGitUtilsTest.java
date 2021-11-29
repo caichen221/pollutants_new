@@ -1,6 +1,7 @@
 package com.iscas.common.jgit.tools;
 
 import com.iscas.common.jgit.tools.exception.JGitException;
+import com.iscas.common.jgit.tools.model.CompareResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
@@ -139,24 +140,19 @@ public class JGitUtilsTest {
 
     @Test
     public void compare() throws JGitException {
-        JGitUtils.compare("张三\n" +
-                "李四\n" +
-                "\n" +
-                "\n" +
-                "王五1\n" +
-                "aaa\n" +
-                "bbb\n" +
-                "\n" +
-                "\n" +
-                "ddx\n" +
-                "\n" +
-                "张三", "张三\n" +
-                "李四\n" +
-                "王五\n" +
-                "aaa\n" +
-                "bbb\n" +
-                "ccc\n" +
-                "ddd");
+        List<CompareResult> compare = JGitUtils.compare("1.翁违规违规1111\n" +
+                        "2.违规为各位\n" +
+                        "\n" +
+                        "3.违wgwe位\n" +
+                        "\n" +
+                        "4.违规为各位\n" +
+                        "5.wegweg\n" +
+                        "6.wehwweh",
+                "1.翁违规违规\n" +
+                        "2.违规为各位\n" +
+                        "3.违规为各位\n" +
+                        "4.违规为各位");
+        System.out.println(compare);
     }
 
 }

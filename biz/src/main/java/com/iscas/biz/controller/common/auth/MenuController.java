@@ -1,12 +1,12 @@
-package com.iscas.biz.controller.common;
+package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.domain.common.Menu;
 import com.iscas.biz.service.common.MenuService;
+import com.iscas.common.tools.assertion.AssertCollectionUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
-import com.iscas.templet.view.tree.TreeResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,11 +40,7 @@ public class MenuController extends BaseController {
     @ApiOperation(value="[菜单管理]获取菜单树-2021-02-22", notes="create by:朱全文")
     @GetMapping
     public TreeResponse get() throws BaseException {
-        TreeResponse treeResponse = new TreeResponse();
-        treeResponse.setMessage("操作成功");
-        TreeResponseData<Menu> treeResponseData = menuService.getTree();
-        treeResponse.setValue(treeResponseData);
-        return treeResponse;
+        return getTreeResponse().setValue(menuService.getTree());
     }
 
     @ApiOperation(value="[菜单管理]新增组织机构节点-2021-02-22", notes="create by:朱全文")
@@ -55,10 +51,7 @@ public class MenuController extends BaseController {
     )
     @PostMapping("/node")
     public ResponseEntity addNode(@Valid @RequestBody Menu menu) throws BaseException {
-        ResponseEntity response = getResponse();
-        int result = menuService.addMenu(menu);
-        response.setValue(result);
-        return response;
+        return getResponse().setValue(menuService.addMenu(menu));
     }
 
     @ApiOperation(value="[菜单管理]修改菜单节点-2021-02-22", notes="create by:朱全文")
@@ -69,10 +62,7 @@ public class MenuController extends BaseController {
     )
     @PutMapping("/node")
     public ResponseEntity editNode(@Valid @RequestBody Menu menu) throws BaseException {
-        ResponseEntity response = getResponse();
-        int result = menuService.editMenu(menu);
-        response.setValue(result);
-        return response;
+        return getResponse().setValue(menuService.editMenu(menu));
     }
 
     @ApiOperation(value="[菜单管理]删除菜单节点-2021-02-22", notes="create by:朱全文")
@@ -84,10 +74,8 @@ public class MenuController extends BaseController {
     @PostMapping("/node/del")
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     public ResponseEntity deleteNode(@RequestBody List<Integer> menuIds) throws BaseException {
-        ResponseEntity response = getResponse();
-        for (Integer menuId : menuIds) {
-            int result = menuService.deleteMenu(menuId);
-        }
-        return response;
+        AssertCollectionUtils.assertCollectionNotEmpty(menuIds, "menuIds不能未空");
+        menuIds.forEach(menuService::deleteMenu);
+        return getResponse();
     }
 }

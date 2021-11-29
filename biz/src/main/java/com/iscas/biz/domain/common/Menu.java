@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +33,8 @@ public class Menu implements Serializable {
     private Date menuUpdateTime;
 
     @ApiModelProperty("菜单名称")
+    @NotNull(message = "菜单名称不能为空")
+    @Size(min = 2, max = 255, message = "菜单名称长度必须介于2-255之间")
     private String menuName;
 
     @ApiModelProperty("角色ID（多选）不显示")

@@ -7,10 +7,7 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.util.CustomSession;
-import com.iscas.base.biz.util.JWTUtils;
-import com.iscas.base.biz.util.LoginCacheUtils;
-import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.base.biz.util.*;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
@@ -19,7 +16,7 @@ import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.common.tools.core.security.AesUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
-import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
+import com.iscas.common.tools.exception.lambda.Lambdas;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.LoginException;
@@ -80,71 +77,38 @@ public class AuthServiceImpl extends AbstractAuthService {
     @Override
     public Map<String, Url> getUrls() {
         log.debug("------读取url信息------");
-        List<com.iscas.biz.domain.common.Resource> resources = resourceMapper.selectByExample(null);
-        if (CollectionUtils.isNotEmpty(resources)) {
-            return resources.stream().map(LambdaExceptionUtils.lambdaWrapper(resource -> {
-                Url url = new Url();
-                url.setKey(String.valueOf(resource.getResourceId()))
-                        .setName(resource.getResourceUrl());
-                return url;
-            })).collect(Collectors.toMap(Url::getKey, url -> url));
-        }
-        return new HashMap<>();
+        return Optional.ofNullable(resourceMapper.selectByExample(null))
+                .map(resources -> resources.stream().map(Lambdas.wrapperFunction(resource -> new Url().setKey(String.valueOf(resource.getResourceId()))
+                        .setName(resource.getResourceUrl()))).collect(Collectors.toMap(Url::getKey, url -> url)))
+                .orElse(Map.of());
     }
 
     @Cacheable(value = "auth", key = "'menus'")
     @Override
     public List<Menu> getMenus() {
-        List<Menu> menus = new ArrayList<>();
-        List<com.iscas.biz.domain.common.Menu> dbMenus = menuMapper.selectByExample(null);
-        if (CollectionUtils.isNotEmpty(dbMenus)) {
-            menus = dbMenus.stream().map(LambdaExceptionUtils.lambdaWrapper(m -> {
-                Menu menu = new Menu();
-                menu.setName(m.getMenuName());
-                menu.setKey(String.valueOf(m.getMenuId()));
-                return menu;
-            })).collect(Collectors.toList());
-        }
-        return menus;
+        return Optional.ofNullable(menuMapper.selectByExample(null))
+                .map(dbMenus -> dbMenus.stream().map(Lambdas.wrapperFunction(m ->
+                        new Menu().setName(m.getMenuName()).setKey(String.valueOf(m.getMenuId())))).collect(Collectors.toList()))
+                .orElse(List.of());
     }
 
 
     @Cacheable(value = "auth", key = "'username:'.concat(#username)")
     @Override
     public List<Role> getRoles(String username) {
-        List<Role> roles = new ArrayList<>();
-        List<Map> userRoleMaps = userMapper.selectUserRoleByUsername(username);
-        if (CollectionUtils.isNotEmpty(userRoleMaps)) {
-            for (Map userRoleMap : userRoleMaps) {
-                Integer roleId = (Integer) userRoleMap.get("role_id");
-                String roleName = (String) userRoleMap.get("role_name");
-                Map<String, Role> auth = getAuth();
-                Role role = auth.get(String.valueOf(roleId));
-                if (role != null) roles.add(role);
-
-//                Role role = new Role();
-//                role.setName(roleName);
-//                role.setKey(String.valueOf(roleId));
-//                roles.add(role);
-            }
-        }
-        return roles;
+        Map<String, Role> auth = getAuth();
+        return Optional.ofNullable(userMapper.selectUserRoleByUsername(username))
+                .map(userRoleMaps -> userRoleMaps.stream()
+                        .filter(userRoleMap -> getOneRole(userRoleMap, auth) != null)
+                        .map(userRoleMap -> getOneRole(userRoleMap, auth)).collect(Collectors.toList()))
+                .orElse(List.of());
     }
 
 
     @Override
     public void invalidToken(HttpServletRequest request) {
-        String token = null;
-        token = request.getHeader(TOKEN_KEY);
-        if (token == null) {
-            //尝试从cookie中拿author
-            Cookie cookie = CookieUtils.getCookieByName(request, TOKEN_KEY);
-            if (cookie != null) {
-                token = cookie.getValue();
-            }
-        }
-//        CaffCacheUtils.remove(token);
-        authCacheService.remove(token);
+        Optional.ofNullable(AuthUtils.getToken())
+                .ifPresent(authCacheService::remove);
         request.getSession().invalidate();
     }
 
@@ -164,15 +128,8 @@ public class AuthServiceImpl extends AbstractAuthService {
                 int roleId = (int) menuRole.get("role_id");
                 int menuId = (int) menuRole.get("menu_id");
                 String menuName = (String) menuRole.get("menu_name");
-                List<Menu> maps = menuRoleMap.get(roleId);
-                if (maps == null) {
-                    maps = new ArrayList<>();
-                    menuRoleMap.put(roleId, maps);
-                }
-                Menu menu = new Menu();
-                menu.setKey(String.valueOf(menuId));
-                menu.setName(menuName);
-                maps.add(menu);
+                menuRoleMap.computeIfAbsent(roleId, ArrayList::new)
+                        .add(new Menu().setKey(String.valueOf(menuId)).setName(menuName));
             }
         }
         Map<Integer, List<Url>> urlRoleMap = new HashMap<>();
@@ -181,26 +138,19 @@ public class AuthServiceImpl extends AbstractAuthService {
                 int roleId = (int) roleResource.get("role_id");
                 int resourceId = (int) roleResource.get("resource_id");
                 Url url = urls.get(String.valueOf(resourceId));
-                List<Url> maps = urlRoleMap.get(roleId);
-                if (maps == null) {
-                    maps = new ArrayList<>();
-                    urlRoleMap.put(roleId, maps);
-                }
                 if (url != null) {
-                    maps.add(url);
+                    urlRoleMap.computeIfAbsent(roleId, ArrayList::new).add(url);
                 }
             }
         }
 
         if (CollectionUtils.isNotEmpty(commonRoles)) {
-            result = commonRoles.stream().map(LambdaExceptionUtils.lambdaWrapper(r -> {
-                Role role = new Role();
-                role.setKey(String.valueOf(r.getRoleId()));
-                role.setName(r.getRoleName());
-                role.setMenus(menuRoleMap.get(r.getRoleId()));
-                role.setUrls(urlRoleMap.get(r.getRoleId()));
-                return role;
-            })).collect(Collectors.toMap(Role::getKey, r -> r));
+            result = commonRoles.stream().map(Lambdas.wrapperFunction(r ->
+                            new Role().setKey(String.valueOf(r.getRoleId()))
+                                    .setName(r.getRoleName())
+                                    .setMenus(menuRoleMap.get(r.getRoleId()))
+                                    .setUrls(urlRoleMap.get(r.getRoleId()))))
+                    .collect(Collectors.toMap(Role::getKey, r -> r));
         }
         return result;
     }
@@ -219,7 +169,6 @@ public class AuthServiceImpl extends AbstractAuthService {
             username = AesUtils.aesDecrypt(username, loginKey).trim();
             pwd = AesUtils.aesDecrypt(pwd, loginKey).trim();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new LoginException("非法登陆", e.getMessage());
         }
         String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
@@ -236,10 +185,8 @@ public class AuthServiceImpl extends AbstractAuthService {
             }, 0, 120, TimeUnit.SECONDS);
             throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
-//        User dbUser = null;
-        User dbUser = userMapper.selectByUserName(username);
-//        User dbUser = userService.getOne(queryWrapper);
 
+        User dbUser = userMapper.selectByUserName(username);
         if (dbUser == null) {
             throw new LoginException("用户不存在");
         } else {
@@ -247,20 +194,17 @@ public class AuthServiceImpl extends AbstractAuthService {
             boolean verify = false;
             try {
                 verify = MD5Utils.saltVerify(pwd, dbUser.getUserPwd());
+                if (!verify) {
+                    Integer count = (Integer) authCacheService.get(userLoginErrorCountKey);
+                    int errorCount = count == null ? 1 : count + 1;
+                    authCacheService.set(userLoginErrorCountKey, errorCount);
+                    throw new LoginException("密码错误");
+                }
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new LoginException("校验密码出错");
-            }
-
-            if (!verify) {
-                Integer count = (Integer) authCacheService.get(userLoginErrorCountKey);
-                int errorCount = count == null ? 1 : count + 1;
-                authCacheService.set(userLoginErrorCountKey, errorCount);
-                throw new LoginException("密码错误");
             }
             //生成token
             createToken(response, username, responseEntity, expire, cookieExpire, userLockedKey, userLoginErrorCountKey);
-
         }
     }
 
@@ -270,13 +214,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             String sessionId = UUID.randomUUID().toString();
             token = JWTUtils.createToken(username, expire);
             //清除以前的TOKEN
-            //暂时加上这个处理
-            //todo 修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
-//            String tokenold = (String) authCacheService.get("user-token:" + username);
-//            if (tokenold != null) {
-//                authCacheService.remove(tokenold);
-//            }
-//            authCacheService.set("user-token:" + username, token);
+            //修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
             authCacheService.rpush("user-token:" + username, token);
 
             TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
@@ -284,16 +222,6 @@ public class AuthServiceImpl extends AbstractAuthService {
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
             }
             List<Role> roles = getRoles(username);
-//                Map<String, Role> auth = getAuth();
-//                List<Role> roles = new ArrayList<>();
-//                if (roleKey != null) {
-//                    for (String s : roleKey.split(",")) {
-//                        Role role = auth.get(s);
-//                        if (role != null) {
-//                            roles.add(role);
-//                        }
-//                    }
-//                }
 
             Map map = new HashMap<>(2 << 2);
             List<String> menus = new ArrayList<>();
@@ -303,30 +231,28 @@ public class AuthServiceImpl extends AbstractAuthService {
                     //超级管理员角色
                     List<Menu> dbMenus = getMenus();
                     if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
+                    break;
                 } else {
                     List<Menu> roleMenus = role.getMenus();
                     if (roleMenus != null) menuList.addAll(roleMenus);
                 }
             }
             if (CollectionUtils.isNotEmpty(menuList)) {
-                menuList.add(new Menu("-1","首页"));
-                menus = menuList.stream().map(ml -> ml.getName()).distinct().collect(Collectors.toList());
+                menuList.add(new Menu("-1", "首页"));
+                //获取菜单名并去重
+                menus = menuList.stream().map(Menu::getName).distinct().collect(Collectors.toList());
                 //修改返回菜单的数据结构
                 TreeResponseData<com.iscas.biz.domain.common.Menu> tree = menuService.getTree();
                 TreeResponseData<com.iscas.biz.domain.common.Menu> finalMenus = getFinalMenus(tree, menus);
                 map.put("menu", finalMenus);
             }
-
-//                map.put("menu", menus);
             map.put(Constants.TOKEN_KEY, token);
-
 //                map.put("role", role);
 //                map.put("roleId", map.get("orgId"));
-
             map.put("username", username);
 
             responseEntity.setValue(map);
-            //创建一个虚拟session
+            //创建一个虚拟session（没用）
             CustomSession.setAttribute(sessionId, SESSION_USER, username);
 
             authCacheService.remove(userLockedKey);
@@ -373,7 +299,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 
     private TreeResponseData<com.iscas.biz.domain.common.Menu> getFinalMenus(TreeResponseData<com.iscas.biz.domain.common.Menu> tree, List<String> menus) {
 
-        Optional.ofNullable(tree).map(t -> t.getData()).ifPresent(t -> {
+        Optional.ofNullable(tree).map(TreeResponseData::getData).ifPresent(t -> {
             tree.setPath(tree.getData().getMenuPage());
         });
 
@@ -394,5 +320,10 @@ public class AuthServiceImpl extends AbstractAuthService {
         copyChildren.stream().forEach(child -> getFinalMenus(child, menus));
         return tree;
     }
+
+    private Role getOneRole(Map userRoleMap, Map<String, Role> auth) {
+        return auth.get(String.valueOf(userRoleMap.get("role_id")));
+    }
+
 
 }

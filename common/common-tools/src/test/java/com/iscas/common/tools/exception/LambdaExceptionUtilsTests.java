@@ -1,6 +1,6 @@
 package com.iscas.common.tools.exception;
 
-import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
+import com.iscas.common.tools.exception.lambda.Lambdas;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class LambdaExceptionUtilsTests {
     @Test
     public void test3() {
         try {
-            list.stream().forEach(LambdaExceptionUtils.lambdaWrapper(i -> {
+            list.stream().forEach(Lambdas.wrappeConsumer(i -> {
                 File file = new File(i);
                 FileInputStream fileInputStream = new FileInputStream(file);
             }));
@@ -63,7 +63,7 @@ public class LambdaExceptionUtilsTests {
 
     @Test
     public void test31() {
-        list.stream().forEach(LambdaExceptionUtils.lambdaWrapper(i -> {
+        list.stream().forEach(Lambdas.wrappeConsumer(i -> {
             File file = new File(i);
             FileInputStream fileInputStream = new FileInputStream(file);
             System.out.println(fileInputStream);
@@ -73,7 +73,7 @@ public class LambdaExceptionUtilsTests {
     @Test
     public void test4() {
         try {
-            list.stream().map(LambdaExceptionUtils.lambdaWrapper(i -> "lalala" + Integer.parseInt(i)))
+            list.stream().map(Lambdas.wrapperFunction(i -> "lalala" + Integer.parseInt(i)))
                     .forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +83,7 @@ public class LambdaExceptionUtilsTests {
     @Test
     public void test5() {
         try {
-            list.stream().filter(LambdaExceptionUtils.lambdaPredicateWrapper(i -> i.length() == 1))
+            list.stream().filter(Lambdas.wrapperPredicate(i -> i.length() == 1))
                     .forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();

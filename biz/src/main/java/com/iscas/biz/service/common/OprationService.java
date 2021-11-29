@@ -30,13 +30,10 @@ public class OprationService {
         List<Opration> oprations = oprationMapper.selectByExample(null);
         List<ComboboxData<Opration>> comboboxDatas = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(oprations)) {
-            comboboxDatas = oprations.stream().map(opration -> {
-                ComboboxData<Opration> comboboxData = new ComboboxData<>();
-                comboboxData.setLabel(opration.getOpName());
-                comboboxData.setValue(opration.getOpId());
-                comboboxData.setData(opration);
-                return comboboxData;
-            }).collect(Collectors.toList());
+            comboboxDatas = oprations.stream().map(opration -> new ComboboxData<Opration>()
+                    .setLabel(opration.getOpName())
+                    .setValue(opration.getOpId())
+                    .setData(opration)).collect(Collectors.toList());
         }
         return comboboxDatas;
     }

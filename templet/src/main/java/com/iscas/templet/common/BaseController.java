@@ -1,5 +1,9 @@
 package com.iscas.templet.common;
 
+import com.iscas.templet.view.table.TableHeaderResponse;
+import com.iscas.templet.view.table.TableResponse;
+import com.iscas.templet.view.tree.TreeResponse;
+
 /**
  * Controller基础控制类
  *
@@ -9,6 +13,7 @@ package com.iscas.templet.common;
  * @since jdk1.8
  */
 public class BaseController {
+
     /**
      * 获取返回模板
      * @version 1.0
@@ -30,6 +35,39 @@ public class BaseController {
      */
     public <T> ResponseEntity<T> getResponse(Class<T> tClass) {
         return new ResponseEntity<T>();
+    }
+
+    /**
+     * 获取树返回模板
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/11/27
+     * @return com.iscas.templet.common.TreeResponse
+     */
+    public TreeResponse getTreeResponse() {
+        return new TreeResponse();
+    }
+
+    /**
+     * 获取表头返回模板
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/11/27
+     * @return com.iscas.templet.common.TableHeaderResponse
+     */
+    public TableHeaderResponse getTableHeaderResponse() {
+        return new TableHeaderResponse();
+    }
+
+    /**
+     * 获取表返回模板
+     * @version 1.0
+     * @since jdk1.8
+     * @date 2021/11/27
+     * @return com.iscas.templet.common.TableResponse
+     */
+    public TableResponse getTableResponse() {
+        return new TableResponse();
     }
 
 }

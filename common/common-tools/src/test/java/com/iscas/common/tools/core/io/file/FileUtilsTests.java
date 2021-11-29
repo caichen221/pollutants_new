@@ -5,6 +5,7 @@ import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,6 +69,12 @@ public class FileUtilsTests {
         file.delete();
         System.out.println("--------FileUtils反向按行读取end---------");
 
+    }
+
+    @Test
+    public void test4() throws IOException {
+        File[] files = FileUtils.listAllFiles(new File("."));
+        Arrays.stream(files).forEach(System.out::println);
     }
 
 

@@ -7,7 +7,7 @@ import com.iscas.biz.mapper.common.RoleMenuMapper;
 import com.iscas.biz.mapper.common.RoleOprationMapper;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.core.string.StringRaiseUtils;
-import com.iscas.common.tools.exception.lambda.LambdaExceptionUtils;
+import com.iscas.common.tools.exception.lambda.Lambdas;
 import com.iscas.templet.view.table.ComboboxData;
 import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -44,13 +44,11 @@ public class RoleService {
     public List<ComboboxData> combobox() {
         List<Role> roles = roleMapper.selectByExample(null);
         if (CollectionUtils.isNotEmpty(roles)) {
-            return roles.stream().map(LambdaExceptionUtils.lambdaWrapper(role -> {
-                ComboboxData comboboxData = new ComboboxData();
-                comboboxData.setLabel(role.getRoleName())
-                        .setValue(role.getRoleId())
-                        .setData(role);
-                return comboboxData;
-            })).collect(Collectors.toList());
+            return roles.stream().map(Lambdas.wrapperFunction(role -> new ComboboxData()
+                    .setLabel(role.getRoleName())
+                    .setValue(role.getRoleId())
+                    .setData(role)
+            )).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

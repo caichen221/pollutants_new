@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -70,6 +71,30 @@ public class  PoiTlSimpleTests {
                     put("author", Texts.of("张三").style(Style.builder()
                     .buildUnderlineColor("664784").buildUnderlinePatterns(UnderlinePatterns.DASH).build()).bold().color("222222").create());
                     put("link", Texts.of("腾讯首页").link("http://www.qq.com").color("888888").create());
+                }});
+        File tmpFile = File.createTempFile("word-text", ".docx");
+        tmpFile.deleteOnExit();
+        template.writeAndClose(new FileOutputStream(tmpFile));
+        tmpFile.delete();
+    }
+
+    @Test
+    public void testTexts() throws IOException {
+
+        ClassPathResource pathResource = new ClassPathResource("poitl/word-texts.docx");
+        XWPFTemplate template = XWPFTemplate.compile(pathResource.getStream()).render(
+                new HashMap<String, Object>(){{
+                    put("title", "测试文本");
+                    put("author", Texts.of("张三").style(Style.builder()
+                            .buildUnderlineColor("664784").buildUnderlinePatterns(UnderlinePatterns.DASH).build()).bold().color("222222").create());
+                    Style style = Style.builder().buildUnderlineColor("664784").buildUnderlinePatterns(UnderlinePatterns.DASH).build();
+                    TextRenderData trd1 = new TextRenderData("大风起兮云飞扬，威加海内兮归故乡，安得猛士兮守四方！");
+                    TextRenderData trd2 = new TextRenderData("岂曰无衣？七兮。不如子之衣，安且吉兮。岂曰无衣？六兮。不如子之衣，安且燠兮。");
+                    TextRenderData trd3 = new TextRenderData("由来称独立，本自号倾城。柳叶眉间发，桃花脸上生。腕摇金钏响，步转玉环鸣。纤腰宜宝袜，红衫艳织成。悬知一顾重，别觉舞腰轻。");
+                    trd1.setStyle(style);
+                    trd2.setStyle(style);
+                    trd3.setStyle(style);
+                    put("texts", Arrays.asList(trd1, trd2, trd3));
                 }});
         File tmpFile = File.createTempFile("word-text", ".docx");
         tmpFile.deleteOnExit();

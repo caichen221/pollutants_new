@@ -1,6 +1,7 @@
 package com.iscas.biz.service.common;
 
 import com.iscas.biz.model.common.LogTreeDataDTO;
+import com.iscas.common.tools.core.io.file.FileUtils;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
 import com.iscas.templet.view.tree.TreeResponseData;
@@ -85,15 +86,6 @@ public class SystemLogService {
             throw new BaseException(String.format("[%s]不是一个文件", filePath));
         }
         List<String> logDatas = new ArrayList<>();
-        @Cleanup ReversedLinesFileReader reversedLinesFileReader = new ReversedLinesFileReader(file, Charset.forName("utf-8"));
-        for (int i = 0; i < lines; i++) {
-            String line = reversedLinesFileReader.readLine();
-            if (line == null) {
-                break;
-            }
-            logDatas.add(line.replace("\t", "    "));
-        }
-        Collections.reverse(logDatas);
-        return logDatas;
+        return FileUtils.reverseReadLines(file, "utf-8", lines);
     }
 }
