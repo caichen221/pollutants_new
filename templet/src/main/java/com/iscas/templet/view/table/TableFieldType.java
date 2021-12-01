@@ -50,7 +50,7 @@ public enum  TableFieldType {
     /**表头下拉*/
     headerSelect,
     /**可编辑的下拉菜单*/
-    selectCanEdit,
+    selectCanedit,
     /**级联选择下拉菜单*/
     selectCascader,
     /**年*/

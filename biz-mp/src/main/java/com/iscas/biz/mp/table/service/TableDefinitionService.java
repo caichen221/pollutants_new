@@ -47,7 +47,7 @@ public class TableDefinitionService {
 
 	@Autowired
 	private TableDefinitionConfig tableDefinitionConfig;
-	
+
 	/**
 	 * 获取表格的表头定义，不带下拉列表选项
 	 * @param tableIdentity
@@ -111,7 +111,7 @@ public class TableDefinitionService {
 		// tableSetting.setViewType(tableDefinition.getViewType() == null ? null : TableViewType.valueOf(tableDefinition.getViewType()));
         //增加判断，修复了传入值为空时异常的BUG
         tableSetting.setViewType((tableDefinition.getViewType() == null || tableDefinition.getViewType().isEmpty()) ? null : TableViewType.valueOf(tableDefinition.getViewType()));
-        
+
 		//构建buttonSetting
 		String buttonSetting = tableDefinition.getButtonSetting();
 		if (org.apache.commons.lang3.StringUtils.isNotEmpty(buttonSetting)) {
@@ -162,7 +162,8 @@ public class TableDefinitionService {
 			tableField.setSearchType(TableSearchType.analyzeSearchType(columnDefinition.getSearchType()));
 //			tableField.setSearchWay(columnDefinition.getField());
 //			tableField.setParent();
-			tableField.setType(TableFieldType.analyzeFieldType(columnDefinition.getType()));
+            String type = columnDefinition.getType();
+            tableField.setType(TableFieldType.analyzeFieldType(type));
 			tableField.setSortable(columnDefinition.isSortable());
 
 			//构建Option选项
@@ -199,7 +200,7 @@ public class TableDefinitionService {
 					}
 					tableField.setOption(comboboxDataList);
 					//检查列的type和ref是否匹配
-					if(!TableFieldType.select.name().equalsIgnoreCase(columnDefinition.getType())){
+					if(!(TableFieldType.select.name().equalsIgnoreCase(type) || TableFieldType.selectCanedit.name().equalsIgnoreCase(type))){
 						ValidDataException validDataException = new ValidDataException(
 							String.format("列[%s]的type配置不是[select],但是存在ref配置！", columnDefinition.getField()));
 						validDataException.setMsgDetail(
