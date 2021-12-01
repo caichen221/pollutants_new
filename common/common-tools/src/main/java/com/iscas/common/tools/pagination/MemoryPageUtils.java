@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2019/4/12 14:17
  * @since jdk1.8
  */
-public class MemoryPageUtils {
+public class  MemoryPageUtils {
     private MemoryPageUtils() {}
 
     /**

@@ -20,7 +20,7 @@ public class CompareWordTest {
         //创建Document实例
         Document doc2 = new Document();
         //加载第二个Word示例文档
-        doc2.loadFromFile("d:/wordcompare/平台技术调研-1.docx");
+        doc2.loadFromFile("d:/wordcompare/平台技术调研1.docx");
         //比较两个示例文档的内容差异
         doc1.compare(doc2, "e-iceblue");
         //保存结果文档

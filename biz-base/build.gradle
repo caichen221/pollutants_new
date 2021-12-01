@@ -97,7 +97,6 @@ dependencies {
     //==============datasong-client-plus 在私服环境下使用 end
 
     //====================使用datasong-clientjar包时候使用 begin
-    api("org.apache.httpcomponents:httpmime:4.5.2")
 
     //thrift
     api("org.apache.thrift:libthrift:0.10.0")

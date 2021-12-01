@@ -15,24 +15,22 @@ plugins {
 
 dependencies {
     testImplementation group: 'junit', name: 'junit'
-    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+
     api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
 
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
     api group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:"${jacksonVersion}"
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+
     api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
 
-    // https://mvnrepository.com/artifact/cn.miludeer/jsoncode
     api group: 'cn.miludeer', name: 'jsoncode', version: "${jsoncodeVersion}"
 
-    // https://mvnrepository.com/artifact/net.sf.json-lib/json-lib
     api ("net.sf.json-lib:json-lib:${jsonlibVersion}")
 
-    // https://mvnrepository.com/artifact/org.json/json
     api group: 'org.json', name: 'json', version: "${orgJsonVersion}"
 
     api ("xom:xom:${xomVersion}")
+
+    api("org.apache.httpcomponents:httpmime:${httpcomponentsVersion}")
 
     api "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
     api group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"

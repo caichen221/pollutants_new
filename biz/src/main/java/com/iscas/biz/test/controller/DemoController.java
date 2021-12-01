@@ -139,6 +139,18 @@ public class DemoController {
         return "success";
     }
 
+    @GetMapping("/tx9")
+    public String tx9(TestForm testForm) throws IOException {
+        SpringUtils.getSession().setAttribute("name", "张三");
+        return "tx9";
+    }
+
+    @Data
+    static class TestForm {
+        private String key;
+        private Integer value;
+    }
+
     @Data
     static class TestBean {
         private String key;
