@@ -353,6 +353,11 @@
             <AppenderRef ref="consoleAppender"/>
         </AsyncLogger>
 
+        <AsyncLogger name="accessLogger" level="debug" includeLocation="true" additivity="false">
+            <AppenderRef ref="accessAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+
         <AsyncRoot level="debug" includeLocation="true" additivity="false">
             <AppenderRef ref="infoFileAppender"/>
             <AppenderRef ref="warnFileAppender"/>

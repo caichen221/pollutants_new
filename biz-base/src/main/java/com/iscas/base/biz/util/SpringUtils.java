@@ -110,12 +110,15 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
         return Optional.ofNullable(getRequest()).map(req -> req.getSession(flag)).orElse(null);
     }
 
+    public static String getIpAddr() {
+        return getIpAddr(getRequest());
+    }
+
     /**
      * 获取客户端地址
      */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static String getIpAddr() {
-        HttpServletRequest request = getRequest();
+    public static String getIpAddr(HttpServletRequest request) {
         AssertObjUtils.assertNotNull(request, "未获取到request请求，无法获取客户端请求");
         String ipAddress;
         try {

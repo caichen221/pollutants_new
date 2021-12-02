@@ -3,13 +3,14 @@ package com.iscas.base.biz.controller.common;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.config.cors.CorsProps;
+import com.iscas.base.biz.util.AccessLogUtils;
 import com.iscas.base.biz.util.AuthContextHolder;
-import com.iscas.common.tools.assertion.AssertRuntimeException;
-import com.iscas.common.tools.exception.ExceptionUtils;
-import com.iscas.templet.exception.*;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.common.tools.assertion.AssertRuntimeException;
 import com.iscas.common.tools.core.random.RandomStringUtils;
+import com.iscas.common.tools.exception.ExceptionUtils;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ import java.util.Set;
 @RestControllerAdvice
 @Component
 @Slf4j
-public class ExceptionAdivisor implements Constants {
+public class ExceptionAdivisor implements Constants, com.iscas.common.tools.constant.HttpStatus {
     @Autowired
     private CorsProps corsProps;
     @Value("${exception-stack-trace-max-size:500}")
@@ -46,6 +47,7 @@ public class ExceptionAdivisor implements Constants {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(MethodArgumentNotValidException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _400);
         StringBuilder result = new StringBuilder();
         result.append("error 400 :");
         BindingResult bindingResult = e.getBindingResult();
@@ -66,6 +68,7 @@ public class ExceptionAdivisor implements Constants {
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(ConstraintViolationException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _400);
         StringBuilder result = new StringBuilder();
         result.append("error 400 :");
         Set<ConstraintViolation<?>> cvs = e.getConstraintViolations();
@@ -84,14 +87,16 @@ public class ExceptionAdivisor implements Constants {
 
     //将ValidDataException的HTTP状态码改为400
     @ExceptionHandler(value = ValidDataException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(ValidDataException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _400);
         return res(HttpStatus.BAD_REQUEST.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = LoginException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity loginException(LoginException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _401);
         HttpSession session = SpringUtils.getSession();
         String data = RandomStringUtils.randomStr(16);
         session.setAttribute(SESSION_LOGIN_KEY, data);
@@ -103,6 +108,7 @@ public class ExceptionAdivisor implements Constants {
     @ExceptionHandler(value = AuthenticationRuntimeException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity loginRuntimeException(AuthenticationRuntimeException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _401);
         HttpSession session = SpringUtils.getSession();
         String data = RandomStringUtils.randomStr(16);
         session.setAttribute(SESSION_LOGIN_KEY, data);
@@ -114,48 +120,56 @@ public class ExceptionAdivisor implements Constants {
     @ExceptionHandler(value = AuthorizationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity to403Exception(AuthorizationException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _403);
         return res(HttpStatus.FORBIDDEN.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = AuthorizationRuntimeException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity to403Exception(AuthorizationRuntimeException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _403);
         return res(HttpStatus.FORBIDDEN.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = RequestTimeoutRuntimeException.class)
     @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
     public ResponseEntity to408(BaseRuntimeException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _408);
         return res(HttpStatus.REQUEST_TIMEOUT.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = BaseException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(BaseException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = BaseRuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(BaseRuntimeException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = AssertRuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(AssertRuntimeException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(MaxUploadSizeExceededException e){
+        AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传文件大小超过限制", e);
     }
 
     @ExceptionHandler(value = Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(Throwable throwable){
+        AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器内部错误", throwable);
     }
 

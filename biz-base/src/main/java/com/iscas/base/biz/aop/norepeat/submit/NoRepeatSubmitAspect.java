@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.MessageFormat;
 
 /**
  * @author zhuquanwen
@@ -74,6 +75,7 @@ public class NoRepeatSubmitAspect implements Constants {
                     }
                     break;
                 }
+                default: throw new RepeatSubmitException(MessageFormat.format("不支持的类型:[{0}]", noRepeatSubmitBean.getLockType()));
             }
         }
 

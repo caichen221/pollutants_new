@@ -83,7 +83,7 @@ public class OrgService {
             for (OrgRoleKey orgRoleKey : orgRoleKeys) {
                 Role role = roleMap.get(orgRoleKey.getRoleId());
                 if (role != null) {
-                    orgRoleMap.computeIfAbsent(orgRoleKey.getOrgId(), ArrayList::new).add(role);
+                    orgRoleMap.computeIfAbsent(orgRoleKey.getOrgId(), k -> new ArrayList<>()).add(role);
                 }
             }
         }
@@ -107,7 +107,7 @@ public class OrgService {
                 }
                 org.setRoleNames(roleNamesJoiner.toString());
             }
-            childOrgs.computeIfAbsent(orgPid, ArrayList::new).add(comboboxData);
+            childOrgs.computeIfAbsent(orgPid, k -> new ArrayList<>()).add(comboboxData);
         }
         return childOrgs;
     }

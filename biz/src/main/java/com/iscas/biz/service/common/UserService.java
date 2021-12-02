@@ -82,7 +82,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(allOrgs)) {
                 for (Org allOrg : allOrgs) {
                     Integer orgPid = allOrg.getOrgPid();
-                    childOrgMap.computeIfAbsent(orgPid, ArrayList::new).add(allOrg);
+                    childOrgMap.computeIfAbsent(orgPid, k -> new ArrayList<>()).add(allOrg);
                 }
             }
             getAllChildOrgIds(orgId, childOrgMap, childOrgIds);
@@ -110,7 +110,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(userRoleMaps)) {
                 for (Map roleMap : userRoleMaps) {
                     Integer userId = (Integer) roleMap.get("user_id");
-                    userRoleMap.computeIfAbsent(userId, ArrayList::new).add(roleMap);
+                    userRoleMap.computeIfAbsent(userId, k -> new ArrayList<>()).add(roleMap);
                 }
             }
             for (Map datum : data) {
@@ -138,7 +138,7 @@ public class UserService {
             if (CollectionUtils.isNotEmpty(orgUserMaps)) {
                 for (Map userMap : orgUserMaps) {
                     Integer userId = (Integer) userMap.get("user_id");
-                    orgUserMap.computeIfAbsent(userId, ArrayList::new).add(userMap);
+                    orgUserMap.computeIfAbsent(userId, k -> new ArrayList<>()).add(userMap);
                 }
             }
             for (Map datum : data) {

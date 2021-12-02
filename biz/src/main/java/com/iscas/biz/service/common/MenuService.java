@@ -82,7 +82,7 @@ public class MenuService {
             for (RoleMenuKey roleMenuKey : roleMenuKeys) {
                 Role role = roleMap.get(roleMenuKey.getRoleId());
                 if (role != null) {
-                    menuRoleMap.computeIfAbsent(roleMenuKey.getMenuId(), ArrayList::new).add(role);
+                    menuRoleMap.computeIfAbsent(roleMenuKey.getMenuId(), k -> new ArrayList<>()).add(role);
                 }
             }
         }
@@ -92,7 +92,7 @@ public class MenuService {
         if (CollectionUtils.isNotEmpty(menuOprationMaps)) {
             for (Map oprationMap : menuOprationMaps) {
                 Integer menuId = (Integer) oprationMap.get("menu_id");
-                menuOprationMap.computeIfAbsent(menuId, ArrayList::new).add(oprationMap);
+                menuOprationMap.computeIfAbsent(menuId, k -> new ArrayList<>()).add(oprationMap);
             }
         }
 
@@ -124,10 +124,16 @@ public class MenuService {
                 }
                 menu.setOprationNames(opNameJoiner.toString());
             }
-            childOrgs.computeIfAbsent(menuPid, ArrayList::new).add(treeResponseData);
+            childOrgs.computeIfAbsent(menuPid, k -> new ArrayList<>()).add(treeResponseData);
         }
         return childOrgs;
     }
+
+//    public static void main(String[] args) {
+//        Map<String, ArrayList> map = new HashMap<>();
+//        List list = map.computeIfAbsent(null, k -> new ArrayList());
+//        System.out.println(list);
+//    }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {

@@ -1,4 +1,4 @@
-package com.iscas.biz.model.common.access;
+package com.iscas.base.biz.model.access;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

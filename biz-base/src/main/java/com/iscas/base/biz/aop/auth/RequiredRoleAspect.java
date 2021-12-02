@@ -7,7 +7,6 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthorizationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 角色aop

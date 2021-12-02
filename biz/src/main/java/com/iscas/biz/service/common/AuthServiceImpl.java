@@ -128,7 +128,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                 int roleId = (int) menuRole.get("role_id");
                 int menuId = (int) menuRole.get("menu_id");
                 String menuName = (String) menuRole.get("menu_name");
-                menuRoleMap.computeIfAbsent(roleId, ArrayList::new)
+                menuRoleMap.computeIfAbsent(roleId, k -> new ArrayList<>())
                         .add(new Menu().setKey(String.valueOf(menuId)).setName(menuName));
             }
         }
@@ -139,7 +139,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                 int resourceId = (int) roleResource.get("resource_id");
                 Url url = urls.get(String.valueOf(resourceId));
                 if (url != null) {
-                    urlRoleMap.computeIfAbsent(roleId, ArrayList::new).add(url);
+                    urlRoleMap.computeIfAbsent(roleId, k -> new ArrayList<>()).add(url);
                 }
             }
         }

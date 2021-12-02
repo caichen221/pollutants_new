@@ -7,6 +7,7 @@ import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Optional;
@@ -56,8 +57,16 @@ public class AuthUtils {
      * 先从header中获取，如果没有从cookie中获取
      */
     public static String getToken() {
-        return Optional.ofNullable(SpringUtils.getRequest().getHeader(Constants.TOKEN_KEY))
-                .orElse(Optional.ofNullable(CookieUtils.getCookieByName(SpringUtils.getRequest(), Constants.TOKEN_KEY))
+        return getToken(SpringUtils.getRequest());
+    }
+
+    /**
+     * 获取token
+     * 先从header中获取，如果没有从cookie中获取
+     */
+    public static String getToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(Constants.TOKEN_KEY))
+                .orElse(Optional.ofNullable(CookieUtils.getCookieByName(request, Constants.TOKEN_KEY))
                         .map(Cookie::getValue)
                         .orElse(null));
     }

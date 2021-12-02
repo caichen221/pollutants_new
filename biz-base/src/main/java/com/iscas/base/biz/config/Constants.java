@@ -57,4 +57,7 @@ public interface Constants {
     /**跨域允许Methods的key*/
     String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
 
+    /**access日志访问开始时间*/
+    String KEY_REQUEST_START_TIME = "KEY_REQUEST_START_TIME";
+
 }
