@@ -49,6 +49,34 @@ public class TableDefinitionService {
 	private TableDefinitionConfig tableDefinitionConfig;
 
 	/**
+	 * 表从mysql导入神州通用数据库后有些字段多了很多空格，trim处理一下
+	 * */
+	private void trimColumnDefinitions(List<ColumnDefinition> columnDefinitions) {
+		if (CollectionUtils.isNotEmpty(columnDefinitions)) {
+			columnDefinitions.forEach(this::trimStrOfObj);
+		}
+	}
+
+	/**
+	 * 表从mysql导入神州通用数据库后有些字段多了很多空格，trim处理一下
+	 * */
+	private void trimStrOfObj(Object obj) {
+		Arrays.stream(obj.getClass().getDeclaredFields())
+				.filter(field -> field.getType() == String.class)
+				.forEach(field -> {
+					field.setAccessible(true);
+					try {
+						Object o = field.get(obj);
+						if (o != null) {
+							field.set(obj, o.toString().trim());
+						}
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				});
+	}
+
+	/**
 	 * 获取表格的表头定义，不带下拉列表选项
 	 * @param tableIdentity
 	 * @return
@@ -66,6 +94,7 @@ public class TableDefinitionService {
 
 			List<ColumnDefinition> columnDefinitions =
 				tableDefinitionMapper.getHeaderByIdentify(tableDefinitionConfig.getHeaderDefinitionTableName() , tableIdentity);
+			trimColumnDefinitions(columnDefinitions);
 			if (columnDefinitions == null || columnDefinitions.size() == 0) {
 //				tableHeaderResponse.setMessage(String.format("column definition not exist for [%s]", tableIdentity));
 //				tableHeaderResponse.setDesc(String.format("[%s]的表头定义不存在！", tableIdentity));
@@ -77,6 +106,7 @@ public class TableDefinitionService {
 			//添加表格定义
 			TableDefinition tableDefinition =
 					tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName(), tableIdentity);
+			trimStrOfObj(tableDefinition);
 			String primaryKey = tableDefinition.getPrimaryKey();
 			if (StringUtils.isEmpty(primaryKey)) {
 				primaryKey = tableDefinitionConfig.getPrimaryKey();
@@ -110,7 +140,7 @@ public class TableDefinitionService {
 		tableSetting.setFrontInfo(tableDefinition.getFrontInfo());
 		// tableSetting.setViewType(tableDefinition.getViewType() == null ? null : TableViewType.valueOf(tableDefinition.getViewType()));
         //增加判断，修复了传入值为空时异常的BUG
-        tableSetting.setViewType((tableDefinition.getViewType() == null || tableDefinition.getViewType().isEmpty()) ? null : TableViewType.valueOf(tableDefinition.getViewType()));
+        tableSetting.setViewType((tableDefinition.getViewType() == null || tableDefinition.getViewType().isBlank()) ? null : TableViewType.valueOf(tableDefinition.getViewType()));
 
 		//构建buttonSetting
 		String buttonSetting = tableDefinition.getButtonSetting();
@@ -200,7 +230,7 @@ public class TableDefinitionService {
 					}
 					tableField.setOption(comboboxDataList);
 					//检查列的type和ref是否匹配
-					if(!(TableFieldType.select.name().equalsIgnoreCase(type) || TableFieldType.selectCanedit.name().equalsIgnoreCase(type))){
+					if(!(TableFieldType.select.name().equalsIgnoreCase(type.trim()) || TableFieldType.selectCanedit.name().equalsIgnoreCase(type.trim()))){
 						ValidDataException validDataException = new ValidDataException(
 							String.format("列[%s]的type配置不是[select],但是存在ref配置！", columnDefinition.getField()));
 						validDataException.setMsgDetail(
@@ -244,8 +274,10 @@ public class TableDefinitionService {
 			//查询表格定义
 			TableDefinition tableDefinition =
 					tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName(), tableIdentity);
+			trimStrOfObj(tableDefinition);
 			List<ColumnDefinition> columnDefinitions =
 					tableDefinitionMapper.getHeaderByIdentify(tableDefinitionConfig.getHeaderDefinitionTableName(), tableIdentity);
+			trimColumnDefinitions(columnDefinitions);
 			if (null == tableDefinition) {
 //				tableResponse.setMessage(String.format("table definition not exist for [%s]", tableIdentity));
 //				tableResponse.setDesc(String.format("[%s]的表格定义不存在！", tableIdentity));
@@ -505,6 +537,7 @@ public class TableDefinitionService {
 		try {
 			//查询表格定义
 			TableDefinition tableDefinition = tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName()  , tableIdentity);
+			trimStrOfObj(tableDefinition);
 			if( null == tableDefinition){
 
 				ValidDataException validDataException = new ValidDataException(String.format("[%s]的表格定义不存在！",tableIdentity));
@@ -551,6 +584,7 @@ public class TableDefinitionService {
 		try {
 			//查询表格定义
 			TableDefinition tableDefinition = tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName()  , tableIdentity);
+			trimStrOfObj(tableDefinition);
 			if( null == tableDefinition){
 //				responseEntity.setMessage(String.format("table definition not exist for [%s]",tableIdentity));
 //				responseEntity.setDesc(String.format("[%s]的表格定义不存在！",tableIdentity));
@@ -572,7 +606,15 @@ public class TableDefinitionService {
 				throw  validDataException;
 			}
 
-			int ret = tableDefinitionMapper.deleteData(tableDefinition.getTableName(), tableDefinitionConfig.getPrimaryKey(), id);
+			String primaryKey = tableDefinition.getPrimaryKey();
+			if (StringUtils.isEmpty(primaryKey)) {
+				primaryKey = tableDefinitionConfig.getPrimaryKey();
+				if (StringUtils.isEmpty(primaryKey)) {
+					primaryKey = "id";
+				}
+			}
+//			int ret = tableDefinitionMapper.deleteData(tableDefinition.getTableName(), tableDefinitionConfig.getPrimaryKey(), id);
+			int ret = tableDefinitionMapper.deleteData(tableDefinition.getTableName(), primaryKey, id);
 			responseEntity.setValue(ret);
 		}catch (BaseException e){
 			e.printStackTrace();
@@ -596,6 +638,7 @@ public class TableDefinitionService {
 			//查询表格定义
 			TableDefinition tableDefinition =
 				tableDefinitionMapper.getTableByIdentify(tableDefinitionConfig.getTableDefinitionTableName(), tableIdentity);
+			trimStrOfObj(tableDefinition);
 			if (null == tableDefinition) {
 				ValidDataException validDataException = new ValidDataException(String.format("[%s]的表格定义不存在！", tableIdentity));
 				validDataException.setMsgDetail(String.format("table definition not exist for [%s]", tableIdentity));

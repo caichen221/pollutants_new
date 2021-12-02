@@ -2,7 +2,6 @@ package com.iscas.biz.mp.table.mapper;
 
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.table.TableDefinitionSqlContext;
 import com.iscas.biz.mp.table.model.ColumnDefinition;
 import com.iscas.biz.mp.table.model.TableDefinition;
 import org.apache.ibatis.annotations.*;
@@ -13,49 +12,55 @@ import java.util.Map;
 
 /**
  *
- * Created by ZQM on 2016/5/27.
+ * <p>为了适配多种数据库的方言，使用SelectProvider动态适配第一个数据源的数据库类型，</p>
+ * <p>生成对应的SQL语句(xxtable在第一个数据源内) update by zqw 2021-12-02</p>
  *
- *  * <p>为了适配多种数据库的方言，重新实现SQL,使用SelectProvider动态适配第一个数据源的数据库类型，</p>
- *  * <p>生成对应的SQL语句(xxtable在第一个数据源内) update by zqw 2021-12-02</p>
+ * Created by ZQM on 2016/5/27.
  */
 @Mapper
 @Repository
 @ConditionalOnMybatis
-public interface TableDefinitionMapper {
-	@SelectProvider(method = "getTableByIdentify", type = TableDefinitionSqlContext.class)
+public interface TableDefinitionMapperBackup {
+	@Select("SELECT * FROM ${tableDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} LIMIT 0,1 ")
 	TableDefinition getTableByIdentify(@Param("tableDefinitionTableName") String tableDefinitionTableName, @Param("tableIdentity") String tableIdentity);
 
-	@SelectProvider(method = "getHeaderByIdentify", type = TableDefinitionSqlContext.class)
+	@Select("SELECT * FROM ${columnDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} ORDER BY sequence")
 	List<ColumnDefinition> getHeaderByIdentify(@Param("columnDefinitionTableName") String columnDefinitionTableName, @Param("tableIdentity") String tableIdentity);
 
-	@SelectProvider(method = "getRefTable", type = TableDefinitionSqlContext.class)
+	@Select("SELECT ${id} as id,${value} as value FROM ${tableName} ORDER BY id")
 	List<Map<Object,Object>> getRefTable(@Param("tableName") String tableName, @Param("id") String id, @Param("value") String value);
 
-	@SelectProvider(method = "getDataBySql", type = TableDefinitionSqlContext.class)
+	@Select("${sql}")
 	List<Map<String,Object>> getDataBySql(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
-	@SelectProvider(method = "getCountBySql", type = TableDefinitionSqlContext.class)
+	@Select("${sql}")
 	int getCountBySql(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
-	@SelectProvider(method = "getTableColumns", type = TableDefinitionSqlContext.class)
+	@Select("SELECT COLUMN_NAME from INFORMATION_SCHEMA.columns where TABLE_NAME = #{tableName} AND TABLE_SCHEMA = (select database())")
 	List<String> getTableColumns(@Param("tableName") String tableName);
 
-	@InsertProvider(method = "saveData", type = TableDefinitionSqlContext.class)
+
+	@Insert("${sql}")//需要用replace
 	@Options(useGeneratedKeys=true, keyProperty= "param.id")
-		//需要用replace
 //	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int saveData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
-	@UpdateProvider(method = "updateData", type = TableDefinitionSqlContext.class)
+
+	@Update("${sql}")//需要用replace
+//	@Options( useGeneratedKeys=true, keyProperty= "param.id")
 //	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int updateData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
-	@DeleteProvider(method = "deleteData", type = TableDefinitionSqlContext.class)
+	@Delete("delete from ${tableName} where  ${primaryKey} = #{value}")//需要用replace
 	int deleteData(@Param("tableName") String tableName, @Param("primaryKey") String primaryKey, @Param("value") Object value);
 
-	@DeleteProvider(method = "batchDeleteData", type = TableDefinitionSqlContext.class)
+
+	@Delete("<script>delete from ${tableName} where  ${primaryKey} in <foreach collection=\"ids\" index=\"index\" item=\"item\" open=\"(\" close=\")\" separator=\",\">  " +
+			"     #{item}       " +
+			"        </foreach></script>  ")
 	int batchDeleteData(@Param("tableName") String tableName, @Param("primaryKey") String primaryKey, @Param("ids") List<Object> ids);
 
-	@SelectProvider(method = "getCountByField", type = TableDefinitionSqlContext.class)
+
+	@Select("SELECT COUNT(${field}) AS COUNT from (${selectSql}) t where t.${field} = #{fieldValue}")
 	int getCountByField(@Param("selectSql") String selectSql, @Param("field") String field, @Param("fieldValue") Object fieldValue);
 }

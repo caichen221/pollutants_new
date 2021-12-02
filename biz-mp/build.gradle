@@ -35,6 +35,8 @@ dependencies {
     
     // mysql连接
     api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    api group: 'com.csicit.thirdparty', name: 'oscar', version: '1.0.1'
+
     //mybatis分页插件(基本弃用)
     api group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
     //druid连接池配置

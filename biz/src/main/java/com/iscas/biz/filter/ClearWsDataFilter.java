@@ -36,7 +36,11 @@ public class ClearWsDataFilter extends AbstractStartedFilter {
     }
 
     private void beginClear() {
-        clearWsDataTask.clear();
+        try {
+            clearWsDataTask.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         SchedulingRunnable task = new SchedulingRunnable("ClearWsDataTask", "clear", "0 0 */1 * * ?");
         //每天执行一次任务
         cronTaskRegister.addCronTask("clear_wsData_task", task, "0 0 0 * * ?");

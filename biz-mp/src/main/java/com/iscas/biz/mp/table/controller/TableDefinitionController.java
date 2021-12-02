@@ -33,19 +33,19 @@ public class TableDefinitionController extends BaseController {
 	private TableDefinitionService tableDefinitionService;
 
 //	@ApiOperation(value="获取表头", notes="不带数据，不带下拉列表")
-    @GetMapping(value = "/{tableIdentity}/header", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @GetMapping(value = "/{tableIdentity}/header", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeader(@PathVariable String tableIdentity) throws BaseException {
 		return tableDefinitionService.getTableHeader(tableIdentity);
     }
 
 //	@ApiOperation(value="获取表头", notes="不带数据，带下拉列表")
-	@GetMapping(value = "/{tableIdentity}/headerWithOption", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@GetMapping(value = "/{tableIdentity}/headerWithOption", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity getTableHeaderWithOption(@PathVariable String tableIdentity) throws BaseException {
 		return tableDefinitionService.getHeaderWithOption(tableIdentity);
 	}
 
 //	@ApiOperation(value="查询表格数据", notes="不带表头")
-	@PostMapping(value = "/{tableIdentity}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@PostMapping(value = "/{tableIdentity}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity getData(@PathVariable String tableIdentity, @RequestBody TableSearchRequest request)
 		throws ValidDataException {
 		return tableDefinitionService.getData(tableIdentity, request, null);

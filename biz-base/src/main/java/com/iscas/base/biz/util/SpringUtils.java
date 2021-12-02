@@ -15,8 +15,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -178,4 +180,10 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
     public static <T> T getBean(Class<T> tClass) throws BeansException {
         return (T) applicationContext.getBean(tClass);
     }
+
+
+//    /**
+//     * 获取springmvc 的URI对应的method
+//     * */
+//    public static Map<String, Method> getHandlerMapping
 }
