@@ -82,7 +82,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from resource
+    from resources
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -96,7 +96,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from resource
+    from resources
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -109,27 +109,27 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from resource
+    from resources
     where resource_id = #{resourceId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from resource
+    delete from resources
     where resource_id = #{resourceId,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.iscas.biz.domain.common.ResourceExample">
-    delete from resource
+    delete from resources
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.iscas.biz.domain.common.Resource">
-    insert into resource (resource_id, resource_url, resource_create_time, 
+    insert into resources (resource_id, resource_url, resource_create_time,
       resource_update_time, resource_desc)
     values (#{resourceId,jdbcType=INTEGER}, #{resourceUrl,jdbcType=VARCHAR}, #{resourceCreateTime,jdbcType=TIMESTAMP}, 
       #{resourceUpdateTime,jdbcType=TIMESTAMP}, #{resourceDesc,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.iscas.biz.domain.common.Resource">
-    insert into resource
+    insert into resources
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="resourceId != null">
         resource_id,
@@ -166,13 +166,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.iscas.biz.domain.common.ResourceExample" resultType="java.lang.Long">
-    select count(*) from resource
+    select count(*) from resources
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update resource
+    update resources
     <set>
       <if test="record.resourceId != null">
         resource_id = #{record.resourceId,jdbcType=INTEGER},
@@ -195,7 +195,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update resource
+    update resources
     set resource_id = #{record.resourceId,jdbcType=INTEGER},
       resource_url = #{record.resourceUrl,jdbcType=VARCHAR},
       resource_create_time = #{record.resourceCreateTime,jdbcType=TIMESTAMP},
@@ -206,7 +206,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update resource
+    update resources
     set resource_id = #{record.resourceId,jdbcType=INTEGER},
       resource_url = #{record.resourceUrl,jdbcType=VARCHAR},
       resource_create_time = #{record.resourceCreateTime,jdbcType=TIMESTAMP},
@@ -216,7 +216,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.iscas.biz.domain.common.Resource">
-    update resource
+    update resources
     <set>
       <if test="resourceUrl != null">
         resource_url = #{resourceUrl,jdbcType=VARCHAR},
@@ -234,7 +234,7 @@
     where resource_id = #{resourceId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.iscas.biz.domain.common.Resource">
-    update resource
+    update resources
     set resource_url = #{resourceUrl,jdbcType=VARCHAR},
       resource_create_time = #{resourceCreateTime,jdbcType=TIMESTAMP},
       resource_update_time = #{resourceUpdateTime,jdbcType=TIMESTAMP},
@@ -242,7 +242,7 @@
     where resource_id = #{resourceId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.iscas.biz.domain.common.Resource">
-    update resource
+    update resources
     set resource_url = #{resourceUrl,jdbcType=VARCHAR},
       resource_create_time = #{resourceCreateTime,jdbcType=TIMESTAMP},
       resource_update_time = #{resourceUpdateTime,jdbcType=TIMESTAMP}

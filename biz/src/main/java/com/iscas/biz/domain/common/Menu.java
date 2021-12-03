@@ -34,7 +34,7 @@ public class Menu implements Serializable {
 
     @ApiModelProperty("菜单名称")
     @NotNull(message = "菜单名称不能为空")
-    @Size(min = 2, max = 255, message = "菜单名称长度必须介于2-255之间")
+    @Size(min = 2, max = 50, message = "菜单名称长度必须介于2-50之间")
     private String menuName;
 
     @ApiModelProperty("角色ID（多选）不显示")

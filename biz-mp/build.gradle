@@ -35,7 +35,11 @@ dependencies {
     
     // mysql连接
     api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
-    api group: 'com.csicit.thirdparty', name: 'oscar', version: '1.0.1'
+    //神州通用连接
+    api group: 'com.csicit.thirdparty', name: 'oscar', version: "${oscarVersion}"
+    //oracle连接
+    api group: 'com.oracle.database.jdbc', name: 'ojdbc6', version: "${ojdbc6Version}"
+
 
     //mybatis分页插件(基本弃用)
     api group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
