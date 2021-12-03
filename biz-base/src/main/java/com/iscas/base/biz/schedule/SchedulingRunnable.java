@@ -1,11 +1,13 @@
 package com.iscas.base.biz.schedule;
 
 import com.iscas.base.biz.util.SpringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -45,18 +47,14 @@ public class SchedulingRunnable implements Runnable {
             Object target = SpringUtils.getBean(beanName);
 
             Method method = null;
-            if (null != params && params.length > 0) {
-                Class<?>[] paramCls = new Class[params.length];
-                for (int i = 0; i < params.length; i++) {
-                    paramCls[i] = params[i].getClass();
-                }
+            if (ArrayUtils.isNotEmpty(params)) {
+                Class<?>[] paramCls = Arrays.stream(params).map(param -> param.getClass()).toArray(Class<?>[]::new);
                 method = target.getClass().getDeclaredMethod(methodName, paramCls);
             } else {
                 method = target.getClass().getDeclaredMethod(methodName);
             }
-
             ReflectionUtils.makeAccessible(method);
-            if (null != params && params.length > 0) {
+            if (ArrayUtils.isNotEmpty(params)) {
                 method.invoke(target, params);
             } else {
                 method.invoke(target);
@@ -64,7 +62,6 @@ public class SchedulingRunnable implements Runnable {
         } catch (Exception ex) {
             logger.error(String.format("定时任务执行异常 - bean：%s，方法：%s，参数：%s ", beanName, methodName, params), ex);
         }
-
         long times = System.currentTimeMillis() - startTime;
         logger.debug("定时任务执行结束 - bean：{}，方法：{}，参数：{}，耗时：{} 毫秒", beanName, methodName, params, times);
     }
@@ -94,7 +91,6 @@ public class SchedulingRunnable implements Runnable {
         if (params == null) {
             return Objects.hash(beanName, methodName);
         }
-
         return Objects.hash(beanName, methodName, params);
     }
 }

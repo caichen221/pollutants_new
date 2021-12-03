@@ -25,6 +25,7 @@ public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingW
 
 //    @Bean
 //    @Primary
+    @Override
     public HandlerMapping stompWebSocketHandlerMapping(WebSocketHandler subProtocolWebSocketHandler,
                                                        TaskScheduler messageBrokerTaskScheduler) {
         WebSocketHandler handler = decorateWebSocketHandler(subProtocolWebSocketHandler);

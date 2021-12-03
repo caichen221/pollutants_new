@@ -23,8 +23,9 @@ public class OkHttpClientAutoConfiguration {
     @Autowired
     private OkHttpProps okHttpConfig;
 
+    /**容器中没有OkHttpCustomClient的Bean的条件下配置该Bean*/
     @Bean
-    @ConditionalOnMissingBean(OkHttpCustomClient.class)//容器中没有AuthorService的Bean的条件下配置该Bean
+    @ConditionalOnMissingBean(OkHttpCustomClient.class)
     public OkHttpCustomClient myOkHttpClient(){
         log.info("------初始化自定义的OkHttpClient--------");
         OkHttpCustomClient okHttpClient = new OkHttpCustomClient(okHttpConfig);

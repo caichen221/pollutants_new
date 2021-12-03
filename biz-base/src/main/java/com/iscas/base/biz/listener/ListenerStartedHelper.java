@@ -34,8 +34,8 @@ public class ListenerStartedHelper {
                 StartedFilterComponent annotation = AnnotationUtils.findAnnotation(startedFilter.getClass(), StartedFilterComponent.class);
 //                StartedFilterComponent annotation = startedFilter.getClass().getAnnotation(StartedFilterComponent.class);
                 if (annotation == null) {
-                    log.warn("过滤器：{}没有@StartedFilterComponent，不会被注册生效", startedFilter.getName() == null
-                            ? startedFilter.getClass().getName() :startedFilter.getName());
+                    log.warn("过滤器：{}没有@StartedFilterComponent，不会被注册生效", startedFilter.getName() == null ?
+                            startedFilter.getClass().getName() :startedFilter.getName());
                 } else {
                     startedFilterList.add(startedFilter);
                 }

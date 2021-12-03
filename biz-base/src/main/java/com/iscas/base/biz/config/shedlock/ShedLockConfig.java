@@ -17,7 +17,8 @@ import org.springframework.context.annotation.Lazy;
  */
 //@Configuration
 @Lazy(false)
-@EnableSchedulerLock(defaultLockAtMostFor = "PT30H") //是否开启定时任务锁
+/**是否开启定时任务锁*/
+@EnableSchedulerLock(defaultLockAtMostFor = "PT30H")
 public class ShedLockConfig {
 
     /**

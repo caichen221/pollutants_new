@@ -15,9 +15,15 @@ import java.util.List;
 @Data
 //@Component
 public class RateLimiterProps {
-    private double permitsPerSecond = 20; //每秒产生令牌数
+
+    /**每秒产生令牌数*/
+    private double permitsPerSecond = 20;
+
+    /**获取令牌最大等待时间毫秒数*/
     @DurationUnit(ChronoUnit.MILLIS)
-    private Duration maxWait = Duration.ofMillis(500); //获取令牌最大等待时间毫秒数
-    private List<String> staticUrl; //静态资源
+    private Duration maxWait = Duration.ofMillis(500);
+
+    /**静态资源*/
+    private List<String> staticUrl;
 
 }

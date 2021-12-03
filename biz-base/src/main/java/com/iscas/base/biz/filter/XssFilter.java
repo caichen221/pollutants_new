@@ -48,11 +48,9 @@ public class XssFilter implements Filter {
     }
 
     private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response) {
-
         if (excludes == null || excludes.isEmpty()) {
             return false;
         }
-
         String url = request.getServletPath();
         for (String pattern : excludes) {
             Pattern p = Pattern.compile("^" + pattern);
@@ -76,8 +74,7 @@ public class XssFilter implements Filter {
 
         String temp = filterConfig.getInitParameter("excludes");
         if (temp != null) {
-            Arrays.stream(temp.split(","))
-                    .forEach(excludes::add);
+            excludes.addAll(Arrays.asList(temp.split(",")));
         }
     }
 

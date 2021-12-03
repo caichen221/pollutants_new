@@ -57,6 +57,7 @@ public class CustomCorsFilter extends CorsFilter {
     }
 
 
+    @Override
     public void setCorsProcessor(CorsProcessor processor) {
         Assert.notNull(processor, "CorsProcessor must not be null");
         this.processor = processor;

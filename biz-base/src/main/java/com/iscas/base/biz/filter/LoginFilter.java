@@ -76,7 +76,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 urlMap = authService.getUrls();
 //            roleMap  = authService.getAuth();
             } catch (Exception e) {
-//                AccessLogUtils.log(request, HttpStatus._401);
                 throw new AuthenticationRuntimeException("获取角色信息失败", e);
             }
 
@@ -98,13 +97,11 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 
                 String token = AuthUtils.getToken(request);
                 if (token == null) {
-//                    AccessLogUtils.log(request, HttpStatus._401);
                     throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
                 }
                 authContext.setToken(token);
                 IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
                 if (authCacheService.get(token) == null) {
-//                    AccessLogUtils.log(request, HttpStatus._401);
                     throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
                 }
                 //如果token不为null,校验token
@@ -113,7 +110,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                     username = authService.verifyToken(token);
                     authContext.setUsername(username);
                 } catch (ValidTokenException e) {
-//                    AccessLogUtils.log(request, HttpStatus._401);
                     throw new AuthenticationRuntimeException("校验身份信息出错", "校验token出错");
                 }
                 List<Role> roles = authService.getRoles(username);
@@ -129,7 +125,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                     }
                 }
                 if (roles == null) {
-//                    AccessLogUtils.log(request, HttpStatus._403);
                     throw new AuthenticationRuntimeException("用户或其角色信息不存在", "token中携带的用户或其角色信息不存在");
                 }
                 for (Role role : roles) {
@@ -144,7 +139,6 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 }
 
                 //失败了返回信息
-//                AccessLogUtils.log(request, HttpStatus._403);
                 throw new AuthorizationRuntimeException("鉴权失败");
             }
             //上面没有报错，或者没有执行doFilter，说明此请求不需要权限

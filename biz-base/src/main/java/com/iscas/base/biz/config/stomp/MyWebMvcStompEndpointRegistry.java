@@ -28,6 +28,7 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
         super(webSocketHandler, transportRegistration, defaultSockJsTaskScheduler);
     }
 
+    @Override
     public AbstractHandlerMapping getHandlerMapping() {
         Map<String, Object> urlMap = new LinkedHashMap<>();
         List<WebMvcStompWebSocketEndpointRegistration> registrations = null;

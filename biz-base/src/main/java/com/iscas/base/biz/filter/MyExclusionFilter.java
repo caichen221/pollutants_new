@@ -38,8 +38,7 @@ public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFac
         boolean[] matches = new boolean[autoConfigurationClasses.length];
         for (int i = 0; i < matches.length; i++) {
 
-            if (Objects.equals(SpringBootAdminClientAutoConfiguration.class.getName(),
-                    autoConfigurationClasses[i])) {
+            if (Objects.equals(SpringBootAdminClientAutoConfiguration.class.getName(), autoConfigurationClasses[i])) {
                 //如果是Springboot-admin-client的自动配置类，查看是否允许使用
                 try {
                     DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) beanFactory;

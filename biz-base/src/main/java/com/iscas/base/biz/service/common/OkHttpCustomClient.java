@@ -70,330 +70,7 @@ public class OkHttpCustomClient {
         }
     }
 
-    private static class TrustAllCerts implements X509TrustManager {
-        @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-        @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[0];
-        }
-    }
 
-    private static class TrustAllHostnameVerifier implements HostnameVerifier {
-        @Override
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    }
-
-    private static SSLSocketFactory createSSLSocketFactory() {
-        SSLSocketFactory ssfFactory = null;
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
-
-            ssfFactory = sc.getSocketFactory();
-        } catch (Exception e) {
-        }
-        return ssfFactory;
-    }
-
-
-    public static class UploadInfo<T extends Object> {
-        /**
-         * 文件、文件路径、InputStream、字节数组
-         * */
-        private T data;
-
-        /**
-         * 文件名
-         *
-         *
-         *
-         * */
-        private String fileName;
-
-        /**
-         * 文件上传的表单key
-         * */
-        private String formKey;
-
-        public UploadInfo() {}
-
-        public UploadInfo(T data, String fileName, String formKey) {
-            this.data = data;
-            this.fileName = fileName;
-            this.formKey = formKey;
-        }
-
-        public T getData() {
-            return data;
-        }
-
-        public void setData(T data) {
-            this.data = data;
-        }
-
-        public String getFileName() {
-            return fileName;
-        }
-
-        public void setFileName(String fileName) {
-            this.fileName = fileName;
-        }
-
-        public String getFormKey() {
-            return formKey;
-        }
-
-        public void setFormKey(String formKey) {
-            this.formKey = formKey;
-        }
-    }
-
-
-    /**
-     * @description: 获取删除的通用Call
-     * @date: 2018/3/19 9:55
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @return: okhttp3.Call
-     */
-    private Call baseDeleteCall(String url, Map<String, String> headerMap) {
-        Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
-        requestBuilder.delete();
-        Request request = requestBuilder.build();
-        Call call = client.newCall(request);
-        return call;
-    }
-
-    /**
-     * @description: 获取通用的GET请求Call
-     * @date: 2018/3/19 9:56
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @return: okhttp3.Call
-     */
-    private Call baseGetCall(String url, Map<String, String> headerMap) {
-        Request.Builder builder = new Request.Builder();
-        builder.url(url);
-        if (headerMap != null) {
-            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        Request request = builder.build();
-        Call call = client.newCall(request);
-        return call;
-    }
-
-    /**
-     * @description: 获取POST发送请求参数的call
-     * @date: 2018/3/19 9:57
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: mapParams 请求参数键值对
-     * @return: okhttp3.Call
-     */
-    private Call basePostCall1(String url, Map<String, String> headerMap, Map<String, Object> mapParams) {
-        FormBody.Builder builder = new FormBody.Builder();
-        if (mapParams != null) {
-            for (Map.Entry<String, Object> entry : mapParams.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                if (value != null) {
-                    Class<?> aClass = value.getClass();
-                    if (aClass.isArray()) {
-                        //处理数组
-                        int length = Array.getLength(value);
-                        for (int i = 0; i < length; i++) {
-                            builder.add(key, String.valueOf(Array.get(value, i)));
-                        }
-                    } else if (aClass.isAssignableFrom(Collection.class)) {
-                        Collection collection = (Collection) value;
-                        for (Object o : collection) {
-                            builder.add(key, String.valueOf(o));
-                        }
-                    }
-                }
-            }
-        }
-        Request.Builder requestBuilder = new Request.Builder();
-        requestBuilder.url(url);
-        if (headerMap != null) {
-            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-                requestBuilder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        requestBuilder.post(builder.build());
-        Request request = requestBuilder.build();
-        Call call = client.newCall(request);
-        return call;
-    }
-
-    /**
-     * @description: 获取post请求发送json串的call
-     * @date: 2018/3/19 9:58
-     * @param: url 请求URL
-     * @param: headerMap header键值对
-     * @param: jsonParams json请求串
-     * @return: okhttp3.Call
-     */
-    private Call basePostCall2(String url, Map<String, String> headerMap, String jsonParams) {
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8")
-                , jsonParams);
-        Request.Builder requestBuilder = new Request.Builder();
-        requestBuilder.url(url);
-        if (headerMap != null) {
-            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-                requestBuilder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        requestBuilder.post(body);
-        Request request = requestBuilder.build();
-        Call call = client.newCall(request);
-        return call;
-    }
-
-    /**
-     * @description: 获取file上传请求的call
-     * @date: 2018/3/19 10:00
-     * @param: url 请求URL
-     * @param: uploadInfos  文件的信息， {@link UploadInfo}
-     * @param: fileMap 多个文件的Map,key为String类型(文件路径)或者byte[]类型(文件字节数组)，value为文件名称
-     * @param: params 长传文件时附带请求参数键值对
-     * @return: okhttp3.Call
-     */
-    private Call baseFileCall(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos,
-                              Map<String, String> params) {
-        //创建文件参数
-        MultipartBody.Builder builder = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM);
-        if (uploadInfos != null) {
-            for (UploadInfo uploadInfo: uploadInfos) {
-                Object data = uploadInfo.getData();
-                String fileName = uploadInfo.getFileName();
-                String formKey = uploadInfo.getFormKey();
-                //判断类型
-                if (data instanceof String) {
-                    //文件的路径
-                    MediaType mediaType = MediaType.parse(judgeType((String) data));
-                    builder.addFormDataPart(formKey, fileName,
-                            RequestBody.create(mediaType, new File((String) data)));
-                } else if (data instanceof File) {
-                    //文件类型
-                    MediaType mediaType = MediaType.parse("multipart/form-data");
-                    builder.addFormDataPart(formKey, fileName,
-                            RequestBody.create(mediaType, (File) data));
-                } else if (data instanceof byte[]) {
-                    //文件字节流
-                    MediaType mediaType = MediaType.parse("multipart/form-data");
-                    builder.addFormDataPart(formKey, fileName,
-                            RequestBody.create(mediaType, (byte[]) data));
-                } else if (data instanceof InputStream || InputStream.class.isAssignableFrom(((Object) data).getClass())) {
-                    //InputStream 的实现类
-                    InputStream is = (InputStream) data;
-                    RequestBody requestBody = new RequestBody() {
-                        @Override
-                        public MediaType contentType() {
-                            return MediaType.parse("multipart/form-data");
-                        }
-
-                        @Override
-                        public void writeTo(BufferedSink bufferedSink) throws IOException {
-                            OutputStream os = bufferedSink.outputStream();
-                            byte[] buff = new byte[4096];
-                            int len = -1;
-                            while ((len= is.read(buff)) > 0) {
-                                os.write(buff, 0, len);
-                            }
-                        }
-                    };
-                    builder.addFormDataPart(formKey, fileName, requestBody);
-
-                } else {
-                    throw new IllegalArgumentException("the key of fileMap must be String、File、InputStream or byte[]!");
-                }
-            }
-        }
-        if (params != null) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                builder.addFormDataPart(entry.getKey(), entry.getValue());
-            }
-        }
-        //发出请求参数
-        Request.Builder builder1 = new Request.Builder();
-        builder1.url(url);
-        builder1.post(builder.build());
-        if (headerMap != null) {
-            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-                builder1.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        Request request = builder1.build();
-        Call call = client.newCall(request);
-        return call;
-    }
-
-    /**
-     * @description: 获取PUT发送请求参数的call
-     * @date: 2018/3/19 9:57
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: mapParams 请求参数键值对
-     * @return: okhttp3.Call
-     */
-    private Call basePutCall1(String url, Map<String, String> headerMap, Map<String, Object> mapParams) {
-        FormBody.Builder builder = new FormBody.Builder();
-        if (mapParams != null) {
-            for (Map.Entry<String, Object> entry : mapParams.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                if (value != null) {
-                    Class<?> aClass = value.getClass();
-                    if (aClass.isArray()) {
-                        //处理数组
-                        int length = Array.getLength(value);
-                        for (int i = 0; i < length; i++) {
-                            builder.add(key, String.valueOf(Array.get(value, i)));
-                        }
-                    } else if (aClass.isAssignableFrom(Collection.class)) {
-                        Collection collection = (Collection) value;
-                        for (Object o : collection) {
-                            builder.add(key, String.valueOf(o));
-                        }
-                    }
-                }
-            }
-        }
-        Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
-        requestBuilder.put(builder.build());
-        Request request = requestBuilder.build();
-        Call call = client.newCall(request);
-        return call;
-    }
-
-    /**
-     * @description: 获取put请求发送json串的call
-     * @date: 2018/3/19 9:58
-     * @param: url 请求URL
-     * @param: headerMap header键值对
-     * @param: jsonParams json请求串
-     * @return: okhttp3.Call
-     */
-    private Call basePutCall2(String url, Map<String, String> headerMap, String jsonParams) {
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8")
-                , jsonParams);
-        Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
-        requestBuilder.put(body);
-        Request request = requestBuilder.build();
-        Call call = client.newCall(request);
-        return call;
-    }
 
     /**
      * @description: 转化JSON为对象
@@ -461,7 +138,7 @@ public class OkHttpCustomClient {
     }
 
     public ResponseBody doGetWithBody(String url) throws IOException {
-        return doGetWithBody(url, (Map<String, String>) null);
+        return doGetWithBody(url, null);
     }
 
 
@@ -490,7 +167,7 @@ public class OkHttpCustomClient {
      * @return: void
      */
     public void doGetAsyn(String url, Callback callback) throws IOException {
-        doGetAsyn(url, (Map<String, String>) null, callback);
+        doGetAsyn(url, null, callback);
     }
 
     /**
@@ -662,11 +339,11 @@ public class OkHttpCustomClient {
      * @return: java.lang.String
      */
     public String doUpload(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
-        return doUpload(url, (Map<String, String>) null, uploadInfos, params);
+        return doUpload(url, null, uploadInfos, params);
     }
 
     public ResponseBody doUploadWithBody(String url, List<UploadInfo> uploadInfos, Map<String, String> params) throws IOException {
-        return doUploadWithBody(url, (Map<String, String>) null, uploadInfos, params);
+        return doUploadWithBody(url, null, uploadInfos, params);
     }
 
     /**
@@ -702,7 +379,7 @@ public class OkHttpCustomClient {
      */
     public void doUploadAsyn(String url, List<UploadInfo> uploadInfos, Map<String, String> params
             , Callback callback) throws IOException {
-        doUploadAsyn(url, (Map<String, String>) null, uploadInfos, params, callback);
+        doUploadAsyn(url, null, uploadInfos, params, callback);
     }
 
     /**
@@ -732,55 +409,17 @@ public class OkHttpCustomClient {
      */
     public boolean doDownload(String url, Map<String, String> headerMap,
                               final String fileDir, final String fileName) throws IOException {
-        Boolean[] result = new Boolean[1];
-        result[0] = null;
         Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
         Request request = requestBuilder.build();
         Call call = client.newCall(request);
-        byte[] buf = new byte[2048];
-        int len = 0;
         File file = new File(fileDir, fileName);
         try (
                 InputStream is = call.execute().body().byteStream();
                 FileOutputStream fos = new FileOutputStream(file);
         ) {
-            while ((len = is.read(buf)) != -1) {
-                fos.write(buf, 0, len);
-            }
-            fos.flush();
+            is.transferTo(fos);
         }
         return true;
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                result[0] = false;
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                byte[] buf = new byte[2048];
-//                int len = 0;
-//                File file = new File(fileDir, fileName);
-//                try (
-//                        InputStream is = response.body().byteStream();
-//                        FileOutputStream fos = new FileOutputStream(file);
-//                ) {
-//                    while ((len = is.read(buf)) != -1) {
-//                        fos.write(buf, 0, len);
-//                    }
-//                    fos.flush();
-//                    result[0] = true;
-//                }
-//            }
-//        });
-//        while (true) {
-//            if (result[0] != null) {
-//                break;
-//            } else {
-//                TimeUnit.MILLISECONDS.sleep(50);
-//            }
-//        }
-//        return result[0];
     }
 
     /**
@@ -805,36 +444,10 @@ public class OkHttpCustomClient {
      * @return: java.io.InputStream
      */
     public InputStream doDownload(String url, Map<String, String> headerMap) throws IOException {
-        Boolean[] flag = new Boolean[1];
-        flag[0] = null;
-        InputStream[] iss = new InputStream[1];
-        iss[0] = null;
         Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
         Request request = requestBuilder.build();
         Call call = client.newCall(request);
         return call.execute().body().byteStream();
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                flag[0] = false;
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                InputStream is = null;
-//                is = response.body().byteStream();
-//                iss[0] = is;
-//                flag[0] = true;
-//            }
-//        });
-//        while (true) {
-//            if (flag[0] != null) {
-//                break;
-//            } else {
-//                TimeUnit.MILLISECONDS.sleep(50);
-//            }
-//        }
-//        return iss[0];
     }
 
 
@@ -850,14 +463,8 @@ public class OkHttpCustomClient {
     public void doDownloadAsyn(String url, Map<String, String> headerMap, Callback callback) {
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.url(url);
-        if (headerMap != null) {
-            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-                requestBuilder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
+        addHeader(requestBuilder, headerMap);
+        Request request = new Request.Builder().url(url).build();
         Call call = client.newCall(request);
         call.enqueue(callback);
     }
@@ -1073,25 +680,304 @@ public class OkHttpCustomClient {
     private Request.Builder requestBuilderAddHeader(Map<String, String> headerMap, String url) {
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.url(url);
-        if (headerMap != null) {
-            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-                requestBuilder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
+        addHeader(requestBuilder, headerMap);
         return requestBuilder;
     }
 
     private String judgeType(String path) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
-        String contentTypeFor = fileNameMap.getContentTypeFor(path);
-        if (contentTypeFor == null) {
-            contentTypeFor = "application/octet-stream";
-        }
-        return contentTypeFor;
+        return Optional.ofNullable(fileNameMap.getContentTypeFor(path))
+                .orElse("application/octet-stream");
     }
 
     @FunctionalInterface
     public interface FromJsonHandler {
         Object fromJson(String json);
+    }
+
+
+    private static class TrustAllCerts implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }
+
+    private static class TrustAllHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    }
+
+    private static SSLSocketFactory createSSLSocketFactory() {
+        SSLSocketFactory ssfFactory = null;
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
+
+            ssfFactory = sc.getSocketFactory();
+        } catch (Exception e) {
+        }
+        return ssfFactory;
+    }
+
+
+    public static class UploadInfo<T extends Object> {
+        /**
+         * 文件、文件路径、InputStream、字节数组
+         * */
+        private T data;
+
+        /**
+         * 文件名
+         *
+         *
+         *
+         * */
+        private String fileName;
+
+        /**
+         * 文件上传的表单key
+         * */
+        private String formKey;
+
+        public UploadInfo() {}
+
+        public UploadInfo(T data, String fileName, String formKey) {
+            this.data = data;
+            this.fileName = fileName;
+            this.formKey = formKey;
+        }
+
+        public T getData() {
+            return data;
+        }
+
+        public void setData(T data) {
+            this.data = data;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public String getFormKey() {
+            return formKey;
+        }
+
+        public void setFormKey(String formKey) {
+            this.formKey = formKey;
+        }
+    }
+
+
+    /**
+     * @description: 获取删除的通用Call
+     * @date: 2018/3/19 9:55
+     * @param: url 访问URL
+     * @param: headerMap header键值对
+     * @return: okhttp3.Call
+     */
+    private Call baseDeleteCall(String url, Map<String, String> headerMap) {
+        Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
+        requestBuilder.delete();
+        Request request = requestBuilder.build();
+        return client.newCall(request);
+    }
+
+    /**
+     * @description: 获取通用的GET请求Call
+     * @date: 2018/3/19 9:56
+     * @param: url 访问URL
+     * @param: headerMap header键值对
+     * @return: okhttp3.Call
+     */
+    private Call baseGetCall(String url, Map<String, String> headerMap) {
+        Request.Builder builder = new Request.Builder();
+        builder.url(url);
+        addHeader(builder, headerMap);
+        Request request = builder.build();
+        return client.newCall(request);
+    }
+
+    /**
+     * @description: 获取POST发送请求参数的call
+     * @date: 2018/3/19 9:57
+     * @param: url 访问URL
+     * @param: headerMap header键值对
+     * @param: mapParams 请求参数键值对
+     * @return: okhttp3.Call
+     */
+    private Call basePostCall1(String url, Map<String, String> headerMap, Map<String, Object> mapParams) {
+        FormBody.Builder builder = new FormBody.Builder();
+        addFormPart(builder, mapParams);
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.url(url);
+        addHeader(requestBuilder, headerMap);
+        requestBuilder.post(builder.build());
+        Request request = requestBuilder.build();
+        return client.newCall(request);
+    }
+
+    /**
+     * @description: 获取post请求发送json串的call
+     * @date: 2018/3/19 9:58
+     * @param: url 请求URL
+     * @param: headerMap header键值对
+     * @param: jsonParams json请求串
+     * @return: okhttp3.Call
+     */
+    private Call basePostCall2(String url, Map<String, String> headerMap, String jsonParams) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonParams);
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.url(url);
+        addHeader(requestBuilder, headerMap);
+        requestBuilder.post(body);
+        Request request = requestBuilder.build();
+        return client.newCall(request);
+    }
+
+    private void addHeader(Request.Builder requestBuilder, Map<String, String> headerMap) {
+        if (headerMap != null) {
+            headerMap.forEach(requestBuilder::addHeader);
+        }
+    }
+
+    private void addFormCommonPart(MultipartBody.Builder builder, Map<String, String> params) {
+        if (params != null) {
+            params.forEach(builder::addFormDataPart);
+        }
+    }
+
+    private void addFormPart(FormBody.Builder builder, Map<String, Object> mapParams) {
+        mapParams.forEach((key, value) -> {
+            if (value != null) {
+                Class<?> aClass = value.getClass();
+                if (aClass.isArray()) {
+                    //处理数组
+                    int length = Array.getLength(value);
+                    for (int i = 0; i < length; i++) {
+                        builder.add(key, String.valueOf(Array.get(value, i)));
+                    }
+                } else if (aClass.isAssignableFrom(Collection.class)) {
+                    Collection collection = (Collection) value;
+                    collection.forEach(o -> builder.add(key, String.valueOf(o)));
+                }
+            }
+        });
+    }
+
+
+    /**
+     * @description: 获取file上传请求的call
+     * @date: 2018/3/19 10:00
+     * @param: url 请求URL
+     * @param: uploadInfos  文件的信息， {@link UploadInfo}
+     * @param: fileMap 多个文件的Map,key为String类型(文件路径)或者byte[]类型(文件字节数组)，value为文件名称
+     * @param: params 长传文件时附带请求参数键值对
+     * @return: okhttp3.Call
+     */
+    private Call baseFileCall(String url, Map<String, String> headerMap, List<UploadInfo> uploadInfos,
+                              Map<String, String> params) {
+        //创建文件参数
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        if (uploadInfos != null) {
+            for (UploadInfo uploadInfo: uploadInfos) {
+                Object data = uploadInfo.getData();
+                String fileName = uploadInfo.getFileName();
+                String formKey = uploadInfo.getFormKey();
+                //判断类型
+                if (data instanceof String) {
+                    //文件的路径
+                    MediaType mediaType = MediaType.parse(judgeType((String) data));
+                    builder.addFormDataPart(formKey, fileName,
+                            RequestBody.create(mediaType, new File((String) data)));
+                } else if (data instanceof File) {
+                    //文件类型
+                    MediaType mediaType = MediaType.parse("multipart/form-data");
+                    builder.addFormDataPart(formKey, fileName,
+                            RequestBody.create(mediaType, (File) data));
+                } else if (data instanceof byte[]) {
+                    //文件字节流
+                    MediaType mediaType = MediaType.parse("multipart/form-data");
+                    builder.addFormDataPart(formKey, fileName,
+                            RequestBody.create(mediaType, (byte[]) data));
+                } else if (data instanceof InputStream) {
+                    //InputStream 的实现类
+                    InputStream is = (InputStream) data;
+                    RequestBody requestBody = new RequestBody() {
+                        @Override
+                        public MediaType contentType() {
+                            return MediaType.parse("multipart/form-data");
+                        }
+
+                        @Override
+                        public void writeTo(BufferedSink bufferedSink) throws IOException {
+                            is.transferTo(bufferedSink.outputStream());
+                        }
+                    };
+                    builder.addFormDataPart(formKey, fileName, requestBody);
+
+                } else {
+                    throw new IllegalArgumentException("the key of fileMap must be String、File、InputStream or byte[]!");
+                }
+            }
+        }
+
+        //添加其他普通参数
+        addFormCommonPart(builder, params);
+
+        //发出请求参数
+        Request.Builder commonBuilder = new Request.Builder();
+        commonBuilder.url(url);
+        commonBuilder.post(builder.build());
+        addHeader(commonBuilder, headerMap);
+        Request request = commonBuilder.build();
+        return client.newCall(request);
+    }
+
+    /**
+     * @description: 获取PUT发送请求参数的call
+     * @date: 2018/3/19 9:57
+     * @param: url 访问URL
+     * @param: headerMap header键值对
+     * @param: mapParams 请求参数键值对
+     * @return: okhttp3.Call
+     */
+    private Call basePutCall1(String url, Map<String, String> headerMap, Map<String, Object> mapParams) {
+        FormBody.Builder builder = new FormBody.Builder();
+        addFormPart(builder, mapParams);
+        Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
+        requestBuilder.put(builder.build());
+        Request request = requestBuilder.build();
+        return client.newCall(request);
+    }
+
+    /**
+     * @description: 获取put请求发送json串的call
+     * @date: 2018/3/19 9:58
+     * @param: url 请求URL
+     * @param: headerMap header键值对
+     * @param: jsonParams json请求串
+     * @return: okhttp3.Call
+     */
+    private Call basePutCall2(String url, Map<String, String> headerMap, String jsonParams) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonParams);
+        Request.Builder requestBuilder = requestBuilderAddHeader(headerMap, url);
+        requestBuilder.put(body);
+        Request request = requestBuilder.build();
+        return client.newCall(request);
     }
 }

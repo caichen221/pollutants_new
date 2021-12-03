@@ -60,4 +60,7 @@ public interface Constants {
     /**access日志访问开始时间*/
     String KEY_REQUEST_START_TIME = "KEY_REQUEST_START_TIME";
 
+    /**请求参数校验失败的前缀*/
+    String REQUEST_PARAM_VALID_ERROR_PREFIX = "请求参数校验失败:";
+
 }

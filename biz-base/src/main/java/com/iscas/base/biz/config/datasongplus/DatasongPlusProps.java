@@ -12,5 +12,6 @@ import java.util.List;
 @Data
 //@Component
 public class DatasongPlusProps {
-    private List<String> packages; //配置的数组
+    /**配置的数组*/
+    private List<String> packages;
 }

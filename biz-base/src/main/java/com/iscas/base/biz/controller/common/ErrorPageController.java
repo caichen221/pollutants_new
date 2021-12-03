@@ -24,40 +24,35 @@ public class ErrorPageController {
     @RequestMapping(value = "/401", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity to401(){
-        ResponseEntity responseEntity = new ResponseEntity(401, "未登录");
         AuthContextHolder.removeContext();
-        return responseEntity;
+        return new ResponseEntity(401, "未登录");
     }
 
     @RequestMapping(value = "/403", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity to403(){
-        ResponseEntity responseEntity = new ResponseEntity(403, "没有权限");
         AuthContextHolder.removeContext();
-        return responseEntity;
+        return new ResponseEntity(403, "没有权限");
     }
 
     @RequestMapping(value = "/404", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity to404(){
-        ResponseEntity responseEntity = new ResponseEntity(404, "找不到资源");
         AuthContextHolder.removeContext();
-        return responseEntity;
+        return new ResponseEntity(404, "找不到资源");
     }
 
     @RequestMapping(value = "/502", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity to502(){
-        ResponseEntity responseEntity = new ResponseEntity(502, "网关错误");
         AuthContextHolder.removeContext();
-        return responseEntity;
+        return new ResponseEntity(502, "网关错误");
     }
     @RequestMapping(value = "/400", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity to400(){
-        ResponseEntity responseEntity = new ResponseEntity(400, "请求无效");
         AuthContextHolder.removeContext();
-        return responseEntity;
+        return new ResponseEntity(400, "请求无效");
     }
     @RequestMapping(value = "/500", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -66,14 +61,14 @@ public class ErrorPageController {
         HttpServletRequest request = SpringUtils.getRequest();
         Object attribute = request.getAttribute("javax.servlet.error.exception");
         //如果是文件太大了异常 抛处错误给前台
-        if(attribute != null && attribute instanceof IllegalStateException ){
+        if(attribute instanceof IllegalStateException){
             IllegalStateException exception = (IllegalStateException) attribute;
             Throwable cause = exception.getCause();
             //TODO 这里耦合的Undertow的包，如果以后替为tomcat这段要删除或作其他处理
             if(cause != null && cause instanceof MultiPartParserDefinition.FileTooLargeException){
                 throw new BaseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception)attribute).getMessage());
             }
-        } else if (attribute != null && attribute instanceof AuthenticationRuntimeException) {
+        } else if (attribute instanceof AuthenticationRuntimeException) {
             throw (AuthenticationRuntimeException) attribute;
         }
         throw (Exception) attribute;

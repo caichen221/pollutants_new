@@ -11,10 +11,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,9 +45,8 @@ public class AuthCacheService implements IAuthCacheService {
             CaffCacheUtils.remove(key);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
-            if (authCache == null) return;
-            authCache.evict(key);
+            Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
+                    .ifPresent(authCache -> authCache.evict(key));
         }
     }
 
@@ -74,15 +70,10 @@ public class AuthCacheService implements IAuthCacheService {
             return CaffCacheUtils.get(key);
         } else {
             RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
-            if (authCache == null) {
-                return null;
-            }
-            Cache.ValueWrapper valueWrapper = authCache.get(key);
-            if (valueWrapper == null) {
-                return null;
-            }
-            return valueWrapper.get();
+            return Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
+                    .map(authCache -> authCache.get(key))
+                    .map(Cache.ValueWrapper::get)
+                    .orElse(null);
         }
     }
 
@@ -90,17 +81,10 @@ public class AuthCacheService implements IAuthCacheService {
     public void rpush(String key, String value) {
         if (!isRedisCacheManager()) {
             synchronized (key.intern()) {
-                List<String> values = jdkList.get(key);
-                if (values == null) {
-                    values = new ArrayList<>();
-                    jdkList.put(key, values);
-                }
+                List<String> values = jdkList.computeIfAbsent(key, k -> new ArrayList<>());
                 if (llen(key) >= userMaxSessions) {
                     //移除较早登录的会话
-                    String token = lpop(key);
-                    if (token != null) {
-                        remove(token);
-                    }
+                    Optional.ofNullable(lpop(key)).ifPresent(this::remove);
                 }
                 //加入新会话
                 values.add(value);
@@ -113,10 +97,7 @@ public class AuthCacheService implements IAuthCacheService {
                     if (lock) {
                         if (llen(key) >= userMaxSessions) {
                             //移除较早登录的会话
-                            String token = lpop(key);
-                            if (token != null) {
-                                remove(token);
-                            }
+                            Optional.ofNullable(lpop(key)).ifPresent(this::remove);
                         }
                         //加入新会话
                         redisTemplate.opsForList().rightPush(key, value);
@@ -138,11 +119,7 @@ public class AuthCacheService implements IAuthCacheService {
     @Override
     public String lpop(String key) {
         if (!isRedisCacheManager()) {
-            List<String> values = jdkList.get(key);
-            if (values == null) {
-                values = new ArrayList<>();
-                jdkList.put(key, values);
-            }
+            List<String> values = jdkList.computeIfAbsent(key, k -> new ArrayList<>());
             if (values.size() > 0) {
                 //移除
                 return values.remove(0);
@@ -156,23 +133,21 @@ public class AuthCacheService implements IAuthCacheService {
     @Override
     public int llen(String key) {
         if (!isRedisCacheManager()) {
-            List<String> list = jdkList.get(key);
-            return list == null ? 0 : list.size();
+            return Optional.ofNullable(jdkList.get(key)).map(List::size).orElse(0);
         } else {
-            Long size = redisTemplate.opsForList().size(key);
-            return size == null ? 0 : size.intValue();
+            return Optional.ofNullable(redisTemplate.opsForList().size(key))
+                    .map(Long::intValue).orElse(0);
         }
     }
 
     @Override
     public boolean listContains(String key, String value) {
         if (!isRedisCacheManager()) {
-            List<String> list = jdkList.get(key);
-            return list == null ? false : list.contains(value);
+            return Optional.ofNullable(jdkList.get(key)).map(list -> list.contains(value)).orElse(false);
         } else {
             try {
                 Long aLong = redisTemplate.opsForList().indexOf(key, value);
-                return aLong != null && aLong >= 0;
+                return aLong >= 0;
             } catch (Exception e) {
                 return false;
             }

@@ -20,6 +20,7 @@ public class ReadinessStateListener extends HealthBaseListener {
                 // remove file /tmp/healthy
                 getHealthCheckHandler().readinessRefuse();
                 break;
+            default:
         }
     }
 

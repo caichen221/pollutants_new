@@ -53,8 +53,7 @@ public class NoRepeatSubmitAspect implements Constants {
         String key;
         if (token == null) {
             //如果token为空，使用HttpSession的ID
-            HttpSession session = request.getSession();
-            token = session.getId();
+            token = request.getSession().getId();
         }
         key = token + "->" + request.getRequestURI();
         if (noRepeatSubmitBean != null) {

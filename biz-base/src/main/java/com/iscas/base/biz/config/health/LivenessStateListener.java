@@ -19,6 +19,7 @@ public class LivenessStateListener extends HealthBaseListener{
                 // remove file /tmp/healthy
                 getHealthCheckHandler().livenessBroken();
                 break;
+            default:
         }
     }
 

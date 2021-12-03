@@ -12,6 +12,7 @@ import com.iscas.common.tools.exception.ExceptionUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import javax.validation.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Component
@@ -46,56 +48,40 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity to400(MethodArgumentNotValidException e){
+    public ResponseEntity to400(MethodArgumentNotValidException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _400);
-        StringBuilder result = new StringBuilder();
-        result.append("error 400 :");
         BindingResult bindingResult = e.getBindingResult();
         List<FieldError> errors = bindingResult.getFieldErrors();
-        if(errors != null){
-            for (FieldError error: errors) {
-                String field = error.getField();
-                String msg = error.getDefaultMessage();
-                // 这里可以使用field 和msg 组合成返回的内容，这里就是做一个拼接
-                result.append(field).append(",").append(msg).append(";");
-            }
-        }
-        ResponseEntity res = res(HttpStatus.BAD_REQUEST.value(), result.toString(), e);
-        res.setDesc(result.toString());
-        return res;
+        String errorMsg = errors.stream().map(error -> StringUtils.isBlank(error.getDefaultMessage()) ?
+                        error.getField() + "校验失败" : error.getDefaultMessage())
+                .collect(Collectors.joining(";", REQUEST_PARAM_VALID_ERROR_PREFIX, ""));
+        return res(HttpStatus.BAD_REQUEST.value(), errorMsg, e).setDesc(errorMsg);
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity to400(ConstraintViolationException e){
+    public ResponseEntity to400(ConstraintViolationException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _400);
-        StringBuilder result = new StringBuilder();
-        result.append("error 400 :");
         Set<ConstraintViolation<?>> cvs = e.getConstraintViolations();
-        if(cvs != null){
-            for (ConstraintViolation cv: cvs) {
-                Path path = cv.getPropertyPath();
-                String msg = cv.getMessage();
-                result/*.append(path).append(",")*/.append(msg).append(";");
-
-            }
+        if (cvs != null) {
+            String errorMsg = cvs.stream().map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(";", REQUEST_PARAM_VALID_ERROR_PREFIX, ""));
+            return res(HttpStatus.BAD_REQUEST.value(), errorMsg, e).setDesc(errorMsg);
         }
-        ResponseEntity res = res(HttpStatus.BAD_REQUEST.value(), result.toString(), e);
-        res.setDesc(result.toString());
-        return res;
+        return res(HttpStatus.BAD_REQUEST.value(), REQUEST_PARAM_VALID_ERROR_PREFIX, e);
     }
 
     //将ValidDataException的HTTP状态码改为400
     @ExceptionHandler(value = ValidDataException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity to400(ValidDataException e){
+    public ResponseEntity to400(ValidDataException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _400);
         return res(HttpStatus.BAD_REQUEST.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = LoginException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity loginException(LoginException e){
+    public ResponseEntity loginException(LoginException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _401);
         HttpSession session = SpringUtils.getSession();
         String data = RandomStringUtils.randomStr(16);
@@ -107,7 +93,7 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
 
     @ExceptionHandler(value = AuthenticationRuntimeException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity loginRuntimeException(AuthenticationRuntimeException e){
+    public ResponseEntity loginRuntimeException(AuthenticationRuntimeException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _401);
         HttpSession session = SpringUtils.getSession();
         String data = RandomStringUtils.randomStr(16);
@@ -119,77 +105,79 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
 
     @ExceptionHandler(value = AuthorizationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity to403Exception(AuthorizationException e){
+    public ResponseEntity to403Exception(AuthorizationException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _403);
         return res(HttpStatus.FORBIDDEN.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = AuthorizationRuntimeException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity to403Exception(AuthorizationRuntimeException e){
+    public ResponseEntity to403Exception(AuthorizationRuntimeException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _403);
         return res(HttpStatus.FORBIDDEN.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = RequestTimeoutRuntimeException.class)
     @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
-    public ResponseEntity to408(BaseRuntimeException e){
+    public ResponseEntity to408(BaseRuntimeException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _408);
         return res(HttpStatus.REQUEST_TIMEOUT.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = BaseException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity to500(BaseException e){
+    public ResponseEntity to500(BaseException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = BaseRuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity to500(BaseRuntimeException e){
+    public ResponseEntity to500(BaseRuntimeException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(value = AssertRuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity to500(AssertRuntimeException e){
+    public ResponseEntity to500(AssertRuntimeException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity to500(MaxUploadSizeExceededException e){
+    public ResponseEntity to500(MaxUploadSizeExceededException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传文件大小超过限制", e);
     }
 
     @ExceptionHandler(value = Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity to500(Throwable throwable){
+    public ResponseEntity to500(Throwable throwable) {
         AccessLogUtils.log(SpringUtils.getRequest(), _500);
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器内部错误", throwable);
     }
 
     /**
      * 生成异常
-     * */
+     */
     public ResponseEntity res(int status, String msg, Throwable e) {
         log.error("异常", e);
-        ResponseEntity responseEntity = new ResponseEntity(status, msg);
-        responseEntity.setDesc(getMessage(e));
-        responseEntity.setStackTrace(ExceptionUtils.getExceptionStackTrace(e, exceptionStackTraceMaxSize));
+        ResponseEntity responseEntity = new ResponseEntity(status, msg)
+                .setDesc(getMessage(e))
+                .setStackTrace(ExceptionUtils.getExceptionStackTrace(e, exceptionStackTraceMaxSize));
         setResponseCros();
         setResponseInfo(responseEntity);
         AuthContextHolder.removeContext();
         return responseEntity;
     }
 
-    /**设置跨域*/
+    /**
+     * 设置跨域
+     */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    private void setResponseCros(){
+    private void setResponseCros() {
         HttpServletRequest request = SpringUtils.getRequest();
         HttpServletResponse response = SpringUtils.getResponse();
         String origin = request.getHeader("Origin");
@@ -204,17 +192,16 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
     }
 
 
-
     /**
      * 递归获取异常的message
-     * */
-    private String getMessage(Throwable throwable){
+     */
+    private String getMessage(Throwable throwable) {
         String message = null;
-        if(throwable != null){
+        if (throwable != null) {
             String message1 = throwable.getMessage();
-            if(message1 != null){
+            if (message1 != null) {
                 return message1;
-            }else{
+            } else {
                 Throwable cause = throwable.getCause();
                 return getMessage(cause);
             }
@@ -224,8 +211,8 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
 
     /**
      * 设置耗时等信息
-     * */
-    private void setResponseInfo(ResponseEntity responseEntity){
+     */
+    private void setResponseInfo(ResponseEntity responseEntity) {
         HttpServletRequest request = SpringUtils.getRequest();
         Long start = null;
         try {
@@ -236,7 +223,7 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
         if (Objects.nonNull(start)) {
             responseEntity.setTookInMillis(System.currentTimeMillis() - start);
         }
-        if(request != null){
+        if (request != null) {
             String requestURI = request.getRequestURI();
             responseEntity.setRequestURL(requestURI);
         }
