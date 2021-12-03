@@ -1,5 +1,6 @@
 package com.iscas.base.biz.filter;
 
+import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.SkipAuthProps;
 import com.iscas.base.biz.model.auth.AuthContext;
@@ -15,21 +16,25 @@ import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
  * 继承{@link OncePerRequestFilter} 是为了保证每个请求只执行一次过滤，例如转发不再次执行。
  *
  * @Author: zhuquanwen
@@ -40,13 +45,19 @@ import java.util.Objects;
 @Slf4j
 public class LoginFilter extends OncePerRequestFilter implements Constants {
 
+    private static volatile Map<RequestMappingInfo, HandlerMethod> requestInfoMethodMap;
+
     private AbstractAuthService authService;
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    public LoginFilter(AbstractAuthService authService){
-        this.authService = authService;
+    /**
+     * URL是否跳过权限认证的本地缓存，为了提升匹配效率
+     */
+    private Map<String, Boolean> skipAuthenticationMap = new ConcurrentHashMap<>();
 
+    public LoginFilter(AbstractAuthService authService) {
+        this.authService = authService;
     }
 
     @SuppressWarnings("AlibabaUndefineMagicConstant")
@@ -78,6 +89,13 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
 
             //如果找到匹配的urlx
             if (needFlag) {
+
+                //如果跳过了认证，就不做下面的处理了
+                if (checkSkipAuthentication(request)) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
                 String token = AuthUtils.getToken(request);
                 if (token == null) {
 //                    AccessLogUtils.log(request, HttpStatus._401);
@@ -136,6 +154,56 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
         } finally {
             AuthContextHolder.setContext(authContext);
         }
+    }
+
+    private boolean checkSkipAuthentication(HttpServletRequest request) {
+        return skipAuthenticationMap.compute(request.getRequestURI(), (uri, flag) -> {
+            if (flag != null) {
+                return flag;
+            }
+            Map<RequestMappingInfo, HandlerMethod> requestInfoMap = getRequestInfoMap();
+            if (MapUtils.isNotEmpty(requestInfoMap)) {
+                String requestURI = getRequestURI(request);
+                for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : requestInfoMap.entrySet()) {
+                    RequestMappingInfo requestMappingInfo = entry.getKey();
+                    PatternsRequestCondition patternsCondition = requestMappingInfo.getPatternsCondition();
+                    List<String> matchingPatterns = patternsCondition.getMatchingPatterns(requestURI);
+                    if (CollectionUtils.isNotEmpty(matchingPatterns)) {
+                        //匹配到了这个URL后，检测method或其类上是否有@SkipAuthentication注解，如果有直接返回true
+                        Method method = entry.getValue().getMethod();
+                        SkipAuthentication skipAuthentication = Optional.ofNullable(AnnotationUtils.findAnnotation(method, SkipAuthentication.class))
+                                .orElseGet(() -> AnnotationUtils.findAnnotation(method.getDeclaringClass(), SkipAuthentication.class));
+                        if (skipAuthentication != null) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        });
+
+    }
+
+    private String getRequestURI(HttpServletRequest request) {
+        //去除context-path
+        String requestURI = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        if (contextPath != null) {
+            requestURI = "/" + StringUtils.substringAfter(requestURI, contextPath);
+        }
+        requestURI = requestURI.replaceAll("//+", "/");
+        return requestURI;
+    }
+
+    private Map<RequestMappingInfo, HandlerMethod> getRequestInfoMap() {
+        if (requestInfoMethodMap == null) {
+            synchronized (LoginFilter.class) {
+                if (requestInfoMethodMap == null) {
+                    requestInfoMethodMap = SpringUtils.getMvcUriMethods();
+                }
+            }
+        }
+        return requestInfoMethodMap;
     }
 
 }

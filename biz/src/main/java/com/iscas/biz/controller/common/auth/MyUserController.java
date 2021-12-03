@@ -1,5 +1,6 @@
 package com.iscas.biz.controller.common.auth;
 
+import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
@@ -44,6 +45,7 @@ public class MyUserController extends BaseController {
         this.userMapper = userMapper;
     }
 
+    @SkipAuthentication
     @ApiOperation(value="获取表头", notes="不带数据，带下拉列表")
     @GetMapping(value = "/header", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
@@ -114,6 +116,7 @@ public class MyUserController extends BaseController {
             }
     )
     @PutMapping("/pwd/{userId:[0-9]+}")
+    @SkipAuthentication
     public ResponseEntity changePwd(@PathVariable Integer userId, @RequestBody Map<String,Object> data)
             throws BaseException, NoSuchAlgorithmException {
         userService.changePwd(userId, data);

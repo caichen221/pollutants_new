@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  * @since jdk1.8
  */
 @Documented
-@Target(value = ElementType.METHOD)
+@Target(value = {ElementType.METHOD, ElementType.TYPE})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface SkipAuthentication {
 }

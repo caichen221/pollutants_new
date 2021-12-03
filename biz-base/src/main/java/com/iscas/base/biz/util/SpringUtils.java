@@ -3,13 +3,20 @@ package com.iscas.base.biz.util;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.HeaderKey;
-import org.checkerframework.checker.nullness.Opt;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +25,7 @@ import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * spring相关操作工具类
@@ -181,9 +186,12 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
         return (T) applicationContext.getBean(tClass);
     }
 
+    /**
+     * 获取springmvc 的URI对应的method
+     * */
+    public static Map<RequestMappingInfo, HandlerMethod> getMvcUriMethods() {
+        RequestMappingHandlerMapping mapping = getBean(RequestMappingHandlerMapping.class);
+        return mapping.getHandlerMethods();
+    }
 
-//    /**
-//     * 获取springmvc 的URI对应的method
-//     * */
-//    public static Map<String, Method> getHandlerMapping
 }

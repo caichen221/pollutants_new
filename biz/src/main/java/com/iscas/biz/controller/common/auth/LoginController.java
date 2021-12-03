@@ -1,6 +1,7 @@
 package com.iscas.biz.controller.common.auth;
 
 
+import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
@@ -32,6 +33,7 @@ import java.util.Map;
  */
 @RestController
 @Api(tags = "登陆控制器")
+@SkipAuthentication
 public class LoginController extends BaseController implements Constants {
 
 
