@@ -1,8 +1,11 @@
 package com.iscas.base.biz.util;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.LineHandler;
 import cn.hutool.core.io.StreamProgress;
 import cn.hutool.core.lang.Assert;
+import com.iscas.common.tools.constant.CharsetConstant;
+import com.iscas.common.tools.core.io.file.IoRaiseUtils;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,17 +40,10 @@ public class MultipartFileUtils {
      */
     public static long copy(MultipartFile multipartFile, OutputStream os) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
-        @Cleanup InputStream inputStream = multipartFile.getInputStream();
-        try {
+        try (InputStream inputStream = multipartFile.getInputStream()) {
             return IoUtil.copyByNIO(inputStream, os, DEFAULT_BUFFER_SIZE, null);
         } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (Exception e) {
-                    log.warn("关闭输出流出错", e);
-                }
-            }
+            IoRaiseUtils.closeAnyway(os);
         }
     }
 
@@ -110,13 +106,7 @@ public class MultipartFileUtils {
         try {
             return IoUtil.copyByNIO(inputStream, os, DEFAULT_BUFFER_SIZE, streamProgress);
         } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (Exception e) {
-                    log.warn("关闭输出流出错", e);
-                }
-            }
+            IoRaiseUtils.closeAnyway(os);
         }
     }
 
@@ -173,14 +163,9 @@ public class MultipartFileUtils {
      * @return java.lang.String
      */
     public static String getDataAsString(MultipartFile multipartFile, String charset) throws IOException {
-        @Cleanup InputStream inputStream = multipartFile.getInputStream();
-        @Cleanup BufferedReader reader = IoUtil.getReader(inputStream, charset);
-        String line = null;
-        StringBuilder sb = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            return new String(inputStream.readAllBytes(), charset);
         }
-        return sb.toString();
     }
 
     /**
@@ -193,6 +178,6 @@ public class MultipartFileUtils {
      * @return java.lang.String
      */
     public static String getDataAsString(MultipartFile multipartFile) throws IOException {
-        return getDataAsString(multipartFile, "utf-8");
+        return getDataAsString(multipartFile, CharsetConstant.UTF8);
     }
 }

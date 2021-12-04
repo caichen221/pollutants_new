@@ -2,10 +2,10 @@ package com.iscas.biz.schedule;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
-import com.iscas.base.biz.util.MathUtils;
 import com.iscas.biz.model.common.monitor.jvm.*;
 import com.iscas.biz.model.common.monitor.sys.*;
 import com.iscas.biz.service.common.MonitorService;
+import com.iscas.common.tools.core.arithmetic.MathUtils;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;

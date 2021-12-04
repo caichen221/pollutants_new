@@ -2,6 +2,7 @@ package com.iscas.base.biz.util.echarts;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.iscas.common.tools.constant.CharsetConstant;
 import org.apache.http.client.ClientProtocolException;
 
 import java.io.IOException;
@@ -29,18 +30,17 @@ public class EchartsUtils {
         // 将option字符串作为参数发送给echartsConvert服务器
         Map<String, String> params = new HashMap<>();
         params.put("opt", option);
-        String response = HttpUtil.post(phantomjsUrl, params, "utf-8");
+        String response = HttpUtil.post(phantomjsUrl, params, CharsetConstant.UTF8);
 
         // 解析echartsConvert响应
         JSONObject responseJson = JSON.parseObject(response);
         String code = responseJson.getString("code");
 
-        // 如果echartsConvert正常返回
         if (SUCCESS_CODE.equals(code)) {
+            // 如果echartsConvert正常返回
             base64 = responseJson.getString("data");
-        }
-        // 未正常返回
-        else {
+        } else {
+            // 未正常返回
             String string = responseJson.getString("msg");
             throw new RuntimeException(string);
         }

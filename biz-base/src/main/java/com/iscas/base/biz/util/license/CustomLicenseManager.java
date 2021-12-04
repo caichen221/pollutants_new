@@ -38,11 +38,6 @@ public class CustomLicenseManager extends LicenseManager {
     /**
      * 复写create方法
      *
-     * @param
-     * @return byte[]
-     * @author zifangsky
-     * @date 2018/4/23 10:36
-     * @since 1.0.0
      */
     @Override
     protected synchronized byte[] create(
@@ -57,12 +52,6 @@ public class CustomLicenseManager extends LicenseManager {
 
     /**
      * 复写install方法，其中validate方法调用本类中的validate方法，校验IP地址、Mac地址等其他信息
-     *
-     * @param
-     * @return de.schlichtherle.license.LicenseContent
-     * @author zifangsky
-     * @date 2018/4/23 10:40
-     * @since 1.0.0
      */
     @Override
     protected synchronized LicenseContent install(
@@ -83,11 +72,6 @@ public class CustomLicenseManager extends LicenseManager {
     /**
      * 复写verify方法，调用本类中的validate方法，校验IP地址、Mac地址等其他信息
      *
-     * @param
-     * @return de.schlichtherle.license.LicenseContent
-     * @author zifangsky
-     * @date 2018/4/23 10:40
-     * @since 1.0.0
      */
     @Override
     protected synchronized LicenseContent verify(final LicenseNotary notary)
@@ -111,11 +95,6 @@ public class CustomLicenseManager extends LicenseManager {
 
     /**
      * 校验生成证书的参数信息
-     *
-     * @param content 证书正文
-     * @author zifangsky
-     * @date 2018/5/2 15:43
-     * @since 1.0.0
      */
     protected synchronized void validateCreate(final LicenseContent content)
             throws LicenseContentException {
@@ -139,11 +118,6 @@ public class CustomLicenseManager extends LicenseManager {
 
     /**
      * 复写validate方法，增加IP地址、Mac地址等其他信息校验
-     *
-     * @param content LicenseContent
-     * @author zifangsky
-     * @date 2018/4/23 10:40
-     * @since 1.0.0
      */
     @SneakyThrows
     @Override
@@ -186,12 +160,6 @@ public class CustomLicenseManager extends LicenseManager {
 
     /**
      * 重写XMLDecoder解析XML
-     *
-     * @param encoded XML类型字符串
-     * @return java.lang.Object
-     * @author zifangsky
-     * @date 2018/4/25 14:02
-     * @since 1.0.0
      */
     private Object load(String encoded) throws UnsupportedEncodingException {
         BufferedInputStream inputStream = null;
@@ -216,11 +184,6 @@ public class CustomLicenseManager extends LicenseManager {
 
     /**
      * 获取当前服务器需要额外校验的License参数
-     *
-     * @return demo.LicenseCheckModel
-     * @author zifangsky
-     * @date 2018/4/23 14:33
-     * @since 1.0.0
      */
     private LicenseCheckModel getServerInfos() throws Exception {
         //操作系统类型
@@ -242,11 +205,6 @@ public class CustomLicenseManager extends LicenseManager {
     /**
      * 校验当前服务器的IP/Mac地址是否在可被允许的IP范围内<br/>
      * 如果存在IP在可被允许的IP/Mac地址范围内，则返回true
-     *
-     * @return boolean
-     * @author zifangsky
-     * @date 2018/4/24 11:44
-     * @since 1.0.0
      */
     private boolean checkIpAddress(List<String> expectedList, List<String> serverList) {
         if (expectedList != null && expectedList.size() > 0) {
@@ -267,10 +225,6 @@ public class CustomLicenseManager extends LicenseManager {
     /**
      * 校验当前服务器硬件（主板、CPU等）序列号是否在可允许范围内
      *
-     * @return boolean
-     * @author zifangsky
-     * @date 2018/4/24 14:38
-     * @since 1.0.0
      */
     private boolean checkSerial(String expectedSerial, String serverSerial) {
         if (StringUtils.isNotBlank(expectedSerial)) {

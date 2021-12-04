@@ -26,11 +26,6 @@ public class LicenseCreator {
 
     /**
      * 生成License证书
-     *
-     * @return boolean
-     * @author zifangsky
-     * @date 2018/4/20 10:58
-     * @since 1.0.0
      */
     public boolean generateLicense() throws Exception {
         LicenseManager licenseManager = new CustomLicenseManager(initLicenseParam());
@@ -41,11 +36,6 @@ public class LicenseCreator {
 
     /**
      * 初始化证书生成参数
-     *
-     * @return de.schlichtherle.license.LicenseParam
-     * @author zifangsky
-     * @date 2018/4/20 10:56
-     * @since 1.0.0
      */
     private LicenseParam initLicenseParam() {
         Preferences preferences = Preferences.userNodeForPackage(LicenseCreator.class);
@@ -53,16 +43,10 @@ public class LicenseCreator {
         //设置对证书内容加密的秘钥
         CipherParam cipherParam = new DefaultCipherParam(param.getStorePass());
 
-        KeyStoreParam privateStoreParam = new CustomKeyStoreParam(LicenseCreator.class
-                , param.getPrivateKeysStorePath()
-                , param.getPrivateAlias()
-                , param.getStorePass()
-                , param.getKeyPass());
+        KeyStoreParam privateStoreParam = new CustomKeyStoreParam(LicenseCreator.class, param.getPrivateKeysStorePath(),
+                param.getPrivateAlias(), param.getStorePass(), param.getKeyPass());
 
-        LicenseParam licenseParam = new DefaultLicenseParam(param.getSubject()
-                , preferences
-                , privateStoreParam
-                , cipherParam);
+        LicenseParam licenseParam = new DefaultLicenseParam(param.getSubject(), preferences, privateStoreParam, cipherParam);
 
         return licenseParam;
     }
@@ -70,10 +54,6 @@ public class LicenseCreator {
     /**
      * 设置证书生成正文信息
      *
-     * @return de.schlichtherle.license.LicenseContent
-     * @author zifangsky
-     * @date 2018/4/20 10:57
-     * @since 1.0.0
      */
     private LicenseContent initLicenseContent() {
         LicenseContent licenseContent = new LicenseContent();

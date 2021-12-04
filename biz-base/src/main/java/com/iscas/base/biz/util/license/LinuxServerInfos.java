@@ -1,5 +1,6 @@
 package com.iscas.base.biz.util.license;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -20,7 +21,7 @@ public class LinuxServerInfos extends AbstractServerInfos {
         //获取所有网络接口
         List<InetAddress> inetAddresses = getLocalAllInetAddress();
 
-        if(inetAddresses != null && inetAddresses.size() > 0){
+        if(CollectionUtils.isNotEmpty(inetAddresses)){
             result = inetAddresses.stream().map(InetAddress::getHostAddress).distinct().map(String::toLowerCase).collect(Collectors.toList());
         }
 
@@ -34,7 +35,7 @@ public class LinuxServerInfos extends AbstractServerInfos {
         //1. 获取所有网络接口
         List<InetAddress> inetAddresses = getLocalAllInetAddress();
 
-        if(inetAddresses != null && inetAddresses.size() > 0){
+        if(CollectionUtils.isNotEmpty(inetAddresses)){
             //2. 获取所有网络接口的Mac地址
             result = inetAddresses.stream().map(this::getMacByInetAddress).distinct().collect(Collectors.toList());
         }

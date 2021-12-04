@@ -5,15 +5,11 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.common.tools.core.date.DateRaiseUtils;
-import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,16 +70,7 @@ public class JWTUtils {
      * 获取当前登录的用户名
      * */
     public static String getLoginUsername() {
-        HttpServletRequest request = SpringUtils.getRequest();
-        String token = null;
-        token = request.getHeader(Constants.TOKEN_KEY);
-        if (token == null) {
-            //尝试从cookie中拿author
-            Cookie cookie = CookieUtils.getCookieByName(request, Constants.TOKEN_KEY);
-            if (cookie != null) {
-                token = cookie.getValue();
-            }
-        }
+        String token = AuthUtils.getToken();
         if (token == null) {
             throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
@@ -96,9 +83,7 @@ public class JWTUtils {
             if (username == null) {
                 throw new ValidTokenException("token 校验失败");
             }
-        } catch (ValidTokenException e) {
-            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
-        } catch (UnsupportedEncodingException e) {
+        } catch (ValidTokenException | UnsupportedEncodingException e) {
             throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);

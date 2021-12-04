@@ -32,9 +32,7 @@ public class HttpUtil {
         // 生成请求参数
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         if (params != null) {
-            for (Entry<String, String> entry : params.entrySet()) {
-                nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-            }
+            params.forEach((k, v) -> nameValuePairs.add(new BasicNameValuePair(k, v)));
         }
 
         // 将参数添加到post请求中

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/4/10 16:20
@@ -21,13 +20,17 @@ import java.io.InputStream;
  */
 public class ResponseUtils {
 
-    /**按流输出，设置content-type*/
+    /**
+     * 按流输出，设置content-type
+     */
     public static void returnStream(InputStream is, HttpServletResponse response, String contentType) throws IOException {
         response.setContentType(contentType);
         IoUtil.copy(is, response.getOutputStream());
     }
 
-    /**按流输出，按照流开头标识的文件格式自动设置content-type*/
+    /**
+     * 按流输出，按照流开头标识的文件格式自动设置content-type
+     */
     public static void returnStream(InputStream is, HttpServletResponse response) throws IOException, BaseException {
         byte[] buf = new byte[FileTypeUtils.FILE_PREFIX_LENGTH];
         is.read(buf);

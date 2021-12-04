@@ -17,10 +17,6 @@ public abstract class AbstractServerInfos {
     /**
      * 组装需要额外校验的License参数
      *
-     * @return demo.LicenseCheckModel
-     * @author zifangsky
-     * @date 2018/4/23 14:23
-     * @since 1.0.0
      */
     public LicenseCheckModel getServerInfos() throws Exception {
         LicenseCheckModel result = new LicenseCheckModel();
@@ -38,50 +34,27 @@ public abstract class AbstractServerInfos {
     /**
      * 获取IP地址
      *
-     * @return java.util.List<java.lang.String>
-     * @author zifangsky
-     * @date 2018/4/23 11:32
-     * @since 1.0.0
      */
     protected abstract List<String> getIpAddress() throws Exception;
 
     /**
      * 获取Mac地址
-     *
-     * @return java.util.List<java.lang.String>
-     * @author zifangsky
-     * @date 2018/4/23 11:32
      * @since 1.0.0
      */
     protected abstract List<String> getMacAddress() throws Exception;
 
     /**
      * 获取CPU序列号
-     *
-     * @return java.lang.String
-     * @author zifangsky
-     * @date 2018/4/23 11:35
-     * @since 1.0.0
      */
     protected abstract String getCPUSerial() throws Exception;
 
     /**
      * 获取主板序列号
-     *
-     * @return java.lang.String
-     * @author zifangsky
-     * @date 2018/4/23 11:35
-     * @since 1.0.0
      */
     protected abstract String getMainBoardSerial() throws Exception;
 
     /**
      * 获取当前服务器所有符合条件的InetAddress
-     *
-     * @return java.util.List<java.net.InetAddress>
-     * @author zifangsky
-     * @date 2018/4/23 17:38
-     * @since 1.0.0
      */
     protected List<InetAddress> getLocalAllInetAddress() throws Exception {
         List<InetAddress> result = new ArrayList<>(4);
@@ -105,12 +78,6 @@ public abstract class AbstractServerInfos {
 
     /**
      * 获取某个网络接口的Mac地址
-     *
-     * @param
-     * @return void
-     * @author zifangsky
-     * @date 2018/4/23 18:08
-     * @since 1.0.0
      */
     protected String getMacByInetAddress(InetAddress inetAddr) {
         byte[] mac = new byte[0];

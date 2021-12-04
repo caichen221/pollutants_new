@@ -1,5 +1,7 @@
 package com.iscas.base.biz.util.license;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Scanner;
@@ -17,7 +19,7 @@ public class WindowsServerInfos extends AbstractServerInfos {
         //获取所有网络接口
         List<InetAddress> inetAddresses = getLocalAllInetAddress();
 
-        if(inetAddresses != null && inetAddresses.size() > 0){
+        if(CollectionUtils.isNotEmpty(inetAddresses)){
             result = inetAddresses.stream().map(InetAddress::getHostAddress).distinct().map(String::toLowerCase).collect(Collectors.toList());
         }
 
@@ -31,7 +33,7 @@ public class WindowsServerInfos extends AbstractServerInfos {
         //1. 获取所有网络接口
         List<InetAddress> inetAddresses = getLocalAllInetAddress();
 
-        if(inetAddresses != null && inetAddresses.size() > 0){
+        if(CollectionUtils.isNotEmpty(inetAddresses)){
             //2. 获取所有网络接口的Mac地址
             result = inetAddresses.stream().map(this::getMacByInetAddress).distinct().collect(Collectors.toList());
         }

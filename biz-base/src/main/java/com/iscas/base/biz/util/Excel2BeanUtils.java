@@ -20,6 +20,7 @@ import java.util.*;
  * @date 2018/9/5 19:07
  * @since jdk1.8
  */
+@Deprecated
 public class Excel2BeanUtils {
     private Excel2BeanUtils(){}
 

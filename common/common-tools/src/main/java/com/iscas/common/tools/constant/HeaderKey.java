@@ -16,6 +16,11 @@ public interface HeaderKey {
     String CONTENT_TYPE = "Content-Type";
 
     /**
+     * Content-disposition
+     * */
+    String CONTENT_DISPOSITION = "Content-disposition";
+
+    /**
      * Accept
      * */
     String ACCEPT = "Accept";

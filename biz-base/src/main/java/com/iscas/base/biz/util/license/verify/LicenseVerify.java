@@ -15,7 +15,6 @@ public class LicenseVerify {
 
     /**
      * 安装License证书
-     *
      */
     public synchronized LicenseContent install(LicenseVerifyParam param) throws Exception {
         LicenseContent result = null;
@@ -61,16 +60,10 @@ public class LicenseVerify {
 
         CipherParam cipherParam = new DefaultCipherParam(param.getStorePass());
 
-        KeyStoreParam publicStoreParam = new CustomKeyStoreParam(LicenseVerify.class
-                , param.getPublicKeysStorePath()
-                , param.getPublicAlias()
-                , param.getStorePass()
-                , null);
+        KeyStoreParam publicStoreParam = new CustomKeyStoreParam(LicenseVerify.class, param.getPublicKeysStorePath(),
+                param.getPublicAlias(), param.getStorePass(), null);
 
-        return new DefaultLicenseParam(param.getSubject()
-                , preferences
-                , publicStoreParam
-                , cipherParam);
+        return new DefaultLicenseParam(param.getSubject(), preferences, publicStoreParam, cipherParam);
     }
 
 }

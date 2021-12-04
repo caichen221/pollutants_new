@@ -6,6 +6,7 @@ import com.iscas.common.tools.constant.FileConstant;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Jar包路径工具类
@@ -30,7 +31,7 @@ public class JarPathUtils {
     public static String getJarPath(Class clazz) throws UnsupportedEncodingException {
 
         String basePath = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
-        basePath = URLDecoder.decode(basePath, CharsetConstant.UTF8);
+        basePath = URLDecoder.decode(basePath, StandardCharsets.UTF_8);
         if(basePath.endsWith(FileConstant.FILENAME_SUFFIX_JAR)) {
             basePath = basePath.substring(0, basePath.lastIndexOf("/") + 1);
         }

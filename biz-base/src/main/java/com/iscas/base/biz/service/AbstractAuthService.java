@@ -3,6 +3,7 @@ package com.iscas.base.biz.service;
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.model.auth.Menu;
+import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.templet.exception.AuthConfigException;
 import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.exception.ValidTokenException;
@@ -38,15 +39,7 @@ public abstract class AbstractAuthService implements Constants {
                                       ResponseEntity responseEntity, int expire, int cookieExpire) throws LoginException;
 
     public void invalidToken(HttpServletRequest request) {
-        String token = null;
-        token = request.getHeader(TOKEN_KEY);
-        if (token == null) {
-            //尝试从cookie中拿author
-            Cookie cookie = CookieUtils.getCookieByName(request, TOKEN_KEY);
-            if (cookie != null) {
-                token = cookie.getValue();
-            }
-        }
+        String token = AuthUtils.getToken(request);
         CaffCacheUtils.remove(token);
         request.getSession().invalidate();
     }

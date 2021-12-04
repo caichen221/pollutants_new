@@ -2,6 +2,8 @@ package com.iscas.base.biz.service.fileserver;
 
 import com.iscas.base.biz.util.MultipartFileUtils;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.common.tools.constant.TimeConstant;
+import com.iscas.common.tools.core.io.file.FileUtils;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.common.web.tools.file.FileDownloadUtils;
 import com.iscas.templet.exception.BaseException;
@@ -17,49 +19,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2019/9/25 15:52
  * @since jdk1.8
  */
 @Service
-public class DefaultFileServerService implements FileServerService{
+public class DefaultFileServerService implements FileServerService, TimeConstant {
     @Value("${file.server.path}")
     private String fileServerPath;
 
     /**
      * 文件上传处理，返回文件的key以及对应的文件存储路径
-     * */
+     */
     @Override
     public Map<String, String> upload(MultipartFile[] files) throws IOException {
         Map<String, String> result = new HashMap<>(2 << 2);
         //获取文件存储的根路径
         File path = getPath();
-        for (MultipartFile multipartFile: files) {
+        for (MultipartFile multipartFile : files) {
             String key = multipartFile.getOriginalFilename();
             File file = new File(path, key);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            FileUtils.touch(file);
             MultipartFileUtils.copy(multipartFile, file);
-            String absolutePath = file.getAbsolutePath();
             //将路径中的\\替换为/
-            absolutePath = absolutePath.replaceAll("\\\\", "/");
+            String absolutePath = file.getAbsolutePath().replaceAll("\\\\", "/");
             result.put(key, absolutePath);
         }
         return result;
     }
 
-//    public static void main(String[] args) {
-//        System.out.println("F:\\fileserver\\2019-09-25\\hsvVn3nX\\pod hook.txt".replace("\\", "/"));
-//    }
 
     @Override
     public void download(String path) throws BaseException {
         File file = new File(path);
-        if (! file.exists()) {
+        if (!file.exists()) {
             throw new BaseException("下载的文件不存在或已删除");
         }
         try {
@@ -70,23 +64,16 @@ public class DefaultFileServerService implements FileServerService{
     }
 
 
-    private File getPath() {
+    private File getPath() throws IOException {
         File pfile = new File(fileServerPath);
-        if (!pfile.exists()) {
-            pfile.mkdirs();
-        }
+        FileUtils.makeDirectory(pfile);
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String timeStr = now.format(dtf);
+        String timeStr = now.format(DATE_FORMATTER);
         File file = new File(pfile, timeStr);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+        FileUtils.makeDirectory(file);
         String randomStr = RandomStringUtils.randomStr(8);
         file = new File(file, randomStr);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+        FileUtils.touch(file);
         return file;
     }
 

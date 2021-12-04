@@ -38,13 +38,11 @@ public class TableInfoUtils {
         Resource resource = new ClassPathResource("tableInfo/" + tableName + ".json");
         @Cleanup InputStream is  = resource.getInputStream();
         @Cleanup InputStreamReader inputStreamReader = new InputStreamReader(is, "utf-8");
-
-
         @Cleanup BufferedReader br = new BufferedReader(inputStreamReader);
         StringBuffer sb = new StringBuffer();
         String line = null;
         while ((line = br.readLine()) != null) {
-            sb.append(line);
+            sb.append(line).append("\n");
         }
         ObjectMapper mapper = new ObjectMapper();
         TableHeaderResponseData headerData = mapper.readValue(sb.toString(),

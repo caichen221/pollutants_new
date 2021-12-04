@@ -68,5 +68,26 @@ public interface FileConstant {
     /**
      * 匹配星后缀
      * */
-    String FILENAME_SUFFIX_START = ".*";
+    String FILENAME_SUFFIX_STAR = ".*";
+
+    /**
+     * xlsx
+     * */
+    String FILENAME_SUFFIX_XLSX = ".xlsx";
+
+    /**
+     * xls
+     * */
+    String FILENAME_SUFFIX_XLS = ".xls";
+
+    /**
+     * docx
+     * */
+    String FILENAME_SUFFIX_DOCX = ".docx";
+
+    /**
+     * doc
+     * */
+    String FILENAME_SUFFIX_DOC = ".doc";
+
 }

@@ -23,7 +23,7 @@ public class SqlSessionFactoryCustomizers {
     }
 
     public <T extends Configuration,S extends FactoryBean<? extends SqlSessionFactory>> S customize(T configuration, S sessionFactory){
-        customizers.stream().forEach(customizer -> customizer.customize(configuration, sessionFactory));
+        customizers.forEach(customizer -> customizer.customize(configuration, sessionFactory));
         return sessionFactory;
     }
 }

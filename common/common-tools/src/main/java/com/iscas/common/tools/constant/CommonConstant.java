@@ -13,4 +13,7 @@ public interface CommonConstant {
 
     /**本机IP地址*/
     String LOCAL_IP = "127.0.0.1";
+
+    /**classpath*/
+    String CLASSPATH = "classpath:";
 }

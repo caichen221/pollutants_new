@@ -40,7 +40,5 @@ public class LicenseVerifyTests {
             System.out.println(verify);
         }
 
-
-
     }
 }
