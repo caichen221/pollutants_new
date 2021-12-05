@@ -43,11 +43,9 @@ public class WebSSHCotroller extends BaseController {
             }
     )
     public ResponseEntity connect(Principal user, WebSSHData sshData) throws IOException, JSchException {
-        ResponseEntity response = getResponse();
-        String connectionId = sshData.getConnectionId();
-        sshService.initConnection(connectionId, user);
+        sshService.initConnection(sshData.getConnectionId(), user);
         sshService.recvHandle(sshData);
-        return response;
+        return getResponse();
     }
 
     @MessageMapping("/command")
@@ -58,9 +56,8 @@ public class WebSSHCotroller extends BaseController {
             }
     )
     public ResponseEntity command(Principal user, WebSSHData sshData) throws IOException, JSchException {
-        ResponseEntity response = getResponse();
         sshService.recvHandle(sshData);
-        return response;
+        return getResponse();
     }
 
     @MessageMapping("/pong")
@@ -71,9 +68,8 @@ public class WebSSHCotroller extends BaseController {
             }
     )
     public ResponseEntity command(Principal user, String connectionId) throws IOException, JSchException {
-        ResponseEntity response = getResponse();
         sshService.pong(connectionId);
-        return response;
+        return getResponse();
     }
 
 
@@ -85,16 +81,14 @@ public class WebSSHCotroller extends BaseController {
     })
     @GetMapping("/list")
     public ResponseEntity getFileList(String connectionId, @RequestParam(required = false) String dir) throws BaseException {
-        ResponseEntity response = getResponse();
         try {
             List<SftpFile> sftpFiles = sshService.listDir(connectionId, dir);
-            response.setValue(sftpFiles);
+            return getResponse().setValue(sftpFiles);
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException("获取远程服务器的文件列表出错", e);
         }
-        return response;
     }
 
     @ApiOperation(value = "从远程服务器下载文件-2021-04-03", notes = "create by zqw")
@@ -105,7 +99,6 @@ public class WebSSHCotroller extends BaseController {
     })
     @GetMapping("/download")
     public void download(String connectionId, String path) throws BaseException {
-        ResponseEntity response = getResponse();
         try {
             sshService.download(connectionId, path);
         } catch (BaseException e) {
@@ -124,15 +117,14 @@ public class WebSSHCotroller extends BaseController {
     })
     @PostMapping("/upload")
     public ResponseEntity upload(String connectionId, @RequestParam("files") MultipartFile[] files, String dest) throws BaseException {
-        ResponseEntity response = getResponse();
         try {
             sshService.upload(connectionId, files, dest);
+            return getResponse();
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException("文件传输出错", e);
         }
-        return response;
     }
 
     @ApiOperation(value = "创建文件夹-2021-05-06", notes = "create by zqw")
@@ -144,15 +136,14 @@ public class WebSSHCotroller extends BaseController {
     })
     @PutMapping("/dir")
     public ResponseEntity newDir(String connectionId, String path, String dirName) throws BaseException {
-        ResponseEntity response = getResponse();
         try {
             sshService.newDir(connectionId, path, dirName);
+            return getResponse();
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException("创建文件夹出错", e);
         }
-        return response;
     }
 
     @ApiOperation(value = "删除文件或文件夹-2021-05-06", notes = "create by zqw")
@@ -163,15 +154,14 @@ public class WebSSHCotroller extends BaseController {
     })
     @DeleteMapping("/path")
     public ResponseEntity deletePath(String connectionId, String path) throws BaseException {
-        ResponseEntity response = getResponse();
         try {
             sshService.deletePath(connectionId, path);
+            return getResponse();
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException("删除出错", e);
         }
-        return response;
     }
 
 }

@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * <p>docker工具<p/>
  * <p>需要开启远程访问，可参见：https://blog.csdn.net/u011943534/article/details/112134818<p/>
- *
  *
  * @author zhuquanwen
  * @vesion 1.0
@@ -33,29 +33,33 @@ import java.util.Optional;
  */
 @Slf4j
 public class DockerClientUtils {
-    /**api的版本号，可以在远程docker服务上运行docker version看到*/
+    /**
+     * api的版本号，可以在远程docker服务上运行docker version看到
+     */
     private static final String API_VERSION = "1.40";
 
     /**
      * docker httpclient连接信息
      */
-    public static  int READ_TIMEOUT = 1000;
-    public static  int CONNECT_TIMEOUT = 1000;
-    public static  int MAX_TOTAL_CONNECTIONS = 100;
-    public static  int MAX_PER_ROUTE_CONNECTIONS = 10;
+    public static int READ_TIMEOUT = 1000;
+    public static int CONNECT_TIMEOUT = 1000;
+    public static int MAX_TOTAL_CONNECTIONS = 100;
+    public static int MAX_PER_ROUTE_CONNECTIONS = 10;
 
 
-    private DockerClientUtils() {}
+    private DockerClientUtils() {
+    }
 
     /**
      * 连接到远程的docker
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/9/14
-     * @param host 连接host信息，如tcp://172.16.10.163:2375
+     *
+     * @param host       连接host信息，如tcp://172.16.10.163:2375
      * @param apiVersion 使用的API版本，可以在远程docker服务上运行docker version看到
-     * @throws
      * @return com.github.dockerjava.api.DockerClient
+     * @throws
+     * @version 1.0
+     * @date 2021/9/14
+     * @since jdk1.8
      */
     public static DockerClient connectDocker(String host, String apiVersion) throws URISyntaxException {
         DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -74,12 +78,13 @@ public class DockerClientUtils {
 
     /**
      * 连接到远程的docker,apiVersion使用类上的配置
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/9/14
+     *
      * @param host 连接host信息，如tcp://172.16.10.163:2375
-     * @throws
      * @return com.github.dockerjava.api.DockerClient
+     * @throws
+     * @version 1.0
+     * @date 2021/9/14
+     * @since jdk1.8
      */
     public static DockerClient connectDocker(String host) throws URISyntaxException {
         return connectDocker(host, API_VERSION);
@@ -87,13 +92,14 @@ public class DockerClientUtils {
 
     /**
      * 创建容器
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/9/15
-     * @param client 容器客户端
+     *
+     * @param client             容器客户端
      * @param createContainerReq 创建容器请求
-     * @throws
      * @return com.github.dockerjava.api.command.CreateContainerResponse
+     * @throws
+     * @version 1.0
+     * @date 2021/9/15
+     * @since jdk1.8
      */
     public static CreateContainerResponse createContainer(DockerClient client, CreateContainerReq createContainerReq) {
         CreateContainerCmd containerCmd = client.createContainerCmd(createContainerReq.getImageName());
@@ -102,29 +108,27 @@ public class DockerClientUtils {
 
         //设置端口绑定
         if (createContainerReq.getPorts() != null) {
-            List<PortBinding> portBindings = new ArrayList<>();
-            for (CreateContainerReq.Port port : createContainerReq.getPorts()) {
-                Integer exposedPort = port.getExposedPort();
-                Integer bindPort = port.getBindPort();
-                Ports.Binding binding = bindPort == null ? Ports.Binding.empty() : Ports.Binding.bindPort(bindPort);
-                PortBinding portBinding = new PortBinding(binding, new ExposedPort(exposedPort));
-                portBindings.add(portBinding);
-            }
+            List<PortBinding> portBindings = createContainerReq.getPorts().stream()
+                    .map(port -> {
+                        Integer exposedPort = port.getExposedPort();
+                        Integer bindPort = port.getBindPort();
+                        Ports.Binding binding = bindPort == null ? Ports.Binding.empty() : Ports.Binding.bindPort(bindPort);
+                        return new PortBinding(binding, new ExposedPort(exposedPort));
+                    }).collect(Collectors.toList());
             containerCmd.getHostConfig().withPortBindings(portBindings);
         }
 
         //设置环境变量
-        Optional.ofNullable(createContainerReq.getEnvs()).ifPresent(envs -> containerCmd.withEnv(envs));
+        Optional.ofNullable(createContainerReq.getEnvs()).ifPresent(containerCmd::withEnv);
 
         //设置entrypiont
-        Optional.ofNullable(createContainerReq.getEntrypoints()).ifPresent(entryPoints -> containerCmd.withEntrypoint(entryPoints));
+        Optional.ofNullable(createContainerReq.getEntrypoints()).ifPresent(containerCmd::withEntrypoint);
 
         //设置挂载
         if (createContainerReq.getBindVolumes() != null) {
-            List<Bind> binds = new ArrayList<>();
-            for (CreateContainerReq.BindVolume bindVolume : createContainerReq.getBindVolumes()) {
-                binds.add(new Bind(bindVolume.getBind(), new Volume(bindVolume.getVol()), bindVolume.getAccessMode()));
-            }
+            List<Bind> binds = createContainerReq.getBindVolumes().stream()
+                    .map(bindVolume -> new Bind(bindVolume.getBind(), new Volume(bindVolume.getVol()), bindVolume.getAccessMode()))
+                    .collect(Collectors.toList());
             containerCmd.getHostConfig().withBinds(binds);
         }
 
@@ -134,15 +138,17 @@ public class DockerClientUtils {
 
     /**
      * 启动容器
+     *
      * @param client
      * @param containerId 容器ID
      */
-    public static void startContainer(DockerClient client,String containerId){
+    public static void startContainer(DockerClient client, String containerId) {
         client.startContainerCmd(containerId).exec();
     }
 
     /**
      * 运行容器(创建并启动容器)
+     *
      * @param client
      * @param createContainerReq 创建容器的信息
      */
@@ -153,31 +159,32 @@ public class DockerClientUtils {
 
     /**
      * 停止容器
+     *
      * @param client
      * @param containerId 容器ID
      */
-    public static void stopContainer(DockerClient client,String containerId){
+    public static void stopContainer(DockerClient client, String containerId) {
         client.stopContainerCmd(containerId).exec();
     }
 
     /**
      * 删除容器
+     *
      * @param client
      * @param containerId
      */
-    public static void removeContainer(DockerClient client,String containerId){
+    public static void removeContainer(DockerClient client, String containerId) {
         client.removeContainerCmd(containerId).exec();
     }
 
     /**
      * 构建docker镜像
-     * */
+     */
     public static String buildImage(DockerClient client, File dockerFileOrFolder, String imageName, String imageTag) {
         String imageId = client.buildImageCmd(dockerFileOrFolder)
-                .withTags(new HashSet<String>(){{
+                .withTags(new HashSet<String>() {{
                     add(imageName + ":" + imageTag);
-                }})
-                .exec(new BuildImageResultCallback(){
+                }}).exec(new BuildImageResultCallback() {
                     @Override
                     public void onNext(BuildResponseItem item) {
                         log.debug(item.getStream());
@@ -191,14 +198,14 @@ public class DockerClientUtils {
 
     /**
      * 为镜像打标签
-     * */
+     */
     public static void tagImage(DockerClient client, String imageId, String imageName, String imageTag) {
         client.tagImageCmd(imageId, imageName, imageTag).exec();
     }
 
     /**
      * 推送镜像
-     * */
+     */
     public static void pushImage(DockerClient client, String imageAndTag, String registryAddress,
                                  String registryUserName, String registryPassword) {
         AuthConfig authConfig = new AuthConfig()
@@ -209,9 +216,10 @@ public class DockerClientUtils {
         PushImageResultCallback pushImageResultCallback = new PushImageResultCallback() {
             @Override
             public void onNext(PushResponseItem item) {
-                log.debug("id:" + item.getId()  +" status: "+item.getStatus());
+                log.debug("id:" + item.getId() + " status: " + item.getStatus());
                 super.onNext(item);
             }
+
             @Override
             public void onComplete() {
                 log.debug("Image pushed completed!");
@@ -226,7 +234,7 @@ public class DockerClientUtils {
 
     /**
      * 删除镜像
-     * */
+     */
     public static void deleteImage(DockerClient client, String imageId) {
         client.removeImageCmd(imageId).withForce(true).exec();
     }

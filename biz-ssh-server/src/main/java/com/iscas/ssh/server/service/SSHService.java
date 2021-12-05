@@ -68,8 +68,7 @@ public class SSHService {
     public void sendHeartbeat() {
         ses.scheduleAtFixedRate(() -> {
             if (MapUtils.isNotEmpty(sshMap)) {
-                for (Map.Entry<String, SSHConnection> entry : sshMap.entrySet()) {
-                    SSHConnection sshConnection = entry.getValue();
+                sshMap.forEach((k, sshConnection) -> {
                     String connectionId = sshConnection.getConnectionId();
                     String username = connectionUserMap.get(connectionId);
                     //如果用户连接丢失，直接断掉
@@ -79,7 +78,7 @@ public class SSHService {
                         //发送心跳
                         messagingTemplate.convertAndSendToUser(username, "/queue/ping/".concat(connectionId), "ping");
                     }
-                }
+                });
             }
         }, 2, 15, TimeUnit.SECONDS);
     }
@@ -90,8 +89,7 @@ public class SSHService {
     public void clearLostConnection() {
         ses.scheduleAtFixedRate(() -> {
             if (MapUtils.isNotEmpty(sshMap)) {
-                for (Map.Entry<String, SSHConnection> entry : sshMap.entrySet()) {
-                    SSHConnection sshConnection = entry.getValue();
+                sshMap.forEach((k, sshConnection) -> {
                     String connectionId = sshConnection.getConnectionId();
                     String username = connectionUserMap.get(connectionId);
                     //如果用户连接丢失，直接断掉
@@ -104,7 +102,7 @@ public class SSHService {
                             close(connectionId);
                         }
                     }
-                }
+                });
             }
         }, 15, 15, TimeUnit.SECONDS);
     }
