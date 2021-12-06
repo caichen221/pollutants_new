@@ -4,8 +4,6 @@ import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
-import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import springfox.documentation.swagger.web.ApiResourceController;
 
 /**
  * 启动类
