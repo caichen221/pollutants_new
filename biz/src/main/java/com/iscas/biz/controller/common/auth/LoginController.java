@@ -6,6 +6,7 @@ import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,7 @@ import java.util.Map;
 @RestController
 @Api(tags = "登陆控制器")
 @SkipAuthentication
+@Validated
 public class LoginController extends BaseController implements Constants {
 
 
@@ -72,7 +75,7 @@ public class LoginController extends BaseController implements Constants {
             }
     )
     @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity login(HttpServletResponse response, @RequestBody Map<String,String> user) throws Exception {
+    public ResponseEntity login(HttpServletResponse response, @RequestBody @LoginConstraint Map<String,String> user) throws Exception {
         ResponseEntity responseEntity = new ResponseEntity();
         responseEntity.setMessage("登录成功");
         authService.loginHandler(response,  user,

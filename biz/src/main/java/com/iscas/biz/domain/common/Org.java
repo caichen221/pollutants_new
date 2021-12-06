@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class Org {
     private Integer orgId;
 
     @ApiModelProperty("名称")
-    @NotNull(message = "组织结构名称不能为空")
-    @Size(min = 2, max = 50, message = "组织机构名称必须介于2-50之间")
+    @NotEmpty(message = "{org.name.empty.constraint.message}")
+    @Size(min = 2, max = 50, message = "{org.name.size.constraint.message}")
     private String orgName;
 
     @ApiModelProperty("父ID")

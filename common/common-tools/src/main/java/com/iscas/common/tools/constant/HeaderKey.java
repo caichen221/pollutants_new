@@ -58,6 +58,11 @@ public interface HeaderKey {
     String CONTENT_LENGTH = "Content-Length";
 
     /**
+     * content-language
+     * */
+    String CONTENT_LANGUAGE = "content-language";
+
+    /**
      * ETag
      * */
     String ETAG = "ETag";

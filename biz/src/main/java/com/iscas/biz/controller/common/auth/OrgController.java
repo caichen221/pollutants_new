@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ import java.util.List;
 @Api(tags = "组织机构管理")
 @RestController
 @RequestMapping("/org")
+@Validated
 public class OrgController extends BaseController {
     private final OrgService orgService;
 

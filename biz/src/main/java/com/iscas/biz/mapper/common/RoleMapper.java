@@ -66,7 +66,7 @@ public interface RoleMapper {
             "\trole_opration t9,\n" +
             "\topration t10,\n" +
             "\topration_resource t11,\n" +
-            "\tresource t12\n" +
+            "\tresources t12\n" +
             "WHERE\n" +
             "\tt8.role_id = t9.role_id\n" +
             "AND t9.op_id = t10.op_id\n" +

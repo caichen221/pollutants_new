@@ -4,6 +4,7 @@ import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.RoleService;
+import com.iscas.biz.validator.anno.RoleConstraint;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -34,7 +36,7 @@ import java.util.Map;
 @Api(tags = "角色管理")
 @RestController
 @RequestMapping("/role")
-@org.springframework.validation.annotation.Validated
+@Validated
 public class RoleController extends BaseController {
     private String tableIdentity = "role";
     private final TableDefinitionService tableDefinitionService;
@@ -89,7 +91,7 @@ public class RoleController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, @NotNull(message = "roleId不能为空") Integer roleId) {
+    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         roleService.updateMenuTree(treeResponseData, roleId);
         return getResponse();
     }
@@ -101,7 +103,7 @@ public class RoleController extends BaseController {
             }
     )
     @GetMapping("/opration")
-    public ResponseEntity getOpration(@NotNull(message = "roleId不能为空") Integer roleId) {
+    public ResponseEntity getOpration(@NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         return getResponse().setValue(roleService.getOprations(roleId));
     }
 
@@ -118,7 +120,7 @@ public class RoleController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, @NotNull(message = "roleId不能为空") Integer roleId) {
+    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         roleService.editOpration(oprations, roleId);
         return getResponse();
     }
@@ -152,7 +154,7 @@ public class RoleController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity saveData(@RequestBody Map<String,Object> data)
+    public ResponseEntity saveData(@RequestBody @RoleConstraint Map<String,Object> data)
             throws ValidDataException {
         return tableDefinitionService.saveData(tableIdentity, data, false);
     }
@@ -169,7 +171,7 @@ public class RoleController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity editData(@RequestBody Map<String,Object> data)
+    public ResponseEntity editData(@RequestBody @RoleConstraint Map<String,Object> data)
             throws ValidDataException {
         //修改时间
 //        Map<String, Object> forceItem = new HashMap<>();
