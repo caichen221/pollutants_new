@@ -17,9 +17,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TableResponseData<List> implements Serializable{
-    /*返回总条目*/
+    /**返回总条目*/
     protected Long rows;
-    /*返回的具体数据，是个集合*/
+    /**返回的具体数据，是个集合*/
     private List data;
 
 }

@@ -1,6 +1,5 @@
 package com.iscas.common.k8s.tools.util;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
 import com.iscas.common.k8s.tools.K8sClient;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import com.iscas.common.k8s.tools.model.storageclass.KcStorageClass;
@@ -21,8 +20,6 @@ import io.kubernetes.client.util.Yaml;
 import lombok.Cleanup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.bouncycastle.asn1.cms.MetaData;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,13 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- *
+ * 为了适配JDK8添加的方法，当前已弃用，未来会删除
  *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2020/12/31 11:06
  * @since jdk1.8
  */
+@Deprecated
 public class IOUtils {
     private IOUtils() {}
 

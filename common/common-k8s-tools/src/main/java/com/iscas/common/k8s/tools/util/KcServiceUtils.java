@@ -16,7 +16,6 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -90,20 +89,20 @@ public class KcServiceUtils {
     public static void createService(KcService kcService) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         //如果有启动的，先关闭
-        deleteService(kcService);
-        //TODO 这里删除任务提交后k8s可能还未删除，造成后面创建service提示已存在，暂时先做一个处理,最多等3S
-        for (int i = 0; i < 10; i++) {
-            boolean exists = serviceExists(kcService.getNamespace(), kcService.getName());
-            if (exists) {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                break;
-            }
-        }
+//        deleteService(kcService);
+        //这里删除任务提交后k8s可能还未删除，造成后面创建service提示已存在，暂时先做一个处理,最多等3S
+//        for (int i = 0; i < 10; i++) {
+//            boolean exists = serviceExists(kcService.getNamespace(), kcService.getName());
+//            if (exists) {
+//                try {
+//                    TimeUnit.MILLISECONDS.sleep(300);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                break;
+//            }
+//        }
         MixedOperation<Service, ServiceList, ServiceResource<Service>> mixedOperation = kc.services();
         if (mixedOperation != null) {
             NonNamespaceOperation<Service, ServiceList, ServiceResource<Service>> nonNamespaceOperation = mixedOperation.inNamespace(kcService.getNamespace());
@@ -148,7 +147,16 @@ public class KcServiceUtils {
                         .endSpec();
 
                 Service service = serviceBuilder.build();
-                nonNamespaceOperation.create(service);
+                ServiceResource<Service> serviceServiceResource = nonNamespaceOperation.withName(kcService.getName());
+                if (serviceServiceResource.get() != null) {
+                    //编辑
+//                    serviceServiceResource.delete();
+//                    nonNamespaceOperation.create(service);
+                    serviceServiceResource.edit(n -> service);
+                } else {
+                    //新增
+                    nonNamespaceOperation.create(service);
+                }
             } else {
                 throw new K8sClientException(String.format("无法从k8s的命名空间:[%s]获取services", kcService.getNamespace()));
             }

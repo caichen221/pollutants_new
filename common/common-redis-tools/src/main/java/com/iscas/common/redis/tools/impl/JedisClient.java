@@ -27,8 +27,10 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     }
 
     /*=============================通用 begin=========================================*/
+
     /**
      * 删除缓存
+     *
      * @param key 键
      * @return
      */
@@ -38,9 +40,9 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
         Object jedis = null;
         try {
             jedis = getResource(Object.class);
-            if (jedisCommandsBytesExists(jedis, getBytesKey(key))){
+            if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
                 result = jedisCommandsBytesDel(jedis, getBytesKey(key));
-            }else{
+            } else {
             }
         } finally {
             returnResource(jedis);
@@ -50,11 +52,12 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
 
     /**
      * 缓存是否存在
+     *
      * @param key 键
      * @return
      */
     @Override
-    public  boolean exists(String key) throws IOException {
+    public boolean exists(String key) throws IOException {
         boolean result = false;
         Object jedis = null;
         try {
@@ -123,7 +126,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
         return null;
     }
 
-    private long  jedisCommandsBytesSadd(Object jedisCommands, byte[] bytesKey, byte[][] bytesValue) {
+    private long jedisCommandsBytesSadd(Object jedisCommands, byte[] bytesKey, byte[][] bytesValue) {
         if (jedisCommands instanceof Jedis) {
             Jedis jedis = (Jedis) jedisCommands;
             return jedis.sadd(bytesKey, bytesValue);
@@ -137,7 +140,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
         return 0;
     }
 
-    private long  jedisCommandsBytesDel(Object jedisCommands, byte[] bytesKey) {
+    private long jedisCommandsBytesDel(Object jedisCommands, byte[] bytesKey) {
         if (jedisCommands instanceof Jedis) {
             Jedis jedis = (Jedis) jedisCommands;
             return jedis.del(bytesKey);
@@ -159,7 +162,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
                 Set<String> keys = jd.keys(pattern);
-                if(keys != null && !keys.isEmpty()) {
+                if (keys != null && !keys.isEmpty()) {
                     String[] keyArr = new String[keys.size()];
                     jd.del(keys.toArray(keyArr));
                 }
@@ -202,7 +205,6 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
 //    }
 
 
-
     @Override
     public void expire(String key, long milliseconds) throws IOException {
         Object jc = null;
@@ -228,10 +230,12 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     /*=============================通用 end==========================================*/
 
     /*========================================set begin========================================================*/
+
     /**
      * 设置Set，值为任意对象类型
-     * @param key 键
-     * @param value 值
+     *
+     * @param key          键
+     * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
      * @return
      */
@@ -243,7 +247,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             jedis = getResource(Object.class);
             byte[][] bytes = new byte[value.size()][];
             int i = 0;
-            for (Object obj: value) {
+            for (Object obj : value) {
                 bytes[i++] = toBytes(obj);
             }
             result = jedisCommandsBytesSadd(jedis, getBytesKey(key), bytes);
@@ -258,7 +262,8 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
 
     /**
      * 向Set中追加值，类型为对象
-     * @param key 键
+     *
+     * @param key   键
      * @param value 值
      * @return
      */
@@ -270,7 +275,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             jedis = getResource(Object.class);
             byte[][] bytes = new byte[value.length][];
             int i = 0;
-            for (Object obj: value) {
+            for (Object obj : value) {
                 bytes[i++] = toBytes(obj);
             }
             result = jedisCommandsBytesSadd(jedis, getBytesKey(key), bytes);
@@ -296,7 +301,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
                 return jedisCluster.scard(getBytesKey(key));
             }
             return 0;
-        }finally {
+        } finally {
             returnResource(jc);
         }
     }
@@ -456,7 +461,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             if (jedisCommandsBytesExists(jedis, getBytesKey(key))) {
                 value = new HashSet<>();
                 Set<byte[]> set = jedisCommandsBytesSmembers(jedis, getBytesKey(key));
-                for (byte[] bs : set){
+                for (byte[] bs : set) {
                     value.add((T) toObject(bs));
                 }
             }
@@ -877,7 +882,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     }
 
     @Override
-    public  <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max)  throws IOException, ClassNotFoundException {
+    public <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max) throws IOException, ClassNotFoundException {
         Map<T, Double> result = new HashMap<>();
         Set<Tuple> tuples = zrangeByScoreWithScores(key, min, max);
         if (tuples != null) {
@@ -1311,13 +1316,13 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             Collection<byte[]> byteResult = null;
             if (jc instanceof Jedis) {
                 Jedis jedis = (Jedis) jc;
-                byteResult =  jedis.hvals(bytesKey);
+                byteResult = jedis.hvals(bytesKey);
             } else if (jc instanceof ShardedJedis) {
                 ShardedJedis shardedJedis = (ShardedJedis) jc;
-                byteResult =  shardedJedis.hvals(bytesKey);
+                byteResult = shardedJedis.hvals(bytesKey);
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
-                byteResult =  jedisCluster.hvals(bytesKey);
+                byteResult = jedisCluster.hvals(bytesKey);
             }
             List<T> result = new ArrayList<>();
             if (byteResult != null) {
@@ -1428,15 +1433,17 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     /*===========================hash end==========================================*/
 
     /*===========================string begin==========================================*/
+
     /**
      * 设置数据，对象数据，序列化后存入redis
-     * @param key 键
-     * @param value 值
+     *
+     * @param key          键
+     * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
      * @return
      */
     @Override
-    public  boolean set(String key, Object value, int cacheSeconds) throws IOException {
+    public boolean set(String key, Object value, int cacheSeconds) throws IOException {
         String result = null;
         Object jedis = null;
         try {
@@ -1883,7 +1890,6 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     }
 
     /*===========================list end============================================*/
-
 
 
 //    private void delayTaskHandler(String key) {

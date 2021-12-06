@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * deployment
+ * Statefulset
  *
  * @author zhuquanwen
  * @vesion 1.0

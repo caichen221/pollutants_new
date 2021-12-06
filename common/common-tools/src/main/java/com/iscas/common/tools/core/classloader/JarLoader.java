@@ -6,11 +6,13 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * 提供Jar隔离的加载机制，会把传入的路径、及其子路径、以及路径中的jar文件加入到class path。
@@ -37,11 +39,12 @@ public class JarLoader extends URLClassLoader {
         allUrl = threadLocal.get();
         this.useCache = useCache;
         this.paths = paths;
-        StringBuilder pathBuilder = new StringBuilder();
-        for (String path : paths) {
-            pathBuilder.append(path).append(";");
-        }
-        pathStr = pathBuilder.toString();
+        pathStr = Arrays.stream(paths).collect(Collectors.joining(";"));
+//        StringBuilder pathBuilder = new StringBuilder();
+//        for (String path : paths) {
+//            pathBuilder.append(path).append(";");
+//        }
+//        pathStr = pathBuilder.toString();
 
     }
 
@@ -58,11 +61,8 @@ public class JarLoader extends URLClassLoader {
      * 可适用于不想重启服务，但更新了外部插件的jar包的情况下调用
      * */
     public static void clearCache(String[] paths) {
-        StringBuilder pathBuilder = new StringBuilder();
-        for (String path : paths) {
-            pathBuilder.append(path).append(";");
-        }
-        classBytes.remove(pathBuilder.toString());
+        String pathStr = Arrays.stream(paths).collect(Collectors.joining(";"));
+        classBytes.remove(pathStr);
     }
 
 

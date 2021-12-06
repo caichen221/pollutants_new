@@ -17,6 +17,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +32,9 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 public class KcNodeUtils {
+    //下层模块要调用上层的函数，暂时先这么处理把
+    public static Object storeService;
+
     public static final ThreadLocal<Boolean> METRICS_TIMEOUT = new ThreadLocal<>();
     public static Long METRICS_RESTART_TIME = 0l;
 
@@ -403,7 +408,6 @@ public class KcNodeUtils {
             }
 
         }
-
         baseInfo.setName(name)
                 .setCreateTime(createTime)
                 .setRunTimeStr(runTimeStr)
@@ -524,16 +528,27 @@ public class KcNodeUtils {
         return kcNodes;
     }
 
+    private static void reflectSetMetricsTimeout(boolean timeoutFlag) {
+        try {
+            Method put = storeService.getClass().getDeclaredMethod("put", String.class, Object.class);
+            put.invoke(storeService, "CACHE_KEY_METRICS_TIMEOUT", timeoutFlag);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void getMetricsServerInfo(List<KcNode> kcNodes) throws IOException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         NodeMetricsList metrics = null;
         try {
             metrics = kc.top().nodes().metrics();
-            METRICS_TIMEOUT.set(false);
+//            METRICS_TIMEOUT.set(false);
+            reflectSetMetricsTimeout(false);
         } catch (Exception e) {
             System.err.println("调用metrics-server出错：" + e.getMessage());
             e.printStackTrace();
-            METRICS_TIMEOUT.set(true);
+//            METRICS_TIMEOUT.set(true);
+            reflectSetMetricsTimeout(true);
             return;
         }
 

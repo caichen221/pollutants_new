@@ -17,12 +17,13 @@ import java.io.Serializable;
  **/
 @Data
 @ToString(callSuper = true)
+@Deprecated
 public class ComboboxData_old<T> implements Serializable {
-    /*label*/
+    /**label*/
     protected String label;
-    /*id*/
+    /**id*/
     protected Object id;
-    /*value*/
+    /**value*/
     protected T value;
 
 

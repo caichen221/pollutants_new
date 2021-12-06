@@ -16,9 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TableHeaderResponseData implements Serializable {
-    /*表头列信息*/
+    /**表头列信息*/
     protected List<TableField> cols;
-    /*表的一些设置信息*/
+
+    /**表的一些设置信息*/
     protected TableSetting setting;
 
     public List<TableField> getCols() {
@@ -53,8 +54,6 @@ public class TableHeaderResponseData implements Serializable {
             throw new RuntimeException("Class not found.",e);
         } finally{
             try{
-                byteIn = null;
-                byteOut = null;
                 if(objOut != null) {
                     objOut.close();
                 }

@@ -3,7 +3,7 @@ package com.iscas.common.k8s.tools.model.volume;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  *
@@ -21,8 +21,9 @@ public class KcVoConfigMapParam extends KcVolumeParam {
     private String configmap;
 
     /**
-     * key to path
+     * key to path ,key是configmap的key，value是一个相对路径，对应的配置文件文件名
+     * 可以为空
      * */
-    private LinkedHashMap<String, String> keyToPath;
+    private List<String[]> keyToPath;
 
 }

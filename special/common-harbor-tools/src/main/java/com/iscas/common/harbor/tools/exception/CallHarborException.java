@@ -4,7 +4,7 @@ package com.iscas.common.harbor.tools.exception;
  * 调用Harbor的错误
  *
  * @author zhuquanwen
- *  @vesion 1.0
+ * @vesion 1.0
  * @date 2020/12/8 21:52
  * @since jdk1.8
  */

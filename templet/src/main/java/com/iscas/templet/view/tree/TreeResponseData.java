@@ -78,8 +78,6 @@ public class TreeResponseData<T> implements Serializable ,Cloneable{
             throw new RuntimeException("Class not found.",e);
         } finally{
             try{
-                byteIn = null;
-                byteOut = null;
                 if(objOut != null) {
                     objOut.close();
                 }

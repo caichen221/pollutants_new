@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,9 +81,7 @@ public class JGitUtils {
         } catch (GitAPIException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -105,9 +104,7 @@ public class JGitUtils {
         } catch (IOException | GitAPIException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
         return addFileFlag;
     }
@@ -127,9 +124,7 @@ public class JGitUtils {
         } catch (IOException | GitAPIException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -173,9 +168,7 @@ public class JGitUtils {
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -192,9 +185,7 @@ public class JGitUtils {
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -207,14 +198,11 @@ public class JGitUtils {
         Git git = null;
         try {
             git = new Git(new FileRepository(localRepoPath + "/.git"));
-            List<Ref> refs = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-            return refs;
+            return git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -227,14 +215,11 @@ public class JGitUtils {
         Git git = null;
         try {
             git = new Git(new FileRepository(localRepoPath + "/.git"));
-            List<Ref> refs = git.branchList().call();
-            return refs;
+            return git.branchList().call();
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -247,14 +232,11 @@ public class JGitUtils {
         Git git = null;
         try {
             git = new Git(new FileRepository(localRepoPath + "/.git"));
-            List<Ref> refs = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
-            return refs;
+            return git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -267,14 +249,11 @@ public class JGitUtils {
         Git git = null;
         try {
             git = new Git(new FileRepository(localRepoPath + "/.git"));
-            Ref ref = git.checkout().setName(branchName).call();
-            return ref;
+            return git.checkout().setName(branchName).call();
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -287,14 +266,11 @@ public class JGitUtils {
         Git git = null;
         try {
             git = new Git(new FileRepository(localRepoPath + "/.git"));
-            Ref ref = git.checkout().setCreateBranch(true).setName(branchName).call();
-            return ref;
+            return git.checkout().setCreateBranch(true).setName(branchName).call();
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -307,14 +283,11 @@ public class JGitUtils {
         Git git = null;
         try {
             git = new Git(new FileRepository(localRepoPath + "/.git"));
-            Status status = git.status().call();
-            return status;
+            return git.status().call();
         } catch (GitAPIException | IOException e) {
             throw new JGitException(e);
         } finally {
-            if (git != null) {
-                git.close();
-            }
+            close(git);
         }
     }
 
@@ -373,7 +346,7 @@ public class JGitUtils {
                 df.setRepository(git.getRepository());
                 for (DiffEntry diffEntry : diffs) {
                     df.format(diffEntry);
-                    String diffText = out.toString("UTF-8");
+                    String diffText = out.toString(StandardCharsets.UTF_8);
                     diffStrs.add(diffText);
                     out.reset();
                 }
@@ -381,6 +354,8 @@ public class JGitUtils {
             return diffStrs;
         } catch (IOException | GitAPIException e) {
             throw new JGitException(e);
+        } finally {
+            close(git);
         }
     }
 
@@ -473,7 +448,7 @@ public class JGitUtils {
     }
 
     private static boolean addCompareResult(List<CompareResult> compareResults, CompareResult compareResult,
-                                         int olderIndex, int newerIndex) {
+                                            int olderIndex, int newerIndex) {
         if ((compareResult.getCFrom() != null || compareResult.getPFrom() != null) &&
                 (olderIndex != 0 || newerIndex != 0)) {
             compareResult.setCTo(olderIndex);
@@ -516,5 +491,11 @@ public class JGitUtils {
         }
         // 目录此时为空，可以删除
         dir.delete();
+    }
+
+    private static void close(Git git) {
+        if (git != null) {
+            git.close();
+        }
     }
 }

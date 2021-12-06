@@ -22,9 +22,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ComboboxData<T> implements Serializable {
-    /*label*/
+    /**label*/
     protected String label;
-    /*value*/
+    /**value*/
     protected Object value;
 
     /** data*/

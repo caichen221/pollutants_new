@@ -1,7 +1,9 @@
 package com.iscas.common.tools.core.arithmetic;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.stream.Stream;
 
 /**
  *
@@ -27,7 +29,7 @@ public class MathUtils {
 
     public static double scale(double data, int scale) {
         BigDecimal bg = new BigDecimal(data);
-        return bg.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return bg.setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }
 
     public static String double2Percent(double data, int scale) {

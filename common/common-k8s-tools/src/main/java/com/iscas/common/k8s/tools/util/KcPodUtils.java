@@ -7,6 +7,10 @@ import com.iscas.common.k8s.tools.K8sClient;
 import com.iscas.common.k8s.tools.K8sCustomUtils;
 import com.iscas.common.k8s.tools.cfg.K8sConstants;
 import com.iscas.common.k8s.tools.model.KcResource;
+import com.iscas.common.k8s.tools.model.env.KcEnv;
+import com.iscas.common.k8s.tools.model.env.KcEnvConfigMap;
+import com.iscas.common.k8s.tools.model.env.KcEnvKvConfigMap;
+import com.iscas.common.k8s.tools.model.env.KcEnvKvV;
 import com.iscas.common.k8s.tools.model.health.*;
 import com.iscas.common.k8s.tools.model.pod.*;
 import com.iscas.common.tools.core.date.DateSafeUtils;
@@ -96,7 +100,7 @@ public class KcPodUtils {
         setContainers(kcPod, pod, podMetricsList);
         setInitContainers(kcPod, pod, podMetricsList);
         setConditions(kcPod, pod);
-        System.out.println(pod);
+//        System.out.println(pod);
         return kcPod;
     }
 
@@ -206,6 +210,7 @@ public class KcPodUtils {
                         .setPort(httpGet.getPort() == null ? null : httpGet.getPort().getIntVal())
                         .setHost(httpGet.getHost());
                 setHealthParam(healthParam, probe);
+                healthParam.setProtocol(httpGet.getScheme());
                 kcProbe.setHealthHttpParam(healthParam);
             } else if (tcpSocket != null) {
                 kcProbe.setType("TCP");
@@ -219,9 +224,27 @@ public class KcPodUtils {
         return null;
     }
 
+    public static String  handleImage(String image) {
+        //todo 处理image的问题，暂时这么处理，如果没有版本好，使用latest
+        if (!image.contains(":")) {
+            image += ":latest";
+        } else if (image.endsWith(":null")) {
+            image = image.replace(":null", ":latest");
+        } else if (!image.endsWith(":latest")){
+            String rightImage = StringUtils.substringAfter(image, ":");
+            if (!rightImage.contains(":")) {
+                image += ":latest";
+            }
+        }
+        return image;
+    }
+
     private static KcPodContainer getContainer(Container container, ContainerStatus containerStatus, KcPod kcPod, PodMetricsList podMetrics) throws ParseException {
         KcPodContainer podContainer = new KcPodContainer();
-        podContainer.setImage(container.getImage())
+        String image = container.getImage();
+        image = handleImage(image);
+
+        podContainer.setImage(image)
                 .setImagePullPolicy(container.getImagePullPolicy());
 
         Probe livenessProbe = container.getLivenessProbe();
@@ -273,6 +296,9 @@ public class KcPodUtils {
 
         //环境变量
         podContainer.setEnvs(setEnvs(container));
+
+        //环境变量新
+        podContainer.setEnvVar(setEnvVar(container));
 
         //挂载点
         podContainer.setVolumeMounts(setVolumeMounts(container));
@@ -342,7 +368,7 @@ public class KcPodUtils {
     }
 
     public static LinkedHashMap<String, String> setEnvs(Container container) {
-        List<EnvVar> envs = container.getEnv();
+        List<? extends EnvVar> envs = container.getEnv();
         if (CollectionUtils.isNotEmpty(envs)) {
             LinkedHashMap<String, String> kcEnvs = new LinkedHashMap<>();
             for (EnvVar env : envs) {
@@ -353,6 +379,68 @@ public class KcPodUtils {
             return kcEnvs;
         }
         return null;
+    }
+
+    public static List<KcEnv> setEnvVar(Container container) {
+        List<EnvVar> envs = container.getEnv();
+        List<EnvFromSource> envFrom = container.getEnvFrom();
+        List<KcEnv> kcEnvs = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(envs)) {
+            //处理键值对类型的
+            for (EnvVar env : envs) {
+                String name = env.getName();
+                String value = env.getValue();
+                EnvVarSource valueFrom = env.getValueFrom();
+                if (value != null) {
+                    //值类型的
+                    KcEnvKvV kcEnvKvV = new KcEnvKvV();
+                    kcEnvKvV.setType("kv");
+                    kcEnvKvV.setSubType("v");
+                    kcEnvKvV.setKey(name);
+                    kcEnvKvV.setValue(value);
+                    kcEnvs.add(kcEnvKvV);
+                } else if (valueFrom != null) {
+                    //暂时只支持configmap类型
+                    ConfigMapKeySelector configMapKeyRef = valueFrom.getConfigMapKeyRef();
+                    if (configMapKeyRef != null) {
+                        String name1 = configMapKeyRef.getName();
+                        String key = configMapKeyRef.getKey();
+                        KcEnvKvConfigMap kcEnvConfigMap = new KcEnvKvConfigMap();
+                        kcEnvConfigMap.setType("kv");
+                        kcEnvConfigMap.setSubType("configmap");
+                        kcEnvConfigMap.setKey(name);
+
+                        //      env:
+                        //        - name: ENV_VAR_USERNAME
+                        //          valueFrom:
+                        //            configMapKeyRef:
+                        //              name: user-configmap
+                        //              key: user.name
+                        //        - name: ENV_VAR__ID
+                        //          valueFrom:
+                        //            configMapKeyRef:
+                        //              name: user-configmap
+                        //              key: user.id
+                        //如上，name1对应 configMapKeyRef下的name
+                        //key对应configMapKeyRef下的key
+
+                        kcEnvConfigMap.setConfigMapName(name1);
+                        kcEnvConfigMap.setConfigMapKey(key);
+                        kcEnvs.add(kcEnvConfigMap);
+                    }
+                }
+            }
+        }
+        if (CollectionUtils.isNotEmpty(envFrom)) {
+            for (EnvFromSource envFromSource : envFrom) {
+                ConfigMapEnvSource configMapRef = envFromSource.getConfigMapRef();
+                KcEnvConfigMap kcEnvConfigMap = new KcEnvConfigMap();
+                kcEnvConfigMap.setType("configmap");
+                kcEnvConfigMap.setConfigMapName(configMapRef.getName());
+                kcEnvs.add(kcEnvConfigMap);
+            }
+        }
+        return kcEnvs.size() == 0 ? null : kcEnvs;
     }
 
     public static KcResource setResource(Container container) {
@@ -442,6 +530,34 @@ public class KcPodUtils {
                 podBaseInfo.getLabels().add(label);
             }
         }
+
+        String imagePullSecretStr = null;
+        List<LocalObjectReference> imagePullSecrets = spec.getImagePullSecrets();
+        if (CollectionUtils.isNotEmpty(imagePullSecrets)) {
+            //todo 暂时取第1个元素
+            LocalObjectReference localObjectReference = imagePullSecrets.get(0);
+            imagePullSecretStr = localObjectReference.getName();
+        }
+
+        //获取所属工作负载信息
+        String ownerReferenceKind = "";
+        String ownerReferenceName = "";
+        List<OwnerReference> ownerReferences = pod.getMetadata().getOwnerReferences();
+        if (CollectionUtils.isNotEmpty(ownerReferences)) {
+            for (OwnerReference ownerReference : ownerReferences) {
+                if (ownerReferenceKind != "") {
+                    ownerReferenceKind += ",";
+                }
+                if (ownerReferenceName != "") {
+                    ownerReferenceName += ",";
+                }
+                String kind = ownerReference.getKind();
+                String name = ownerReference.getName();
+                ownerReferenceKind += kind;
+                ownerReferenceName += name;
+            }
+        }
+
         podBaseInfo.setDnsPolicy(spec.getDnsPolicy())
                 .setEnableServiceLinks(spec.getEnableServiceLinks())
                 .setNodeName(spec.getNodeName())
@@ -452,7 +568,10 @@ public class KcPodUtils {
                 .setPhase(status.getPhase())
                 .setPodIp(status.getPodIP())
                 .setQosClass(status.getQosClass())
-                .setStartTime(CommonUtils.timeOffset(DateSafeUtils.parse(status.getStartTime(), K8sConstants.TIME_PATTERN)));
+                .setImagePullSecrets(imagePullSecretStr)
+                .setStartTime(CommonUtils.timeOffset(DateSafeUtils.parse(status.getStartTime(), K8sConstants.TIME_PATTERN)))
+                .setOwnerReferenceKind(ownerReferenceKind)
+                .setOwnerReferenceName(ownerReferenceName);
         setPodMetricsInfo(podBaseInfo, podMetricsList);
 
         kcPod.setBaseInfo(podBaseInfo);

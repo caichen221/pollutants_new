@@ -3,19 +3,22 @@ package com.iscas.common.k8s.tools.util;
 import cn.hutool.core.convert.Convert;
 import com.iscas.common.k8s.tools.K8sClient;
 import com.iscas.common.k8s.tools.cfg.K8sConstants;
+import com.iscas.common.k8s.tools.exception.K8sCleintRuntimeException;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import com.iscas.common.k8s.tools.model.KcContainer;
 import com.iscas.common.k8s.tools.model.KcContainerPort;
 import com.iscas.common.k8s.tools.model.KcResource;
+import com.iscas.common.k8s.tools.model.KcRuntimeInfo;
 import com.iscas.common.k8s.tools.model.autoscale.KcAutoScaleResource;
 import com.iscas.common.k8s.tools.model.autoscale.KcAutoscale;
 import com.iscas.common.k8s.tools.model.deployment.KcDepBaseInfo;
-import com.iscas.common.k8s.tools.model.deployment.KcDepRuntimeInfo;
 import com.iscas.common.k8s.tools.model.deployment.KcDeployment;
+import com.iscas.common.k8s.tools.model.env.*;
 import com.iscas.common.k8s.tools.model.health.KcHealthTcpParam;
 import com.iscas.common.k8s.tools.model.health.KcLivenessProbe;
 import com.iscas.common.k8s.tools.model.health.KcReadinessProbe;
 import com.iscas.common.k8s.tools.model.pod.KcPodContainerVoMount;
+import com.iscas.common.k8s.tools.model.volume.KcVoConfigMapParam;
 import com.iscas.common.k8s.tools.model.volume.KcVoHostPathParam;
 import com.iscas.common.k8s.tools.model.volume.KcVoNfsParam;
 import com.iscas.common.k8s.tools.model.volume.KcVolume;
@@ -32,6 +35,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -176,6 +180,9 @@ public class KcDeploymentUtils {
         List<String> args = container.getArgs();
         //环境变量
         LinkedHashMap<String, String> env = container.getEnv();
+
+        //环境变量新，env弃用
+        List<KcEnv> kcEnvVar = container.getEnvVar();
         //挂载点
         List<KcPodContainerVoMount> volumeMounts = container.getVolumeMounts();
         //就绪检查
@@ -206,11 +213,66 @@ public class KcDeploymentUtils {
                 envVar.setValue(entry.getValue());
                 specNestedInitContainer.getEnv().add(envVar);
             }
-
         }
+
+        //设置环境变量新，原来的env弃用
+        if (CollectionUtils.isNotEmpty(kcEnvVar)) {
+            for (KcEnv kcEnv : kcEnvVar) {
+                String type = kcEnv.getType();
+                switch (type) {
+                    case "configmap": {
+                        KcEnvConfigMap kcEnvConfigMap = (KcEnvConfigMap) kcEnv;
+                        EnvFromSource envFromSource = new EnvFromSource();
+                        ConfigMapEnvSource configMapEnvSource = new ConfigMapEnvSource();
+                        configMapEnvSource.setName(kcEnvConfigMap.getConfigMapName());
+                        envFromSource.setConfigMapRef(configMapEnvSource);
+                        specNestedInitContainer.getEnvFrom().add(envFromSource);
+                        break;
+                    }
+                    case "kv": {
+                        KcEnvKv kcEnvKv = (KcEnvKv) kcEnv;
+                        String subType = kcEnvKv.getSubType();
+                        switch (subType) {
+                            case "v": {
+                                KcEnvKvV kcEnvKvV = (KcEnvKvV) kcEnvKv;
+                                EnvVar envVar = new EnvVar();
+                                envVar.setName(kcEnvKvV.getKey());
+                                envVar.setValue(kcEnvKvV.getValue());
+                                specNestedInitContainer.getEnv().add(envVar);
+                                break;
+                            }
+                            case "configmap": {
+                                KcEnvKvConfigMap kcEnvKvConfigMap = (KcEnvKvConfigMap) kcEnvKv;
+                                EnvVar envVar = new EnvVar();
+                                envVar.setName(kcEnvKvConfigMap.getKey());
+                                EnvVarSource envVarSource = new EnvVarSource();
+                                ConfigMapKeySelector configMapKeySelector = new ConfigMapKeySelector();
+                                configMapKeySelector.setName(kcEnvKvConfigMap.getConfigMapName());
+                                configMapKeySelector.setKey(kcEnvKvConfigMap.getConfigMapKey());
+                                envVarSource.setConfigMapKeyRef(configMapKeySelector);
+                                envVar.setValueFrom(envVarSource);
+                                specNestedInitContainer.getEnv().add(envVar);
+                                break;
+                            }
+                            default: {
+                                throw new K8sCleintRuntimeException(MessageFormat.format("不支持的环境变量类型:{0}-{1}", type, subType));
+                            }
+                        }
+                        break;
+                    }
+                    default:{
+                        throw new K8sCleintRuntimeException(MessageFormat.format("不支持的环境变量类型:{0}", type));
+                    }
+                }
+            }
+        }
+
         //挂载点
         if (CollectionUtils.isNotEmpty(volumeMounts)) {
             for (KcPodContainerVoMount volumeMount : volumeMounts) {
+                if (volumeMount.getName() == null) {
+                    continue;
+                }
                 VolumeMount vm = new VolumeMount();
                 vm.setName(volumeMount.getName());
                 vm.setMountPath(volumeMount.getMountPath());
@@ -319,7 +381,7 @@ public class KcDeploymentUtils {
         String name = baseInfo.getName();
 
         //如果存在，删除这个deployment
-        KcDeploymentUtils.deleteDeployment(namespace, name);
+//        KcDeploymentUtils.deleteDeployment(namespace, name);
 
         Map<String, String> labelMap = getLabelMap(baseInfo);
         Map<String, String> annotationMap = getAnnotationMap(baseInfo);
@@ -400,8 +462,28 @@ public class KcDeploymentUtils {
 
         deployment.setSpec(deploymentSpec);
 
-        apps.deployments().inNamespace(namespace).create(deployment);
+        RollableScalableResource<Deployment> deploymentRollableScalableResource = apps.deployments().inNamespace(namespace).withName(name);
+        if (deploymentRollableScalableResource.get() == null) {
+            //新增
+            apps.deployments().inNamespace(namespace).create(deployment);
+        } else {
+            //编辑
+            validMatchLabel(deploymentRollableScalableResource, deployment);
+            deploymentRollableScalableResource.edit(n -> deployment);
+        }
+    }
 
+    private static void validMatchLabel(RollableScalableResource<Deployment> deploymentRollableScalableResource, Deployment deployment) throws K8sClientException {
+        Deployment deployment1 = deploymentRollableScalableResource.get();
+        Map<String, String> labels = deployment.getMetadata().getLabels();
+        Map<String, String> labels1 = deployment1.getMetadata().getLabels();
+        if (!labels1.containsKey("app") && labels.containsKey("app")) {
+            //删除matchLabel,否则修改会失败
+            LabelSelector selector = deployment.getSpec().getSelector();
+            if (selector != null && selector.getMatchLabels() != null && selector.getMatchLabels().containsKey("app")) {
+                throw new K8sClientException("不允许修改matchlabel,请克隆此服务或删除此服务，重新创建");
+            }
+        }
     }
 
     public static Map<String, String> getLabelMap(KcDepBaseInfo baseInfo) {
@@ -486,6 +568,39 @@ public class KcDeploymentUtils {
                             volume.setNfs(nfsVolumeSource);
                             break;
                         }
+                        case configMap: {
+                            KcVoConfigMapParam params = new KcVoConfigMapParam();
+                            Map paramMap = (Map) v.getParams();
+                            if (paramMap != null) {
+                                params = Convert.convert(KcVoConfigMapParam.class, paramMap);
+                            }
+                            if (StringUtils.isEmpty(params.getConfigmap())) {
+                                throw new K8sClientException("configMap类型存储卷的configmap不能为空");
+                            }
+                            ConfigMapVolumeSource configMapVolumeSource = new ConfigMapVolumeSource();
+                            configMapVolumeSource.setName(params.getConfigmap());
+                            if (CollectionUtils.isNotEmpty(params.getKeyToPath())) {
+                                List<KeyToPath> keyToPaths = new ArrayList<>();
+                                for (Object keyToPathArrayObject : params.getKeyToPath()) {
+                                    String []keyToPathArray = null;
+                                    if (keyToPathArrayObject instanceof String[]) {
+                                        keyToPathArray = (String[]) keyToPathArrayObject;
+                                    } else {
+                                        keyToPathArray = new String[2];
+                                        keyToPathArray[0] = ((List<String>) keyToPathArrayObject).get(0);
+                                        keyToPathArray[1] = ((List<String>) keyToPathArrayObject).get(1);
+                                    }
+                                    KeyToPath keyToPath = new KeyToPath();
+                                    keyToPath.setKey(keyToPathArray[0]);
+                                    keyToPath.setPath(keyToPathArray[1]);
+                                    keyToPaths.add(keyToPath);
+                                }
+                                configMapVolumeSource.setItems(keyToPaths);
+                            }
+
+                            volume.setConfigMap(configMapVolumeSource);
+                            break;
+                        }
                         default: {
                             throw new K8sClientException("不支持的存储卷类型:" + type);
                         }
@@ -540,7 +655,7 @@ public class KcDeploymentUtils {
                             Integer currentRepSum = null;
                             Integer planRepSum = null;
                             String runtimeStr = null;
-                            List<KcDepRuntimeInfo> runtimeInfos = null;
+                            List<KcRuntimeInfo> runtimeInfos = null;
                             KcDepBaseInfo baseInfo = null;
 
                             KcDeployment kcDeployment = new KcDeployment();
@@ -668,6 +783,23 @@ public class KcDeploymentUtils {
                     .setReadOnly(readOnly == null ? false : readOnly);
             kcVolume.setParams(kcVoNfsParam);
         }
+
+        //处理configmap类型
+        ConfigMapVolumeSource configMap = volume.getConfigMap();
+        if (configMap != null) {
+            KcVoConfigMapParam kcVoConfigMapParam = new KcVoConfigMapParam();
+            kcVoConfigMapParam.setConfigmap(configMap.getName());
+            kcVolume.setType(KcVolume.KcVolumeType.configMap);
+            List<KeyToPath> items = configMap.getItems();
+            if (CollectionUtils.isNotEmpty(items)) {
+                List<String[]> keyToPath = new ArrayList<>();
+                for (KeyToPath item : items) {
+                    keyToPath.add(new String[]{item.getKey(), item.getPath()});
+                }
+                kcVoConfigMapParam.setKeyToPath(keyToPath);
+            }
+            kcVolume.setParams(kcVoConfigMapParam);
+        }
         return kcVolume;
     }
 
@@ -715,15 +847,15 @@ public class KcDeploymentUtils {
     /**
      * 设置运行时信息
      * */
-    private static List<KcDepRuntimeInfo> setRuntimeInfo(Deployment deployment) throws K8sClientException {
-        List<KcDepRuntimeInfo> kcConditions = null;
+    private static List<KcRuntimeInfo> setRuntimeInfo(Deployment deployment) throws K8sClientException {
+        List<KcRuntimeInfo> kcConditions = null;
         DeploymentStatus depStatus = deployment.getStatus();
         if (depStatus != null) {
             List<DeploymentCondition> conditions = depStatus.getConditions();
             if (CollectionUtils.isNotEmpty(conditions)) {
                 kcConditions  = new ArrayList<>();
                 for (DeploymentCondition condition : conditions) {
-                    KcDepRuntimeInfo kcCondtion = new KcDepRuntimeInfo();
+                    KcRuntimeInfo kcCondtion = new KcRuntimeInfo();
                     String type = null;
                     String status = null;
                     Date lastUpdateTime = null;

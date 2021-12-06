@@ -141,4 +141,20 @@ public class KcPodBaseInfo {
      * 已使用的本地存储资源
      * */
     private long usedTransientStorage = 0;
+
+    /**
+     * 镜像拉取秘钥
+     * */
+    private String imagePullSecrets;
+
+    /**
+     * 所属工作负载类型
+     * */
+    private String ownerReferenceKind;
+
+    /**
+     * 所属工作负载名称
+     * */
+    private String ownerReferenceName;
+
 }

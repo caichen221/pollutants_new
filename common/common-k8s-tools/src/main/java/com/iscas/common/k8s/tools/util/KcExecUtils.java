@@ -1,13 +1,9 @@
 package com.iscas.common.k8s.tools.util;
 
 import com.iscas.common.k8s.tools.K8sClient;
-import com.iscas.common.k8s.tools.cfg.K8sConfig;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.ContainerResource;
-import io.fabric8.kubernetes.client.dsl.ExecListener;
-import io.fabric8.kubernetes.client.dsl.ExecWatch;
-import io.fabric8.kubernetes.client.dsl.LogWatch;
+import io.fabric8.kubernetes.client.dsl.*;
 import io.fabric8.kubernetes.client.dsl.internal.LogWatchCallback;
 import lombok.Cleanup;
 import okhttp3.*;
@@ -25,9 +21,25 @@ import java.util.concurrent.TimeUnit;
  * @since jdk1.8
  */
 public class KcExecUtils {
-    private KcExecUtils() {}
+    private KcExecUtils() {
+    }
 
-    public static final int LOG_WATCH_LAST_LINES = 1000;
+    public static final int LOG_WATCH_LAST_LINES = 200;
+
+
+    public static void downloadFile(String namespace, String podName, String containerName, String filePath, File targetFile) throws FileNotFoundException {
+        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+        ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(containerName);
+        CopyOrReadable<Boolean, InputStream, Boolean> file = containerResource.file(filePath);
+        file.copy(targetFile.toPath());
+    }
+
+    public static void uploadFile(String namespace, String podName, String containerName, String filePath, File targetFile) throws FileNotFoundException {
+        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+        ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(containerName);
+        CopyOrReadable<Boolean, InputStream, Boolean> file = containerResource.file(filePath);
+        file.upload(targetFile.toPath());
+    }
 
 
     public static LogWatch traceLog(String namespace, String podName, String containerName, int tailingLines) {
@@ -36,14 +48,23 @@ public class KcExecUtils {
 //                .inNamespace(namespace)
 //                .withName(podName)
 //                .inContainer(containerName);
-        ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(podName);
+        ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(containerName);
+        CopyOrReadable<Boolean, InputStream, Boolean> file = containerResource.file("");
         LogWatch logWatch1 = containerResource.tailingLines(tailingLines).watchLog();
         LogWatchCallback logWatchCallback = (LogWatchCallback) logWatch1;
         logWatchCallback.waitUntilReady();
-
 //        LogWatch logWatch = containerResource/*.withPrettyOutput()*/.watchLog();
         return logWatch1;
     }
+
+//    public static void main(String[] args) {
+//        String reg = "^[\\u4e00-\\u9fa5]{0,}$";
+//        Pattern compile = Pattern.compile(reg);
+//        Matcher wegwegwe156 = compile.matcher("wegwegwe156");
+//        System.out.println(wegwegwe156.matches());
+//
+//        System.out.println("@@".replace("@@", "\\"));
+//    }
 
 //    public static LogWatch traceLog(String namespace, String podName, String containerName) {
 //        @Cleanup KubernetesClient kc = K8sClient.getInstance();
@@ -232,14 +253,14 @@ public class KcExecUtils {
         });
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        //初始化
-        K8sConfig k8sConfig = new K8sConfig();
-        k8sConfig.setApiServerPath("https://192.168.100.95:6443")
-                .setCaPath("C:/ideaProjects/cpaas-manager/ca.crt")
-                .setToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrdWJvYXJkLXVzZXItdG9rZW4tZHZrbXgiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoia3Vib2FyZC11c2VyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNDI5MDBhMTctNjFlYi00OWM3LWI5NmItMGZjMzBkNzg2Mzk3Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmt1Ym9hcmQtdXNlciJ9.XrRIE6ZHBLE1DOJiV9S_e-uWmxaDY0cExGk1YzxVGFGK6Wh6IJFwF2fM217Is0E3TThTQE9WW2mr71bxa5-ZbCshO5VbDFNtv4pq4Ve_7ijYdd2zPVPabH59vdDmnMt5xIVeeFwcSXN8TrrKzTcR3wnpqafGAnEYTeHcu0Z1GyTYN_y5b0PqhIdEgwMKpL-_PWClY7nta7nzwS0CDulboimpmwsIZldLkNWcLzkM90FJttvivYDDrpLkdURoHLWxnxlf_hlFnfA7LXt7v380sS--Yg8ULl6rE7Gwtk_6I77q8eKMuo55okiBq-9fKVmcDUD3SD27zgAL5-_bFN2z6w");
-        K8sClient.setConfig(k8sConfig);
-        test3();
-    }
+//    public static void main(String[] args) throws FileNotFoundException {
+//        //初始化
+//        K8sConfig k8sConfig = new K8sConfig();
+//        k8sConfig.setApiServerPath("https://192.168.100.95:6443")
+//                .setCaPath("C:/ideaProjects/cpaas-manager/ca.crt")
+//                .setToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrdWJvYXJkLXVzZXItdG9rZW4tZHZrbXgiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoia3Vib2FyZC11c2VyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNDI5MDBhMTctNjFlYi00OWM3LWI5NmItMGZjMzBkNzg2Mzk3Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmt1Ym9hcmQtdXNlciJ9.XrRIE6ZHBLE1DOJiV9S_e-uWmxaDY0cExGk1YzxVGFGK6Wh6IJFwF2fM217Is0E3TThTQE9WW2mr71bxa5-ZbCshO5VbDFNtv4pq4Ve_7ijYdd2zPVPabH59vdDmnMt5xIVeeFwcSXN8TrrKzTcR3wnpqafGAnEYTeHcu0Z1GyTYN_y5b0PqhIdEgwMKpL-_PWClY7nta7nzwS0CDulboimpmwsIZldLkNWcLzkM90FJttvivYDDrpLkdURoHLWxnxlf_hlFnfA7LXt7v380sS--Yg8ULl6rE7Gwtk_6I77q8eKMuo55okiBq-9fKVmcDUD3SD27zgAL5-_bFN2z6w");
+//        K8sClient.setConfig(k8sConfig);
+//        test3();
+//    }
 
 }

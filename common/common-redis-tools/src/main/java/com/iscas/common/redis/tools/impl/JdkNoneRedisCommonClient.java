@@ -242,9 +242,7 @@ public class JdkNoneRedisCommonClient {
         for (int i = 0; i < keysvalues.length; i = i + 2) {
             keyValueMap.put((String) keysvalues[i], keysvalues[i + 1]);
         }
-        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
-            doSet(entry.getKey(), entry.getValue(), 0);
-        }
+        keyValueMap.forEach((k, v) -> doSet(k, v, 0));
         return true;
     }
 
@@ -560,21 +558,17 @@ public class JdkNoneRedisCommonClient {
 
     protected <T> Set<T> doHkeys(Class<T> tClass, String key) {
         synchronized (key.intern()) {
-            Map map = doGet(Map.class, key);
-            if (map == null) {
-                return null;
-            }
-            return map.keySet();
+            return Optional.ofNullable(doGet(Map.class, key))
+                    .map(map -> map.keySet())
+                    .orElse(null);
         }
     }
 
     protected long doHlen(String key) {
         synchronized (key.intern()) {
-            Map map = doGet(Map.class, key);
-            if (map == null) {
-                return 0L;
-            }
-            return map.size();
+            return Optional.ofNullable(doGet(Map.class, key))
+                    .map(Map::size)
+                    .orElse(0);
         }
     }
 
@@ -621,11 +615,9 @@ public class JdkNoneRedisCommonClient {
 
     protected long doScard(String key) {
         synchronized (key.intern()) {
-            Set set = doGet(Set.class, key);
-            if (set == null) {
-                return 0;
-            }
-            return set.size();
+            return Optional.ofNullable(doGet(Set.class, key))
+                    .map(Set::size)
+                    .orElse(0);
         }
     }
 
@@ -638,11 +630,7 @@ public class JdkNoneRedisCommonClient {
         for (int i = 1; i < keys.length; i++) {
             Set set = doGet(Set.class, keys[i]);
             if (set != null) {
-                for (Object o : set) {
-                    if (diffSet.contains(o)) {
-                        diffSet.remove(o);
-                    }
-                }
+                set.stream().filter(diffSet::contains).forEach(diffSet::remove);
             }
         }
         return diffSet;
@@ -668,11 +656,7 @@ public class JdkNoneRedisCommonClient {
         for (int i = 1; i < keys.length; i++) {
             Set set = doGet(Set.class, keys[i]);
             if (set != null) {
-                for (Object o : set) {
-                    if (interSet.contains(o)) {
-                         tmpInterSet.add(o);
-                    }
-                }
+                set.stream().filter(interSet::contains).forEach(tmpInterSet::add);
             } else {
                 return new HashSet<>();
             }
@@ -694,21 +678,15 @@ public class JdkNoneRedisCommonClient {
 
     protected boolean doSismember(String key, Object member) {
         synchronized (key.intern()) {
-            Set set = doGet(Set.class, key);
-            if (set == null) {
-                return false;
-            }
-            return set.contains(member);
+            return Optional.ofNullable(doGet(Set.class, key))
+                    .map(set -> set.contains(member))
+                    .orElse(false);
         }
     }
 
     protected <T> Set<T> doSmembers(Class<T> tClass, String key) {
         synchronized (key.intern()) {
-            Set set = doGet(Set.class, key);
-            if (set == null) {
-                return null;
-            }
-            return set;
+            return Optional.ofNullable(doGet(Set.class, key)).orElse(null);
         }
     }
 

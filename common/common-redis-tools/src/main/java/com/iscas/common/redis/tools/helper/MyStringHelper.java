@@ -1,6 +1,7 @@
 package com.iscas.common.redis.tools.helper;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 字符串序列化类
@@ -34,11 +35,7 @@ public class MyStringHelper {
      * @return
      */
     public static String toString(byte[] bytes){
-        try {
-            return new String(bytes, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
     /**
@@ -48,11 +45,7 @@ public class MyStringHelper {
      */
     public static byte[] getBytes(String str){
         if (str != null){
-            try {
-                return str.getBytes("utf-8");
-            } catch (UnsupportedEncodingException e) {
-                return null;
-            }
+            return str.getBytes(StandardCharsets.UTF_8);
         }else{
             return null;
         }

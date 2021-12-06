@@ -117,14 +117,14 @@ public class HeaderHelper {
     private static void callbackHandle(Class clazz, TableHeaderResponseData headerData) throws HeaderException {
         //回调
         try {
-            Object o = clazz.getDeclaredConstructor().newInstance();
-            if (o instanceof BaseTb) {
+            if (BaseTb.class.isAssignableFrom(clazz)) {
+                Object o = clazz.getDeclaredConstructor().newInstance();
                 BaseTb baseTb = (BaseTb) o;
                 baseTb.headerCallback(headerData);
             }
-
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             throw new HeaderException(String.format("生成表头失败,获取类:[%s]的无参构造器失败", clazz.getSimpleName()), e);
         }
     }
+
 }

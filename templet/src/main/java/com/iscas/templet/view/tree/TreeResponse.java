@@ -19,6 +19,7 @@ import java.io.Serializable;
 public class TreeResponse extends ResponseEntity<TreeResponseData> implements Serializable{
 
     /**重写*/
+    @Override
     public TreeResponse setValue(TreeResponseData treeResponseData) {
         this.value = treeResponseData;
         return this;

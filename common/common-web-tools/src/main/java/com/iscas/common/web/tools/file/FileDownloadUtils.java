@@ -70,24 +70,24 @@ public class FileDownloadUtils {
     public static String getContentDispositionVal(HttpServletRequest request, String name) throws UnsupportedEncodingException {
         String val = null;
         String requestHeader = request.getHeader("User-Agent");
-        if (-1 < requestHeader.indexOf("MSIE 6.0") || -1 < requestHeader.indexOf("MSIE 7.0")) {
+        if (requestHeader.contains("MSIE 6.0") || requestHeader.contains("MSIE 7.0")) {
             // IE6, IE7 浏览器
             val = "attachment;filename=" + new String(name.getBytes(), "ISO8859-1");
-        } else if (-1 < requestHeader.indexOf("MSIE 8.0")) {
+        } else if (requestHeader.contains("MSIE 8.0")) {
             // IE8
-            val = "attachment;filename=" + URLEncoder.encode(name, "UTF-8");
-        } else if (-1 < requestHeader.indexOf("MSIE 9.0")) {
+            val = "attachment;filename=" + URLEncoder.encode(name, StandardCharsets.UTF_8);
+        } else if (requestHeader.contains("MSIE 9.0")) {
             // IE9
-            val = "attachment;filename=" + URLEncoder.encode(name, "UTF-8");
-        } else if (-1 < requestHeader.indexOf("Chrome")) {
+            val = "attachment;filename=" + URLEncoder.encode(name, StandardCharsets.UTF_8);
+        } else if (requestHeader.contains("Chrome")) {
             // 谷歌
-            val = "attachment;filename*=UTF-8''" + URLEncoder.encode(name, "UTF-8");
-        } else if (-1 < requestHeader.indexOf("Safari")) {
+            val = "attachment;filename*=UTF-8''" + URLEncoder.encode(name, StandardCharsets.UTF_8);
+        } else if (requestHeader.contains("Safari")) {
             // 苹果
             val = "attachment;filename=" + new String(name.getBytes(), "ISO8859-1");
         } else {
             // 火狐或者其他的浏览器
-            val = "attachment;filename*=UTF-8''" + URLEncoder.encode(name, "UTF-8");
+            val = "attachment;filename*=UTF-8''" + URLEncoder.encode(name, StandardCharsets.UTF_8);
         }
         return val;
     }
@@ -136,7 +136,8 @@ public class FileDownloadUtils {
     public static void downFile(HttpServletRequest request, HttpServletResponse response, File file,
                                 String name) throws Exception {
 
-        Long fileLength = file.length();// 文件的长度
+        // 文件的长度
+        Long fileLength = file.length();
         if (fileLength != 0) {
             response.reset();
 //            response.setContentType("application/force-download;charset=utf-8");
@@ -153,8 +154,7 @@ public class FileDownloadUtils {
                     // 输出流
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
             ) {
-//               bis.transferTo(bos);
-                IOUtils.transferTo(bis, bos);
+               bis.transferTo(bos);
             }
         }
     }
@@ -195,8 +195,7 @@ public class FileDownloadUtils {
                     BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
                     OutputStream os = new LimiterOutputStream(bos, bandwidthLimiter);
             ) {
-//                bis.transferTo(os);
-                IOUtils.transferTo(bis, os);
+                bis.transferTo(os);
             }
         }
     }
@@ -258,8 +257,7 @@ public class FileDownloadUtils {
                         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
                         OutputStream os = new LimiterOutputStream(bos, bandwidthLimiter);
                 ) {
-//                    bis.transferTo(os);
-                    IOUtils.transferTo(bis, os);
+                    bis.transferTo(os);
                 }
             } catch (Exception e) {
                 throw e;
@@ -291,8 +289,7 @@ public class FileDownloadUtils {
                 // 输出流
                 BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
         ) {
-//            bis.transferTo(bos);
-            IOUtils.transferTo(bis, bos);
+            bis.transferTo(bos);
         }
     }
 }

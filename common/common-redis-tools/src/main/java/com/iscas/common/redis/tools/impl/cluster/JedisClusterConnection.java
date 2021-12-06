@@ -37,14 +37,10 @@ public class JedisClusterConnection implements JedisConnection {
                     if (redisInfos == null || redisInfos.size() == 0) {
                         throw new RuntimeException("redisInfos不能为空");
                     }
-                    Set<HostAndPort> hostAndPortSet = redisInfos.stream().map(redisInfo -> {
-                        HostAndPort hostAndPort = new HostAndPort(redisInfo.getHost(), redisInfo.getPort());
-                        return hostAndPort;
-                    }).collect(Collectors.toSet());
-
+                    Set<HostAndPort> hostAndPortSet = redisInfos.stream()
+                            .map(redisInfo -> new HostAndPort(redisInfo.getHost(), redisInfo.getPort())).collect(Collectors.toSet());
                     jedisCluster = new JedisCluster(hostAndPortSet, configInfo.getClusterTimeout(), configInfo.getClusterSoTimeout(),
                             configInfo.getClusterMaxAttempts(), configInfo.getClusterPassword(), new GenericObjectPoolConfig());
-
                 }
             }
         }
@@ -63,7 +59,7 @@ public class JedisClusterConnection implements JedisConnection {
                                 .withPort(redisInfo.getPort())
                                 .withTimeout(Duration.ofMillis(redisInfo.getTimeout()));
                         if (redisInfo.getPwd() != null) {
-                            builder.withPassword(redisInfo.getPwd());
+                            builder.withPassword(redisInfo.getPwd().toCharArray());
                         }
                         RedisURI redisURI = builder.build();
                         redisURIS.add(redisURI);

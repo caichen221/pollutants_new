@@ -41,11 +41,7 @@ public class XmlFormatter {
             @Cleanup StringReader stringReader = new StringReader(in);
             InputSource is = new InputSource(stringReader);
             return db.parse(is);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
     }

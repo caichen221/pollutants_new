@@ -1,5 +1,6 @@
 package com.iscas.common.k8s.tools.model;
 
+import com.iscas.common.k8s.tools.model.env.KcEnv;
 import com.iscas.common.k8s.tools.model.health.KcLivenessProbe;
 import com.iscas.common.k8s.tools.model.health.KcReadinessProbe;
 import com.iscas.common.k8s.tools.model.pod.KcPodContainerVoMount;
@@ -50,6 +51,10 @@ public class KcContainer {
      * 环境变量
      * */
     private LinkedHashMap<String, String> env;
+
+
+    /**环境变量-支持更多种类型的配置，弃用上面的env*/
+    private List<KcEnv> envVar;
 
     /**
      * 挂载点

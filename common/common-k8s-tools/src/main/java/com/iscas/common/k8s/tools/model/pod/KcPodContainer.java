@@ -1,6 +1,7 @@
 package com.iscas.common.k8s.tools.model.pod;
 
 import com.iscas.common.k8s.tools.model.KcResource;
+import com.iscas.common.k8s.tools.model.env.KcEnv;
 import com.iscas.common.k8s.tools.model.health.KcLivenessProbe;
 import com.iscas.common.k8s.tools.model.health.KcReadinessProbe;
 import lombok.Data;
@@ -127,6 +128,11 @@ public class KcPodContainer {
      * 环境变量
      * */
     private LinkedHashMap<String, String> envs;
+
+    /**
+     * 环境变量-新，envs属性弃用
+     * */
+    private List<KcEnv> envVar;
 
     /**挂载点*/
     private List<KcPodContainerVoMount> volumeMounts;

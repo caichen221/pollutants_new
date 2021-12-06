@@ -5,59 +5,55 @@ import com.iscas.common.k8s.tools.cfg.K8sConstants;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import com.iscas.common.k8s.tools.model.KcContainer;
 import com.iscas.common.k8s.tools.model.KcRuntimeInfo;
+import com.iscas.common.k8s.tools.model.daemonset.KcDaemonset;
 import com.iscas.common.k8s.tools.model.deployment.KcDepBaseInfo;
-import com.iscas.common.k8s.tools.model.statefulset.KcStatefulset;
 import com.iscas.common.k8s.tools.model.volume.KcVolume;
 import com.iscas.common.k8s.tools.model.volume.KcVolumeClaimTemplate;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.AppsAPIGroupDSL;
-import io.fabric8.kubernetes.client.dsl.MixedOperation;
-import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
-import io.fabric8.kubernetes.client.dsl.RollableScalableResource;
+import io.fabric8.kubernetes.client.dsl.*;
 import lombok.Cleanup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
- * 有状态服务工具类
+ * 守护服务工具类
  *
  * @author zhuquanwen
  * @vesion 1.0
- * @date 2021/3/22 16:28
+ * @date 2021/10/27
  * @since jdk1.8
  */
-public class KcStatefulsetUtils {
-    private KcStatefulsetUtils() {}
+public class KcDaemonsetUtils {
+    private KcDaemonsetUtils() {}
 
     /**
-     * 获取statefulset的信息
+     * 获取daemonset的信息
      * @version 1.0
      * @since jdk1.8
-     * @date 2021/03/22
+     * @date 2021/10/27
      * @param namespace 命名空间
      * @throws
      * @return
      */
-    public static List<KcStatefulset> getStatefulset(String namespace) throws K8sClientException {
+    public static List<KcDaemonset> getDaemonset(String namespace) throws K8sClientException {
 
-        List<KcStatefulset> kcStatefulsets = null;
+        List<KcDaemonset> kcDaemonsets = null;
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         AppsAPIGroupDSL apps = kc.apps();
         if (apps != null) {
-            NonNamespaceOperation<StatefulSet, StatefulSetList, RollableScalableResource<StatefulSet>> statefulsets = apps.statefulSets().inNamespace(namespace);
-            if (statefulsets != null) {
-                StatefulSetList statefulSetList = statefulsets.list();
-                if (statefulSetList != null) {
-                    List<StatefulSet> items = statefulSetList.getItems();
+            NonNamespaceOperation<DaemonSet, DaemonSetList, Resource<DaemonSet>> daemonsets = apps.daemonSets().inNamespace(namespace);
+            if (daemonsets != null) {
+                DaemonSetList daemonsetList = daemonsets.list();
+                if (daemonsetList != null) {
+                    List<DaemonSet> items = daemonsetList.getItems();
                     if (CollectionUtils.isNotEmpty(items)) {
-                        kcStatefulsets = new ArrayList<>();
+                        kcDaemonsets = new ArrayList<>();
                         for (int i = 0; i < items.size(); i++) {
                             String name = null;
                             Integer currentRepSum = null;
@@ -66,10 +62,10 @@ public class KcStatefulsetUtils {
                             List<KcRuntimeInfo> runtimeInfos = null;
                             KcDepBaseInfo baseInfo = null;
 
-                            KcStatefulset kcStatefulset = new KcStatefulset();
-                            StatefulSet statefulSet = items.get(i);
+                            KcDaemonset kcDaemonset = new KcDaemonset();
+                            DaemonSet daemonSet = items.get(i);
 
-                            ObjectMeta metadata = statefulSet.getMetadata();
+                            ObjectMeta metadata = daemonSet.getMetadata();
                             if (metadata != null) {
                                 //获取name
                                 name = metadata.getName();
@@ -85,87 +81,87 @@ public class KcStatefulsetUtils {
                                 runtimeStr = CommonUtils.getTimeDistance(startTime);
                             }
 
-                            StatefulSetStatus status = statefulSet.getStatus();
+                            DaemonSetStatus status = daemonSet.getStatus();
                             if (status != null) {
-                                planRepSum = status.getReplicas();
-                                currentRepSum = status.getReadyReplicas();
+                                planRepSum = status.getDesiredNumberScheduled();
+                                currentRepSum = status.getNumberReady();
                             }
 
                             //获取基本信息
-                            baseInfo = setBaseInfo(statefulSet);
+                            baseInfo = setBaseInfo(daemonSet);
 
-                            setVolumns(statefulSet, kcStatefulset);
+                            setVolumns(daemonSet, kcDaemonset);
 
                             //获取运行时信息
-                            runtimeInfos  = setRuntimeInfo(statefulSet);
+                            runtimeInfos  = setRuntimeInfo(daemonSet);
 
-                            kcStatefulset.setCurrentRepSum(currentRepSum)
+                            kcDaemonset.setCurrentRepSum(currentRepSum)
                                     .setName(name)
                                     .setPlanRepSum(planRepSum)
                                     .setRuntimeStr(runtimeStr)
                                     .setBaseInfo(baseInfo)
                                     .setRuntimeInfos(runtimeInfos);
-                            kcStatefulset.setStatefulSetItem(statefulSet);
+                            kcDaemonset.setDaemonsetItem(daemonSet);
 
                             //获取存储卷声明
-                            List<KcVolumeClaimTemplate> kcVolumeClaimTemplates = setVolumeClaimTemplate(statefulSet);
-                            kcStatefulset.setVolumeClaimTemplates(kcVolumeClaimTemplates);
-                            kcStatefulsets.add(kcStatefulset);
+//                            List<KcVolumeClaimTemplate> kcVolumeClaimTemplates = setVolumeClaimTemplate(daemonSet);
+//                            kcDaemonset.setVolumeClaimTemplates(kcVolumeClaimTemplates);
+                            kcDaemonsets.add(kcDaemonset);
                         }
                     }
                 }
             }
         }
-        return kcStatefulsets;
+        return kcDaemonsets;
     }
 
 
     /**
-     * 创建一个Statefulset
+     * 创建一个Daemonset
      * */
-    public static void createStatefulset(KcStatefulset kcStatefulset) throws K8sClientException {
+    public static void createDaemonset(KcDaemonset kcDaemonset) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        KcDepBaseInfo baseInfo = kcStatefulset.getBaseInfo();
-        List<KcVolume> volumes = kcStatefulset.getVolumes();
+        KcDepBaseInfo baseInfo = kcDaemonset.getBaseInfo();
+        List<KcVolume> volumes = kcDaemonset.getVolumes();
 
         //命名空间
         String namespace  = baseInfo.getNamespace();
         String name = baseInfo.getName();
 
-        //如果存在，删除这个statefulset
-//        deleteStatefulset(namespace, name);
+        //如果存在，删除这个Daemonset
+//        deleteDaemonset(namespace, name);
 
         Map<String, String> labelMap = KcDeploymentUtils.getLabelMap(baseInfo);
         Map<String, String> annotationMap = KcDeploymentUtils.getAnnotationMap(baseInfo);
 
-        List<KcContainer> initContainers = kcStatefulset.getInitContainer();
-        List<KcContainer> containers = kcStatefulset.getContainers();
-        String imagePullSecret = kcStatefulset.getImagePullSecret();
+        List<KcContainer> initContainers = kcDaemonset.getInitContainer();
+        List<KcContainer> containers = kcDaemonset.getContainers();
+        String imagePullSecret = kcDaemonset.getImagePullSecret();
 
         AppsAPIGroupDSL apps = kc.apps();
         if (apps == null) {
-            throw new K8sClientException("获取不到apps，无法新建statefulset");
+            throw new K8sClientException("获取不到apps，无法新建Daemonset");
         }
         Namespace ns = kc.namespaces().withName(namespace).get();
         if (ns == null) {
-            throw new K8sClientException("获取不到命名空间，无法新建statefulset");
+            throw new K8sClientException("获取不到命名空间，无法新建Daemonset");
         }
 
-        StatefulSet statefulSet = new StatefulSet();
+        DaemonSet daemonset = new DaemonSet();
         //meta
         ObjectMeta objectMeta = KcDeploymentUtils.createObjectMeta(name, namespace, labelMap, annotationMap);
-        statefulSet.setMetadata(objectMeta);
+        daemonset.setMetadata(objectMeta);
 
         //spec
-        StatefulSetSpec statefulSetSpec = new StatefulSetSpec();
+        DaemonSetSpec daemonsetSpec = new DaemonSetSpec();
 
         //replics
-        statefulSetSpec.setReplicas(baseInfo.getPlanRepSum());
+//        daemonsetSpec.setReplicas(baseInfo.getPlanRepSum());
 
         //selector
         LabelSelector labelSelector = new LabelSelector();
         labelSelector.setMatchLabels(labelMap);
-        statefulSetSpec.setSelector(labelSelector);
+        daemonsetSpec.setSelector(labelSelector);
 
         //template
         PodTemplateSpec podTemplateSpec = new PodTemplateSpec();
@@ -214,53 +210,53 @@ public class KcStatefulsetUtils {
 
         podTemplateSpec.setSpec(podSpec);
 
-        statefulSetSpec.setTemplate(podTemplateSpec);
+        daemonsetSpec.setTemplate(podTemplateSpec);
 
-        statefulSet.setSpec(statefulSetSpec);
+        daemonset.setSpec(daemonsetSpec);
 
         //构建存储卷声明
-        List<KcVolumeClaimTemplate> volumeClaimTemplates = kcStatefulset.getVolumeClaimTemplates();
-        if (CollectionUtils.isNotEmpty(volumeClaimTemplates)) {
-            List<PersistentVolumeClaim> persistentVolumeClaims = volumeClaimTemplates.stream()
-                    .map(vct -> {
-                        PersistentVolumeClaim persistentVolumeClaim = new PersistentVolumeClaim();
-                        PersistentVolumeClaimSpec persistentVolumeClaimSpec = new PersistentVolumeClaimSpec();
-                        persistentVolumeClaimSpec.setAccessModes(vct.getAccessModes());
-                        persistentVolumeClaimSpec.setStorageClassName(vct.getStorageClass());
-                        if (vct.getStorage() != 0) {
-                           ResourceRequirements resourceRequirements = new ResourceRequirements();
-                           Map<String, Quantity> requests = new HashMap<>();
-                           requests.put("storage", Quantity.parse(((Double) vct.getStorage()).intValue() + "Gi"));
-                           resourceRequirements.setRequests(requests);
-                            persistentVolumeClaimSpec.setResources(resourceRequirements);
-                        }
-                        ObjectMeta meta = new ObjectMeta();
-                        meta.setName(vct.getName());
-                        persistentVolumeClaim.setMetadata(meta);
-                        persistentVolumeClaim.setSpec(persistentVolumeClaimSpec);
-                        return persistentVolumeClaim;
-                    }).collect(Collectors.toList());
-            statefulSet.getSpec().setVolumeClaimTemplates(persistentVolumeClaims);
-        }
-        RollableScalableResource<StatefulSet> statefulSetRollableScalableResource = apps.statefulSets().inNamespace(namespace).withName(name);
-        if (statefulSetRollableScalableResource.get() != null) {
+//        List<KcVolumeClaimTemplate> volumeClaimTemplates = kcDaemonset.getVolumeClaimTemplates();
+//        if (CollectionUtils.isNotEmpty(volumeClaimTemplates)) {
+//            List<PersistentVolumeClaim> persistentVolumeClaims = volumeClaimTemplates.stream()
+//                    .map(vct -> {
+//                        PersistentVolumeClaim persistentVolumeClaim = new PersistentVolumeClaim();
+//                        PersistentVolumeClaimSpec persistentVolumeClaimSpec = new PersistentVolumeClaimSpec();
+//                        persistentVolumeClaimSpec.setAccessModes(vct.getAccessModes());
+//                        persistentVolumeClaimSpec.setStorageClassName(vct.getStorageClass());
+//                        if (vct.getStorage() != 0) {
+//                           ResourceRequirements resourceRequirements = new ResourceRequirements();
+//                           Map<String, Quantity> requests = new HashMap<>();
+//                           requests.put("storage", Quantity.parse(((Double) vct.getStorage()).intValue() + "Gi"));
+//                           resourceRequirements.setRequests(requests);
+//                            persistentVolumeClaimSpec.setResources(resourceRequirements);
+//                        }
+//                        ObjectMeta meta = new ObjectMeta();
+//                        meta.setName(vct.getName());
+//                        persistentVolumeClaim.setMetadata(meta);
+//                        persistentVolumeClaim.setSpec(persistentVolumeClaimSpec);
+//                        return persistentVolumeClaim;
+//                    }).collect(Collectors.toList());
+//            daemonset.getSpec().setVolumeClaimTemplates(persistentVolumeClaims);
+//        }
+        Resource<DaemonSet> daemonSetResource = apps.daemonSets().inNamespace(namespace).withName(name);
+        if (daemonSetResource.get() != null) {
             //编辑
-            statefulSetRollableScalableResource.edit(n -> statefulSet);
+            daemonSetResource.edit(n -> daemonset);
         } else {
             //新增
-            apps.statefulSets().inNamespace(namespace).create(statefulSet);
+            apps.daemonSets().inNamespace(namespace).create(daemonset);
         }
     }
 
-    public static void deleteStatefulset(String namespace, String name) {
+    public static void deleteDaemonset(String namespace, String name) {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         AppsAPIGroupDSL apps = kc.apps();
         if (apps != null) {
-            NonNamespaceOperation<StatefulSet, StatefulSetList, RollableScalableResource<StatefulSet>> statefulsetResource = apps.statefulSets().inNamespace(namespace);
-            if (statefulsetResource != null) {
-                RollableScalableResource<StatefulSet> rollableScalableResource = statefulsetResource.withName(name);
-                if (rollableScalableResource != null && rollableScalableResource.get() != null) {
-                    rollableScalableResource.delete();
+            NonNamespaceOperation<DaemonSet, DaemonSetList, Resource<DaemonSet>> daemonsetResourceOperation = apps.daemonSets().inNamespace(namespace);
+            if (daemonsetResourceOperation != null) {
+                Resource<DaemonSet> daemonSetResource = daemonsetResourceOperation.withName(name);
+                if (daemonSetResource != null && daemonSetResource.get() != null) {
+                    daemonSetResource.delete();
                 }
             }
         }
@@ -301,14 +297,14 @@ public class KcStatefulsetUtils {
     /**
      * 设置运行时信息
      * */
-    private static List<KcRuntimeInfo> setRuntimeInfo(StatefulSet statefulSet) throws K8sClientException {
+    private static List<KcRuntimeInfo> setRuntimeInfo(DaemonSet daemonset) throws K8sClientException {
         List<KcRuntimeInfo> kcConditions = null;
-        StatefulSetStatus depStatus = statefulSet.getStatus();
+        DaemonSetStatus depStatus = daemonset.getStatus();
         if (depStatus != null) {
-            List<StatefulSetCondition> conditions = depStatus.getConditions();
+            List<DaemonSetCondition> conditions = depStatus.getConditions();
             if (CollectionUtils.isNotEmpty(conditions)) {
                 kcConditions  = new ArrayList<>();
-                for (StatefulSetCondition condition : conditions) {
+                for (DaemonSetCondition condition : conditions) {
                     KcRuntimeInfo kcCondtion = new KcRuntimeInfo();
                     String type = null;
                     String status = null;
@@ -347,9 +343,9 @@ public class KcStatefulsetUtils {
     /**
      *  设置deployment的基本信息
      * */
-    private static KcDepBaseInfo setBaseInfo(StatefulSet statefulSet) {
+    private static KcDepBaseInfo setBaseInfo(DaemonSet daemonset) {
         KcDepBaseInfo baseInfo = new KcDepBaseInfo();
-        String type = "statefulset";
+        String type = "daemonset";
         String name = null;
         List<String[]> labels = new ArrayList<>();
         List<String[]> annotations = new ArrayList<>();
@@ -358,14 +354,14 @@ public class KcStatefulsetUtils {
         Integer planRepSum = null;
         String namespace = null;
 
-        ObjectMeta metadata = statefulSet.getMetadata();
+        ObjectMeta metadata = daemonset.getMetadata();
 
         Map<String, Object> metaDataResultMap = KcDeploymentUtils.setObjectMeta(metadata);
         name = (String) metaDataResultMap.get("name");
         namespace = (String) metaDataResultMap.get("namespace");
         annotations = (List<String[]>) metaDataResultMap.get("annotations");
 
-        StatefulSetSpec spec = statefulSet.getSpec();
+        DaemonSetSpec spec = daemonset.getSpec();
         List<String[]> matchLabels = new ArrayList<>();
         LabelSelector selector = spec.getSelector();
         PodTemplateSpec template = spec.getTemplate();
@@ -373,10 +369,10 @@ public class KcStatefulsetUtils {
         matchLabels = (List<String[]>) specResultMap.get("matchLabels");
         labels = (List<String[]>) specResultMap.get("labels");
 
-        StatefulSetStatus status = statefulSet.getStatus();
+        DaemonSetStatus status = daemonset.getStatus();
         if (status != null) {
-            planRepSum = status.getReplicas();
-            currentRepSum = status.getReadyReplicas();
+            planRepSum = status.getDesiredNumberScheduled();
+            currentRepSum = status.getNumberReady();
         }
         baseInfo.setType(type)
                 .setName(name)
@@ -390,8 +386,8 @@ public class KcStatefulsetUtils {
         return baseInfo;
     }
 
-    private static void setVolumns(StatefulSet statefulSet, KcStatefulset kcStatefulset) {
-        StatefulSetSpec spec = statefulSet.getSpec();
+    private static void setVolumns(DaemonSet daemonset, KcDaemonset kcDaemonset) {
+        DaemonSetSpec spec = daemonset.getSpec();
         if (spec != null) {
             PodTemplateSpec template = spec.getTemplate();
             if (template != null) {
@@ -401,7 +397,7 @@ public class KcStatefulsetUtils {
                     if (CollectionUtils.isNotEmpty(volumes)) {
                         for (Volume volume : volumes) {
                             KcVolume kcVolume = KcDeploymentUtils.setOneVolume(volume);
-                            kcStatefulset.getVolumes().add(kcVolume);
+                            kcDaemonset.getVolumes().add(kcVolume);
                         }
                     }
                 }
@@ -410,11 +406,11 @@ public class KcStatefulsetUtils {
     }
 
 
-    public static void restartStatefulset(String namespace, String name) {
-        @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        kc.apps().statefulSets().inNamespace(namespace).withName(name)
-                .rolling()
-                .restart();
+    public static void restartDaemonset(String namespace, String name) {
+        throw new UnsupportedOperationException("daemonset不支持重启");
+//        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+//        Resource<DaemonSet> daemonSetResource = kc.apps().daemonSets().inNamespace(namespace).withName(name);
+
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.iscas.common.k8s.tools.model.deployment;
 
 import com.iscas.common.k8s.tools.model.KcContainer;
+import com.iscas.common.k8s.tools.model.KcRuntimeInfo;
 import com.iscas.common.k8s.tools.model.volume.KcVolume;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import lombok.Data;
@@ -49,7 +50,7 @@ public class KcDeployment {
     /**
      * 运行时信息
      * */
-    private List<KcDepRuntimeInfo> runtimeInfos;
+    private List<KcRuntimeInfo> runtimeInfos;
 
     /**
      * 容器信息
@@ -82,4 +83,5 @@ public class KcDeployment {
      * 数据卷
     * */
     private List<KcVolume> volumes = new ArrayList<>();
+
 }

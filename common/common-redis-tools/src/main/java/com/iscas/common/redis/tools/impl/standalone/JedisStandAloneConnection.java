@@ -6,6 +6,7 @@ import com.iscas.common.redis.tools.RedisInfo;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class JedisStandAloneConnection implements JedisConnection {
                 if(jedisPool == null){
                     jedisPoolConfig.setMaxTotal(configInfo.getMaxTotal());
                     jedisPoolConfig.setMaxIdle(configInfo.getMaxIdle());
-                    jedisPoolConfig.setMaxWaitMillis(configInfo.getMaxWait());
+                    jedisPoolConfig.setMaxWait(Duration.ofMillis(configInfo.getMaxWait()));
                     List<RedisInfo> redisInfos = configInfo.getRedisInfos();
                     if (redisInfos == null || redisInfos.size() == 0) {
                         throw new RuntimeException("redisInfos不能为空");
@@ -60,7 +61,4 @@ public class JedisStandAloneConnection implements JedisConnection {
             jedisPool.close();
         }
     }
-
-
-
 }
