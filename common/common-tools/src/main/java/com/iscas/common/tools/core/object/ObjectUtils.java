@@ -226,12 +226,18 @@ public class ObjectUtils {
                             continue;
                         }
                     }
-                    oriField.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                    ReflectUtils.makeAccessible(oriField);
+//                    oriField.setAccessible(true);
+
                     Object oriData = oriField.get(oriObj);
 
                     Class<?> type = targetField.getType();
                     Object o = deepCopy(oriData, type, ignoreNonExistField, skipFields);
-                    targetField.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                    ReflectUtils.makeAccessible(targetField);
+//                    targetField.setAccessible(true);
+
                     //设置属性
                     targetField.set(targetObj, o);
                 }

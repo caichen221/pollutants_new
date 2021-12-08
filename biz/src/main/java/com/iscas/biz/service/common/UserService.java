@@ -1,5 +1,9 @@
 package com.iscas.biz.service.common;
 
+import com.iscas.base.biz.model.auth.AuthContext;
+import com.iscas.base.biz.util.AuthContextHolder;
+import com.iscas.base.biz.util.AuthUtils;
+import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.OrgMapper;
 import com.iscas.biz.mapper.common.OrgUserMapper;
@@ -27,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -241,7 +246,20 @@ public class UserService {
     }
 
     public void changePwd(Integer userId, Map<String, Object> data) throws NoSuchAlgorithmException, BaseException {
-        User user = userMapper.selectByPrimaryKey(userId);
+        String loginUsername = JWTUtils.getLoginUsername();
+        User user = null;
+        if (loginUsername != null) {
+            //判断登录的用户是否和当前的userId一致
+            user = userMapper.selectByUserName(loginUsername);
+            if (user == null) {
+                throw new BaseException(MessageFormat.format("未找到当前登录用户:[{0}]信息", loginUsername));
+            }
+            if (!Objects.equals(user.getUserId(), userId)) {
+                throw new BaseException(MessageFormat.format("userId:[{0}]与登录的用户[{1}]不一致", userId, user.getUserName()));
+            }
+        } else {
+            throw new BaseException("未找到当前登录信息，可能为未携带token或token有误");
+        }
         AssertObjUtils.assertNotNull(user, "此用户不存在");
         String oldPwd = (String) data.get("oldPwd");
         String newPwd = (String) data.get("newPwd");

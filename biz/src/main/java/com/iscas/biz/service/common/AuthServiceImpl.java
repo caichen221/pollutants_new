@@ -159,12 +159,12 @@ public class AuthServiceImpl extends AbstractAuthService {
     public void loginHandler(HttpServletResponse response, Map<String, String> user, ResponseEntity responseEntity, int expire, int cookieExpire) throws LoginException {
         String pwd = user.get("password");
         String username = user.get("username");
-        String key = user.get("key");
-        String loginKey = LoginCacheUtils.get(key);
+        String secKey = user.get("key");
+        String loginKey = LoginCacheUtils.get(secKey);
         if (loginKey == null) {
             throw new LoginException("未获得加密码，拒绝登录");
         }
-        LoginCacheUtils.remove(key);
+        LoginCacheUtils.remove(secKey);
         try {
             username = AesUtils.aesDecrypt(username, loginKey).trim();
             pwd = AesUtils.aesDecrypt(pwd, loginKey).trim();

@@ -94,7 +94,7 @@ public class DemoController {
     @GetMapping(value = "/video", produces = {"video/mp4"})
     public void tx9() throws IOException {
         byte[] bytes = null;
-        File file = new File("H:\\ideaProjects\\newframe-dev\\biz\\src\\main\\resources\\static\\三国之战神无双.mp4");
+        File file = new File("H:/ideaProjects/newframe-dev/biz/src/main/resources/static/三国之战神无双.mp4");
         @Cleanup RandomAccessFile accessFile = new RandomAccessFile(file, "rw");
         HttpServletRequest request = SpringUtils.getRequest();
         String range = request.getHeader("Range");

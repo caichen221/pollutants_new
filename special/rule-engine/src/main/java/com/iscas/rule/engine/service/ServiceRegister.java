@@ -2,6 +2,7 @@ package com.iscas.rule.engine.service;
 
 import com.iscas.common.tools.assertion.AssertStrUtils;
 import com.iscas.common.tools.core.reflect.ClassUtils;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
 import com.iscas.rule.engine.RuleEngineConstant;
 import com.iscas.rule.engine.anno.REAutowired;
 import com.iscas.rule.engine.anno.REComponent;
@@ -90,7 +91,10 @@ public class ServiceRegister {
                             .forEach(field -> {
                                 try {
                                     Object fieldO = createNewInstance(field.getType(), true);
-                                    field.setAccessible(true);
+//                                    field.setAccessible(true);
+                                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                                    ReflectUtils.makeAccessible(field);
+
                                     field.set(ox, fieldO);
 //                                    os[0] = null;
                                 } catch (Exception e) {

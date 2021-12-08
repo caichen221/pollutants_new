@@ -21,8 +21,8 @@ import java.util.*;
  */
 @Slf4j
 public class QTTest {
-    private static String pPath = "C:\\Users\\admin\\Downloads\\hqtzl\\hqtzl";
-    private static String tPath = "C:\\Users\\admin\\Downloads\\qt\\target";
+    private static String pPath = "C:/Users/admin/Downloads/hqtzl/hqtzl";
+    private static String tPath = "C:/Users/admin/Downloads/qt/target";
     public static void main(String[] args) throws IOException {
         try {
             new File(tPath).mkdirs();

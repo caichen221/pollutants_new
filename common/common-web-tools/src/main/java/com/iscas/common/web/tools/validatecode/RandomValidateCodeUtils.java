@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Random;
  */
 @Deprecated
 public class RandomValidateCodeUtils {
-    private Random random = new Random();
+    private SecureRandom random = new SecureRandom();
     /**随机产生的字符串*/
     private String randString = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     /**图片宽*/

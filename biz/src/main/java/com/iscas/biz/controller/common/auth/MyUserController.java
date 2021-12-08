@@ -1,6 +1,8 @@
 package com.iscas.biz.controller.common.auth;
 
 import com.iscas.base.biz.aop.auth.SkipAuthentication;
+import com.iscas.base.biz.model.auth.AuthContext;
+import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
@@ -120,7 +122,6 @@ public class MyUserController extends BaseController {
             }
     )
     @PutMapping("/pwd/{userId:[0-9]+}")
-    @SkipAuthentication
     public ResponseEntity changePwd(@PathVariable Integer userId, @RequestBody @UserPwdConstraint Map<String, Object> data)
             throws BaseException, NoSuchAlgorithmException {
         userService.changePwd(userId, data);

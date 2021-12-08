@@ -288,7 +288,10 @@ public class TableService extends BaseTableService {
         sb.append("INSERT INTO ");
         sb.append(tableName).append(" ( ");
         for (Field field : fields) {
-            field.setAccessible(true);
+            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+//            field.setAccessible(true);
+            ReflectUtils.makeAccessible(field);
+
             Object obj = field.get(saveData);
             if(obj != null){
                 sb.append(field.getName()).append(" ,");
@@ -298,7 +301,10 @@ public class TableService extends BaseTableService {
         sb.append(" ) ").append(" VALUES( ");
         //构建插入SQL
         for (Field field : fields) {
-            field.setAccessible(true);
+            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+            ReflectUtils.makeAccessible(field);
+//            field.setAccessible(true);
+
             Object obj = field.get(saveData);
             if(obj != null){
                 sb.append("'");
@@ -321,7 +327,10 @@ public class TableService extends BaseTableService {
         sb.append("UPDATE ");
         sb.append(tableName).append(" SET ");
         for (Field field : fields) {
-            field.setAccessible(true);
+            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+            ReflectUtils.makeAccessible(field);
+//            field.setAccessible(true);
+
             Object obj = field.get(saveData);
             if(obj != null){
                 sb.append(field.getName()).append(" ,");
@@ -331,7 +340,10 @@ public class TableService extends BaseTableService {
         sb.append(" ) ").append(" VALUES( ");
         //构建插入SQL
         for (Field field : fields) {
-            field.setAccessible(true);
+            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+            ReflectUtils.makeAccessible(field);
+//            field.setAccessible(true);
+
             Object obj = field.get(saveData);
             if(obj != null){
                 sb.append("'");

@@ -42,7 +42,7 @@ public class Template2DocxUtilsTests {
         educations.add(paramsMap2);
         data.put("educations", educations);
         Map picMap = new HashMap<>();
-        picMap.put("path", "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\aaa.jpg");
+        picMap.put("path", "H:/ideaProjects/newframe-dev/common/common-tools/src/test/resources/templates/word/aaa.jpg");
         picMap.put("name", "1.jpeg");
         List<Map> list = new ArrayList<>();
         list.add(picMap);
@@ -56,10 +56,10 @@ public class Template2DocxUtilsTests {
     @Test
     public void test1() throws Exception {
         Map<String, Object> data = crateMap();
-        String docxTemplateFile = "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\docx\\aaa.docx";
-        String xmlDocument = "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\docx\\document.xml";
-        String xmlDocumentXmlRels = "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\docx\\document.xml.rels";
-        String xmlContentTypes = "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\docx\\[Content_Types].xml";
+        String docxTemplateFile = "H:/ideaProjects/newframe-dev/common/common-tools/src/test/resources/templates/word/docx/aaa.docx";
+        String xmlDocument = "H:/ideaProjects/newframe-dev/common/common-tools/src/test/resources/templates/word/docx/document.xml";
+        String xmlDocumentXmlRels = "H:/ideaProjects/newframe-dev/common/common-tools/src/test/resources/templates/word/docx/document.xml.rels";
+        String xmlContentTypes = "H:/ideaProjects/newframe-dev/common/common-tools/src/test/resources/templates/word/docx/[Content_Types].xml";
         String xmlHeader = null;//可以用来修改页眉的一些信息
         String outputFileName = "C:/Users/Administrator/Desktop/文档/bbb.docx";
         Template2DocxUtils.crateDocxFromDir(data, docxTemplateFile, xmlDocument, xmlDocumentXmlRels, xmlContentTypes,
@@ -72,6 +72,6 @@ public class Template2DocxUtilsTests {
 //    @Test
 //    public void test2() throws IOException, TemplateException {
 //        Map<String, Object> data = crateMap();
-//        Template2DocUtils.crateDocFromDir(data, "H:\\ideaProjects\\newframe-dev\\common\\common-tools\\src\\test\\resources\\templates\\word\\demo.ftl", "C:/Users/Administrator/Desktop/文档/aaa.doc");
+//        Template2DocUtils.crateDocFromDir(data, "H:/ideaProjects/newframe-dev/common/common-tools/src/test/resources/templates/word/demo.ftl", "C:/Users/Administrator/Desktop/文档/aaa.doc");
 //    }
 }

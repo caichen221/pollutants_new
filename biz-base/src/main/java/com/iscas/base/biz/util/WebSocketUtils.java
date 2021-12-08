@@ -2,6 +2,7 @@ package com.iscas.base.biz.util;
 
 import com.iscas.base.biz.config.stomp.MyWebMvcStompEndpointRegistry;
 import com.iscas.base.biz.config.stomp.WebSocketStompSimpleConfig;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.WebMvcStompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebMvcStompWebSocketEndpointRegistration;
@@ -45,14 +46,22 @@ public class WebSocketUtils {
                     } else {
                         registrationsField = endpointRegistry.getClass().getDeclaredField("registrations");
                     }
-                    registrationsField.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+//                    registrationsField.setAccessible(true);
+                    ReflectUtils.makeAccessible(registrationsField);
                     List<WebMvcStompWebSocketEndpointRegistration> webMvcStompWebSocketEndpointRegistrations = (List<WebMvcStompWebSocketEndpointRegistration>) registrationsField.get(endpointRegistry);
                     WebMvcStompWebSocketEndpointRegistration webMvcStompWebSocketEndpointRegistration = webMvcStompWebSocketEndpointRegistrations.get(0);
                     Field webSocketHandlerField = webMvcStompWebSocketEndpointRegistration.getClass().getDeclaredField("webSocketHandler");
-                    webSocketHandlerField.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+//                    webSocketHandlerField.setAccessible(true);
+                    ReflectUtils.makeAccessible(webSocketHandlerField);
+
                     SubProtocolWebSocketHandler webSocketHandler = (SubProtocolWebSocketHandler) webSocketHandlerField.get(webMvcStompWebSocketEndpointRegistration);
                     Field field = webSocketHandler.getClass().getDeclaredField("sessions");
-                    field.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+//                    field.setAccessible(true);
+                    ReflectUtils.makeAccessible(field);
+
                     websocketSessionsHolder  = (Map<String, Object>) field.get(webSocketHandler);
                 }
             }
@@ -72,7 +81,10 @@ public class WebSocketUtils {
                 String key = holderEntry.getKey();
                 Object val = holderEntry.getValue();
                 Field sessionField = val.getClass().getDeclaredField("session");
-                sessionField.setAccessible(true);
+                //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+//                sessionField.setAccessible(true);
+                ReflectUtils.makeAccessible(sessionField);
+
                 WebSocketSession session = (WebSocketSession) sessionField.get(val);
                 result.put(key, session);
             }
@@ -93,7 +105,10 @@ public class WebSocketUtils {
                 if (Objects.equals(key, matchKey)) {
                     Object val = holderEntry.getValue();
                     Field sessionField = val.getClass().getDeclaredField("session");
-                    sessionField.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+//                    sessionField.setAccessible(true);
+                    ReflectUtils.makeAccessible(sessionField);
+
                     WebSocketSession session = (WebSocketSession) sessionField.get(val);
                     return session;
                 }

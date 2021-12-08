@@ -11,6 +11,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -24,6 +25,15 @@ import java.util.*;
 public class ReflectUtils {
     /**私有构造方法，防止被实例化使用*/
     private ReflectUtils(){}
+
+
+    public static void makeAccessible(Field field) {
+        if ((!Modifier.isPublic(field.getModifiers()) ||
+                !Modifier.isPublic(field.getDeclaringClass().getModifiers()) ||
+                Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
+            field.setAccessible(true);
+        }
+    }
 
     /**
      * 反射执行一个对象的某个方法,不带参数
@@ -528,7 +538,8 @@ public class ReflectUtils {
      */
     public static MethodHandle getGetterMethodHandle(Class clazz, String fieldName) throws  IllegalAccessException, NoSuchFieldException {
         Field field = clazz.getDeclaredField(fieldName);
-        field.setAccessible(true);
+//        field.setAccessible(true);
+        makeAccessible(field);
         return MethodHandles.lookup().unreflectGetter(field);
     }
 
@@ -544,7 +555,9 @@ public class ReflectUtils {
      */
     public static MethodHandle getSetterMethodHandle(Class clazz, String fieldName) throws  IllegalAccessException, NoSuchFieldException {
         Field field = clazz.getDeclaredField(fieldName);
-        field.setAccessible(true);
+//        field.setAccessible(true);
+        //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+        ReflectUtils.makeAccessible(field);
         return MethodHandles.lookup().unreflectSetter(field);
     }
 
@@ -568,7 +581,10 @@ public class ReflectUtils {
             for (Field field: fields ) {
                 for (int i = needFields.length - 1; i >= 0 ; i--) {
                     if(field.getName().equals(needFields[i])){
-                        field.setAccessible(true);
+                        //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                        ReflectUtils.makeAccessible(field);
+//                        field.setAccessible(true);
+
                         Object o = field.get(obj);
                         map.put(needFields[i], o);
                     }

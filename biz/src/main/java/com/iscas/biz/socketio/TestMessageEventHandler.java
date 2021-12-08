@@ -53,7 +53,7 @@ public class TestMessageEventHandler implements IEventHandler {
     public void onEvent(SocketIOClient client, AckRequest request, String data) {
         log.debug("发来消息：" + data);
         UUID sessionId = client.getSessionId();
-        socketIOServer.getNamespace(namespace).getClient(sessionId).sendEvent("bbbb", "点对点消息的返回" + Math.random());
+        socketIOServer.getNamespace(namespace).getClient(sessionId).sendEvent("bbbb", "点对点消息的返回" + System.currentTimeMillis());
     }
 
     /**

@@ -15,6 +15,8 @@ import java.util.List;
  */
 @Data
 public class AuthContext {
+    /**用户ID*/
+    protected Object userId;
     /**用户名*/
     protected String username;
     /**token*/

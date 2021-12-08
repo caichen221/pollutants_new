@@ -134,7 +134,7 @@ public class JGitUtilsTest {
     @Test
     public void diff() throws JGitException {
         List<String> diffs = JGitUtils.diff("eb53e57f8fdab0fc9ee3115b604f702e6a3f0bf0", "50fcc23cbb8b6234c74cac836022c0e20895a6eb",
-                "C:\\ideaProjects\\newframe\\common\\common-jgit-tools\\tmp\\111");
+                "C:/ideaProjects/newframe/common/common-jgit-tools/tmp/111");
         System.out.println(diffs);
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.security.SecureRandom;
 import java.util.*;
 
 /**
@@ -21,7 +22,7 @@ public class ReflectUtilsTests {
 
     //初始化测试数据
     private static A11 getA11(){
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         A11 a11x = new A11();
         a11x.setData(new float[]{3,4,5.6f,4.4545f,random.nextFloat()});
         Map map1 = new HashMap<>();
@@ -29,12 +30,12 @@ public class ReflectUtilsTests {
         map1.put("weg",null);
         a11x.setMap(map1);
         a11x.setX1("weg");
-        a11x.setX2(232.3346 + Math.random());
+        a11x.setX2(232.3346 + random.nextDouble());
         a11x.setX4(34643.45777f);
         return a11x;
     }
     private static A2 getA2(){
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         A2 a2 = new A2();
         a2.setX1(22 + random.nextInt(12));
         a2.setX2(235.2f);

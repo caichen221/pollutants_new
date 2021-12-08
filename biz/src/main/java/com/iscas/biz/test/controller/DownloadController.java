@@ -25,7 +25,7 @@ import java.util.Map;
 public class DownloadController {
     @GetMapping("/t1")
     public void down1() throws Exception {
-        FileDownloadUtils.downByStream(SpringUtils.getRequest(), SpringUtils.getResponse(), new FileInputStream("D:\\soft\\test-quick-frame\\newframe-tttt\\my-checkstyle.xml"), "功能清单.txt");
+        FileDownloadUtils.downByStream(SpringUtils.getRequest(), SpringUtils.getResponse(), new FileInputStream("D:/soft/test-quick-frame/newframe-tttt/my-checkstyle.xml"), "功能清单.txt");
     }
 
     @GetMapping("/t2")

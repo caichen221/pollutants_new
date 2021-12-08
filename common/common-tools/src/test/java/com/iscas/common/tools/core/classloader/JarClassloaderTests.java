@@ -17,8 +17,8 @@ import java.util.Map;
  * @since jdk1.8
  */
 public class JarClassloaderTests {
-//    String jar2_5 = "C:\\Users\\Administrator\\Desktop\\jar\\base2\\2.5";
-    String jar2_6 = "C:\\Users\\Administrator\\Desktop\\jar\\base2\\2.6\\base2-2.6-RELEASE.jar";
+//    String jar2_5 = "C:/Users/Administrator/Desktop/jar/base2/2.5";
+    String jar2_6 = "C:/Users/Administrator/Desktop/jar/base2/2.6/base2-2.6-RELEASE.jar";
 
     /**
      * 测试classloader，不带缓存，不从缓存读类的字节数组，也不存入缓存
@@ -26,8 +26,8 @@ public class JarClassloaderTests {
     @Test
     @Disabled
     public void test2() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        JarLoader jarLoader2 = new JarLoader(new String[]{"H:\\ideaProjects\\integration-dev\\ig-bootstrap\\src\\main\\resources" +
-                "\\component\\mysqlreader.jar"});
+        JarLoader jarLoader2 = new JarLoader(new String[]{"H:/ideaProjects/integration-dev/ig-bootstrap/src/main/resources" +
+                "/component/mysqlreader.jar"});
         ClassLoaderSwapper classLoaderSwapper2 = ClassLoaderSwapper.newCurrentThreadClassLoaderSwapper();
         classLoaderSwapper2.setCurrentThreadClassLoader(jarLoader2);
         Class<?> bClass = JarLoader.outerLoadClass("com.iscas.datasong.ig.component.mysqlreader.MysqlReader");
@@ -47,8 +47,8 @@ public class JarClassloaderTests {
     @Disabled
     public void test3() throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, ClassNotFoundException {
         System.out.println("=========================开始测试，读取指定jar包=========================");
-        JarLoader jarLoader = new JarLoader(new String[]{"H:\\ideaProjects\\integration-dev\\ig-bootstrap\\src\\main\\resources\\" +
-                "component\\mysqlreader.jar"}, true);
+        JarLoader jarLoader = new JarLoader(new String[]{"H:/ideaProjects/integration-dev/ig-bootstrap/src/main/resources/" +
+                "component/mysqlreader.jar"}, true);
         ClassLoaderSwapper classLoaderSwapper = ClassLoaderSwapper.newCurrentThreadClassLoaderSwapper();
         classLoaderSwapper.setCurrentThreadClassLoader(jarLoader);
         try {
@@ -78,8 +78,8 @@ public class JarClassloaderTests {
     @Test
     @Disabled
     public void test4() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-        JarLoader jarLoader2 = new JarLoader(new String[]{"H:\\ideaProjects\\integration-dev\\ig-bootstrap\\src\\main\\resources" +
-                "\\component\\csvreader.jar"});
+        JarLoader jarLoader2 = new JarLoader(new String[]{"H:/ideaProjects/integration-dev/ig-bootstrap/src/main/resources" +
+                "/component/csvreader.jar"});
         ClassLoaderSwapper classLoaderSwapper2 = ClassLoaderSwapper.newCurrentThreadClassLoaderSwapper();
         classLoaderSwapper2.setCurrentThreadClassLoader(jarLoader2);
         Class<?> bClass = JarLoader.outerLoadClass("com.iscas.datasong.ig.component.csvreader.CsvReader");

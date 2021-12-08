@@ -34,8 +34,8 @@ public class AesUtilsTests {
     * */
     @Test
     public void aesEncrptyWithKey() throws Exception {
-        String key = "6x9o67h5BO205Cfv";
-        String sec = AesUtils.aesEncrypt("admin", key);
+        String k = "6x9o67h5BO205Cfv";
+        String sec = AesUtils.aesEncrypt("admin", k);
         Assertions.assertEquals("q2F6LtquPxijSre3os07Dg==", sec);
     }
 
@@ -44,8 +44,8 @@ public class AesUtilsTests {
      * */
     @Test
     public void aesDecrptyWithKey() throws Exception {
-        String key = "6x9o67h5BO205Cfv";
-        String ori = AesUtils.aesDecrypt("q2F6LtquPxijSre3os07Dg==", key);
+        String k = "6x9o67h5BO205Cfv";
+        String ori = AesUtils.aesDecrypt("q2F6LtquPxijSre3os07Dg==", k);
         Assertions.assertEquals("admin", ori);
     }
 

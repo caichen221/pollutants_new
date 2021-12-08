@@ -99,7 +99,7 @@ public class SendEmailController extends BaseController {
         helper.setText(html, true);
 
         //发送附件
-        FileSystemResource file = new FileSystemResource("E:\\test\\repo1\\a.txt");
+        FileSystemResource file = new FileSystemResource("E:/test/repo1/a.txt");
         // 发送文件名
         String fileName = file.getFilename();
         helper.addAttachment(fileName, file);
@@ -134,7 +134,7 @@ public class SendEmailController extends BaseController {
         helper.setText(html, true);
 
         //发送附件
-        FileSystemResource file = new FileSystemResource("E:\\test\\repo1\\a.txt");
+        FileSystemResource file = new FileSystemResource("E:/test/repo1/a.txt");
         // 发送文件名
         String fileName = file.getFilename();
         helper.addAttachment(fileName, file);

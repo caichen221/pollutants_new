@@ -107,7 +107,7 @@ public class DockerClientUtilsTest {
      * */
     @Test
     public void testBuildImage() {
-        DockerClientUtils.buildImage(dockerClient, new File("D:\\文档资料\\_部署安装\\离线安装k8s\\17、部署cpaas-manager\\前后台打镜像\\20210402\\frontend"),
+        DockerClientUtils.buildImage(dockerClient, new File("D:/文档资料/_部署安装/离线安装k8s/17、部署cpaas-manager/前后台打镜像/20210402/frontend"),
                 "test", "0.0.2");
     }
 

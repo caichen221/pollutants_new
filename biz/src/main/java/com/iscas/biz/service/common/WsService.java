@@ -74,6 +74,7 @@ public class WsService {
         p2p(wsData1);
     }
 
+    //todo 需要做用户权限判定
     @Async("asyncExecutor")
     public void ack(String msgId) {
         if (getWsDataMapper() == null) {

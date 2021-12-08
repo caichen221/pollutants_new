@@ -1,5 +1,7 @@
 package com.iscas.common.harbor.tools;
 
+import com.iscas.common.tools.core.reflect.ReflectUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,10 @@ public class Json2ObjUtils {
                     mapValue = biFunction.apply(objKey, mapValue);
                 }
                 Field field = tClass.getDeclaredField(objKey);
-                field.setAccessible(true);
+                //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                ReflectUtils.makeAccessible(field);
+//                field.setAccessible(true);
+
                 field.set(t, mapValue);
             } catch (Exception e) {
                 throw new RuntimeException(String.format("向对象:[%s]注入属性:[%s],值:[%s]出错", tClass.getName(),

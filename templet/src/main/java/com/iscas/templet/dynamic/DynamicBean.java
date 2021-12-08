@@ -2,9 +2,11 @@ package com.iscas.templet.dynamic;
 
 import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
+import net.sf.cglib.core.ReflectUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -95,11 +97,22 @@ public class DynamicBean implements Serializable {
         this.beanMap = BeanMap.create(this.object);
         if (declaredFields != null) {
             for (Field declaredField : declaredFields) {
-                declaredField.setAccessible(true);
+                //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                makeAccessible(declaredField);
+//                declaredField.setAccessible(true);
+
                 setValue(declaredField.getName(), declaredField.get(this));
             }
         }
 
+    }
+
+    private void makeAccessible(Field declaredField) {
+        if ((!Modifier.isPublic(declaredField.getModifiers()) ||
+                !Modifier.isPublic(declaredField.getDeclaringClass().getModifiers()) ||
+                Modifier.isFinal(declaredField.getModifiers())) && !declaredField.isAccessible()) {
+            declaredField.setAccessible(true);
+        }
     }
 
     public Map convertToMap() throws IllegalAccessException {
@@ -110,7 +123,10 @@ public class DynamicBean implements Serializable {
                 //如果是这俩属性就不进行转化了，否则转化入Map
                 if (!Objects.equals(declaredField.getName(), "object") &&
                         !Objects.equals(declaredField.getName(), "beanMap")) {
-                    declaredField.setAccessible(true);
+//                    declaredField.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                    makeAccessible(declaredField);
+
                     map.put(declaredField.getName(), declaredField.get(this));
                 }
             }

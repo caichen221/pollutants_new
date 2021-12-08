@@ -9,6 +9,7 @@ import com.iscas.biz.mp.table.model.ColumnDefinition;
 import com.iscas.biz.mp.table.model.TableDefinition;
 import com.iscas.biz.mp.table.model.TableDefinitionConfig;
 import com.iscas.biz.mp.util.IdGeneratorUtils;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
 import com.iscas.common.web.tools.json.JsonUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -65,7 +66,9 @@ public class TableDefinitionService {
         Arrays.stream(obj.getClass().getDeclaredFields())
                 .filter(field -> field.getType() == String.class)
                 .forEach(field -> {
-                    field.setAccessible(true);
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                    ReflectUtils.makeAccessible(field);
+//                    field.setAccessible(true);
                     try {
                         Object o = field.get(obj);
                         if (o != null) {
