@@ -7,16 +7,13 @@ import org.junit.jupiter.api.Test;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * hutools图像操作
@@ -26,7 +23,7 @@ import java.util.stream.Stream;
  * @date 2021/12/15 8:28
  * @since jdk1.8
  */
-public class ImgTests {
+public class Img2Tests {
 
     /**底部要被切除的高度*/
     private static final int CUT_HEIGHT = 20;
@@ -48,14 +45,12 @@ public class ImgTests {
             int width = bufferedImage.getWidth();
             int height = bufferedImage.getHeight();
 
-            //构建hutools中的Img对象
-            Img img = new Img(bufferedImage);
-            //切除
-            img = img.cut(new Rectangle(0, 0, width, height - CUT_HEIGHT));
+            //直接切
+            BufferedImage subimage = bufferedImage.getSubimage(0, 0, width, height - CUT_HEIGHT);
 
             //写回原来的图片文件
             String picFormat = StringUtils.substringAfterLast(picPath.toString(), ".");
-            ImageIO.write(img.getImg(), picFormat, picPath.toFile());
+            ImageIO.write(subimage, picFormat, picPath.toFile());
         }
 
     }
