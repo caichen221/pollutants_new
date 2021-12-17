@@ -1343,34 +1343,43 @@ public class CustomHttpClient {
 
 
         public HttpClientProps() {
-            TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager() {
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null; // Not relevant.
-                }
-
-                @Override
-                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    // TODO Auto-generated method stub
-                }
-            }};
+//            TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager() {
+//                @Override
+//                public X509Certificate[] getAcceptedIssuers() {
+//                    return null; // Not relevant.
+//                }
+//
+//                @Override
+//                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+//                }
+//
+//                @Override
+//                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+//                }
+//            }};
             sslParameters = new SSLParameters();
             sslParameters.setEndpointIdentificationAlgorithm("");
-
 
             try {
                 sslContext = SSLContext.getInstance("TLS");
                 System.setProperty("jdk.internal.httpclient.disableHostnameVerification", "true");//取消主机名验证
-                sslContext.init(null, trustAllCertificates, new SecureRandom());
+                sslContext.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
             } catch (NoSuchAlgorithmException | KeyManagementException e) {
                 e.printStackTrace();
             }
 
+        }
+        private static class TrustAllCerts implements X509TrustManager {
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
         }
 
 

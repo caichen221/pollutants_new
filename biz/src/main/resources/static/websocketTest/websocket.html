@@ -15,6 +15,9 @@ Welcome<br/><input id="text" type="text"/>
 
 <script type="text/javascript">
     var websocket = null;
+    var $1 = function(id) {
+       return document.getElementById(id);
+    };
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
         websocket = new WebSocket("wss://localhost:8181/demo2/websocket");
@@ -51,7 +54,7 @@ Welcome<br/><input id="text" type="text"/>
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
-        document.getElementById('message').innerHTML += innerHTML + '<br/>';
+        $1('message').innerHTML += innerHTML + '<br/>';
     }
 
     //关闭WebSocket连接
@@ -64,5 +67,6 @@ Welcome<br/><input id="text" type="text"/>
         var message = document.getElementById('text').value;
         websocket.send(message);
     }
+
 </script>
 </html>

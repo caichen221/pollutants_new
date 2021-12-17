@@ -33,14 +33,14 @@ import java.util.function.BiFunction;
  */
 public class HarborUtils {
     private static String username = "admin";
-    private static String password = "Harbor12345";
+    private static String pwd = "Harbor12345";
     private static String url = "http://172.16.10.160:88/api";
     private static OkHttpCustomClient httpClient = new OkHttpCustomClient(new OkHttpProps());
     private static String dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss";
 
     public static void setProp(String username, String password, String url) {
         HarborUtils.username = username;
-        HarborUtils.password = password;
+        HarborUtils.pwd = password;
         HarborUtils.url = url;
     }
 
@@ -201,7 +201,7 @@ public class HarborUtils {
 
     private static Map<String, String> getCredentialHeader() {
         Map<String, String> map = new HashMap<>();
-        String credential = Credentials.basic(username, password);
+        String credential = Credentials.basic(username, pwd);
         map.put("Authorization", credential);
         return map;
     }

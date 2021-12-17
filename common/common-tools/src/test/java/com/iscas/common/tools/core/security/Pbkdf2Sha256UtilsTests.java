@@ -14,8 +14,8 @@ public class Pbkdf2Sha256UtilsTests {
     @Test
     public void test() {
         String encode = Pbkdf2Sha256Utils.encode("123456");
-        System.out.println(encode);
+        Assertions.assertNotNull(encode);
         boolean verification = Pbkdf2Sha256Utils.verification("123456", encode);
-        Assertions.assertEquals(true, verification);
+        Assertions.assertTrue(verification);
     }
 }

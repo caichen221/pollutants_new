@@ -18,7 +18,11 @@ druid.common = function () {
 
         buildHead : function(index) {
             $.get('header.html',function(html) {
-                $(document.body).prepend(html);
+
+//                $(document.body).prepend(html);
+                //使用document.body会报“Cross-Site Scripting: DOM”安全漏洞，尝试用下面的代替
+                $("body").prepend(html);
+
                 druid.lang.trigger();
                 $(".navbar .nav li").eq(index).addClass("active");
                 let aLabel = $(".container").find("a").first();

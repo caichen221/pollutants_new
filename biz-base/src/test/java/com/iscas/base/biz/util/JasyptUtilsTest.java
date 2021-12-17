@@ -1,5 +1,6 @@
 package com.iscas.base.biz.util;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,12 +15,12 @@ public class JasyptUtilsTest {
     @Test
     public void test1() {
         String str = JasyptUtils.encrypt("123456");
-        System.out.println(str);
+        Assertions.assertNotNull(str);
     }
 
     @Test
     public void test2() {
         String str = JasyptUtils.decrypt("0UHSqmE9LuNVXf/cf64ruQ==");
-        System.out.println(str);
+        Assertions.assertNotNull(str);
     }
 }
