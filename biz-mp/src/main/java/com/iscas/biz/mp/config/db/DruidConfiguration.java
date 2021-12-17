@@ -3,6 +3,7 @@ package com.iscas.biz.mp.config.db;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -170,12 +171,25 @@ public class DruidConfiguration implements EnvironmentAware {
             return null;
         }
         datasource.setUsername(value);
-        value = environment.getProperty(path + "password");
-        if (StringUtils.isBlank(value)) {
-            log.error("数据源password不能为空");
-            return null;
+
+        //密码加密判定
+        value = environment.getProperty(path + "connect-properties.config.decrypt");
+        if (Objects.equals("true", value)) {
+            //解密
+            String publicKey = environment.getProperty(path + "connect-properties.config.decrypt.key");
+            value = environment.getProperty(path + "password");
+            if (StringUtils.isBlank(value)) {
+                log.error("数据源password不能为空");
+                return null;
+            }
+            try {
+                value = ConfigTools.decrypt(publicKey, value);
+            } catch (Exception e) {
+                log.error("密码:[" + value + "]解密失败", e);
+            }
         }
         datasource.setPassword(value);
+
         value = environment.getProperty(path + "url");
         if (StringUtils.isBlank(value)) {
             log.error("url");

@@ -324,6 +324,4 @@ public class AuthServiceImpl extends AbstractAuthService {
     private Role getOneRole(Map userRoleMap, Map<String, Role> auth) {
         return auth.get(String.valueOf(userRoleMap.get("role_id")));
     }
-
-
 }

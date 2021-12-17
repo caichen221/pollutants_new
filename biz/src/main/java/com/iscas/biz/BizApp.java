@@ -1,5 +1,6 @@
 package com.iscas.biz;
 
+import com.alibaba.druid.filter.config.ConfigTools;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
@@ -21,6 +22,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.swing.*;
 
 /**
  * 启动类
@@ -62,6 +65,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
+
         SpringApplication springApplication = new SpringApplication(BizApp.class);
 //        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);
