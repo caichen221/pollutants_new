@@ -12,6 +12,9 @@ import java.rmi.server.UnicastRemoteObject;
  * @since jdk1.8
  */
 public class HelloWorld extends UnicastRemoteObject implements IHelloWorld {
+    private static final long serialVersionUID = -3215090123894879218L;
+
+
     protected HelloWorld() throws RemoteException {
     }
 

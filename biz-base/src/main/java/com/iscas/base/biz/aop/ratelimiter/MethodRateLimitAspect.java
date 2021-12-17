@@ -3,6 +3,7 @@ package com.iscas.base.biz.aop.ratelimiter;
 import com.google.common.util.concurrent.RateLimiter;
 import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +39,11 @@ public class MethodRateLimitAspect {
         }
         //获取request对象
         String remoteAddr = SpringUtils.getIpAddr();
+
+        //本地访问不做限制
+        if (Objects.equals(CommonConstant.LOCAL_IP, remoteAddr)) {
+            return joinPoint.proceed();
+        }
         //获取当前的response对象，如果超过超时时间还得不到令牌，返回服务器繁忙的提示
         //生成一个唯一方法名的key,作为Map的键
         Signature signature = joinPoint.getSignature();

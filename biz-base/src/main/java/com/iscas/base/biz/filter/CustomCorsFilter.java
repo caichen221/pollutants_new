@@ -1,8 +1,14 @@
 package com.iscas.base.biz.filter;
 
 
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.cors.CorsProps;
+import com.iscas.base.biz.util.RegexUtils;
+import com.iscas.common.tools.constant.HeaderKey;
+import com.iscas.datasong.client.plus.utils.RegUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsProcessor;
@@ -15,8 +21,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 自定义跨域过滤器，可以通过springboot auto config 配置
@@ -34,7 +43,9 @@ public class CustomCorsFilter extends CorsFilter {
     private Set<String> ignoreUrlAllMatchSet = new HashSet<>();
     Set<String> ignoreUrlPrefixSet = new HashSet<>();
 
+
     public CustomCorsFilter(CorsConfigurationSource configSource, CorsProps corsProps) {
+
         super(configSource);
         if (log.isDebugEnabled()) {
             log.debug("进入 CustomCrosFilter 过滤器");
@@ -69,16 +80,16 @@ public class CustomCorsFilter extends CorsFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         if (!ignoreMath(request) && CorsUtils.isCorsRequest(request)) {
-            String origin = request.getHeader("Origin");
-            if (origin == null || "null".equals(origin)) {
-                origin = corsProps.getOrigin();
+            String origin = com.iscas.base.biz.util.CorsUtils.checkOrigin(request, response, corsProps);
+            if (origin == null) {
+                return;
             }
-            response.setHeader("Access-Control-Allow-Origin", origin);
+            response.setHeader(Constants.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             //服务器同意客户端发送cookies
-            response.setHeader("Access-Control-Allow-Credentials", corsProps.getCredentials());
+            response.setHeader(Constants.ACCESS_CONTROL_ALLOW_CREDENTIALS, corsProps.getCredentials());
 
-            response.setHeader("Access-Control-Allow-Methods", corsProps.getMethods());
-            response.setHeader("Access-Control-Allow-Headers", corsProps.getHeaders());
+            response.setHeader(Constants.ACCESS_CONTROL_ALLOW_METHODS, corsProps.getMethods());
+            response.setHeader(Constants.ACCESS_CONTROL_ALLOW_HEADERS, corsProps.getHeaders());
 //            response.setHeader("Cache-Control", "no-cach");
             if (CorsUtils.isPreFlightRequest(request)) {
                 return;

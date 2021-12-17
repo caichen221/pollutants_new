@@ -89,4 +89,6 @@ public interface HeaderKey {
 
     /**Pragma*/
     String PRAGMA = "Pragma";
+
+    String ORIGIN = "Origin";
 }

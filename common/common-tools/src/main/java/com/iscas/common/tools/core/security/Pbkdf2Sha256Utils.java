@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
  
@@ -52,8 +53,9 @@ public class Pbkdf2Sha256Utils {
         }
         byte[] rawHash = secret.getEncoded();
         byte[] hashBase64 = Base64.getEncoder().encode(rawHash);
-
-        return new String(hashBase64);
+        String str = new String(hashBase64);
+        Arrays.fill(hashBase64, (byte) 0);
+        return str;
     }
 
     /**
@@ -139,7 +141,12 @@ public class Pbkdf2Sha256Utils {
         }
         Integer iterations = Integer.parseInt(parts[1]);
         String salt = parts[2];
-        String hash = encode(password, salt, iterations);
-        return hash.equals(hashedPassword);
+        String hash = null;
+        try {
+            hash = encode(password, salt, iterations);
+            return hash.equals(hashedPassword);
+        } finally {
+            hash = null;
+        }
     }
 }

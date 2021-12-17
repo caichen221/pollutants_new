@@ -5,6 +5,7 @@ import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.config.cors.CorsProps;
 import com.iscas.base.biz.util.AccessLogUtils;
 import com.iscas.base.biz.util.AuthContextHolder;
+import com.iscas.base.biz.util.CorsUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.assertion.AssertRuntimeException;
 import com.iscas.common.tools.core.random.RandomStringUtils;
@@ -31,9 +32,11 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -180,15 +183,25 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
     private void setResponseCros() {
         HttpServletRequest request = SpringUtils.getRequest();
         HttpServletResponse response = SpringUtils.getResponse();
-        String origin = request.getHeader("Origin");
-        if (origin == null || "null".equals(origin)) {
-            origin = corsProps.getOrigin();
+        if (response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN) == null) {
+            String origin = null;
+            try {
+                origin = CorsUtils.checkOrigin(request, response, corsProps);
+            } catch (IOException e) {
+                origin = corsProps.getOrigin();
+            }
+            response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
         }
-        response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-        response.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, corsProps.getCredentials());//服务器同意客户端发送cookies
-        response.setHeader(ACCESS_CONTROL_ALLOW_METHODS, corsProps.getMethods());
-        response.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, corsProps.getHeaders());
-
+        if (response.getHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS) == null) {
+            //服务器同意客户端发送cookies
+            response.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, corsProps.getCredentials());
+        }
+        if (response.getHeader(ACCESS_CONTROL_ALLOW_METHODS) == null) {
+            response.setHeader(ACCESS_CONTROL_ALLOW_METHODS, corsProps.getMethods());
+        }
+        if (response.getHeader(ACCESS_CONTROL_ALLOW_HEADERS) == null) {
+            response.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, corsProps.getHeaders());
+        }
     }
 
 

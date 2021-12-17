@@ -2,6 +2,7 @@ package com.iscas.biz.mp.util;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * jdbc操作工具类
@@ -15,8 +16,15 @@ public class JdbcUtils {
     private JdbcUtils() {}
 
     public static Connection getConnection(String driverClassName, String url, String username, String password) throws ClassNotFoundException, SQLException {
+        Properties properties = new Properties();
+        properties.setProperty("user", username);
+        properties.setProperty("password", password);
+        return getConnection(driverClassName, url, properties);
+    }
+
+    public static Connection getConnection(String driverClassName, String url, Properties properties) throws ClassNotFoundException, SQLException {
         Class.forName(driverClassName);
-        return DriverManager.getConnection(url, username, password);
+        return DriverManager.getConnection(url, properties);
     }
 
     public static Statement createStatement(Connection conn) throws SQLException {
