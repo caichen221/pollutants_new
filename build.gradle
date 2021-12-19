@@ -1,6 +1,10 @@
 
 buildscript {
     repositories {
+//        maven {
+//            url "${localMavenUrl}"
+//            allowInsecureProtocol = true
+//        }
         maven {
             url "${nexusUrl}"
             allowInsecureProtocol = true
@@ -103,6 +107,10 @@ subprojects  {
 //        }
 //    }
     repositories {
+//        maven {
+//            url "${localMavenUrl}"
+//            allowInsecureProtocol = true
+//        }
         maven {
             url "${nexusUrl}"
             allowInsecureProtocol = true
@@ -320,4 +328,16 @@ task publishNeedModules {
     doLast {
         println "publishNeedModules执行结束"
     }
+}
+
+//将gradle缓存安装到maven仓库
+task cacheToLocalMavenRepository(type: Copy) {
+    from new File(gradle.gradleUserHomeDir, 'caches/modules-2/files-2.1')
+//    into repositories.mavenLocal().url
+    into "file:/E:/coding/maven/repo2"
+    eachFile {
+        List<String> parts = it.path.split('/')
+        it.path = (parts[0]+ '/' + parts[1]).replace('.','/') + '/' + parts[2] + '/' + parts[4]
+    }
+    includeEmptyDirs false
 }
