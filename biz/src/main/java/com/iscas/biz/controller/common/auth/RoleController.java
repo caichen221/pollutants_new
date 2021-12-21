@@ -2,6 +2,7 @@ package com.iscas.biz.controller.common.auth;
 
 import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.biz.domain.common.Opration;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.RoleService;
 import com.iscas.biz.validator.anno.RoleConstraint;
@@ -37,6 +38,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/role")
 @Validated
+@ConditionalOnMybatis
 public class RoleController extends BaseController {
     private String tableIdentity = "role";
     private final TableDefinitionService tableDefinitionService;

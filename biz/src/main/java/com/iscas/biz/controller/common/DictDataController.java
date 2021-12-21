@@ -5,6 +5,7 @@ import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.config.log.LogRecord;
 import com.iscas.biz.config.log.LogType;
 import com.iscas.biz.config.log.OperateType;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.DictDataService;
 import com.iscas.common.tools.core.date.DateSafeUtils;
@@ -35,6 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/dictData")
 @Api(tags = "字典管理")
+@ConditionalOnMybatis
 public class DictDataController extends BaseController {
 
     private final static String tableIdentity = "dict_data";

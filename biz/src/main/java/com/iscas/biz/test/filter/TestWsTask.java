@@ -4,6 +4,7 @@ import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.WsService;
 import com.iscas.templet.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Component("TestWsTask")
 @Lazy(value = false)
 @Slf4j
+@ConditionalOnMybatis
 public class TestWsTask {
     private final WsService wsService;
 //    private final WsDataMapper wsDataMapper;

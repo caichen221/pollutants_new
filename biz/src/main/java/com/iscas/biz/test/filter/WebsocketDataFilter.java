@@ -4,6 +4,7 @@ import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
 import com.iscas.base.biz.schedule.CronTaskRegister;
 import com.iscas.base.biz.schedule.SchedulingRunnable;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
@@ -16,6 +17,7 @@ import org.springframework.context.ApplicationContext;
  */
 @StartedFilterComponent(order = 2)
 @Slf4j
+@ConditionalOnMybatis
 public class WebsocketDataFilter extends AbstractStartedFilter {
 
     @Override

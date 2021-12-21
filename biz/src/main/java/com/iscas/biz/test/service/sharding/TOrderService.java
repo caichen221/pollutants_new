@@ -1,5 +1,6 @@
 package com.iscas.biz.test.service.sharding;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.test.mapper.TOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class TOrderService {
     @Autowired
     private DynamicMapper dynamicMapper;

@@ -1,5 +1,6 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.LogInfoService;
 import com.iscas.templet.common.BaseController;
@@ -26,6 +27,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/logInfo")
 @Api(tags = "访问日志")
+@ConditionalOnMybatis
 public class LogInfoController extends BaseController {
 
     private final static String tableIdentity = "log_info";

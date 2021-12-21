@@ -9,6 +9,7 @@ import com.iscas.biz.mapper.common.OrgMapper;
 import com.iscas.biz.mapper.common.OrgUserMapper;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mapper.common.UserRoleMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@ConditionalOnMybatis
 public class UserService {
     @Value("${user_default_pwd:123456}")
     private String userDefaultPwd;

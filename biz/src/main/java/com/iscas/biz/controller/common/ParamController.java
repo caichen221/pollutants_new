@@ -5,6 +5,7 @@ import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.config.log.LogRecord;
 import com.iscas.biz.config.log.LogType;
 import com.iscas.biz.config.log.OperateType;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.ParamService;
 import com.iscas.common.tools.core.date.DateSafeUtils;
@@ -36,6 +37,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/param")
 @Api(tags = "参数管理")
+@ConditionalOnMybatis
 public class ParamController extends BaseController {
 
 

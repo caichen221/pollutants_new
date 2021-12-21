@@ -8,6 +8,7 @@ import com.iscas.biz.domain.common.Role;
 import com.iscas.biz.mapper.common.OrgMapper;
 import com.iscas.biz.mapper.common.OrgRoleMapper;
 import com.iscas.biz.mapper.common.RoleMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.ValidatePropDistinctUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class OrgService {
     private final OrgMapper orgMapper;
     private final OrgRoleMapper orgRoleMapper;

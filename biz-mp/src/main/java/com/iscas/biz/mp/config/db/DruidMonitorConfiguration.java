@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
  * @since jdk1.8
  */
 //@Configuration
-@ConditionalOnMybatis
 public class DruidMonitorConfiguration {
     /**
      * 注册一个StatViewServlet

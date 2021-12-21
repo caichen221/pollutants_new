@@ -1,6 +1,7 @@
 package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.domain.common.Menu;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.MenuService;
 import com.iscas.common.tools.assertion.AssertCollectionUtils;
 import com.iscas.templet.common.BaseController;
@@ -30,6 +31,7 @@ import java.util.List;
 @Api(tags = "菜单管理")
 @RestController
 @RequestMapping("/menu")
+@ConditionalOnMybatis
 public class MenuController extends BaseController {
     private final MenuService menuService;
 

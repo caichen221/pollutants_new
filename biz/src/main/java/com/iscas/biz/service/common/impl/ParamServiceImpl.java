@@ -7,6 +7,7 @@ import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.biz.domain.common.Param;
 import com.iscas.biz.mapper.common.ParamMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.ParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class ParamServiceImpl extends ServiceImpl<ParamMapper, Param> implements ParamService {
 
     @Autowired

@@ -9,6 +9,7 @@ import com.iscas.biz.domain.common.DictData;
 import com.iscas.biz.domain.common.DictDataType;
 import com.iscas.biz.mapper.common.DictDataMapper;
 import com.iscas.biz.mapper.common.DictDataTypeMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.DictDataTypeService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.*;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class DictDataTypeServiceImpl extends ServiceImpl<DictDataTypeMapper, DictDataType> implements DictDataTypeService {
 
     @Autowired

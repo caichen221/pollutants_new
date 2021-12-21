@@ -1,5 +1,6 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.OprationService;
 import com.iscas.biz.service.common.OrgService;
 import com.iscas.biz.service.common.RoleService;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/combobox")
 @Api(tags = "下拉列表")
+@ConditionalOnMybatis
 public class ComboboxController extends BaseController {
     private final RoleService roleService;
     private final OrgService orgService;

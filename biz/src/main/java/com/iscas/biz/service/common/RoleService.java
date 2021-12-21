@@ -5,6 +5,7 @@ import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mapper.common.RoleMenuMapper;
 import com.iscas.biz.mapper.common.RoleOprationMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.common.tools.exception.lambda.Lambdas;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class RoleService {
     private final RoleMapper roleMapper;
     private final RoleMenuMapper roleMenuMapper;

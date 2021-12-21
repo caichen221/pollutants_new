@@ -7,7 +7,6 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
-@ConditionalOnMybatis
 //@Configuration
 
 //@MapperScan({"com.iscas.biz.test.mapper*","com.iscas.base.mp.table.mapper*",

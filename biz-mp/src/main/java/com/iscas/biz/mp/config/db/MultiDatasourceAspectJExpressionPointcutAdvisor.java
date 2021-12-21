@@ -35,7 +35,6 @@ import java.util.Map;
  */
 //@Configuration
 @Slf4j
-@ConditionalOnMybatis
 public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefinitionRegistryPostProcessor, EnvironmentAware, Ordered, ApplicationContextAware {
 
     private Environment env;

@@ -5,6 +5,7 @@ import com.iscas.base.biz.model.auth.AuthContext;
 import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.UserMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.UserService;
 import com.iscas.biz.validator.anno.UserConstraint;
@@ -38,6 +39,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 @Validated
+@ConditionalOnMybatis
 public class MyUserController extends BaseController {
 
     private String tableIdentity = "user";

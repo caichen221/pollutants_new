@@ -1,6 +1,6 @@
 package com.iscas.biz;
 
-import com.alibaba.druid.filter.config.ConfigTools;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
@@ -9,11 +9,14 @@ import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.jdbc.DataSourceHealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -22,8 +25,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.swing.*;
 
 /**
  * 启动类
@@ -36,7 +37,8 @@ import javax.swing.*;
 @Configuration
 //暂时抛除rabbitmq的自动注册，如果使用代理websocket推送需要去掉
 @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
-        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
+        RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class,
+        MybatisPlusAutoConfiguration.class, DataSourceHealthContributorAutoConfiguration.class, XADataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
 @ComponentScan(basePackages = {"com.iscas"})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交

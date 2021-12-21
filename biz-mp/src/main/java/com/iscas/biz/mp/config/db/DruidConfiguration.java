@@ -57,7 +57,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 //@Configuration
-@ConditionalOnMybatis
 public class DruidConfiguration implements EnvironmentAware {
 
     @Value("${mybatis-plus.global-config.db-config.id-type}")

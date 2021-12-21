@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(value={DruidConfiguration.class, MultiDatasourceAspectJExpressionPointcutAdvisor.class,
-        MybatisPlusConfig.class})
+@Import(value={DruidConfiguration.class, DruidMonitorConfiguration.class, MultiDatasourceAspectJExpressionPointcutAdvisor.class,
+        MybatisPlusConfig.class, SpringDaoMethodAspect.class, TableDefinitionSqlCreatorConfig.class})
 public @interface EnableMybatis {
 }

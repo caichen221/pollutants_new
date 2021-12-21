@@ -1,6 +1,7 @@
 package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.domain.common.Org;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.OrgService;
 import com.iscas.common.tools.assertion.AssertCollectionUtils;
 import com.iscas.templet.common.BaseController;
@@ -34,6 +35,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/org")
 @Validated
+@ConditionalOnMybatis
 public class OrgController extends BaseController {
     private final OrgService orgService;
 

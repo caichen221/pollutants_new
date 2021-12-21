@@ -2,6 +2,7 @@ package com.iscas.biz.service.common;
 
 import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.mapper.common.OprationMapper;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.templet.view.table.ComboboxData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 @Service
+@ConditionalOnMybatis
 public class OprationService {
     private final OprationMapper oprationMapper;
 

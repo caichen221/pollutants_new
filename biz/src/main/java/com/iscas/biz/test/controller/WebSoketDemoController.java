@@ -2,6 +2,7 @@ package com.iscas.biz.test.controller;
 
 import com.iscas.base.biz.util.WebSocketUtils;
 import com.iscas.biz.model.common.WsData;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.WsService;
 import com.iscas.templet.common.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ import java.util.UUID;
 @RestController
 @Slf4j
 @EnableScheduling
+@ConditionalOnMybatis
 public class WebSoketDemoController {
 
     @Autowired

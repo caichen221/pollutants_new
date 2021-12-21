@@ -1,5 +1,6 @@
 package com.iscas.biz.controller.common;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.WsService;
 import com.iscas.templet.common.BaseController;
@@ -29,6 +30,7 @@ import java.security.Principal;
 @Api(tags = "消息管理")
 @RestController
 @RequestMapping("/wsData")
+@ConditionalOnMybatis
 public class WsDataController extends BaseController {
     private String tableIdentity = "ws_data";
     private final TableDefinitionService tableDefinitionService;

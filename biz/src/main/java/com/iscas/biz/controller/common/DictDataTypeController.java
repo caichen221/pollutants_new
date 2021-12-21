@@ -6,6 +6,7 @@ import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.config.log.LogRecord;
 import com.iscas.biz.config.log.LogType;
 import com.iscas.biz.config.log.OperateType;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.table.service.TableDefinitionService;
 import com.iscas.biz.service.common.DictDataTypeService;
 import com.iscas.common.tools.core.date.DateSafeUtils;
@@ -37,6 +38,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/dictDataType")
 @Api(tags = "字典数据")
+@ConditionalOnMybatis
 public class DictDataTypeController extends BaseController {
     private final static String tableIdentity = "dict_data_type";
     @Autowired

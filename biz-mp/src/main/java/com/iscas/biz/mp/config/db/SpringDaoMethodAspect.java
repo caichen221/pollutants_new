@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Scope;
  * @since jdk1.8
  */
 //@Configuration
-@ConditionalOnMybatis
 public class SpringDaoMethodAspect {
 
     @Bean

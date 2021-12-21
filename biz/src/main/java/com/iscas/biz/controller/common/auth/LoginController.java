@@ -6,6 +6,7 @@ import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.common.BaseController;
@@ -37,6 +38,7 @@ import java.util.Map;
 @Api(tags = "登陆控制器")
 @SkipAuthentication
 @Validated
+@ConditionalOnMybatis
 public class LoginController extends BaseController implements Constants {
 
 
