@@ -19,7 +19,7 @@ public class ReadWord {
         //加载Word文档
         Document document = new Document();
 //        document.loadFromFile("D:\\文档资料\\登录模块.docx");
-        document.loadFromFile("D:\\文档资料\\中宣部\\应用软件与系统集成0623.doc");
+        document.loadFromFile("/opt/soft/应用软件与系统集成0623.doc");
         return document.getText();
 //        //获取文档中的文本保存为String
 //        String text=document.getText();

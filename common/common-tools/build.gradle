@@ -81,7 +81,9 @@ dependencies {
 //    api group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
 
     api group: 'e-iceblue', name: 'spire.doc.free', version: "${spireDocFreeVersion}"
-//    api group: 'e-iceblue', name: 'spire.doc', version: '3.12.5'
+    // https://mvnrepository.com/artifact/e-iceblue/spire.doc
+//    api group: 'e-iceblue', name: 'spire.doc', version: '3.11.6'
+
 
     // https://mvnrepository.com/artifact/org.javatuples/javatuples
     api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
