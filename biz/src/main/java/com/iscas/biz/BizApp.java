@@ -46,6 +46,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement //开启事务支持
 @EnableRateLimiter //开启自定义的限流支持
 @EnableAuth //开启自定义的用户认证，权限校验
+//@EnableOpenAuthClient //连接自定义的开放平台，与EnableAuth二者取一
 @EnableWebsocketStomp(pushType = WsPushType.SIMPLE) //开启websocketstomp支持
 @EnableLog //允许日志记录
 @EnableXssConfig //开启Xss过滤器

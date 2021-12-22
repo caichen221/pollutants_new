@@ -155,6 +155,9 @@ dependencies {
     api group: 'javax.el', name: 'javax.el-api', version: "${elVersion}"
     api group: 'org.glassfish', name: 'javax.el', version: "${elVersion}"
 
+    // https://mvnrepository.com/artifact/com.github.scribejava/scribejava-apis
+    api group: 'com.github.scribejava', name: 'scribejava-apis', version: "${scribejavaVersion}"
+
 
 
 
