@@ -763,17 +763,19 @@ DROP TABLE IF EXISTS `test`;
 CREATE TABLE `test`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `age` int(0)
+
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of test
 -- ----------------------------
-INSERT INTO `test` VALUES (1, '1');
-INSERT INTO `test` VALUES (2, '2');
-INSERT INTO `test` VALUES (3, '3');
-INSERT INTO `test` VALUES (4, '4');
-INSERT INTO `test` VALUES (5, '5');
+INSERT INTO `test` VALUES (1, '1', 1);
+INSERT INTO `test` VALUES (2, '2', 2);
+INSERT INTO `test` VALUES (3, '3', 44);
+INSERT INTO `test` VALUES (4, '4', 23);
+INSERT INTO `test` VALUES (5, '5', 18);
 
 -- ----------------------------
 -- Table structure for test_mp_ar

@@ -23,6 +23,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -40,7 +41,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class,
         MybatisPlusAutoConfiguration.class, DataSourceHealthContributorAutoConfiguration.class, XADataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
-@ComponentScan(basePackages = {"com.iscas"})
+@ComponentScan(basePackages = {"com.iscas"}, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
+})
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
 @EnableCaching //开启缓存
 @EnableTransactionManagement //开启事务支持
@@ -76,7 +81,8 @@ public class BizApp extends SpringBootServletInitializer {
     }
 
     /**
-     *重写configure
+     * 重写configure
+     *
      * @param builder
      * @return
      */

@@ -1,14 +1,10 @@
 package com.iscas.biz.controller.common.openauth;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
-import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.iscas.base.biz.config.openauth.ConditionalOnOpenAuth;
 import com.iscas.base.biz.config.openauth.OpenAuthConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
