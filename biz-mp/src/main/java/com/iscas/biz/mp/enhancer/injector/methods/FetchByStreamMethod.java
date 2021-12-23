@@ -25,7 +25,7 @@ public class FetchByStreamMethod extends AbstractMethod {
             return null;
         }
         return builderAssistant.addMappedStatement(sqlMethod.getMethod(), sqlSource, StatementType.PREPARED, SqlCommandType.SELECT,
-                Integer.MIN_VALUE, null, null, null, null, modelClass,
+                1000, null, null, null, null, modelClass,
                 ResultSetType.FORWARD_ONLY, true, true, false, null, null, null,
                 configuration.getDatabaseId(), languageDriver, null);
     }
