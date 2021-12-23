@@ -1,7 +1,7 @@
 package com.iscas.biz.mp.test.controller;
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;

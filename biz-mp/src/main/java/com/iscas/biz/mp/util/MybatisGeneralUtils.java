@@ -1,7 +1,6 @@
 package com.iscas.biz.mp.util;
 
-import com.iscas.biz.mp.mapper.DynamicMapper;
-import lombok.SneakyThrows;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -61,7 +60,7 @@ public class MybatisGeneralUtils {
             sqlSession = sessionFactory.openSession();
             Map<String, String> sqlMap = createSqlMap(sql);
             Map result = null;
-            String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicSelect";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
             result = sqlSession.selectOne(method, sqlMap);
             sqlSession.commit();
             return result;
@@ -78,7 +77,7 @@ public class MybatisGeneralUtils {
             sqlSession = sessionFactory.openSession();
             Map<String, String> sqlMap = createSqlMap(sql);
             List<Map> result = null;
-            String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicSelect";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
             result = sqlSession.selectList(method, sqlMap);
             sqlSession.commit();
             return result;
@@ -94,7 +93,7 @@ public class MybatisGeneralUtils {
         try {
             sqlSession = sessionFactory.openSession();
             Map<String, String> sqlMap = createSqlMap(sql);
-            String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicInsert";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicInsert";
             sqlSession.insert(method, sqlMap);
             sqlSession.commit();
         } finally {
@@ -109,7 +108,7 @@ public class MybatisGeneralUtils {
         try {
             sqlSession = sessionFactory.openSession();
             Map<String, String> sqlMap = createSqlMap(sql);
-            String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicUpdate";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicUpdate";
             sqlSession.update(method, sqlMap);
             sqlSession.commit();
         } finally {
@@ -124,7 +123,7 @@ public class MybatisGeneralUtils {
         try {
             sqlSession = sessionFactory.openSession();
             Map<String, String> sqlMap = createSqlMap(sql);
-            String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicDelete";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicDelete";
             sqlSession.update(method, sqlMap);
             sqlSession.commit();
         } finally {
@@ -196,7 +195,7 @@ public class MybatisGeneralUtils {
         sqlSession = sessionFactory.openSession(ExecutorType.BATCH, false);
         try {
             for (String sql : sqls) {
-                String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicUpdate";
+                String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicUpdate";
                 Map<String, String> sqlMap = createSqlMap(sql);
                 sqlSession.update(method, sqlMap);
             }

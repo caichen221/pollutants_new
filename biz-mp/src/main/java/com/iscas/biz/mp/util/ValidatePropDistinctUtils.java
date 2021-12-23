@@ -1,6 +1,6 @@
 package com.iscas.biz.mp.util;
 
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.templet.exception.ValidDataException;
 
 import java.util.Map;

@@ -4,7 +4,7 @@ import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.*;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.ValidatePropDistinctUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.templet.exception.ValidDataException;

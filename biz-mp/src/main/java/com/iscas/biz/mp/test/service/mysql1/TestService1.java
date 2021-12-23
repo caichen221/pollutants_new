@@ -3,7 +3,7 @@ package com.iscas.biz.mp.test.service.mysql1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestEntityMapper;
 import com.iscas.biz.mp.test.model.TestEntity;
 import org.springframework.beans.factory.annotation.Autowired;

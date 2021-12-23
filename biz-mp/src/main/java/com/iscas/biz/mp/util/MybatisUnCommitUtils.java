@@ -41,7 +41,7 @@ public class MybatisUnCommitUtils {
     public static List<Map> executeSearch(SqlSession session, String sql) {
         Map<String, String> sqlMap = createSqlMap(sql);
         List<Map> result = null;
-        String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicSelect";
+        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
         result = session.selectList(method, sqlMap);
         return result;
 
@@ -49,21 +49,21 @@ public class MybatisUnCommitUtils {
 
     public static void executeInsert(SqlSession session, String sql) {
         Map<String, String> sqlMap = createSqlMap(sql);
-        String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicInsert";
+        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicInsert";
         session.insert(method, sqlMap);
     }
 
 
     public static void executeUpdate(SqlSession session, String sql) {
         Map<String, String> sqlMap = createSqlMap(sql);
-        String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicUpdate";
+        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicUpdate";
         session.update(method, sqlMap);
     }
 
 
     public static void executeDelete(SqlSession session, String sql) {
         Map<String, String> sqlMap = createSqlMap(sql);
-        String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicDelete";
+        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicDelete";
         session.update(method, sqlMap);
     }
 

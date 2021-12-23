@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
+import com.iscas.biz.mp.enhancer.injector.CustomSqlInjector;
 import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -376,6 +379,7 @@ public class DruidConfiguration implements EnvironmentAware {
     private GlobalConfig globalConfiguration() {
         GlobalConfig conf = GlobalConfigUtils.defaults();
         conf.getDbConfig().setIdType(IdType.valueOf(idType));
+        conf.setSqlInjector(new CustomSqlInjector());
         return conf;
     }
 
@@ -430,4 +434,5 @@ public class DruidConfiguration implements EnvironmentAware {
         return config;
 
     }
+
 }

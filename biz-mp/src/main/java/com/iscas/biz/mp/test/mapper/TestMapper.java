@@ -1,6 +1,6 @@
 package com.iscas.biz.mp.test.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.model.Test;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -14,5 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Mapper
-public interface TestMapper extends BaseMapper<Test> {
+public interface TestMapper extends DynamicMapper<Test> {
 }

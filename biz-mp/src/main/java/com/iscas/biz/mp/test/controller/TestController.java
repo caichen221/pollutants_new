@@ -1,21 +1,25 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestMapper;
 import com.iscas.biz.mp.test.model.Test;
 import com.iscas.biz.mp.test.service.impl.TestService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author zhuquanwen
@@ -56,6 +60,22 @@ public class TestController extends BaseController {
         tests.forEach(test -> test.setAge(null));
         testService.saveOrUpdateBatch(tests);
         return getResponse();
+    }
+
+    @GetMapping("/truncate")
+    public ResponseEntity testTruncate() {
+        testMapper.truncate();
+        return getResponse();
+    }
+
+    @GetMapping("/fetchByStream")
+    public ResponseEntity fetchByStream() {
+        List<Test> result = new ArrayList<>();
+        testMapper.fetchByStream(new QueryWrapper<Test>().eq("name", "222"), resultContext -> {
+            result.add(resultContext.getResultObject());
+        });
+        ResponseEntity responseEntity = getResponse().setValue(result);
+        return responseEntity;
     }
 
 }

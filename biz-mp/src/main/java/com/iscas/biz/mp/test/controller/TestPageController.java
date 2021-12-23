@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestDataMapper;
 import com.iscas.biz.mp.test.model.TestData;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
@@ -74,7 +73,7 @@ public class TestPageController {
 //        Map<String, String> sqlMap = new HashMap<>();
 //        sqlMap.put("sql", "select * from test_data");
 //        List<Map> result = null;
-//        String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicSelect";
+//        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
 //        for (int i = 0; i < 10 ; i++) {
 //            RowBounds rowBounds = new RowBounds(600000 + i * 20, 20);
 //            result = session.selectList(method, sqlMap, rowBounds);
@@ -101,7 +100,7 @@ public class TestPageController {
     public void testPageHelper() {
         long start = System.currentTimeMillis();
         SqlSession session = sqlSessionFactory.openSession();
-        String method = "com.iscas.biz.mp.mapper.DynamicMapper.dynamicSelect";
+        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
         for (int i = 0; i < 10 ; i++) {
             PageHelper.startPage(30000 + i, 20);
             Map<String, String> sqlMap = new HashMap<>();

@@ -1,7 +1,7 @@
 package com.iscas.biz.test.controller;
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
-import com.iscas.biz.mp.mapper.DynamicMapper;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.test.service.atomikos.AtomikosTestService;
 import com.iscas.templet.common.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,12 @@
-package com.iscas.biz.mp.mapper;
+package com.iscas.biz.mp.enhancer.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.ResultHandler;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,8 +24,17 @@ import java.util.Map;
 @ConditionalOnMybatis
 public interface DynamicMapper<T> extends BaseMapper<T> {
 
+    /**
+     * 扩展Mybatis-Plus的方法
+     * truncate
+     * */
+    void truncate();
 
-
+    /**
+     * 扩展Mybatis-Plus的方法
+     * fetchByStream
+     * */
+    void fetchByStream(@Param(Constants.WRAPPER) Wrapper<T> wrapper, ResultHandler<T> handler);
 
     @Select("${sql}" )
     Map selectOne(@Param("sql") String sql);
