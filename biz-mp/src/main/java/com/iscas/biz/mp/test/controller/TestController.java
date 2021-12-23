@@ -3,6 +3,7 @@ package com.iscas.biz.mp.test.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
+import com.iscas.biz.mp.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestMapper;
 import com.iscas.biz.mp.test.model.Test;
 import com.iscas.biz.mp.test.service.impl.TestService;
@@ -33,6 +34,9 @@ public class TestController extends BaseController {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private DynamicMapper dynamicMapper;
+
     @GetMapping("/page")
     public ResponseEntity testPage() {
         ResponseEntity response = getResponse();
@@ -46,6 +50,8 @@ public class TestController extends BaseController {
 
     @GetMapping("/update")
     public ResponseEntity testUpdate() {
+        List select = dynamicMapper.select("select * from test");
+        System.out.println(select);
         List<Test> tests = testMapper.selectList(null);
         tests.forEach(test -> test.setAge(null));
         testService.saveOrUpdateBatch(tests);

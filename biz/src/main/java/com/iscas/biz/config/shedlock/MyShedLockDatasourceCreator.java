@@ -12,6 +12,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -35,13 +36,18 @@ public class MyShedLockDatasourceCreator implements ShedLockDatasourceCreator, E
     @Override
     public DataSource createDataSource() {
         String prefix = "spring.datasource.druid." + datasourceNames.split(",")[0].trim() + ".";
-        String driverClassName = prefix + "driver-class-name";
-        String url = prefix + "url";
-        String username = prefix + "username";
-        String password = prefix + "password";
-        String decrypt = prefix + "connect-properties.config.decrypt";
-        String decryptKey = prefix + "connect-properties.config.decrypt.key";
-
+        String driverClassNameCfg = prefix + "driver-class-name";
+        String urlCfg = prefix + "url";
+        String usernameCfg = prefix + "username";
+        String passwordCfg = prefix + "password";
+        String decryptCfg = prefix + "connect-properties.config.decrypt";
+        String decryptKeyCfg = prefix + "connect-properties.config.decrypt.key";
+        String driverClassName = environment.getProperty(driverClassNameCfg);
+        String url = environment.getProperty(urlCfg);
+        String username = environment.getProperty(usernameCfg);
+        String password = environment.getProperty(passwordCfg);
+        String decrypt = environment.getProperty(decryptCfg);
+        String decryptKey = environment.getProperty(decryptKeyCfg);
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(username);
         dataSource.setUrl(url);

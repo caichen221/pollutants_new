@@ -51,7 +51,7 @@ public class TestPageController {
                         .replace("@desc@", UUID.randomUUID().toString());
                 testDataList.add(sql);
             }
-            dynamicMapper.dynamicBatch(testDataList);
+            dynamicMapper.batch(testDataList);
         }
     }
 

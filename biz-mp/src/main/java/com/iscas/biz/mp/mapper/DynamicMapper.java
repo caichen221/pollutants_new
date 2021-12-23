@@ -21,7 +21,10 @@ import java.util.Map;
  */
 @Repository
 @ConditionalOnMybatis
-public interface DynamicMapper extends BaseMapper {
+public interface DynamicMapper<T> extends BaseMapper<T> {
+
+
+
 
     @Select("${sql}" )
     Map selectOne(@Param("sql") String sql);
@@ -49,58 +52,58 @@ public interface DynamicMapper extends BaseMapper {
     void batch(@Param("sqls") List<String> sqls);
 
 
-    /**
-     * 废弃，{@link #selectOne(String)}
-     * */
-    @Select("${sql}" )
-    @Deprecated
-    Map dynamicSelectOne(@Param("sql") String sql);
-
-    /**
-     * 废弃，{@link #select(String)}
-     * */
-    @Select("${sql}" )
-    @Deprecated
-    List<Map> dynamicSelect(@Param("sql") String sql);
-
-    /**
-     * 废弃，{@link #insert(String)}
-     * */
-    @Insert("${sql}")
-    @Deprecated
-    void dynamicInsert(@Param("sql") String sql);
-
-    /**
-     * 废弃，{@link #update(String)}
-     * */
-    @Update("${sql}")
-    @Deprecated
-    void dynamicUpdate(@Param("sql") String sql);
-
-    /**
-     * 废弃，{@link #delete(String)}
-     * */
-    @Delete("${sql}")
-    @Deprecated
-    void dynamicDelete(@Param("sql") String sql);
-
-    /**
-     * 废弃，{@link #selectLargeData(String, ResultHandler)}
-     * */
-    @Select("${sql}")
-    @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = 1000)
-    @ResultType(Map.class)
-    @Deprecated
-    void dynamicSelectLargeData(@Param("sql") String sql, ResultHandler<Map> handler);
-
-    /**
-     * 废弃，{@link #batch(List)}
-     * */
-    @Update("<script><foreach close=\"\" collection=\"sqls\" index=\"index\" item=\"item\" open=\"\" separator=\";\">  " +
-            "     ${item}       " +
-            "        </foreach></script>  ")
-    @Deprecated
-    void dynamicBatch(@Param("sqls") List<String> sqls);
+//    /**
+//     * 废弃，{@link #selectOne(String)}
+//     * */
+//    @Select("${sql}" )
+//    @Deprecated
+//    Map dynamicSelectOne(@Param("sql") String sql);
+//
+//    /**
+//     * 废弃，{@link #select(String)}
+//     * */
+//    @Select("${sql}" )
+//    @Deprecated
+//    List<Map> dynamicSelect(@Param("sql") String sql);
+//
+//    /**
+//     * 废弃，{@link #insert(String)}
+//     * */
+//    @Insert("${sql}")
+//    @Deprecated
+//    void dynamicInsert(@Param("sql") String sql);
+//
+//    /**
+//     * 废弃，{@link #update(String)}
+//     * */
+//    @Update("${sql}")
+//    @Deprecated
+//    void dynamicUpdate(@Param("sql") String sql);
+//
+//    /**
+//     * 废弃，{@link #delete(String)}
+//     * */
+//    @Delete("${sql}")
+//    @Deprecated
+//    void dynamicDelete(@Param("sql") String sql);
+//
+//    /**
+//     * 废弃，{@link #selectLargeData(String, ResultHandler)}
+//     * */
+//    @Select("${sql}")
+//    @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = 1000)
+//    @ResultType(Map.class)
+//    @Deprecated
+//    void dynamicSelectLargeData(@Param("sql") String sql, ResultHandler<Map> handler);
+//
+//    /**
+//     * 废弃，{@link #batch(List)}
+//     * */
+//    @Update("<script><foreach close=\"\" collection=\"sqls\" index=\"index\" item=\"item\" open=\"\" separator=\";\">  " +
+//            "     ${item}       " +
+//            "        </foreach></script>  ")
+//    @Deprecated
+//    void dynamicBatch(@Param("sqls") List<String> sqls);
 
 
 }

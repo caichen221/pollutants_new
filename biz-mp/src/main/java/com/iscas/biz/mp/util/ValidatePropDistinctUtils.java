@@ -19,7 +19,7 @@ public class ValidatePropDistinctUtils {
     public static Map validate(DynamicMapper dynamicMapper, String tableName, String colName, Object val) {
         String sql = "select count(*) as c from %s where %s = '%s'";
         sql = String.format(sql, tableName, colName, val.toString());
-        Map map = dynamicMapper.dynamicSelectOne(sql);
+        Map map = dynamicMapper.selectOne(sql);
         return map;
     }
 

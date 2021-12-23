@@ -28,7 +28,7 @@ public class TestService1 {
     private TestEntityMapper testEntityMapper;
 
     public List<Map> getIds() {
-        return dynamicMapper.dynamicSelect("select * from test");
+        return dynamicMapper.select("select * from test");
     }
 
     public List<TestEntity> get() {
