@@ -34,3 +34,5 @@
 14、translation
 
 15、spring boot assistant
+
+16、mybatisx

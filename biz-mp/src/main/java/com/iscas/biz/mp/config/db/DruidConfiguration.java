@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,19 @@ public class DruidConfiguration implements EnvironmentAware {
 
     @Value("${mybatis-plus.global-config.db-config.id-type}")
     private String idType;
+    @Value("${mybatis-plus.global-config.db-config.logic-delete-value}")
+    private String logicDeleteValue;
+    @Value("${mybatis-plus.global-config.db-config.logic-not-delete-value}")
+    private String logicNotDeleteValue;
+    @Value("${mybatis-plus.global-config.db-config.logic-delete-field}")
+    private String logicDeleteField;
+    @Value("${mybatis-plus.configuration.default-enum-type-handler}")
+    private Class<? extends TypeHandler> defaultEnumTypeHandler;
+    @Value("${mybatis-plus.configuration.map-underscore-to-camel-case}")
+    private boolean mapUnderscoreToCamelCase;
+    @Value("${mybatis-plus.gloabl-config.banner}")
+    private boolean banner;
+
     @Value("${mybatis-plus.type-enums-package}")
     private String enumPackages;
     //    @Value("${mp.mapper.locations}")
@@ -328,8 +342,9 @@ public class DruidConfiguration implements EnvironmentAware {
         MybatisConfiguration configuration = new MybatisConfiguration();
         //configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
         configuration.setJdbcTypeForNull(JdbcType.NULL);
-        configuration.setMapUnderscoreToCamelCase(true);
+        configuration.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
         configuration.setCacheEnabled(false);
+        configuration.setDefaultEnumTypeHandler(defaultEnumTypeHandler);
         factory.setConfiguration(configuration);
 //        factory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
 //                paginationInterceptor() //添加分页功能
@@ -346,7 +361,7 @@ public class DruidConfiguration implements EnvironmentAware {
         sqlSessionFactoryCustomizers.customize(configuration, factory);
         factory.setTransactionFactory(new MultiDataSourceTransactionFactory());
         //mapper config path
-        String mpMapperLocations = environment.getProperty("mp.mapper.locations");
+        String mpMapperLocations = environment.getProperty("mybatis-plus.mapper-locations");
         if (StringUtils.isNotEmpty(mpMapperLocations)) {
             Resource[] resources = Arrays.stream(mpMapperLocations.split(","))
                     .map(location -> {
@@ -417,7 +432,12 @@ public class DruidConfiguration implements EnvironmentAware {
     private GlobalConfig globalConfiguration() {
         GlobalConfig conf = GlobalConfigUtils.defaults();
         conf.getDbConfig().setIdType(IdType.valueOf(idType));
+        conf.getDbConfig().setLogicDeleteValue(logicDeleteValue);
+        conf.getDbConfig().setLogicNotDeleteValue(logicNotDeleteValue);
+        conf.getDbConfig().setLogicDeleteField(logicDeleteField);
+
         conf.setSqlInjector(new CustomSqlInjector());
+        conf.setBanner(banner);
         return conf;
     }
 
