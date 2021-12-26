@@ -24,8 +24,13 @@ import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
 import com.iscas.biz.mp.enhancer.injector.CustomSqlInjector;
 import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
+import com.iscas.common.tools.constant.CommonConstant;
+import com.iscas.common.tools.constant.StrConstantEnum;
+import com.iscas.common.tools.core.io.file.IoRaiseUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -41,13 +46,17 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.util.ResourceUtils;
 
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-import java.io.IOException;
+import java.io.*;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,6 +109,16 @@ public class DruidConfiguration implements EnvironmentAware {
                             targetDataSources.put(dbName, dataSource);
                         }
                     }
+                    //运行初始化脚本 add by zqw 2021-12-26
+                    String path = basePath + dbName + ".";
+                    String value = environment.getProperty(path + "initialization-mode");
+                    if (Objects.equals("always", value)) {
+                        value = environment.getProperty(path + "schema");
+                        if (StringUtils.isNotEmpty(value)) {
+                            runSchema(dataSource, value, dbName);
+                        }
+                    }
+
                 }
             }
         }
@@ -251,6 +270,28 @@ public class DruidConfiguration implements EnvironmentAware {
             datasource.setMaxPoolPreparedStatementPerConnectionSize(Integer.parseInt(value));
         }
         return datasource;
+    }
+
+    private static void runSchema(DataSource datasource, String schemas, String dbName) {
+        InputStream is = null;
+        try (Connection conn = datasource.getConnection()) {
+            ScriptRunner scriptRunner = new ScriptRunner(conn);
+            scriptRunner.setStopOnError(false);
+            for (String schemaPath : schemas.split(StrConstantEnum.COMMA.getValue())) {
+                schemaPath = schemaPath.trim();
+                if (schemaPath.startsWith(CommonConstant.CLASSPATH)) {
+                    ClassPathResource classPathResource = new ClassPathResource(StringUtils.substringAfter(schemaPath, CommonConstant.CLASSPATH));
+                    is = classPathResource.getInputStream();
+                } else {
+                    is = new FileInputStream(schemaPath);
+                }
+                try (InputStreamReader isr = new InputStreamReader(is)) {
+                    scriptRunner.runScript(isr);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            log.warn(MessageFormat.format("数据源：{0}运行初始化脚本失败", dbName), e);
+        }
     }
 
     private List<Filter> handlerFilters(String path, String value) {
