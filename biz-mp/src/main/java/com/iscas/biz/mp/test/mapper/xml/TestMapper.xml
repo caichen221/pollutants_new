@@ -7,4 +7,8 @@
     <result column="age" jdbcType="INTEGER" property="age" />
   </resultMap>
 
+  <select id ="testSelectPage" resultType="com.iscas.biz.mp.test.model.Test">
+      SELECT * FROM test
+  </select>
+
 </mapper>

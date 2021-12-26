@@ -1,6 +1,7 @@
 package com.iscas.biz.mp.test.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -41,6 +42,9 @@ public class TestController extends BaseController {
     @Autowired
     private DynamicMapper dynamicMapper;
 
+    /**
+     * 测试分页查询
+     * */
     @GetMapping("/page")
     public ResponseEntity testPage() {
         ResponseEntity response = getResponse();
@@ -52,6 +56,9 @@ public class TestController extends BaseController {
         return response;
     }
 
+    /**
+     * 测试修改
+     * */
     @GetMapping("/update")
     public ResponseEntity testUpdate() {
         List select = dynamicMapper.select("select * from test");
@@ -62,12 +69,18 @@ public class TestController extends BaseController {
         return getResponse();
     }
 
+    /**
+     * 测试自定义函数truncate
+     * */
     @GetMapping("/truncate")
     public ResponseEntity testTruncate() {
         testMapper.truncate();
         return getResponse();
     }
 
+    /**
+     * 测试自定义函数流式拉取数据
+     * */
     @GetMapping("/fetchByStream")
     public ResponseEntity fetchByStream() {
         List<Test> result = new ArrayList<>();
@@ -77,5 +90,59 @@ public class TestController extends BaseController {
         ResponseEntity responseEntity = getResponse().setValue(result);
         return responseEntity;
     }
+
+    /**测试自定义方法分页*/
+    @GetMapping("/custom/page")
+    public ResponseEntity testCustomMethodPage() {
+        ResponseEntity response = getResponse();
+        IPage<Test> page = new Page<Test>();
+        page.setSize(2);
+        page.setCurrent(1);
+        IPage<Test> testPage = testMapper.testSelectPage(page);
+        response.setValue(testPage.getRecords());
+        return response;
+    }
+
+    /**测试queryWrapper*/
+    @GetMapping("/queryWrapper")
+    public ResponseEntity testQueryWrapper() {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select("id", "name");
+        queryWrapper.gt("age", "2");
+        List list = testMapper.selectList(queryWrapper);
+        return getResponse().setValue(list);
+    }
+
+//    /**测试update*/
+//    @GetMapping("/update2")
+//    public ResponseEntity testUpdate2() {
+//       QueryWrapper queryWrapper = new QueryWrapper();
+//       queryWrapper.eq("id", 1);
+//        Test test = testMapper.selectById(1);
+//        test.setAge(13);
+//        testMapper.update(test, queryWrapper);
+//       return getResponse();
+//    }
+//
+//    /**测试update*/
+//    @GetMapping("/updateWrapper")
+//    public ResponseEntity testUpdateWrapper() {
+//        QueryWrapper queryWrapper = new QueryWrapper();
+//        queryWrapper.eq("id", 1);
+//        Test test = testMapper.selectById(1);
+//        test.setAge(13);
+//        testMapper.update(test, queryWrapper);
+//        return getResponse();
+//    }
+
+//    /**测试lambdaWrapper*/
+//    @GetMapping("/updateWrapper")
+//    public ResponseEntity testLambdaWrapper() {
+//       QueryWrapper queryWrapper = new QueryWrapper<>();
+//       queryWrapper.lambda()
+//               .select(Test::getId, Test::getName)
+//               .
+//        return getResponse();
+//    }
 
 }

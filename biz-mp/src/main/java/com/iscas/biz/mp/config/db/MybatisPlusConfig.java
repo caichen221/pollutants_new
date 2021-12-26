@@ -59,7 +59,7 @@ public  class MybatisPlusConfig implements EnvironmentAware {
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer scannerConfigurer = new MapperScannerConfigurer();
-        String mpScannerPackage = environment.getProperty("mp.scanner.package");
+        String mpScannerPackage = environment.getProperty("mybatis-plus.scanner.package");
         scannerConfigurer.setBasePackage(mpScannerPackage);
         return scannerConfigurer;
     }

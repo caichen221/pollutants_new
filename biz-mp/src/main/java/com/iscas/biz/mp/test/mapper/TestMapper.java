@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.model.Test;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,4 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface TestMapper extends DynamicMapper<Test> {
+
+    IPage<Test> testSelectPage(IPage<Test> page);
 }
