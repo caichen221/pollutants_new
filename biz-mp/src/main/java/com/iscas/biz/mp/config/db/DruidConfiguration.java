@@ -41,6 +41,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
@@ -66,14 +67,14 @@ public class DruidConfiguration implements EnvironmentAware {
     private String idType;
     @Value("${mybatis-plus.type-enums-package}")
     private String enumPackages;
-//    @Value("${mp.mapper.locations}")
+    //    @Value("${mp.mapper.locations}")
 //    private String mapMapperLocations;
     private final String basePath = "spring.datasource.druid.";
     private Environment environment;
     @Autowired
     private ApplicationContext context;
 
-    @Bean(name="dynamicDatasource")
+    @Bean(name = "dynamicDatasource")
     public DataSource dynamicDataSource() throws SQLException {
         String db = environment.getProperty("spring.datasource.names");
 
@@ -129,7 +130,6 @@ public class DruidConfiguration implements EnvironmentAware {
     }
 
 
-
     private DruidDataSource initOneDatasource(String dbName) throws SQLException {
         // update by zqw 20210520 将DruidDataSource修改为DruidXADataSource，为了Atomikos
         DruidDataSource datasource = null;
@@ -160,7 +160,7 @@ public class DruidConfiguration implements EnvironmentAware {
     /**
      * 将构建datasource的一部分把代码抽成静态方法，sharding-jdbc
      * 调用一下 update by zqw 20210527
-     * */
+     */
     public static DruidDataSource doInitOneDatasource(String path, String dbName, DruidDataSource datasource,
                                                       Environment environment) {
         String value;
@@ -307,14 +307,15 @@ public class DruidConfiguration implements EnvironmentAware {
         //mapper config path
         String mpMapperLocations = environment.getProperty("mp.mapper.locations");
         if (StringUtils.isNotEmpty(mpMapperLocations)) {
-            Arrays.stream(mpMapperLocations.split(","))
-                    .forEach(location -> {
+            Resource[] resources = Arrays.stream(mpMapperLocations.split(","))
+                    .map(location -> {
                         try {
-                            factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(location));
+                            return new PathMatchingResourcePatternResolver().getResources(location);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                    });
+                    }).flatMap(Arrays::stream).toArray(Resource[]::new);
+            factory.setMapperLocations(resources);
         }
         return factory.getObject();
     }
@@ -327,7 +328,6 @@ public class DruidConfiguration implements EnvironmentAware {
 
     /**
      * 分布式事务使用JTA管理，不管有多少个数据源只要配置一个 JtaTransactionManager
-     *
      */
 //    /*atomikos事务管理器*/
 //    public UserTransactionManager userTransactionManager() {
@@ -350,8 +350,6 @@ public class DruidConfiguration implements EnvironmentAware {
 //        jtaTransactionManager.setAllowCustomIsolationLevels(true);
 //        return jtaTransactionManager;
 //    }
-
-
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers(ObjectProvider<SqlSessionFactoryCustomizer<?, ?>> customizers) {
@@ -367,13 +365,12 @@ public class DruidConfiguration implements EnvironmentAware {
 
     /**
      * mybatis-plus新的分页插件注册方式
-     * */
+     */
     @Bean
     @ConditionalOnMissingBean
     public PaginationInnerInterceptor paginationInterceptor() {
         return new PaginationInnerInterceptor();
     }
-
 
 
     private GlobalConfig globalConfiguration() {

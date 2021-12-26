@@ -42,10 +42,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         MybatisPlusAutoConfiguration.class, DataSourceHealthContributorAutoConfiguration.class, XADataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
 @ComponentScan(basePackages = {"com.iscas"}
-//        , excludeFilters = {
-//        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
+        , excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
 //        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
-//        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")}
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")}
 )
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
 @EnableCaching //开启缓存

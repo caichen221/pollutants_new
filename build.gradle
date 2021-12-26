@@ -100,12 +100,7 @@ subprojects  {
 ////        api.exclude group: 'ch.qos.logback'
 ////        api.exclude group: 'org.slf4j', module:'slf4j-api'
 //    }
-//    processResources {
-//
-//        from('src/main/java') {
-//            include '**/*'
-//        }
-//    }
+
     repositories {
 //        maven {
 //            url "${localMavenUrl}"
@@ -202,6 +197,12 @@ subprojects  {
         classifier = 'javadoc'
     }
     sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
+
+//    processResources {
+//        from('src/main/java') {
+//            include '**/*'
+//        }
+//    }
 
     //上传至nexus
 //    publishing {
