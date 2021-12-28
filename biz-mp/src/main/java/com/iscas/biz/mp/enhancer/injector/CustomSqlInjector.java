@@ -2,6 +2,7 @@ package com.iscas.biz.mp.enhancer.injector;
 
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.iscas.common.tools.core.io.file.ScannerUtils;
 import com.iscas.common.tools.exception.lambda.Lambdas;
 
@@ -19,11 +20,11 @@ import java.util.stream.Collectors;
 public class CustomSqlInjector extends DefaultSqlInjector {
     private volatile List<AbstractMethod> methodCache;
     @Override
-    public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
+    public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
         if (methodCache == null) {
             synchronized (CustomSqlInjector.class) {
                 if (methodCache == null) {
-                    List<AbstractMethod> methodList = super.getMethodList(mapperClass);
+                    List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
                     methodList.addAll(getCustomMethods());
                     methodCache = methodList;
                 }

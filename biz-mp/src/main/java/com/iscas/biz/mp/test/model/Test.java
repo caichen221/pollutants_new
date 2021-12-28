@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 @TableName(value = "test", excludeProperty = {"realName"}/*, resultMap = "BaseResultMap", autoResultMap = true*/)
 public class Test {
+
     @TableId(type = IdType.AUTO)
     private Integer id;
 
