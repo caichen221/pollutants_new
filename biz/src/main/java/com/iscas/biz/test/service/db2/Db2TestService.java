@@ -19,11 +19,11 @@ public class Db2TestService {
     private DynamicMapper dynamicMapper;
 
     public void test() {
-        dynamicMapper.insert("insert into author(first_name, last_name) values('z', 'qw')");
+        dynamicMapper.insertBySql("insert into author(first_name, last_name) values('z', 'qw')");
     }
 
     public void test2() {
-        dynamicMapper.insert("insert into test_user(name) values('zs')");
+        dynamicMapper.insertBySql("insert into test_user(name) values('zs')");
     }
 
 }

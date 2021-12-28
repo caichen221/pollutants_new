@@ -37,29 +37,29 @@ public interface DynamicMapper<T> extends BaseMapper<T> {
     void fetchByStream(@Param(Constants.WRAPPER) Wrapper<T> wrapper, ResultHandler<T> handler);
 
     @Select("${sql}" )
-    Map selectOne(@Param("sql") String sql);
+    Map selectOneBySql(@Param("sql") String sql);
 
     @Select("${sql}" )
-    List<Map> select(@Param("sql") String sql);
+    List<Map> selectBySql(@Param("sql") String sql);
 
     @Insert("${sql}")
-    void insert(@Param("sql") String sql);
+    void insertBySql(@Param("sql") String sql);
 
     @Update("${sql}")
-    void update(@Param("sql") String sql);
+    void updateBySql(@Param("sql") String sql);
 
     @Delete("${sql}")
-    void delete(@Param("sql") String sql);
+    void deleteBySql(@Param("sql") String sql);
 
     @Select("${sql}")
     @Options(resultSetType = ResultSetType.FORWARD_ONLY, fetchSize = 1000)
     @ResultType(Map.class)
-    void selectLargeData(@Param("sql") String sql, ResultHandler<Map> handler);
+    void selectLargeDataBySql(@Param("sql") String sql, ResultHandler<Map> handler);
 
     @Update("<script><foreach close=\"\" collection=\"sqls\" index=\"index\" item=\"item\" open=\"\" separator=\";\">  " +
             "     ${item}       " +
             "        </foreach></script>  ")
-    void batch(@Param("sqls") List<String> sqls);
+    void batchBySql(@Param("sqls") List<String> sqls);
 
 
 //    /**

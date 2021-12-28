@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.test.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -44,7 +45,7 @@ public class TestController extends BaseController {
 
     /**
      * 测试分页查询
-     * */
+     */
     @GetMapping("/page")
     public ResponseEntity testPage() {
         ResponseEntity response = getResponse();
@@ -57,21 +58,8 @@ public class TestController extends BaseController {
     }
 
     /**
-     * 测试修改
-     * */
-    @GetMapping("/update")
-    public ResponseEntity testUpdate() {
-        List select = dynamicMapper.select("select * from test");
-        System.out.println(select);
-        List<Test> tests = testMapper.selectList(null);
-        tests.forEach(test -> test.setAge(null));
-        testService.saveOrUpdateBatch(tests);
-        return getResponse();
-    }
-
-    /**
      * 测试自定义函数truncate
-     * */
+     */
     @GetMapping("/truncate")
     public ResponseEntity testTruncate() {
         testMapper.truncate();
@@ -80,7 +68,7 @@ public class TestController extends BaseController {
 
     /**
      * 测试自定义函数流式拉取数据
-     * */
+     */
     @GetMapping("/fetchByStream")
     public ResponseEntity fetchByStream() {
         List<Test> result = new ArrayList<>();
@@ -91,7 +79,9 @@ public class TestController extends BaseController {
         return responseEntity;
     }
 
-    /**测试自定义方法分页*/
+    /**
+     * 测试自定义方法分页
+     */
     @GetMapping("/custom/page")
     public ResponseEntity testCustomMethodPage() {
         ResponseEntity response = getResponse();
@@ -103,7 +93,9 @@ public class TestController extends BaseController {
         return response;
     }
 
-    /**测试queryWrapper*/
+    /**
+     * 测试queryWrapper
+     */
     @GetMapping("/queryWrapper")
     public ResponseEntity testQueryWrapper() {
         QueryWrapper queryWrapper = new QueryWrapper();
@@ -113,36 +105,67 @@ public class TestController extends BaseController {
         return getResponse().setValue(list);
     }
 
-//    /**测试update*/
-//    @GetMapping("/update2")
-//    public ResponseEntity testUpdate2() {
-//       QueryWrapper queryWrapper = new QueryWrapper();
-//       queryWrapper.eq("id", 1);
-//        Test test = testMapper.selectById(1);
-//        test.setAge(13);
-//        testMapper.update(test, queryWrapper);
-//       return getResponse();
-//    }
-//
-//    /**测试update*/
-//    @GetMapping("/updateWrapper")
-//    public ResponseEntity testUpdateWrapper() {
-//        QueryWrapper queryWrapper = new QueryWrapper();
-//        queryWrapper.eq("id", 1);
-//        Test test = testMapper.selectById(1);
-//        test.setAge(13);
-//        testMapper.update(test, queryWrapper);
-//        return getResponse();
-//    }
+    /**
+     * 测试lambdaWrapper
+     */
+    @GetMapping("/queryLambdaWrapper")
+    public ResponseEntity testLambdaWrapper() {
+        LambdaQueryWrapper<Test> lambda = new QueryWrapper<Test>().lambda();
+        lambda.select(Test::getId, Test::getName, Test::getAge)
+                .eq(Test::getName, "222");
+        List<Test> tests = testMapper.selectList(lambda);
+        return getResponse().setValue(tests);
+    }
 
-//    /**测试lambdaWrapper*/
-//    @GetMapping("/updateWrapper")
-//    public ResponseEntity testLambdaWrapper() {
-//       QueryWrapper queryWrapper = new QueryWrapper<>();
-//       queryWrapper.lambda()
-//               .select(Test::getId, Test::getName)
-//               .
-//        return getResponse();
-//    }
+    /**
+     * 测试lambdaWrapper2
+     */
+    @GetMapping("/queryLambdaWrapper2")
+    public ResponseEntity testLambdaWrapper2() {
+        LambdaQueryWrapper<Test> lambda = new QueryWrapper<Test>().lambda();
+        lambda.select(Test::getId, Test::getName, Test::getAge)
+                .eq(Test::getName, "222")
+                .or(l -> l.gt(Test::getAge, 2));
+        List<Test> tests = testMapper.selectList(lambda);
+        return getResponse().setValue(tests);
+    }
+
+    /**
+     * 测试lambdaWrapper3
+     */
+    @GetMapping("/queryLambdaWrapper3")
+    public ResponseEntity testLambdaWrapper3() {
+        LambdaQueryWrapper<Test> lambda = new QueryWrapper<Test>().lambda();
+        lambda.select(Test::getId, Test::getName, Test::getAge)
+                .gt(Test::getAge, 12)
+                .and(l -> l.lt(Test::getAge, 36));
+        List<Test> tests = testMapper.selectList(lambda);
+        return getResponse().setValue(tests);
+    }
+
+
+    //====================测试service里的方法=============================
+
+    /**
+     * 测试使用updateWrapper修改
+     * */
+    @GetMapping("/updateWrapper")
+    public ResponseEntity test1() {
+        UpdateWrapper<Test> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("age", 55);
+        updateWrapper.eq("id", 1);
+        testService.update(updateWrapper);
+        return getResponse();
+    }
+
+    /**
+     * 测试链式查询
+     * */
+    @GetMapping("/chain")
+    public ResponseEntity test2() {
+        Test test = testService.lambdaQuery()
+                .eq(Test::getId, 1).one();
+        return getResponse().setValue(test);
+    }
 
 }

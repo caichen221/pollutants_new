@@ -48,7 +48,7 @@ public class TestBatchController {
 
     @GetMapping("/t2")
     public Map t2() throws SQLException {
-        return dynamicMapper.selectOne("select id as id from test");
+        return dynamicMapper.selectOneBySql("select id as id from test");
     }
 
     @GetMapping("/t3")
@@ -56,7 +56,7 @@ public class TestBatchController {
         ArrayList<String> stringArrayList = new ArrayList<String>();
         stringArrayList.add("insert into test values('6')");
         stringArrayList.add("insert into test values('7')");
-        dynamicMapper.batch(stringArrayList);
+        dynamicMapper.batchBySql(stringArrayList);
     }
 
 //    @GetMapping("/t4")

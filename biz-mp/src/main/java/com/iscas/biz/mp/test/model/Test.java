@@ -10,7 +10,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
-@TableName(value = "test", excludeProperty = {"realName"}, resultMap = "BaseResultMap", autoResultMap = true)
+@TableName(value = "test", excludeProperty = {"realName"}/*, resultMap = "BaseResultMap", autoResultMap = true*/)
 public class Test {
     @TableId(type = IdType.AUTO)
     private Integer id;

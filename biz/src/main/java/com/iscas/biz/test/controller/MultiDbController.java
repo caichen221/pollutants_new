@@ -37,7 +37,7 @@ public class MultiDbController {
     @GetMapping("/t2")
     @Transactional
     public ResponseEntity t2() {
-        final List select = dynamicMapper.select("select * from user");
+        final List select = dynamicMapper.selectBySql("select * from user");
         return new ResponseEntity();
     }
 

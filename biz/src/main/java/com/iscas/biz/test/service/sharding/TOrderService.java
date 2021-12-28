@@ -40,7 +40,7 @@ public class TOrderService {
         for (int i = 100; i < 200; i++) {
             String sql = String.format("insert into t_order(order_id, user_id, order_name, order_desc) values (%d, %d, 'order%d', 'order desc%d')",
                     i + 1, threadLocalRandom.nextInt(200), i + 1, i + 1);
-            dynamicMapper.insert(sql);
+            dynamicMapper.insertBySql(sql);
         }
 
     }

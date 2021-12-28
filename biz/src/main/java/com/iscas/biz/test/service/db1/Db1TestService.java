@@ -19,11 +19,11 @@ public class Db1TestService {
     private DynamicMapper dynamicMapper;
 
     public void test() {
-        dynamicMapper.insert("insert into test_mp_ar(name) values('111')");
+        dynamicMapper.insertBySql("insert into test_mp_ar(name) values('111')");
     }
 
     public boolean test2() {
-        dynamicMapper.insert("insert into ws_data(type) values('BUSINESS')");
+        dynamicMapper.insertBySql("insert into ws_data(type) values('BUSINESS')");
         return true;
     }
 }

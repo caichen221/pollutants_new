@@ -34,13 +34,13 @@ public class TestSearchLargeData {
             sql = String.format(sql, i);
             sqls.add(sql);
         }
-        dynamicMapper.batch(sqls);
+        dynamicMapper.batchBySql(sqls);
     }
 
     @GetMapping("/getLargeData")
     public void getLargeData() {
         String sql = "select * from test";
-        dynamicMapper.selectLargeData(sql, new ResultHandler<Map>() {
+        dynamicMapper.selectLargeDataBySql(sql, new ResultHandler<Map>() {
             @Override
             public void handleResult(ResultContext<? extends Map> resultContext) {
                 Map resultObject = resultContext.getResultObject();

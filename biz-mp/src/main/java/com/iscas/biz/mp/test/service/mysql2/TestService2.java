@@ -22,6 +22,6 @@ public class TestService2 {
     private DynamicMapper dynamicMapper;
 
     public List<Map> getIds() {
-        return dynamicMapper.select("select * from alg");
+        return dynamicMapper.selectBySql("select * from alg");
     }
 }
