@@ -2,13 +2,17 @@ package com.iscas.base.biz.util;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,12 +41,12 @@ public class AuthUtils {
         //如果token不为null,校验token
         String username = null;
         try {
-            Map<String, Claim> clainMap = JWTUtils.verifyToken(token);
+            Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
             if (username == null) {
                 throw new ValidTokenException("token 校验失败");
             }
-        } catch (ValidTokenException | UnsupportedEncodingException e) {
+        } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
 //        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);

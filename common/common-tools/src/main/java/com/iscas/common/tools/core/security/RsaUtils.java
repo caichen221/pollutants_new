@@ -99,7 +99,7 @@ public class RsaUtils {
      * @throws
      * @return java.security.PublicKey
      */
-    private static PublicKey string2PublicKey(String pubStr) throws Exception{
+    public static PublicKey string2PublicKey(String pubStr) throws Exception{
         byte[] keyBytes = base642Byte(pubStr);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -116,7 +116,7 @@ public class RsaUtils {
      * @throws
      * @return java.security.PrivateKey
      */
-    private static PrivateKey string2PrivateKey(String priStr) throws Exception{
+    public static PrivateKey string2PrivateKey(String priStr) throws Exception{
         byte[] keyBytes = base642Byte(priStr);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");

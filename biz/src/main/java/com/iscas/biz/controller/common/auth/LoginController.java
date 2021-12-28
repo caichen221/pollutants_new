@@ -80,8 +80,8 @@ public class LoginController extends BaseController implements Constants {
     public ResponseEntity login(HttpServletResponse response, @RequestBody @LoginConstraint Map<String,String> user) throws Exception {
         ResponseEntity responseEntity = new ResponseEntity();
         responseEntity.setMessage("登录成功");
-        authService.loginHandler(response,  user,
-                responseEntity, ((Long) tokenProps.getExpire().toMinutes()).intValue(), tokenProps.getCookieExpire());
+        authService.loginHandler(response,  user, responseEntity,
+                ((Long) tokenProps.getExpire().toMinutes()).intValue(), tokenProps.getCookieExpire());
         return responseEntity;
     }
 }

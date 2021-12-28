@@ -24,6 +24,7 @@ import com.iscas.templet.view.tree.TreeResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -31,6 +32,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -212,12 +215,13 @@ public class AuthServiceImpl extends AbstractAuthService {
         String token = null;
         try {
             String sessionId = UUID.randomUUID().toString();
-            token = JWTUtils.createToken(username, expire);
+            TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
+
+            token = JWTUtils.createToken(username, expire, tokenProps.getCreatorMode());
             //清除以前的TOKEN
             //修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
             authCacheService.rpush("user-token:" + username, token);
 
-            TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
             if (tokenProps.isCookieStore()) {
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
             }
@@ -283,7 +287,7 @@ public class AuthServiceImpl extends AbstractAuthService {
 //                    }
 //                }
 
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
             throw new LoginException("登录时创建token异常", e);
         }

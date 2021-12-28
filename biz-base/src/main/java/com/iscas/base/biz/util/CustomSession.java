@@ -2,6 +2,7 @@ package com.iscas.base.biz.util;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.BaseRuntimeException;
 
@@ -24,7 +25,7 @@ public class CustomSession {
         String token = AuthUtils.getToken();
         String sessionId = null;
         try {
-            Map<String, Claim> stringClaimMap = JWTUtils.verifyToken(token);
+            Map<String, Claim> stringClaimMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             Claim claim = stringClaimMap.get("sessionId");
             sessionId = claim.asString();
         } catch (Exception e) {

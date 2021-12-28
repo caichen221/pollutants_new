@@ -1,9 +1,6 @@
 package com.iscas.base.biz.controller.fileserver;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.iscas.base.biz.service.fileserver.FileServerService;
-import com.iscas.datasong.lib.request.SearchDataRequest;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
@@ -17,12 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URL;
+import java.io.IOException;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * 默认文件上传处理

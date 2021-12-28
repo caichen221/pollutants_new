@@ -2,16 +2,21 @@ package com.iscas.biz.service.common;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.config.stomp.UserAccessor;
 import com.iscas.base.biz.model.auth.User;
 import com.iscas.base.biz.util.JWTUtils;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.exception.ValidTokenException;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Map;
 
@@ -41,12 +46,13 @@ public class TokenVerifyUserAccessor implements UserAccessor {
                 } else {
                     String username = null;
                     try {
-                        Map<String, Claim> claimMap = JWTUtils.verifyToken(token);
+                        TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
+                        Map<String, Claim> claimMap = JWTUtils.verifyToken(token, tokenProps.getCreatorMode());
                         username = claimMap.get("username").asString();
                         if (username == null) {
                             throw new RuntimeException("websocket认证失败");
                         }
-                    } catch (UnsupportedEncodingException | ValidTokenException e) {
+                    } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
                         e.printStackTrace();
                         throw new RuntimeException("websocket认证失败", e);
                     }

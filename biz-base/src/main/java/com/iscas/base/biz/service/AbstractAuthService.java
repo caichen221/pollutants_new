@@ -2,22 +2,20 @@ package com.iscas.base.biz.service;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.model.auth.Menu;
-import com.iscas.base.biz.util.AuthUtils;
-import com.iscas.templet.exception.AuthConfigException;
-import com.iscas.templet.exception.LoginException;
-import com.iscas.templet.exception.ValidTokenException;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
+import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.base.biz.util.JWTUtils;
-import com.iscas.common.web.tools.cookie.CookieUtils;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.LoginException;
+import com.iscas.templet.exception.ValidTokenException;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +44,7 @@ public abstract class AbstractAuthService implements Constants {
 
     public String verifyToken(String token) throws ValidTokenException {
         try {
-            Map<String, Claim> clainMap = JWTUtils.verifyToken(token);
+            Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             String username = clainMap.get("username").asString();
             if (username == null) {
                 throw new ValidTokenException("token 校验失败");
