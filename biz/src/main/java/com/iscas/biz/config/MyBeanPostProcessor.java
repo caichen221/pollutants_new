@@ -27,6 +27,11 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
         return bean;
     }
 
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
     private void handleServerEndPoint(Object bean) {
         //获取serverEndpoint
         ServerEndpoint serverEndpoint = AnnotationUtils.findAnnotation(bean.getClass(), ServerEndpoint.class);

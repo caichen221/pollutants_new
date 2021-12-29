@@ -12,6 +12,7 @@ import com.iscas.biz.mp.test.model.Test;
 import com.iscas.biz.mp.test.service.impl.TestService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/test/mybatis/plus")
 @ConditionalOnMybatis
+@RequiredArgsConstructor
 public class TestController extends BaseController {
 
-    @Autowired
-    private TestMapper testMapper;
+//    @Autowired
+    private final TestMapper testMapper;
 
-    @Autowired
-    private TestService testService;
+//    @Autowired
+    private final TestService testService;
 
-    @Autowired
-    private DynamicMapper dynamicMapper;
+//    @Autowired
+    private final DynamicMapper dynamicMapper;
 
     /**
      * 测试分页查询

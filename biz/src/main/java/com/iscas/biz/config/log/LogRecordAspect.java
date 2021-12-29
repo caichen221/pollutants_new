@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
- * 角色aop
+ * aop
  *
  * @author zhuquanwen
  * @vesion 1.0

@@ -1,8 +1,6 @@
 package com.iscas.biz.config.ws;
 
 
-import com.iscas.biz.config.log.LogRecord;
-import com.iscas.biz.config.log.OperateType;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -16,6 +14,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 @ServerEndpoint("/websocket")
 @Component
+//@Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
 public class WebsocketBean {
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;

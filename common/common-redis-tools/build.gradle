@@ -15,15 +15,22 @@ plugins {
 //}
 
 dependencies {
+
+    //jedis
     api group: 'redis.clients', name: 'jedis', version:"${jedisVersion}"
-    // https://mvnrepository.com/artifact/com.alibaba/fastjson
+
+    //fastjson
     api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
 
-    // https://mvnrepository.com/artifact/io.lettuce/lettuce-core
+    //lettuce
     api group: 'io.lettuce', name: 'lettuce-core', version: "${lettuceCoreVersion}"
 
     //hutool-all
     api "cn.hutool:hutool-all:${htoolVersion}"
+
+    //jrejson
+    api group: 'com.redislabs', name: 'jrejson', version: "${jrejsonVersion}"
+
 
 
 }
