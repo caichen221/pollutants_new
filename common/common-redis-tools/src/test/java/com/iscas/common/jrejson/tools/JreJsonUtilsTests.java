@@ -98,6 +98,56 @@ public class JreJsonUtilsTests {
         System.out.println(client.get("key2", List.class, new Path(".d")));
         System.out.println(client.get("key2", Integer.class, new Path(".d[0]")));
 
+        //向集合追加值
+        client.arrAppend("key2", new Path(".d"),  7, 8, 9);
+        System.out.println(client.get("key2", List.class, new Path(".d")));
+
+        //向集合插入值
+        client.arrInsert("key2", new Path(".d"), 2L, 100);
+        System.out.println(client.get("key2", List.class, new Path(".d")));
+
+        //删除一个值
+        client.del("key2", new Path(".d[2]"));
+        System.out.println(client.get("key2", List.class, new Path(".d")));
+
+        //删除一个key
+        client.set("key3", "xxxx", Path.ROOT_PATH);
+        System.out.println(client.get("key3", String.class, Path.ROOT_PATH));
+        client.del("key3");
+        System.out.println(client.get("key3", String.class, Path.ROOT_PATH));
+
+        //查询集合索引
+        Long index = client.arrIndex("key2", new Path(".d"), 1);
+        System.out.println(index);
+
+        //获取集合长度
+        Long len = client.arrLen("key2", new Path(".d"));
+        System.out.println(len);
+
+        //从集合中pop出一个数
+        Integer popVal = client.arrPop("key2", Integer.class, new Path(".d"));
+        System.out.println(popVal);
+        System.out.println(client.get("key2", List.class, new Path(".d")));
+
+        Integer popVal2 = client.arrPop("key2", Integer.class, new Path(".d"), 0L);
+        System.out.println(popVal2);
+        System.out.println(client.get("key2", List.class, new Path(".d")));
+
+        //保留集合中start-end的数据，其他的删除
+        Long num = client.arrTrim("key2", new Path(".d"), 0L, 3L);
+        System.out.println(num);
+        System.out.println(client.get("key2", List.class, new Path(".d")));
+
+        //获取多个值
+        client.set("key3", List.of("java", "golang"));
+        List<Object> mgetRes = client.mget(Object.class, "key2", "key3");
+        System.out.println(mgetRes);
+
+        Class<?> key2Class = client.type("key2");
+        System.out.println(key2Class);
+
+        Class<?> key2Class2 = client.type("key2", new Path(".d"));
+        System.out.println(key2Class2);
     }
 
 }
