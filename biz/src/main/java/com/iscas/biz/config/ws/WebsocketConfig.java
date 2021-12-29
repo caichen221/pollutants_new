@@ -1,4 +1,4 @@
-package com.iscas.biz.config;
+package com.iscas.biz.config.ws;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

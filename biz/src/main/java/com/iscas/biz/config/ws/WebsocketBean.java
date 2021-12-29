@@ -1,6 +1,8 @@
-package com.iscas.biz.config;
+package com.iscas.biz.config.ws;
 
 
+import com.iscas.biz.config.log.LogRecord;
+import com.iscas.biz.config.log.OperateType;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
