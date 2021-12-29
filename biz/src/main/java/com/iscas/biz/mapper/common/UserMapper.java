@@ -1,6 +1,7 @@
 package com.iscas.biz.mapper.common;
 
 import com.iscas.biz.domain.common.User;
+import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
@@ -11,9 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface UserMapper {
+public interface UserMapper extends DynamicMapper<User> {
 
-    User selectByPrimaryKey(Integer userId);
     void updatePwd(User user);
 
     @Select("select t1.user_id, t2.role_id, t3.role_name from user_info t1, user_role t2, role t3 where t1.user_id = t2.user_id and t2.role_id = t3.role_id")

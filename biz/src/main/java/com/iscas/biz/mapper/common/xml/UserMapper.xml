@@ -13,11 +13,6 @@
     <result column="user_update_time" jdbcType="TIMESTAMP" property="userUpdateTime" />
   </resultMap>
 
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-    select *
-    from user_info
-    where user_id = #{userId,jdbcType=INTEGER}
-  </select>
 
   <update id="updatePwd" parameterType="com.iscas.biz.domain.common.User">
     update user_info set user_pwd = #{userPwd,jdbcType=VARCHAR}

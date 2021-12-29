@@ -1,5 +1,6 @@
 package com.iscas.biz.service.common;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.biz.domain.common.Opration;
 import com.iscas.biz.mapper.common.OprationMapper;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -21,15 +22,10 @@ import java.util.stream.Collectors;
  */
 @Service
 @ConditionalOnMybatis
-public class OprationService {
-    private final OprationMapper oprationMapper;
-
-    public OprationService(OprationMapper oprationMapper) {
-        this.oprationMapper = oprationMapper;
-    }
+public class OprationService extends ServiceImpl<OprationMapper, Opration> {
 
     public List<ComboboxData<Opration>> combobox() {
-        List<Opration> oprations = oprationMapper.selectByExample(null);
+        List<Opration> oprations = this.list();
         List<ComboboxData<Opration>> comboboxDatas = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(oprations)) {
             comboboxDatas = oprations.stream().map(opration -> new ComboboxData<Opration>()

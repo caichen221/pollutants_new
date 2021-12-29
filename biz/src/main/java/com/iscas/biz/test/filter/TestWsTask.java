@@ -1,7 +1,7 @@
 package com.iscas.biz.test.filter;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -48,10 +48,11 @@ public class TestWsTask {
         wsService.p2p(wsData2);
 
         //
-        WsDataExample wsDataExample = new WsDataExample();
-        wsDataExample.createCriteria().andAckEqualTo(false);
+//        WsDataExample wsDataExample = new WsDataExample();
+//        wsDataExample.createCriteria().andAckEqualTo(false);
         if (getWsDataMapper() != null) {
-            long l = getWsDataMapper().countByExample(wsDataExample);
+            long l = getWsDataMapper().selectCount(new QueryWrapper<com.iscas.biz.domain.common.WsData>().lambda()
+                    .eq(com.iscas.biz.domain.common.WsData::getAck, false));
             if (l < 200) {
                 //如果库里有一些未回复的数据，就不再生成了，防止库爆了
                 WsData wsData3 = new WsData(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS,

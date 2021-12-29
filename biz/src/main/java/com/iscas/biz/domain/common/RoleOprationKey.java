@@ -1,5 +1,10 @@
 package com.iscas.biz.domain.common;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+@TableName("role_opration")
+@Data
 public class RoleOprationKey {
     private Integer roleId;
 
@@ -12,19 +17,4 @@ public class RoleOprationKey {
         this.opId = opId;
     }
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public Integer getOpId() {
-        return opId;
-    }
-
-    public void setOpId(Integer opId) {
-        this.opId = opId;
-    }
 }

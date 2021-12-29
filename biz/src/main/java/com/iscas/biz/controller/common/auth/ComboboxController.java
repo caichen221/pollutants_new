@@ -1,4 +1,4 @@
-package com.iscas.biz.controller.common;
+package com.iscas.biz.controller.common.auth;
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.OprationService;

@@ -1,5 +1,10 @@
 package com.iscas.biz.domain.common;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+@TableName("role_menu")
+@Data
 public class RoleMenuKey {
     private Integer roleId;
 
@@ -12,19 +17,4 @@ public class RoleMenuKey {
         this.menuId = menuId;
     }
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public Integer getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
-    }
 }

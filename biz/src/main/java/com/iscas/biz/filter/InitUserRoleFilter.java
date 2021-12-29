@@ -1,5 +1,6 @@
 package com.iscas.biz.filter;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
@@ -62,9 +63,9 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
                     .setUserPwd(MD5Utils.saltMD5(superUserDefaultPwd));
             userMapper.insertUser(user);
         }
-        RoleExample roleExample = new RoleExample();
-        roleExample.createCriteria().andRoleNameEqualTo(Constants.SUPER_ROLE_KEY);
-        Role role = Optional.ofNullable(roleMapper.selectByExample(roleExample))
+//        RoleExample roleExample = new RoleExample();
+//        roleExample.createCriteria().andRoleNameEqualTo(Constants.SUPER_ROLE_KEY);
+        Role role = Optional.ofNullable(roleMapper.selectList(new QueryWrapper<Role>().lambda().eq(Role::getRoleName, Constants.SUPER_ROLE_KEY)))
                 .map(superRoles -> superRoles.size() == 0 ? null : superRoles.get(0))
                 .orElseGet(() -> {
                     Role rolex = new Role();
@@ -74,10 +75,11 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
                 });
 
         //超级管理员和超级管理员角色关联
-        UserRoleExample userRoleExample = new UserRoleExample();
-        userRoleExample.createCriteria().andUserIdEqualTo(user.getUserId())
-                .andRoleIdEqualTo(role.getRoleId());
-        userRoleMapper.deleteByExample(userRoleExample);
+//        UserRoleExample userRoleExample = new UserRoleExample();
+//        userRoleExample.createCriteria().andUserIdEqualTo(user.getUserId())
+//                .andRoleIdEqualTo(role.getRoleId());
+//        userRoleMapper.deleteByExample(userRoleExample);
+        userRoleMapper.delete(new QueryWrapper<UserRoleKey>().lambda().eq(UserRoleKey::getUserId, user.getUserId()));
         UserRoleKey userRoleKey = new UserRoleKey();
         userRoleKey.setRoleId(role.getRoleId());
         userRoleKey.setUserId(user.getUserId());

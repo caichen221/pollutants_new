@@ -1,7 +1,7 @@
 package com.iscas.biz.service.common;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.biz.domain.common.WsDataExample;
 import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -71,7 +71,7 @@ public class WsService {
     }
 
     public void retry(Integer id) {
-        com.iscas.biz.domain.common.WsData wsData = getWsDataMapper().selectByPrimaryKey(id);
+        com.iscas.biz.domain.common.WsData wsData = getWsDataMapper().selectById(id);
         WsData wsData1 = com.iscas.biz.domain.common.WsData.convert(wsData);
         p2p(wsData1);
     }
@@ -82,14 +82,16 @@ public class WsService {
         if (getWsDataMapper() == null) {
             return;
         }
-        WsDataExample dataExample = new WsDataExample();
-        dataExample.createCriteria().andMsgIdEqualTo(msgId);
-        List<com.iscas.biz.domain.common.WsData> wsDatas = getWsDataMapper().selectByExample(dataExample);
+//        WsDataExample dataExample = new WsDataExample();
+//        dataExample.createCriteria().andMsgIdEqualTo(msgId);
+//        List<com.iscas.biz.domain.common.WsData> wsDatas = getWsDataMapper().selectByExample(dataExample);
+        List<com.iscas.biz.domain.common.WsData> wsDatas = getWsDataMapper().selectList(new QueryWrapper<com.iscas.biz.domain.common.WsData>()
+                .lambda().eq(com.iscas.biz.domain.common.WsData::getMsgId, msgId));
         if (wsDatas != null) {
             for (com.iscas.biz.domain.common.WsData wsData : wsDatas) {
                 wsData.setAck(true);
                 try {
-                    getWsDataMapper().updateByPrimaryKey(wsData);
+                    getWsDataMapper().updateById(wsData);
                 } catch (Exception e) {
                     log.warn("消息:{}不存在", msgId);
 //                    e.printStackTrace();

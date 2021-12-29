@@ -3,9 +3,11 @@ package com.iscas.base.biz.util;
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -69,10 +71,15 @@ public class AuthUtils {
      * 先从header中获取，如果没有从cookie中获取
      */
     public static String getToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(Constants.TOKEN_KEY))
+        String token = Optional.ofNullable(request.getHeader(Constants.TOKEN_KEY))
                 .orElse(Optional.ofNullable(CookieUtils.getCookieByName(request, Constants.TOKEN_KEY))
                         .map(Cookie::getValue)
                         .orElse(null));
+        //如果有bearer开头，去掉
+        return Optional.ofNullable(token)
+                .filter(t -> t.startsWith(CommonConstant.BEARER))
+                .map(t -> StringUtils.substringAfter(t, CommonConstant.BEARER).trim())
+                .orElse(token);
     }
 
 }

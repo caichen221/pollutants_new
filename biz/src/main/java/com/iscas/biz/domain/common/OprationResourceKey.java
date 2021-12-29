@@ -1,23 +1,12 @@
 package com.iscas.biz.domain.common;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+@TableName(value = "opration_resource")
+@Data
 public class OprationResourceKey {
     private Integer opId;
 
     private Integer resourceId;
-
-    public Integer getOpId() {
-        return opId;
-    }
-
-    public void setOpId(Integer opId) {
-        this.opId = opId;
-    }
-
-    public Integer getResourceId() {
-        return resourceId;
-    }
-
-    public void setResourceId(Integer resourceId) {
-        this.resourceId = resourceId;
-    }
 }

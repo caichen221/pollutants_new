@@ -110,7 +110,7 @@ public class MyUserController extends BaseController {
         //先删除缓存
         Integer userId = (Integer) data.get("user_id");
         if (userId != null) {
-            User user = userMapper.selectByPrimaryKey(userId);
+            User user = userMapper.selectById(userId);
             if (user != null) userService.deleteOneUserCache(user.getUserName());
         }
         return userService.edit(data);

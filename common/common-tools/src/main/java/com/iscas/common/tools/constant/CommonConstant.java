@@ -16,4 +16,7 @@ public interface CommonConstant {
 
     /**classpath*/
     String CLASSPATH = "classpath:";
+
+    /**bearer*/
+    String BEARER = "Bearer";
 }

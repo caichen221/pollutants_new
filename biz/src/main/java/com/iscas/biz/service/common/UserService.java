@@ -1,8 +1,7 @@
 package com.iscas.biz.service.common;
 
-import com.iscas.base.biz.model.auth.AuthContext;
-import com.iscas.base.biz.util.AuthContextHolder;
-import com.iscas.base.biz.util.AuthUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.OrgMapper;
@@ -21,7 +20,6 @@ import com.iscas.templet.view.table.TableResponseData;
 import com.iscas.templet.view.table.TableSearchRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -47,7 +45,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @ConditionalOnMybatis
-public class UserService {
+public class UserService extends ServiceImpl<UserMapper, User> {
     @Value("${user_default_pwd:123456}")
     private String userDefaultPwd;
 
@@ -80,7 +78,8 @@ public class UserService {
 
     public ResponseEntity search(TableSearchRequest request, Integer orgId) throws ValidDataException {
         //生成一个附加sql条件
-        List<Org> allOrgs = orgMapper.selectByExample(null);
+//        List<Org> allOrgs = orgMapper.selectByExample(null);
+        List<Org> allOrgs = orgMapper.selectList(null);
         String dynamicSql = null;
         if (orgId != null) {
             //找到组织机构的级联下级组织机构，组织机构主键定义有问题，暂时先这么处理
@@ -207,16 +206,18 @@ public class UserService {
         ResponseEntity responseEntity = tableDefinitionService.saveData(tableIdentity, data, false, null, null);
         //删除原有的此user相关的 user_role中数据，插入新的
         int userId = (int) data.get("user_id");
-        UserRoleExample userRoleExample = new UserRoleExample();
-        userRoleExample.createCriteria().andUserIdEqualTo(userId);
-        userRoleMapper.deleteByExample(userRoleExample);
+//        UserRoleExample userRoleExample = new UserRoleExample();
+//        userRoleExample.createCriteria().andUserIdEqualTo(userId);
+//        userRoleMapper.deleteByExample(userRoleExample);
+        userRoleMapper.delete(new QueryWrapper<UserRoleKey>().lambda().eq(UserRoleKey::getUserId, userId));
 
         insertUserRole(roleIds, userId);
 
         //删除原有的此user相关的 org_user中数据，插入新的
-        OrgUserExample orgUserExample = new OrgUserExample();
-        orgUserExample.createCriteria().andUserIdEqualTo(userId);
-        orgUserMapper.deleteByExample(orgUserExample);
+//        OrgUserExample orgUserExample = new OrgUserExample();
+//        orgUserExample.createCriteria().andUserIdEqualTo(userId);
+//        orgUserMapper.deleteByExample(orgUserExample);
+        orgUserMapper.delete(new QueryWrapper<OrgUserKey>().lambda().eq(OrgUserKey::getUserId, userId));
 
         insertOrgUser(orgIds, userId);
         return responseEntity;

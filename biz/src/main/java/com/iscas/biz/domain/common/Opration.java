@@ -1,45 +1,26 @@
 package com.iscas.biz.domain.common;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class Opration {
+
+    @TableId(type = IdType.AUTO)
     private Integer opId;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String opName;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date opCreateTime;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date opUpdateTime;
 
-    public Integer getOpId() {
-        return opId;
-    }
-
-    public void setOpId(Integer opId) {
-        this.opId = opId;
-    }
-
-    public String getOpName() {
-        return opName;
-    }
-
-    public void setOpName(String opName) {
-        this.opName = opName == null ? null : opName.trim();
-    }
-
-    public Date getOpCreateTime() {
-        return opCreateTime;
-    }
-
-    public void setOpCreateTime(Date opCreateTime) {
-        this.opCreateTime = opCreateTime;
-    }
-
-    public Date getOpUpdateTime() {
-        return opUpdateTime;
-    }
-
-    public void setOpUpdateTime(Date opUpdateTime) {
-        this.opUpdateTime = opUpdateTime;
-    }
 }

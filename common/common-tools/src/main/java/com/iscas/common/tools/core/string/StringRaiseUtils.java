@@ -186,4 +186,11 @@ public class StringRaiseUtils {
         return str;
     }
 
+    /**
+     * 将第一个字符转为小写
+     * */
+    public static String lowerFirst(String str) {
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
 }

@@ -1,5 +1,8 @@
 package com.iscas.biz.service.common;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.*;
 import com.iscas.biz.mapper.common.*;
@@ -7,6 +10,7 @@ import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.ValidatePropDistinctUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
+import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,7 +34,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @ConditionalOnMybatis
-public class MenuService {
+public class MenuService extends ServiceImpl<MenuMapper, Menu> {
     private final RoleMapper roleMapper;
     private final MenuMapper menuMapper;
     private final RoleMenuMapper roleMenuMapper;
@@ -48,7 +52,7 @@ public class MenuService {
     }
 
     public TreeResponseData<Menu> getTree() {
-        List<Menu> menus = menuMapper.selectByExample(null);
+        List<Menu> menus = this.list();
         TreeResponseData<Menu> root = new TreeResponseData<Menu>()
                 .setId("-1")
                 .setValue("root")
@@ -72,8 +76,8 @@ public class MenuService {
     }
 
     private Map<Integer, List<TreeResponseData<Menu>>> getChildMenus(List<Menu> menus) {
-        List<RoleMenuKey> roleMenuKeys = roleMenuMapper.selectByExample(null);
-        List<Role> allRoles = roleMapper.selectByExample(null);
+        List<RoleMenuKey> roleMenuKeys = roleMenuMapper.selectList(null);
+        List<Role> allRoles = roleMapper.selectList(null);
         Map<Integer, List<Role>> menuRoleMap = new HashMap<>();
         Map<Integer, Role> roleMap = new HashMap<>();
         if (CollectionUtils.isNotEmpty(allRoles)) {
@@ -145,11 +149,11 @@ public class MenuService {
     })
     public int addMenu(Menu menu) throws ValidDataException {
         AssertObjUtils.assertNull(menu.getMenuId(), "请求参数有误，menuId不能为空");
-        ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(DynamicMapper.class), "menu", "menu_name", menu.getMenuName());
+        ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(StringRaiseUtils.lowerFirst(DynamicMapper.class.getSimpleName())), "menu", "menu_name", menu.getMenuName());
         Date date = new Date();
         menu.setMenuCreateTime(date)
                 .setMenuUpdateTime(date);
-        int result = menuMapper.insert(menu);
+        this.save(menu);
         List<Integer> roleIds = menu.getRoleIds();
         List<Integer> opIds = menu.getOprationIds();
 
@@ -159,7 +163,7 @@ public class MenuService {
         //配置权限标识
         insertOprations(opIds, menu);
 
-        return result;
+        return 1;
     }
 
     @Caching(evict = {
@@ -172,23 +176,26 @@ public class MenuService {
         AssertObjUtils.assertNotNull(menu.getMenuId(), "请求参数有误，menuId不能为空");
         Date date = new Date();
         menu.setMenuUpdateTime(date);
-        int result = menuMapper.updateByPrimaryKey(menu);
+        this.updateById(menu);
 
         //配置角色
         List<Integer> roleIds = menu.getRoleIds();
-        RoleMenuExample roleMenuExample = new RoleMenuExample();
-        roleMenuExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
-        roleMenuMapper.deleteByExample(roleMenuExample);
+//        RoleMenuExample roleMenuExample = new RoleMenuExample();
+//        roleMenuExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
+//        roleMenuMapper.deleteByExample(roleMenuExample);
+        roleMenuMapper.delete(new QueryWrapper<RoleMenuKey>().lambda().eq(RoleMenuKey::getMenuId, menu.getMenuId()));
         insertRoleIds(roleIds, menu);
 
         //配置权限标识
         List<Integer> opIds = menu.getOprationIds();
-        MenuOprationExample menuOprationExample = new MenuOprationExample();
-        menuOprationExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
-        menuOprationMapper.deleteByExample(menuOprationExample);
+//        MenuOprationExample menuOprationExample = new MenuOprationExample();
+//        menuOprationExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
+//        menuOprationMapper.deleteByExample(menuOprationExample);
+        LambdaQueryWrapper<MenuOprationKey> queryWrapper = new QueryWrapper<MenuOprationKey>().lambda().eq(MenuOprationKey::getMenuId, menu.getMenuId());
+        menuOprationMapper.delete(queryWrapper);
         insertOprations(opIds, menu);
 
-        return result;
+        return 1;
     }
     private void insertRoleIds(List<Integer> roleIds, Menu menu) {
         if (CollectionUtils.isNotEmpty(roleIds)) {
@@ -218,6 +225,8 @@ public class MenuService {
             @CacheEvict(value = "auth", key = "'role_map'")
     })
     public int deleteMenu(Integer menuId) {
-        return menuMapper.deleteByPrimaryKey(menuId);
+//        return menuMapper.deleteByPrimaryKey(menuId);
+        this.removeById(menuId);
+        return 1;
     }
 }

@@ -80,7 +80,7 @@ public class AuthServiceImpl extends AbstractAuthService {
     @Override
     public Map<String, Url> getUrls() {
         log.debug("------读取url信息------");
-        return Optional.ofNullable(resourceMapper.selectByExample(null))
+        return Optional.ofNullable(resourceMapper.selectList(null))
                 .map(resources -> resources.stream().map(Lambdas.wrapperFunction(resource -> new Url().setKey(String.valueOf(resource.getResourceId()))
                         .setName(resource.getResourceUrl()))).collect(Collectors.toMap(Url::getKey, url -> url)))
                 .orElse(Map.of());
@@ -89,7 +89,7 @@ public class AuthServiceImpl extends AbstractAuthService {
     @Cacheable(value = "auth", key = "'menus'")
     @Override
     public List<Menu> getMenus() {
-        return Optional.ofNullable(menuMapper.selectByExample(null))
+        return Optional.ofNullable(menuMapper.selectList(null))
                 .map(dbMenus -> dbMenus.stream().map(Lambdas.wrapperFunction(m ->
                         new Menu().setName(m.getMenuName()).setKey(String.valueOf(m.getMenuId())))).collect(Collectors.toList()))
                 .orElse(List.of());
@@ -120,7 +120,7 @@ public class AuthServiceImpl extends AbstractAuthService {
     public Map<String, Role> getAuth() {
         log.debug("------读取角色信息------");
         Map<String, Role> result = new HashMap<>(2 << 6);
-        List<com.iscas.biz.domain.common.Role> commonRoles = roleMapper.selectByExample(null);
+        List<com.iscas.biz.domain.common.Role> commonRoles = roleMapper.selectList(null);
         Map<String, Url> urls = getUrls();
         List<Map> menuRoles = menuMapper.selectMenuRole();
         List<Map> roleResources = roleMapper.selectRoleResource();

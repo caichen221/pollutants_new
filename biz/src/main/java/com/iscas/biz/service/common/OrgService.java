@@ -1,8 +1,9 @@
 package com.iscas.biz.service.common;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.domain.common.Org;
-import com.iscas.biz.domain.common.OrgRoleExample;
 import com.iscas.biz.domain.common.OrgRoleKey;
 import com.iscas.biz.domain.common.Role;
 import com.iscas.biz.mapper.common.OrgMapper;
@@ -12,6 +13,7 @@ import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.util.ValidatePropDistinctUtils;
 import com.iscas.common.tools.assertion.AssertObjUtils;
+import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @ConditionalOnMybatis
-public class OrgService {
+public class OrgService extends ServiceImpl<OrgMapper, Org> {
     private final OrgMapper orgMapper;
     private final OrgRoleMapper orgRoleMapper;
     private final RoleMapper roleMapper;
@@ -48,7 +50,8 @@ public class OrgService {
     }
 
     public TreeResponseData<Org> getTree() {
-        List<Org> orgs = orgMapper.selectByExampleWithBLOBs(null);
+//        List<Org> orgs = orgMapper.selectByExampleWithBLOBs(null);
+        List<Org> orgs = this.list();
         TreeResponseData<Org> root = new TreeResponseData<Org>()
                 .setId("-1")
                 .setValue("root")
@@ -72,8 +75,9 @@ public class OrgService {
     }
 
     private Map<Integer, List<TreeResponseData<Org>>> getChildOrgs(List<Org> orgs) {
-        List<OrgRoleKey> orgRoleKeys = orgRoleMapper.selectByExample(null);
-        List<Role> roles = roleMapper.selectByExample(null);
+//        List<OrgRoleKey> orgRoleKeys = orgRoleMapper.selectByExample(null);
+        List<OrgRoleKey> orgRoleKeys = orgRoleMapper.selectList(null);
+        List<Role> roles = roleMapper.selectList(null);
         Map<Integer, List<Role>> orgRoleMap = new HashMap<>();
         Map<Integer, Role> roleMap = new HashMap<>();
         if (CollectionUtils.isNotEmpty(roles)) {
@@ -121,10 +125,10 @@ public class OrgService {
     })
     public int addOrg(Org org) throws ValidDataException {
         AssertObjUtils.assertNull(org.getOrgId(), "请求参数有误，orgId必须为空");
-        ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(DynamicMapper.class), "org", "org_name", org.getOrgName());
+        ValidatePropDistinctUtils.validateFromMysql(SpringUtils.getBean(StringRaiseUtils.lowerFirst(DynamicMapper.class.getSimpleName())), "org", "org_name", org.getOrgName());
         Date date = new Date();
         org.setOrgCreateTime(date).setOrgUpdateTime(date);
-        int result = orgMapper.insert(org);
+        this.save(org);
         List<Integer> roleIds = org.getRoleIds();
         //配置角色
         if (CollectionUtils.isNotEmpty(roleIds)) {
@@ -135,7 +139,7 @@ public class OrgService {
                 orgRoleMapper.insert(orgRoleKey);
             }
         }
-        return result;
+        return 1;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
@@ -148,12 +152,14 @@ public class OrgService {
         AssertObjUtils.assertNotNull(org.getOrgId(), "请求参数有误，orgId不能为空");
         Date date = new Date();
         org.setOrgUpdateTime(date);
-        int result = orgMapper.updateByPrimaryKeyWithBLOBs(org);
+//        int result = orgMapper.updateByPrimaryKeyWithBLOBs(org);
+        this.updateById(org);
         //配置角色
         List<Integer> roleIds = org.getRoleIds();
-        OrgRoleExample orgRoleExample = new OrgRoleExample();
-        orgRoleExample.createCriteria().andOrgIdEqualTo(org.getOrgId());
-        orgRoleMapper.deleteByExample(orgRoleExample);
+//        OrgRoleExample orgRoleExample = new OrgRoleExample();
+//        orgRoleExample.createCriteria().andOrgIdEqualTo(org.getOrgId());
+//        orgRoleMapper.deleteByExample(orgRoleExample);
+        orgRoleMapper.delete(new QueryWrapper<OrgRoleKey>().lambda().eq(OrgRoleKey::getOrgId, org.getOrgId()));
         if (CollectionUtils.isNotEmpty(roleIds)) {
             for (Integer roleId : roleIds) {
                 OrgRoleKey orgRoleKey = new OrgRoleKey();
@@ -162,10 +168,11 @@ public class OrgService {
                 orgRoleMapper.insert(orgRoleKey);
             }
         }
-        return result;
+        return 1;
     }
 
     public int deleteOrg(Integer orgId) {
-        return orgMapper.deleteByPrimaryKey(orgId);
+        this.removeById(orgId);
+        return 1;
     }
 }

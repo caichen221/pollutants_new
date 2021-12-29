@@ -1,23 +1,14 @@
 package com.iscas.biz.domain.common;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+@TableName(value = "menu_opration")
+@Data
 public class MenuOprationKey {
+
     private Integer menuId;
 
     private Integer opId;
 
-    public Integer getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
-    }
-
-    public Integer getOpId() {
-        return opId;
-    }
-
-    public void setOpId(Integer opId) {
-        this.opId = opId;
-    }
 }
