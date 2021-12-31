@@ -44,3 +44,22 @@
 -----------------------------------------------
 - 2.0.2-20211221-2
   - 1、优化mybatis配置
+
+-----------------------------------------------
+- 2.0.2-20211231-1
+  - 1、添加OpenAuth客户端
+  - 2、在@ComponentScan注解中排除了测试包的扫描
+  - 3、移动了DynamicMapper类的位置，删除了DynamicMapper中的弃用方法
+  - 4、DynamicMapper中修改了insert、delete、select等直接运行SQL的方法，为了避免冲突，添加了BySql后缀
+  - 5、扩展了Mybatis-Plus的通用方法，添加了fetchByStream和truncate方法，可在Mapper层继承DynamicMapper使用(替换继承BaseMapper)
+  - 6、修改配置文件内mapper.xml路径配置多个只有一个生效的BUG
+  - 7、添加执行初始化schema脚本的功能，在数据源处spring.datasource.druid.xxx.schema配置脚本和开关
+  - 8、修复了一些配置文件内Mybatis-Plus的配置项不生效的BUG，Mybatis-Plus配置名称做了统一
+  - 9、JWT生成Token方式添加了rsa的实现(为了以后兼容Istio网关)，通过配置文件内的配置选项切换生成方式
+  - 10、升级了Mybatis-Plus等一些第三方依赖的版本
+  - 11、添加了RedisJson操作依赖和测试
+  - 12、将权限相关的Mapper.XML实现改为了Mybatis-Plus方式
+  - 13、添加数据配置Validation等配置，防止mysql8小时断开连接
+  - 14、修改数据源默认切面表达式支持切到配置的子包
+  - 15、去除了CustomCorsFilter中无用的配置
+  - 16、修改的数据源切面，使第一个数据源的包也注册到aop中
