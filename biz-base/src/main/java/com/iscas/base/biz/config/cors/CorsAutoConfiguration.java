@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableConfigurationProperties(CorsProps.class)
@@ -26,9 +25,9 @@ public class CorsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(CustomCorsFilter.class)
     public CustomCorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", buildConfig());
-        return new CustomCorsFilter(source, corsProps);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", buildConfig());
+        return new CustomCorsFilter(corsProps);
     }
 
     private CorsConfiguration buildConfig() {

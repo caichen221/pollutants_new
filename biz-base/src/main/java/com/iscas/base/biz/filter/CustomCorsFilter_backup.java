@@ -3,30 +3,21 @@ package com.iscas.base.biz.filter;
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.cors.CorsProps;
-import com.iscas.base.biz.util.RegexUtils;
-import com.iscas.common.tools.constant.HeaderKey;
-import com.iscas.datasong.client.plus.utils.RegUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsProcessor;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.DefaultCorsProcessor;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 自定义跨域过滤器，可以通过springboot auto config 配置
@@ -37,16 +28,22 @@ import java.util.regex.Pattern;
  * @Modified:
  **/
 @Slf4j
-public class CustomCorsFilter extends OncePerRequestFilter {
+public class CustomCorsFilter_backup extends CorsFilter {
+    private final CorsConfigurationSource configSource;
+    private CorsProcessor processor = new DefaultCorsProcessor();
     private CorsProps corsProps;
     private Set<String> ignoreUrlAllMatchSet = new HashSet<>();
     Set<String> ignoreUrlPrefixSet = new HashSet<>();
 
 
-    public CustomCorsFilter(CorsProps corsProps) {
+    public CustomCorsFilter_backup(CorsConfigurationSource configSource, CorsProps corsProps) {
+
+        super(configSource);
         if (log.isDebugEnabled()) {
             log.debug("进入 CustomCrosFilter 过滤器");
         }
+        Assert.notNull(configSource, "CorsConfigurationSource must not be null");
+        this.configSource = configSource;
         this.corsProps = corsProps;
         if (corsProps.getIgnoreUrls() != null) {
             for (String urlStr : corsProps.getIgnoreUrls()) {
@@ -60,6 +57,13 @@ public class CustomCorsFilter extends OncePerRequestFilter {
             }
         }
 
+    }
+
+
+    @Override
+    public void setCorsProcessor(CorsProcessor processor) {
+        Assert.notNull(processor, "CorsProcessor must not be null");
+        this.processor = processor;
     }
 
 

@@ -23,7 +23,7 @@ import java.util.Objects;
 public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        handleServerEndPoint(bean);
+//        handleServerEndPoint(bean);
         return bean;
     }
 

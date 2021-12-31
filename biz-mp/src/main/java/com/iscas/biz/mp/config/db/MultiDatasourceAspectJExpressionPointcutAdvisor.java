@@ -1,7 +1,6 @@
 package com.iscas.biz.mp.config.db;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
 import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 
@@ -62,7 +60,10 @@ public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefi
         if (dbNames != null) {
             String[] names = dbNames.split(",");
             if (ArrayUtils.isNotEmpty(names) && names.length > 1) {
-                Arrays.stream(names).skip(1).forEach(name -> {
+
+//                Arrays.stream(names).skip(1).forEach(name -> {
+                //暂时不跳过 update by zqw 20211231
+                Arrays.stream(names).forEach(name -> {
                     String key = "spring.datasource.druid." + name + ".pointcut";
                     String value = env.getProperty(key);
                     if (StringUtils.isNotBlank(value)) {

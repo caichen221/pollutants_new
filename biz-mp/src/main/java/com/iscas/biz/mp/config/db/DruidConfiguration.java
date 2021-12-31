@@ -283,6 +283,18 @@ public class DruidConfiguration implements EnvironmentAware {
         if (StringUtils.isNotBlank(value)) {
             datasource.setMaxPoolPreparedStatementPerConnectionSize(Integer.parseInt(value));
         }
+        value = environment.getProperty(path + "validation-query-timeout");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setValidationQueryTimeout(Integer.parseInt(value));
+        }
+        value = environment.getProperty(path + "num-tests-per-eviction-run");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setNumTestsPerEvictionRun(Integer.parseInt(value));
+        }
+        value = environment.getProperty(path + "min-evictable-idle-time-millis");
+        if (StringUtils.isNotBlank(value)) {
+            datasource.setMinEvictableIdleTimeMillis(Long.parseLong(value));
+        }
         return datasource;
     }
 

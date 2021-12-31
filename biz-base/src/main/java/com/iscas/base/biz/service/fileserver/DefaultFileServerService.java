@@ -14,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,9 +35,6 @@ public class DefaultFileServerService implements FileServerService, TimeConstant
      */
     @Override
     public Map<String, String> upload(MultipartFile[] files) throws IOException {
-        log.info("name:::" + files[0].getName());
-        log.info("文件名字::::" + files[0].getOriginalFilename());
-        log.info("转换后::::" + new String(files[0].getOriginalFilename().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
         Map<String, String> result = new HashMap<>(2 << 2);
         //获取文件存储的根路径
         File path = getPath();
@@ -71,7 +65,7 @@ public class DefaultFileServerService implements FileServerService, TimeConstant
     }
 
 
-    private File getPath() throws IOException {
+    private File getPath() {
         File pfile = new File(fileServerPath);
         FileUtils.makeDirectory(pfile);
         LocalDateTime now = LocalDateTime.now();
@@ -80,7 +74,7 @@ public class DefaultFileServerService implements FileServerService, TimeConstant
         FileUtils.makeDirectory(file);
         String randomStr = RandomStringUtils.randomStr(8);
         file = new File(file, randomStr);
-        FileUtils.touch(file);
+        FileUtils.makeDirectory(file);
         return file;
     }
 

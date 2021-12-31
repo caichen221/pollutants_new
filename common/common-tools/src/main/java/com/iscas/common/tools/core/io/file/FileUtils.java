@@ -120,11 +120,7 @@ public class FileUtils {
      * @since jdk1.8
      */
     public static boolean makeDirectory(File file) {
-        File parent = file.getParentFile();
-        if (parent != null) {
-            return parent.mkdirs();
-        }
-        return false;
+        return file.mkdirs();
     }
 
     /**

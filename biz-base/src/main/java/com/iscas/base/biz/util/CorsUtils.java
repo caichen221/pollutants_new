@@ -1,6 +1,5 @@
 package com.iscas.base.biz.util;
 
-import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.cors.CorsProps;
 import com.iscas.common.tools.constant.HeaderKey;
 import org.springframework.http.HttpStatus;
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
