@@ -3,6 +3,8 @@ package com.iscas.biz.mp.test.model;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @author zhuquanwen
  * @vesion 1.0
@@ -23,6 +25,12 @@ public class Test {
 
     @TableLogic
     private Integer flag;
+
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     private String realName;
 

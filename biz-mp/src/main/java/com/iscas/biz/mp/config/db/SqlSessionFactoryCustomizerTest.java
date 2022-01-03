@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 /**

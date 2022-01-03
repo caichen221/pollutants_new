@@ -179,4 +179,27 @@ public class TestController extends BaseController {
         return getResponse();
     }
 
+    /**
+     * 测试属性自动填充
+     * */
+    @GetMapping("/fill1")
+    public ResponseEntity testFill1() {
+        Test test = new Test();
+        test.setName("张三");
+        test.setAge(12);
+        testService.save(test);
+        return getResponse();
+    }
+
+    /**
+     * 测试属性自动填充
+     * */
+    @GetMapping("/fill2")
+    public ResponseEntity testFill2() {
+        List<Test> list = testService.list(new QueryWrapper<Test>().lambda().eq(Test::getName, "张三"));
+        list.forEach(test -> test.setUpdateTime(null));
+        testService.updateBatchById(list);
+        return getResponse();
+    }
+
 }
