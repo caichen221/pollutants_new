@@ -760,23 +760,25 @@ INSERT INTO `shedlock` VALUES ('shedLockTest', '2021-12-03 15:01:24.105', '2021-
 -- Table structure for test
 -- ----------------------------
 DROP TABLE IF EXISTS `test`;
-CREATE TABLE `test`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `age` int(0),
+CREATE TABLE `test` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `age` int DEFAULT NULL,
   `flag` int DEFAULT '0',
-
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of test
 -- ----------------------------
-INSERT INTO `test` VALUES (1, '1', 1, 0);
-INSERT INTO `test` VALUES (2, '2', 2, 0);
-INSERT INTO `test` VALUES (3, '3', 44, 0);
-INSERT INTO `test` VALUES (4, '4', 23, 0);
-INSERT INTO `test` VALUES (5, '5', 18, 0);
+INSERT INTO `test` VALUES ('1', '1', '1', '0', null, null);
+INSERT INTO `test` VALUES ('2', '2', '2', '0', null, null);
+INSERT INTO `test` VALUES ('3', '3', '44', '0', null, null);
+INSERT INTO `test` VALUES ('4', '4', '23', '0', null, null);
+INSERT INTO `test` VALUES ('5', '5', '18', '1', null, null);
+INSERT INTO `test` VALUES ('12', '张三', '12', '0', '2022-01-03 21:05:53', '2022-01-03 21:05:53');
 
 -- ----------------------------
 -- Table structure for test_mp_ar

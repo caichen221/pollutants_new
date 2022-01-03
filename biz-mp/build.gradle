@@ -57,6 +57,8 @@ dependencies {
     api group: 'org.apache.shardingsphere', name: 'sharding-jdbc-core', version: "${shardingJdbcCoreVersion}"
     api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
     api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
+    api group: 'p6spy', name: 'p6spy', version: "${p6spyVersion}"
+
 //    annotationProcessor 'org.springframework:spring-context-indexer'
 
 }
