@@ -21,6 +21,9 @@ public class Test {
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer age;
 
+    @TableLogic
+    private Integer flag;
+
     private String realName;
 
 }

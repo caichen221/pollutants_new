@@ -170,4 +170,13 @@ public class TestController extends BaseController {
         return getResponse().setValue(test);
     }
 
+    /**
+     * 测试逻辑删除
+     * */
+    @GetMapping("/logic")
+    public ResponseEntity testLogic() {
+        testService.removeById(5);
+        return getResponse();
+    }
+
 }
