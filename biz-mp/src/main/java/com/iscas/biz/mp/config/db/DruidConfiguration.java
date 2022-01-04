@@ -265,19 +265,19 @@ public class DruidConfiguration implements EnvironmentAware {
         }
         value = environment.getProperty(path + "test-while-idle");
         if (StringUtils.isNotBlank(value)) {
-            datasource.setTestWhileIdle(Boolean.getBoolean(value));
+            datasource.setTestWhileIdle(Boolean.parseBoolean(value));
         }
         value = environment.getProperty(path + "test-on-borrow");
         if (StringUtils.isNotBlank(value)) {
-            datasource.setTestOnBorrow(Boolean.getBoolean(value));
+            datasource.setTestOnBorrow(Boolean.parseBoolean(value));
         }
         value = environment.getProperty(path + "test-on-return");
         if (StringUtils.isNotBlank(value)) {
-            datasource.setTestOnReturn(Boolean.getBoolean(value));
+            datasource.setTestOnReturn(Boolean.parseBoolean(value));
         }
         value = environment.getProperty(path + "pool-prepared-statements");
         if (StringUtils.isNotBlank(value)) {
-            datasource.setPoolPreparedStatements(Boolean.getBoolean(value));
+            datasource.setPoolPreparedStatements(Boolean.parseBoolean(value));
         }
         value = environment.getProperty(path + "max-pool-prepared-statement-per-connection-size");
         if (StringUtils.isNotBlank(value)) {
@@ -462,11 +462,11 @@ public class DruidConfiguration implements EnvironmentAware {
         StatFilter statFilter = new StatFilter();
         String value = environment.getProperty(path + "log-slow-sql");
         if (StringUtils.isNotBlank(value)) {
-            statFilter.setLogSlowSql(Boolean.getBoolean(value));
+            statFilter.setLogSlowSql(Boolean.parseBoolean(value));
         }
         value = environment.getProperty(path + "merge-sql");
         if (StringUtils.isNotBlank(value)) {
-            statFilter.setMergeSql(Boolean.getBoolean(value));
+            statFilter.setMergeSql(Boolean.parseBoolean(value));
         }
         value = environment.getProperty(path + "slow-sql-millis");
         if (StringUtils.isNotBlank(value)) {
