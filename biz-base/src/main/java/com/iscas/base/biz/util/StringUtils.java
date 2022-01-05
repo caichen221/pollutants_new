@@ -22,6 +22,7 @@ public class StringUtils {
         return str.substring(0,1).toUpperCase() + str.substring(1);
     }
     public static String lowerFist(String str){
+
         if(str == null){
             throw new RuntimeException("str can not be null");
         }
