@@ -1,5 +1,8 @@
 package com.iscas.base.biz.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 字符串工具类
  *
@@ -24,4 +27,36 @@ public class StringUtils {
         }
         return str.substring(0,1).toLowerCase() + str.substring(1);
     }
+
+
+    public static String[][] split(String str, String[] splitStrs) {
+        List<String[]> result = new ArrayList<>();
+        split(str, splitStrs, result);
+        return result.toArray(new String[result.size()][]);
+    }
+
+    private static void split(String str, String[] splitStrs, List<String[]> result) {
+        int index = -1;
+        String splitStr = null;
+        for (String s : splitStrs) {
+            int index1 = str.indexOf(s);
+            if (index1 > 0) {
+                if (index == -1 || index1 < index) {
+                    index = index1;
+                    splitStr = s;
+                }
+            }
+        }
+        if (index < 0) {
+            result.add(new String[]{str});
+        } else {
+            String firstStr = org.apache.commons.lang3.StringUtils.substringBefore(str, splitStr);
+            result.add(new String[]{firstStr, splitStr});
+            String lastStr = org.apache.commons.lang3.StringUtils.substringAfter(str, splitStr);
+            if (org.apache.commons.lang3.StringUtils.isNotEmpty(lastStr)) {
+                split(lastStr, splitStrs, result);
+            }
+        }
+    }
+
 }

@@ -20,9 +20,9 @@ public class CaffCacheUtils {
     //初始化
     private static int initialCapcity = 100;
     //最大容量
-    private static int maximumSize = 1000;
-    //目前没查到资料怎样使缓存用不失效，设置尽量一个大的值15天
-    private static int expireAfterWrite = 15 * 24 * 60;
+    private static int maximumSize = 10000;
+    //目前没查到资料怎样使缓存用不失效，设置尽量一个大的值10年
+    private static int expireAfterWrite = 3650 * 24 * 60;
     private static volatile LoadingCache<String,Object> localCache = null;
     private static void initLocalCache() {
         if (localCache == null) {
@@ -31,9 +31,7 @@ public class CaffCacheUtils {
                         .initialCapacity(initialCapcity)
                         .maximumSize(maximumSize)
                         .expireAfterWrite(expireAfterWrite, TimeUnit.MINUTES)
-                        .build(s -> {
-                            return null;
-                        });
+                        .build(s -> null);
             }
         }
     }
@@ -79,4 +77,5 @@ public class CaffCacheUtils {
     public synchronized static void safeRemove(String key) {
         remove(key);
     }
+
 }

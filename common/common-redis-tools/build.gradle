@@ -31,6 +31,10 @@ dependencies {
     //jrejson
     api group: 'com.redislabs', name: 'jrejson', version: "${jrejsonVersion}"
 
+    //jredisearch
+    api group: 'com.redislabs', name: 'jredisearch', version: "${jredisearchVersion}"
+
+
 
 
 }

@@ -75,7 +75,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
-
         SpringApplication springApplication = new SpringApplication(BizApp.class);
 //        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);
