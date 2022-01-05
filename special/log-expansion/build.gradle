@@ -51,9 +51,9 @@ tasks.withType(JavaCompile) {
 }
 
 shadowJar {
-    baseName = 'log-expansion'
-    classifier = null
-    version = null
+    archiveBaseName = 'log-expansion'
+    archiveClassifier = null
+    archiveVersion = null
     dependencies {
         include(dependency("ch.qos.logback:logback-core:${logbackVersion}"))
         include(dependency("ch.qos.logback:logback-access:${logbackVersion}"))

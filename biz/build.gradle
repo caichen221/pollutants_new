@@ -26,7 +26,7 @@ bootWar {
 }
 
 bootRun {
-    main = 'com.iscas.biz.BizApp'
+    mainClass = 'com.iscas.biz.BizApp'
 }
 
 dependencies {

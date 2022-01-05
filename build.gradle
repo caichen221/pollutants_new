@@ -45,7 +45,6 @@ buildscript {
             url "${gradlePluginUrl}"
             allowInsecureProtocol = true
         }
-        jcenter()
         mavenCentral()
 
     }
@@ -142,7 +141,6 @@ subprojects  {
             url "${iceBlueUrl}"
             allowInsecureProtocol = true
         }
-        jcenter()
         mavenCentral()
     }
     tasks.withType(JavaCompile) {
@@ -194,7 +192,7 @@ subprojects  {
     }
     task javadocJar(type: Jar) {
         from javadoc
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
     }
     sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
 
