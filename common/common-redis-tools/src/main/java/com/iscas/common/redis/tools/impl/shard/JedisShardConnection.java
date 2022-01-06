@@ -3,8 +3,10 @@ package com.iscas.common.redis.tools.impl.shard;
 import com.iscas.common.redis.tools.ConfigInfo;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.RedisInfo;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 public class JedisShardConnection implements JedisConnection {
     private volatile ShardedJedisPool jedisPool = null;
     private ConfigInfo configInfo;
-    private JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+    private GenericObjectPoolConfig<ShardedJedis> jedisPoolConfig = new GenericObjectPoolConfig<>();
 
     @Override
     public Object getPool() {

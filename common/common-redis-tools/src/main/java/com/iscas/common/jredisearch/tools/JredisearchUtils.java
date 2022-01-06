@@ -4,11 +4,8 @@ package com.iscas.common.jredisearch.tools;
 import com.iscas.common.redis.tools.ConfigInfo;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.impl.standalone.JedisStandAloneConnection;
-import io.redisearch.Schema;
 import io.redisearch.client.Client;
-import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.ShardedJedisPool;
 
 /**
  * 全文检索工具类
