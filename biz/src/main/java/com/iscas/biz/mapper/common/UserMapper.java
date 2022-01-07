@@ -33,4 +33,8 @@ public interface UserMapper extends DynamicMapper<User> {
     int insertUser(@Param("user") User user);
 
     List<User> selectUserByIds(List<Object> ids);
+
+    int saveOrUpdate(User user);
+
+
 }

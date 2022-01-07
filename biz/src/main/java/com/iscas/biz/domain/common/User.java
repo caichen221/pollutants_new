@@ -36,4 +36,7 @@ public class User {
 
    @TableField(updateStrategy = FieldStrategy.IGNORED)
    private Date userUpdateTime;
+
+   @TableField(exist = false)
+   private Integer count;
 }

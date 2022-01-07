@@ -370,7 +370,6 @@ public class DruidConfiguration implements EnvironmentAware {
             factory.setTypeEnumsPackage(enumPackages);
         }
         factory.setGlobalConfig(globalConfiguration());
-        sqlSessionFactoryCustomizers.customize(configuration, factory);
         factory.setTransactionFactory(new MultiDataSourceTransactionFactory());
         //mapper config path
         String mpMapperLocations = environment.getProperty("mybatis-plus.mapper-locations");
@@ -385,6 +384,8 @@ public class DruidConfiguration implements EnvironmentAware {
                     }).flatMap(Arrays::stream).toArray(Resource[]::new);
             factory.setMapperLocations(resources);
         }
+
+        sqlSessionFactoryCustomizers.customize(configuration, factory);
         return factory.getObject();
     }
 
