@@ -203,6 +203,8 @@ public class AuthServiceImpl extends AbstractAuthService {
                     authCacheService.set(userLoginErrorCountKey, errorCount);
                     throw new LoginException("密码错误");
                 }
+            } catch (LoginException e) {
+                throw e;
             } catch (Exception e) {
                 throw new LoginException("校验密码出错");
             }
