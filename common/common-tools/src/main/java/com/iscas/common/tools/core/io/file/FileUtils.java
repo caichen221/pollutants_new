@@ -120,7 +120,12 @@ public class FileUtils {
      * @since jdk1.8
      */
     public static boolean makeDirectory(File file) {
-        return file.mkdirs();
+        if (!file.exists()) {
+            return file.mkdirs();
+        } else if (file.isDirectory()) {
+            return true;
+        }
+        return false;
     }
 
     /**

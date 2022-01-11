@@ -44,7 +44,7 @@ public class FileInfo {
     /**
      * 大小|字节B
      */
-    private Integer size;
+    private Long size;
 
     /**
      * 创建时间

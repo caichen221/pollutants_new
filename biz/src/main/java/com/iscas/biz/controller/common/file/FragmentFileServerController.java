@@ -5,6 +5,10 @@ import com.iscas.biz.service.common.FileInfoService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,35 +29,41 @@ import java.util.List;
 @RestController
 @RequestMapping("/files")
 @RequiredArgsConstructor
+@Api(tags = "文件上传示例-支持断点续传")
 public class FragmentFileServerController extends BaseController {
     private final FileInfoService fileInfoService;
 
-    /**
-     * 上传
-     *
-     * @param file
-     * @param suffix
-     * @param shardIndex
-     * @param shardSize
-     * @param shardTotal
-     * @param size
-     * @param key
-     * @return
-     * @throws IOException
-     * @throws InterruptedException
-     */
     @PostMapping("/upload")
-    public ResponseEntity upload(MultipartFile file, String suffix, Integer shardIndex, Integer shardSize,
-                                 Integer shardTotal, Integer size, String key, String name) {
+    @ApiOperation(value = "文件上传", notes = "文件上传")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "file", value = "上传的文件", required = true, dataType = "MultipartFile"),
+                    @ApiImplicitParam(name = "suffix", value = "文件后缀", required = true, dataType = "String"),
+                    @ApiImplicitParam(name = "shardIndex", value = "分片索引号", required = true, dataType = "Integer"),
+                    @ApiImplicitParam(name = "shardSize", value = "当前上传分片大小", required = true, dataType = "Integer"),
+                    @ApiImplicitParam(name = "shardTotal", value = "分片数目", required = true, dataType = "Integer"),
+                    @ApiImplicitParam(name = "size", value = "文件大小", required = true, dataType = "Integer"),
+                    @ApiImplicitParam(name = "key", value = "文件的key,MD5码：文件名 + 文件大小 + 文件类型 + 文件最后修改时间的MD5码", required = true, dataType = "String"),
+                    @ApiImplicitParam(name = "name", value = "文件名称", required = true, dataType = "String")
+            }
+    )
+    public ResponseEntity upload(MultipartFile file, String suffix, int shardIndex, int shardSize,
+                                 int shardTotal, int size, String key, String name) throws BaseException {
         try {
             fileInfoService.upload(file, suffix, shardIndex, shardSize, shardTotal, size, key, name);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new BaseException("文件上传出错", e);
         }
         return getResponse();
     }
 
     @PostMapping("/check")
+    @ApiOperation(value = "文件上传", notes = "文件上传")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "key", value = "文件的key,MD5码：文件名 + 文件大小 + 文件类型 + 文件最后修改时间的MD5码", required = true, dataType = "String")
+            }
+    )
     public ResponseEntity check(String key) throws BaseException {
         List<FileInfo> check = fileInfoService.check(key);
         //如果这个key存在的话 那么就获取上一个分片去继续上传
