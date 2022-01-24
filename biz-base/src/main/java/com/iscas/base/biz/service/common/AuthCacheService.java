@@ -30,7 +30,7 @@ public class AuthCacheService implements IAuthCacheService {
     @Autowired(required = false)
     private CommonRedisHelper commonRedisHelper;
 
-    @Value("${user.max.sessions}")
+    @Value("${user.max.sessions:1}")
     private int userMaxSessions;
 
     private Map<String, List<String>> jdkList = new WeakHashMap<>();

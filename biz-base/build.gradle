@@ -165,7 +165,10 @@ dependencies {
     //prometheus监控
     api group: 'io.micrometer', name: 'micrometer-registry-prometheus'
 
-
+    api ("org.springframework.boot:spring-boot-starter-actuator")
+            {
+                exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
 
 
 
@@ -198,7 +201,7 @@ dependencies {
     //    api group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
 //    api group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version:"${springCloudConfigVersion}"
 
-    //    api group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+
 
 }
 

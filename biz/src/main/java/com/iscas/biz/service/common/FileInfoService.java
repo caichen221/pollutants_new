@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class FileInfoService extends ServiceImpl<FileInfoMapper, FileInfo> {
-    @Value("${file.server.path}")
+    @Value("${file.server.path:temp}")
     private String fileServerPath;
 
     /**

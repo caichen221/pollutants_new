@@ -52,8 +52,8 @@ public class DruidMonitorConfiguration {
         //添加过滤规则.
         filterRegistrationBean.addUrlPatterns("/*");
         //添加不需要忽略的格式信息.
-        filterRegistrationBean.addInitParameter("exclusions","*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid2/*，" +
-                "/swagger-resources/*,/loginTest/*,/api/*,/webjars/*./webSocketServer/*,/webSocketTest/*,*.html,*.json");
+        filterRegistrationBean.addInitParameter("exclusions","*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid2/*," +
+                "/swagger-resources/*,/loginTest/*,/api/*,/webjars/*,/webSocketServer/*,/webSocketTest/*,*.html,*.json");
         return filterRegistrationBean;
     }
 }

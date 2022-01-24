@@ -26,7 +26,7 @@ buildscript {
             allowInsecureProtocol = true
         }
         maven {
-            url "${aiyunSpringPluginUrl}"
+            url "${aliyunSpringPluginUrl}"
             allowInsecureProtocol = true
         }
         maven {
@@ -52,7 +52,7 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${gradleProtobufGenerateVersion}")
         classpath "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:${shadowJarVersion}"
-//        classpath "se.transmode.gradle:gradle-docker:${gradle_docker_version}"
+        classpath "com.bmuschko:gradle-docker-plugin:${gradleDockerVersion}"
     }
 }
 
@@ -77,6 +77,10 @@ subprojects  {
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
     apply plugin: 'java-library'
+    apply plugin: 'com.bmuschko.docker-remote-api'
+    apply plugin: 'com.bmuschko.docker-spring-boot-application'
+//    apply plugin: 'com.bmuschko.docker-java-application'
+
 //    group = 'cn.ac.iscas.newframe'
     //发布至maven中央仓库必须与gitee的子域名一致，所以暂时智能用这个group
     group = 'io.gitee.quanwenz'

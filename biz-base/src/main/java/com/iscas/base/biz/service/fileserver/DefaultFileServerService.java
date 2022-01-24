@@ -27,7 +27,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class DefaultFileServerService implements FileServerService, TimeConstant {
-    @Value("${file.server.path}")
+    @Value("${file.server.path:temp}")
     private String fileServerPath;
 
     /**

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @Api(tags = "全局异常处理")
 public class ErrorPageController {
-    @Value("${spring.servlet.multipart.max-file-size}")
+    @Value("${spring.servlet.multipart.max-file-size:10485760000}")
     private String maxFileSize;
     @RequestMapping(value = "/401", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

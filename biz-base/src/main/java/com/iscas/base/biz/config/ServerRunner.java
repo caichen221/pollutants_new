@@ -22,7 +22,7 @@ public class ServerRunner implements CommandLineRunner {
     @Autowired(required = false)
     private SocketIOServer socketIOServer;
 
-    @Value("${socket.io.namespaces}")
+    @Value("${socket.io.namespaces:null}")
     private String[] namespaces;
 
     @Override
