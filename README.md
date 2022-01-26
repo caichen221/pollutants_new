@@ -63,3 +63,20 @@
   - 14、修改数据源默认切面表达式支持切到配置的子包
   - 15、去除了CustomCorsFilter中无用的配置
   - 16、修改的数据源切面，使第一个数据源的包也注册到aop中
+
+-----------------------------------------------
+- 2.0.2-20220126-1
+  - 1、添加Mybatis-Plus的MetaObjectHandler
+  - 2、添加p6spy，在使用atomikos时会有冲突，在不使用atomikos时可以使用，默认不启用
+  - 3、修复了StatFilter和数据库相关的一些布尔值配置不生效的BUG
+  - 4、修改了CaffineUtils默认容量到10000
+  - 5、添加了jredisearch依赖并添加了其全文检索的测试
+  - 6、修改了一些gradle参数，替换了一些过时的gradle配置
+  - 7、修改登陆时密码错误提示不准确的BUG
+  - 8、调整sqlSessionFactoryCustomizers扩展接口的调用位置，保证扩展配置不被覆盖
+  - 9、添加大文件断点续传功能(需前端配置，resources下有前端demo代码)
+  - 10、添加prometheus监控依赖
+  - 11、升级oshi-core版本至5.8.7，兼容windows11
+  - 12、修改构建docker并推送至镜像私服的配置
+  - 13、springboot版本升级至2.6.3
+  - 14、修复了其他已知的BUG
