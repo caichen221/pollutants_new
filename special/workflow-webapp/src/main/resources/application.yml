@@ -1,0 +1,24 @@
+server:
+  port: 2323
+camunda:
+  bpm:
+    filter:
+      create: All tasks
+    generic-properties.properties:
+      javaSerializationFormatEnabled: true
+    admin-user:
+      id: admin
+      password: admin
+      first-name: admin
+    run:
+      cors:
+        enabled: true
+        allowed-origins: "*"
+    datasource:
+      url: jdbc:mysql://192.168.100.88:3306/camunda?characterEncoding=UTF-8&useUnicode=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: root
+      type: com.alibaba.druid.pool.DruidDataSource
+spring.web.resources:
+  static-locations: NULL

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "商品",
+      "type": "textfield",
+      "id": "Field_0abs6xs",
+      "key": "productName",
+      "description": "商品名称",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "价格（折扣后）",
+      "type": "number",
+      "id": "Field_0k1livu",
+      "key": "productDiscountPrice",
+      "description": "商品价格（折扣后）"
+    },
+    {
+      "label": "同意支付？",
+      "type": "checkbox",
+      "id": "Field_0aqh9gv",
+      "key": "approved",
+      "description": "是否同意支付"
+    },
+    {
+      "action": "submit",
+      "label": "提交",
+      "type": "button",
+      "id": "Field_0qpmcnw",
+      "key": "field_0uccsdb"
+    }
+  ],
+  "type": "default",
+  "id": "PaymentConfirmForm"
+}

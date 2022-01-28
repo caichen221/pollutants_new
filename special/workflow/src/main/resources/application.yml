@@ -1,0 +1,10 @@
+server:
+  port: 2828
+camunda:
+  bpm:
+    datasource:
+      url: jdbc:mysql://192.168.100.88:3306/camunda?characterEncoding=UTF-8&useUnicode=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: root
+      type: com.alibaba.druid.pool.DruidDataSource
