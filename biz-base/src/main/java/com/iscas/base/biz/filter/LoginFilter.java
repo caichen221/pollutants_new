@@ -101,17 +101,22 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 }
                 authContext.setToken(token);
                 IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-                if (authCacheService.get(token) == null) {
+                if (authCacheService.get(token, Constants.AUTH_CACHE) == null) {
                     throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
                 }
                 //如果token不为null,校验token
                 String username = null;
                 try {
                     username = authService.verifyToken(token);
-                    authContext.setUsername(username);
                 } catch (ValidTokenException e) {
                     throw new AuthenticationRuntimeException("校验身份信息出错", "校验token出错");
                 }
+                if (!authCacheService.listContains("user-token:" + username, token, Constants.LOGIN_CACHE)) {
+                    throw new AuthenticationRuntimeException("身份认证信息有误", "token已失效");
+                }
+
+                authContext.setUsername(username);
+
                 List<Role> roles = authService.getRoles(username);
                 authContext.setRoles(roles);
 

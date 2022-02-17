@@ -1,12 +1,13 @@
 package com.iscas.base.biz.service.common;
 
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.util.CaffCacheUtils;
+import com.iscas.base.biz.util.AuthCacheUtils;
 import com.iscas.base.biz.util.CommonRedisHelper;
+import com.iscas.base.biz.util.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -39,52 +40,66 @@ public class AuthCacheService implements IAuthCacheService {
         this.cacheManager = cacheManager;
     }
 
+
     @Override
-    public void remove(String key) {
-        if (!isRedisCacheManager()) {
-            CaffCacheUtils.remove(key);
-        } else {
-            RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
-                    .ifPresent(authCache -> authCache.evict(key));
-        }
+    public String createCodeAndPut(String secretKey) {
+        UUID uuid = UUID.randomUUID();
+        Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
+        String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
+        int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
+        AuthCacheUtils.put(uuid.toString(), secretKey, "loginCache", loginRandomCacheSenconds);
+        return uuid.toString();
     }
 
     @Override
-    public void set(String key, Object value) {
-        if (!isRedisCacheManager()) {
-            CaffCacheUtils.set(key, value);
-        } else {
-            RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
-            if (authCache == null) {
-                throw new RuntimeException("找不到缓存：auth");
-            }
-            authCache.put(key, value);
-        }
+    public void remove(String key, String cacheKey) {
+        AuthCacheUtils.remove(key, cacheKey);
+//        if (!isRedisCacheManager()) {
+//            CaffCacheUtils.remove(key);
+//        } else {
+//            RedisCacheManager redisCacheManager = castToRedisCacheManager();
+//            Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
+//                    .ifPresent(authCache -> authCache.evict(key));
+//        }
     }
 
     @Override
-    public Object get(String key) {
-        if (!isRedisCacheManager()) {
-            return CaffCacheUtils.get(key);
-        } else {
-            RedisCacheManager redisCacheManager = castToRedisCacheManager();
-            return Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
-                    .map(authCache -> authCache.get(key))
-                    .map(Cache.ValueWrapper::get)
-                    .orElse(null);
-        }
+    public void set(String key, Object value, String cacheKey, int ttl) {
+        AuthCacheUtils.put(key, value, cacheKey, ttl);
+//        if (!isRedisCacheManager()) {
+//            CaffCacheUtils.set(key, value);
+//        } else {
+//            RedisCacheManager redisCacheManager = castToRedisCacheManager();
+//            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
+//            if (authCache == null) {
+//                throw new RuntimeException("找不到缓存：auth");
+//            }
+//            authCache.put(key, value);
+//        }
     }
 
     @Override
-    public void rpush(String key, String value) {
+    public Object get(String key, String cacheKey) {
+        return AuthCacheUtils.get(key, cacheKey);
+//        if (!isRedisCacheManager()) {
+//            return CaffCacheUtils.get(key);
+//        } else {
+//            RedisCacheManager redisCacheManager = castToRedisCacheManager();
+//            return Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
+//                    .map(authCache -> authCache.get(key))
+//                    .map(Cache.ValueWrapper::get)
+//                    .orElse(null);
+//        }
+    }
+
+    @Override
+    public void rpush(String key, String value, String cacheKey) {
         if (!isRedisCacheManager()) {
             synchronized (key.intern()) {
                 List<String> values = jdkList.computeIfAbsent(key, k -> new ArrayList<>());
-                if (llen(key) >= userMaxSessions) {
+                if (llen(key, cacheKey) >= userMaxSessions) {
                     //移除较早登录的会话
-                    Optional.ofNullable(lpop(key)).ifPresent(this::remove);
+                    Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> remove(token, cacheKey));
                 }
                 //加入新会话
                 values.add(value);
@@ -95,9 +110,9 @@ public class AuthCacheService implements IAuthCacheService {
                     //使用分布式锁，防止同时移除，使得刚登录的用户也退出
                     boolean lock = commonRedisHelper.lock(key);
                     if (lock) {
-                        if (llen(key) >= userMaxSessions) {
+                        if (llen(key, cacheKey) >= userMaxSessions) {
                             //移除较早登录的会话
-                            Optional.ofNullable(lpop(key)).ifPresent(this::remove);
+                            Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> remove(token, cacheKey));
                         }
                         //加入新会话
                         redisTemplate.opsForList().rightPush(key, value);
@@ -117,7 +132,7 @@ public class AuthCacheService implements IAuthCacheService {
     }
 
     @Override
-    public String lpop(String key) {
+    public String lpop(String key, String cacheKey) {
         if (!isRedisCacheManager()) {
             List<String> values = jdkList.computeIfAbsent(key, k -> new ArrayList<>());
             if (values.size() > 0) {
@@ -131,7 +146,7 @@ public class AuthCacheService implements IAuthCacheService {
     }
 
     @Override
-    public int llen(String key) {
+    public int llen(String key, String cacheKey) {
         if (!isRedisCacheManager()) {
             return Optional.ofNullable(jdkList.get(key)).map(List::size).orElse(0);
         } else {
@@ -141,7 +156,7 @@ public class AuthCacheService implements IAuthCacheService {
     }
 
     @Override
-    public boolean listContains(String key, String value) {
+    public boolean listContains(String key, String value, String cacheKey) {
         if (!isRedisCacheManager()) {
             return Optional.ofNullable(jdkList.get(key)).map(list -> list.contains(value)).orElse(false);
         } else {

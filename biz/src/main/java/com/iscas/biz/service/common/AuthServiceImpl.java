@@ -24,10 +24,8 @@ import com.iscas.templet.view.tree.TreeResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -61,17 +59,19 @@ public class AuthServiceImpl extends AbstractAuthService {
     private final MenuMapper menuMapper;
     private final UserMapper userMapper;
     private final MenuService menuService;
+    private final TokenProps tokenProps;
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
 
     public AuthServiceImpl(IAuthCacheService authCacheService, ResourceMapper resourceMapper,
-                           RoleMapper roleMapper, MenuMapper menuMapper, UserMapper userMapper, MenuService menuService) {
+                           RoleMapper roleMapper, MenuMapper menuMapper, UserMapper userMapper, MenuService menuService, TokenProps tokenProps) {
         this.authCacheService = authCacheService;
         this.resourceMapper = resourceMapper;
         this.roleMapper = roleMapper;
         this.menuMapper = menuMapper;
         this.userMapper = userMapper;
         this.menuService = menuService;
+        this.tokenProps = tokenProps;
     }
 
     //    @Autowired
@@ -111,7 +111,7 @@ public class AuthServiceImpl extends AbstractAuthService {
     @Override
     public void invalidToken(HttpServletRequest request) {
         Optional.ofNullable(AuthUtils.getToken())
-                .ifPresent(authCacheService::remove);
+                .ifPresent(token -> authCacheService.remove(token, Constants.AUTH_CACHE));
         request.getSession().invalidate();
     }
 
@@ -163,11 +163,11 @@ public class AuthServiceImpl extends AbstractAuthService {
         String pwd = user.get("password");
         String username = user.get("username");
         String secKey = user.get("key");
-        String loginKey = LoginCacheUtils.get(secKey);
+        String loginKey = (String) authCacheService.get(secKey, Constants.LOGIN_CACHE);
         if (loginKey == null) {
             throw new LoginException("未获得加密码，拒绝登录");
         }
-        LoginCacheUtils.remove(secKey);
+        authCacheService.remove(secKey, Constants.LOGIN_CACHE);
         try {
             username = AesUtils.aesDecrypt(username, loginKey).trim();
             pwd = AesUtils.aesDecrypt(pwd, loginKey).trim();
@@ -176,16 +176,12 @@ public class AuthServiceImpl extends AbstractAuthService {
         }
         String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
         String userLoginErrorCountKey = CACHE_KEY_LOGIN_ERROR_COUNT + "_" + username;
-        if (authCacheService.get(userLockedKey) != null) {
+        if (authCacheService.get(userLockedKey, Constants.AUTH_CACHE) != null) {
             throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
-        Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey);
+        Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
         if (errCount != null && errCount >= MAX_LOGIN_ERROR_COUNT) {
-            authCacheService.set(userLockedKey, "locked");
-            scheduledExecutorService.scheduleWithFixedDelay(() -> {
-                authCacheService.remove(userLockedKey);
-                authCacheService.remove(userLoginErrorCountKey);
-            }, 0, 120, TimeUnit.SECONDS);
+            authCacheService.set(userLockedKey, "locked", Constants.AUTH_CACHE, 120);
             throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
 
@@ -198,9 +194,9 @@ public class AuthServiceImpl extends AbstractAuthService {
             try {
                 verify = MD5Utils.saltVerify(pwd, dbUser.getUserPwd());
                 if (!verify) {
-                    Integer count = (Integer) authCacheService.get(userLoginErrorCountKey);
+                    Integer count = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
                     int errorCount = count == null ? 1 : count + 1;
-                    authCacheService.set(userLoginErrorCountKey, errorCount);
+                    authCacheService.set(userLoginErrorCountKey, errorCount, Constants.AUTH_CACHE, (int) tokenProps.getExpire().getSeconds());
                     throw new LoginException("密码错误");
                 }
             } catch (LoginException e) {
@@ -217,12 +213,11 @@ public class AuthServiceImpl extends AbstractAuthService {
         String token = null;
         try {
             String sessionId = UUID.randomUUID().toString();
-            TokenProps tokenProps = SpringUtils.getBean(TokenProps.class);
 
             token = JWTUtils.createToken(username, expire, tokenProps.getCreatorMode());
             //清除以前的TOKEN
             //修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
-            authCacheService.rpush("user-token:" + username, token);
+            authCacheService.rpush("user-token:" + username, token, Constants.AUTH_CACHE);
 
             if (tokenProps.isCookieStore()) {
                 CookieUtils.setCookie(response, TOKEN_KEY, token, cookieExpire);
@@ -236,11 +231,15 @@ public class AuthServiceImpl extends AbstractAuthService {
                 if (Objects.equals(role.getName(), Constants.SUPER_ROLE_KEY)) {
                     //超级管理员角色
                     List<Menu> dbMenus = getMenus();
-                    if (CollectionUtils.isNotEmpty(dbMenus)) menuList.addAll(dbMenus);
+                    if (CollectionUtils.isNotEmpty(dbMenus)) {
+                        menuList.addAll(dbMenus);
+                    }
                     break;
                 } else {
                     List<Menu> roleMenus = role.getMenus();
-                    if (roleMenus != null) menuList.addAll(roleMenus);
+                    if (roleMenus != null) {
+                        menuList.addAll(roleMenus);
+                    }
                 }
             }
             if (CollectionUtils.isNotEmpty(menuList)) {
@@ -261,8 +260,8 @@ public class AuthServiceImpl extends AbstractAuthService {
             //创建一个虚拟session（没用）
             CustomSession.setAttribute(sessionId, SESSION_USER, username);
 
-            authCacheService.remove(userLockedKey);
-            authCacheService.remove(userLoginErrorCountKey);
+            authCacheService.remove(userLockedKey, Constants.AUTH_CACHE);
+            authCacheService.remove(userLoginErrorCountKey, Constants.AUTH_CACHE);
 
             //处理多用户登陆的问题
 //                if (username != null) {
@@ -318,7 +317,9 @@ public class AuthServiceImpl extends AbstractAuthService {
         tree.setChildren(copyChildren);
 
         children.stream().forEach(child -> {
-            if (child == null) return;
+            if (child == null) {
+                return;
+            }
             if (!menus.contains(child.getData().getMenuName())) {
                 copyChildren.remove(child);
             }

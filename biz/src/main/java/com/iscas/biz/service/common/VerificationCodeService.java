@@ -1,18 +1,18 @@
 package com.iscas.biz.service.common;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.CacheUtil;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
-import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.service.common.AuthCacheService;
+import com.iscas.base.biz.util.AuthCacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.HeaderKey;
 import com.iscas.common.tools.constant.MediaType;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.LoginException;
 import lombok.extern.slf4j.Slf4j;
+import oracle.jdbc.driver.Const;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -36,10 +35,12 @@ import java.util.concurrent.TimeUnit;
 public class VerificationCodeService implements HeaderKey, MediaType {
     @Autowired
     private Producer producer;
+    @Autowired
+    private IAuthCacheService authCacheService;
 
     public void verificationCode(String key) throws LoginException, IOException {
         HttpServletResponse response = SpringUtils.getResponse();
-        String loginKey = LoginCacheUtils.get(key);
+        String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
         if (loginKey == null) {
             throw new LoginException("未获得加密码，拒绝生成验证码");
         }
@@ -52,7 +53,10 @@ public class VerificationCodeService implements HeaderKey, MediaType {
 
         log.debug("*************验证码已经生成为：{}******************", capText);
 
-        LoginCacheUtils.put(Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText);
+        Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
+        String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
+        int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
+        authCacheService.set(Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText, com.iscas.base.biz.config.Constants.LOGIN_CACHE, loginRandomCacheSenconds);
         BufferedImage bi = producer.createImage(capText);
         ServletOutputStream out = response.getOutputStream();
         // 向页面输出验证码
@@ -61,23 +65,23 @@ public class VerificationCodeService implements HeaderKey, MediaType {
     }
 
     public ResponseEntity verify(String code, String key) throws LoginException {
-        String loginKey = LoginCacheUtils.get(key);
+        String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
         if (loginKey == null) {
             throw new LoginException("未获得加密码，拒绝校验验证码");
         }
         String cacheKey = Constants.KAPTCHA_SESSION_KEY + ":" + loginKey;
         ResponseEntity response = new ResponseEntity();
         // 获取验证码
-        Object storeCode = LoginCacheUtils.get(cacheKey);
+        Object storeCode = authCacheService.get(cacheKey, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
         // 判断验证码是否为空
         if (StringUtils.isEmpty(code)) {
             response.setValue(false);
         } else {
             // 校验验证码的正确与否
             boolean result = StringUtils.equalsAnyIgnoreCase(code, storeCode + "");
-            LoginCacheUtils.remove(cacheKey);
+            authCacheService.remove(cacheKey, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
             if (!result) {
-                LoginCacheUtils.remove(key);
+                authCacheService.remove(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
             }
             response.setValue(result);
         }

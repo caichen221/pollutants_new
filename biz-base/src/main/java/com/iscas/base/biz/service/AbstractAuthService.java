@@ -6,10 +6,7 @@ import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
-import com.iscas.base.biz.util.AuthUtils;
-import com.iscas.base.biz.util.CaffCacheUtils;
-import com.iscas.base.biz.util.JWTUtils;
-import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.base.biz.util.*;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.exception.ValidTokenException;
@@ -38,7 +35,7 @@ public abstract class AbstractAuthService implements Constants {
 
     public void invalidToken(HttpServletRequest request) {
         String token = AuthUtils.getToken(request);
-        CaffCacheUtils.remove(token);
+        SpringUtils.getBean(IAuthCacheService.class).remove(token, Constants.AUTH_CACHE);
         request.getSession().invalidate();
     }
 

@@ -1,38 +1,21 @@
 package com.iscas.biz.controller.common;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.CacheUtil;
-import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
-import com.iscas.base.biz.util.LoginCacheUtils;
-import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.service.common.VerificationCodeService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
-import com.iscas.templet.exception.LoginException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.env.Environment;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  *

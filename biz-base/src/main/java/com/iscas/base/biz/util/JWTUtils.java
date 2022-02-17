@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.common.tools.constant.CommonConstant;
@@ -87,7 +88,7 @@ public class JWTUtils {
         String token = doCreateToken(username, iatDate, expiresDate, map, type);
         //将token缓存起来
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-        authCacheService.set(token, iatDate);
+        authCacheService.set(token, iatDate, Constants.AUTH_CACHE, expire * 60);
         return token;
     }
 
@@ -97,7 +98,7 @@ public class JWTUtils {
 
     public static Map<String, Claim> verifyToken(String token, AlgorithmType type) throws IOException, ValidTokenException, NoSuchAlgorithmException, InvalidKeySpecException {
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-        Object obj = authCacheService.get(token);
+        Object obj = authCacheService.get(token, Constants.AUTH_CACHE);
         if (obj == null) {
             throw new ValidTokenException("登录凭证校验失败", "token:" + token + "不存在或已经被注销");
         }
@@ -145,7 +146,7 @@ public class JWTUtils {
 //        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);
 
         //修改为支持用户多会话模式
-        if (!authCacheService.listContains("user-token:" + username, token)) {
+        if (!authCacheService.listContains("user-token:" + username, token, Constants.LOGIN_CACHE)) {
             throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }
 
