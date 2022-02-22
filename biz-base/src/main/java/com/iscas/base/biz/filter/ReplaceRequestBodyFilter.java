@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  *
- *  替换请求体过滤器，使得requestbody可以被多个获取使用
+ *  替换请求体过滤器，使得requestbody可以被多次获取使用
  *
  * @author zhuquanwen
  * @vesion 1.0
