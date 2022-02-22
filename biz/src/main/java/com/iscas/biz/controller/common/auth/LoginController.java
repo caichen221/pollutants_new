@@ -5,7 +5,8 @@ import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
-import com.iscas.base.biz.util.LoginCacheUtils;
+import com.iscas.base.biz.service.common.AuthCacheService;
+import com.iscas.base.biz.util.AuthCacheUtils;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.common.tools.core.random.RandomStringUtils;
@@ -15,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +41,7 @@ import java.util.Map;
 @SkipAuthentication
 @Validated
 @ConditionalOnMybatis
+@RequiredArgsConstructor
 public class LoginController extends BaseController implements Constants {
 
 
@@ -46,10 +49,8 @@ public class LoginController extends BaseController implements Constants {
 
     private final AbstractAuthService authService;
 
-    public LoginController(TokenProps tokenProps, AbstractAuthService authService) {
-        this.tokenProps = tokenProps;
-        this.authService = authService;
-    }
+    private final AuthCacheService authCacheService;
+
 
     @ApiOperation(value="[登录控制器]用户登出", notes="create by:朱全文 2020-02-21")
     @GetMapping(value = "/logout", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -65,7 +66,7 @@ public class LoginController extends BaseController implements Constants {
     public ResponseEntity<Map> preLogin(){
         ResponseEntity<Map> responseEntity = new ResponseEntity<>();
         String data = RandomStringUtils.randomStr(16);
-        String uuid = LoginCacheUtils.createCodeAndPut(data);
+        String uuid = authCacheService.createCodeAndPut(data);
         responseEntity.setValue(Map.of("key", uuid, "encryKey", data));
         return responseEntity;
     }

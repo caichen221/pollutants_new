@@ -9,16 +9,18 @@ package com.iscas.base.biz.service;
  * @since jdk1.8
  */
 public interface IAuthCacheService {
-    void remove(String key);
-    void set(String key, Object value);
-    Object get(String key);
+    void remove(String key, String cacheKey);
+    void set(String key, Object value, String cacheKey, int ttl);
+    Object get(String key, String cacheKey);
 
-    void rpush(String key, String value);
+    void rpush(String key, String value, String cacheKey);
 
-    String lpop(String key);
+    String lpop(String key, String cacheKey);
 
-    int llen(String key);
+    int llen(String key, String cacheKey);
 
-    boolean listContains(String key, String value);
+    boolean listContains(String key, String value, String cacheKey);
+
+    String createCodeAndPut(String secretKey);
 
 }

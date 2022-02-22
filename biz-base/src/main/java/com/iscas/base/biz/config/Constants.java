@@ -63,4 +63,7 @@ public interface Constants {
     /**请求参数校验失败的前缀*/
     String REQUEST_PARAM_VALID_ERROR_PREFIX = "请求参数校验失败:";
 
+    String LOGIN_CACHE = "loginCache";
+    String AUTH_CACHE = "auth";
+
 }

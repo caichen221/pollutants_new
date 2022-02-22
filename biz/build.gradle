@@ -1,6 +1,5 @@
 apply plugin: 'war'
 
-
 configurations {
     api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     api.exclude group: 'org.apache.tomcat'
@@ -52,6 +51,7 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     //devTools 默认不使用
 //    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
 
 }
 

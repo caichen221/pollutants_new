@@ -168,12 +168,23 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
     public ResponseEntity res(int status, String msg, Throwable e) {
         log.error("异常", e);
         ResponseEntity responseEntity = new ResponseEntity(status, msg)
-                .setDesc(getMessage(e))
+                .setDesc(getDesc(e))
                 .setStackTrace(ExceptionUtils.getExceptionStackTrace(e, exceptionStackTraceMaxSize));
         setResponseCros();
         setResponseInfo(responseEntity);
         AuthContextHolder.removeContext();
         return responseEntity;
+    }
+
+    private String getDesc(Throwable e) {
+        if (e instanceof BaseException) {
+            BaseException ex = (BaseException) e;
+            return ex.getMsgDetail() != null ? ex.getMsgDetail() : getMessage(e);
+        } if (e instanceof BaseRuntimeException) {
+            BaseRuntimeException ex = (BaseRuntimeException) e;
+            return ex.getMsgDetail() != null ? ex.getMsgDetail() : getMessage(e);
+        }
+        return getMessage(e);
     }
 
     /**

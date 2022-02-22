@@ -1,0 +1,2 @@
+从maven仓库下载jar包，解压找到sql/create/mysql_engine_7.16.0.sql以及sql/create/mysql_identity_7.16.0.sql
+地址：https://mvnrepository.com/artifact/org.camunda.bpm.distro/camunda-sql-scripts/7.16.0

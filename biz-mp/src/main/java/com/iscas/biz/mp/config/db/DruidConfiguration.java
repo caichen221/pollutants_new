@@ -222,9 +222,10 @@ public class DruidConfiguration implements EnvironmentAware {
             } catch (Exception e) {
                 log.error("密码:[" + value + "]解密失败", e);
             }
+            datasource.setPassword(value);
+        } else {
+            datasource.setPassword(environment.getProperty(path + "password"));
         }
-        datasource.setPassword(value);
-
         value = environment.getProperty(path + "url");
         if (StringUtils.isBlank(value)) {
             log.error("url");

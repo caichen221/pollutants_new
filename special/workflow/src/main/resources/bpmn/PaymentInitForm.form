@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "商品",
+      "type": "textfield",
+      "id": "Field_0abs6xs",
+      "key": "productName",
+      "description": "商品名称",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "价格",
+      "type": "number",
+      "id": "Field_0k1livu",
+      "key": "productPrice",
+      "description": "商品价格（原价）"
+    },
+    {
+      "label": "支付用户",
+      "type": "textfield",
+      "id": "Field_155ybni",
+      "key": "paymentAssignee",
+      "description": "支付用户ID",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "action": "submit",
+      "label": "提交",
+      "type": "button",
+      "id": "Field_0qpmcnw",
+      "key": "field_0uccsdb"
+    }
+  ],
+  "type": "default",
+  "id": "PaymentInitForm"
+}

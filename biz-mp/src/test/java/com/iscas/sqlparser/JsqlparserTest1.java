@@ -1,5 +1,6 @@
 package com.iscas.sqlparser;
 
+import com.alibaba.druid.filter.config.ConfigTools;
 import com.google.common.collect.Sets;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;
@@ -390,6 +391,5 @@ public class JsqlparserTest1 {
             columns.forEach(System.out::println);
         }
     }
-
 
 }
