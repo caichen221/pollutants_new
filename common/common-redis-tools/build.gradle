@@ -1,7 +1,7 @@
-plugins {
-    id 'java'
-//    id 'maven'
-}
+//plugins {
+//    id 'java'
+////    id 'maven'
+//}
 
 //sourceCompatibility = 1.8
 
