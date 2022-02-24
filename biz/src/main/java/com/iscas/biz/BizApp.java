@@ -44,9 +44,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = {"com.iscas"}
         , excludeFilters = {
             @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*")
-//        ,
-//            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
+            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
+            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
         }
 )
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
