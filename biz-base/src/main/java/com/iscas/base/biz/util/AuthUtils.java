@@ -2,7 +2,7 @@ package com.iscas.base.biz.util;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Map;

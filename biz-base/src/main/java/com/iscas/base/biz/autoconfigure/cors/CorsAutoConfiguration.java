@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.cors;
+package com.iscas.base.biz.autoconfigure.cors;
 
 import com.iscas.base.biz.filter.CustomCorsFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CorsProps.class)
 @ConditionalOnClass(CustomCorsFilter.class)
 @ConditionalOnProperty(prefix = "cors",matchIfMissing = true,value = "enabled")

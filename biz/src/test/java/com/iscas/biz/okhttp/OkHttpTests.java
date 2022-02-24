@@ -1,7 +1,7 @@
 package com.iscas.biz.okhttp;
 
 import cn.hutool.core.io.IoUtil;
-import com.iscas.base.biz.config.okhttp.OkHttpProps;
+import com.iscas.base.biz.autoconfigure.okhttp.OkHttpProps;
 import com.iscas.base.biz.service.common.OkHttpCustomClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

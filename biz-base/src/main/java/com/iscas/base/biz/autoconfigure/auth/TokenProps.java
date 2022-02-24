@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.auth;
+package com.iscas.base.biz.autoconfigure.auth;
 
 import com.iscas.base.biz.util.JWTUtils;
 import lombok.Data;

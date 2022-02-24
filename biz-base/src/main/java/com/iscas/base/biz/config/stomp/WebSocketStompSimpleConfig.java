@@ -1,6 +1,6 @@
 package com.iscas.base.biz.config.stomp;
 
-import com.iscas.base.biz.config.cors.CorsProps;
+import com.iscas.base.biz.autoconfigure.cors.CorsProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.config.ChannelRegistration;

@@ -1,7 +1,7 @@
 package com.iscas.base.biz.service.common;
 
 
-import com.iscas.base.biz.config.okhttp.OkHttpProps;
+import com.iscas.base.biz.autoconfigure.okhttp.OkHttpProps;
 import okhttp3.*;
 import okio.BufferedSink;
 

@@ -1,12 +1,11 @@
-package com.iscas.base.biz.config.redis.cache;
+package com.iscas.base.biz.autoconfigure.redis.cache;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -38,9 +37,9 @@ import java.util.Map;
  * @date 2020/12/7 21:42
  * @since jdk1.8
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis", matchIfMissing = false)
-public class RedisCacheConfig {
+public class RedisCacheAutoConfiguration {
     @Value("${spring.cache.redis.time-to-live:2000000}")
     private int timeToLive;
 

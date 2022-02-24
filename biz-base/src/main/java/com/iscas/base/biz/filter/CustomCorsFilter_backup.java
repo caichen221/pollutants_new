@@ -2,7 +2,7 @@ package com.iscas.base.biz.filter;
 
 
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.cors.CorsProps;
+import com.iscas.base.biz.autoconfigure.cors.CorsProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfigurationSource;

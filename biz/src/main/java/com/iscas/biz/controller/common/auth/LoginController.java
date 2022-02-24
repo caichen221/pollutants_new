@@ -3,10 +3,9 @@ package com.iscas.biz.controller.common.auth;
 
 import com.iscas.base.biz.aop.auth.SkipAuthentication;
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.common.AuthCacheService;
-import com.iscas.base.biz.util.AuthCacheUtils;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.common.tools.core.random.RandomStringUtils;

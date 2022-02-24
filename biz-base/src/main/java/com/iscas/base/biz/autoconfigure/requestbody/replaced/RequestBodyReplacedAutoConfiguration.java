@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.requestbody.replaced;
+package com.iscas.base.biz.autoconfigure.requestbody.replaced;
 
 import com.iscas.base.biz.filter.ReplaceRequestBodyFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +16,9 @@ import org.springframework.core.Ordered;
  * @since jdk1.8
  */
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "requestbody.replaced.enabled", havingValue = "true")
-public class RequestBodyReplacedConfig {
+public class RequestBodyReplacedAutoConfiguration {
 
     @Bean
     public ReplaceRequestBodyFilter replaceRequestBodyFilter() {

@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.https;
+package com.iscas.base.biz.autoconfigure.https;
 
 
 
@@ -24,9 +24,9 @@ import io.undertow.servlet.api.WebResourceCollection;
  * @date 2020/8/15 18:59
  * @since jdk1.8
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "server.ssl.enabled", havingValue = "true", matchIfMissing = false)
-public class HttpsConfig {
+public class HttpsAutoConfiguration {
 
     /**
      * http服务端口

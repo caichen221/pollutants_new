@@ -1,12 +1,9 @@
 package com.iscas.base.biz.util;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
-import com.iscas.common.web.tools.cookie.CookieUtils;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.templet.exception.BaseRuntimeException;
 
-import javax.servlet.http.Cookie;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.valid;
+package com.iscas.base.biz.autoconfigure.valid;
 
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ import java.util.Properties;
  * @date 2021/12/6 14:01
  * @since jdk1.8
  */
-@Configuration
-public class ValidatorConfig {
+@Configuration(proxyBeanMethods = false)
+public class ValidatorAutoConfiguration {
     @Autowired
     private MessageSource messageSource;
 

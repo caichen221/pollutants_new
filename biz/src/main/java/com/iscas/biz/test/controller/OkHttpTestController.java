@@ -1,24 +1,14 @@
 package com.iscas.biz.test.controller;
 
-import com.iscas.base.biz.config.okhttp.OkHttpProps;
-import com.iscas.base.biz.service.common.OkHttpCustomClient;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.web.tools.file.FileDownloadUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
-import okhttp3.*;
-import org.apache.velocity.runtime.directive.contrib.For;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 
 /**
  * okhttp文件流式传输测试

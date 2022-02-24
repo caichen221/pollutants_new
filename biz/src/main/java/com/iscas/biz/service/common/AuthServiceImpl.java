@@ -1,7 +1,7 @@
 package com.iscas.biz.service.common;
 
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
@@ -35,7 +35,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**

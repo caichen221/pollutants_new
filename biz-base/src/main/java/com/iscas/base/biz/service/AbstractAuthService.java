@@ -2,7 +2,7 @@ package com.iscas.base.biz.service;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;

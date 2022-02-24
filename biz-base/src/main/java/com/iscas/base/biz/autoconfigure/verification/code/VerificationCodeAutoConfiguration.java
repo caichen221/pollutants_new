@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.verification.code;
+package com.iscas.base.biz.autoconfigure.verification.code;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
@@ -15,9 +15,9 @@ import java.util.Properties;
  * @date 2020/8/17 20:52
  * @since jdk1.8
  */
-@Configuration
-@ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled", matchIfMissing = false)
-public class VerificationCodeConfig {
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled")
+public class VerificationCodeAutoConfiguration {
     @Bean
     public DefaultKaptcha getKaptcheCode() {
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();

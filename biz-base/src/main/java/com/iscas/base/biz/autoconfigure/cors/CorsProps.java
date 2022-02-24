@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.cors;
+package com.iscas.base.biz.autoconfigure.cors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

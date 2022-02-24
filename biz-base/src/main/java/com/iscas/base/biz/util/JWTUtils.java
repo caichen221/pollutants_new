@@ -6,15 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.core.date.DateRaiseUtils;
 import com.iscas.common.tools.core.io.file.ConfigUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.Cleanup;
-import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 

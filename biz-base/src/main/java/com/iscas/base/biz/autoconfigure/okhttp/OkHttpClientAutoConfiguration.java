@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.okhttp;
+package com.iscas.base.biz.autoconfigure.okhttp;
 
 import com.iscas.base.biz.service.common.OkHttpCustomClient;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * <p>okhttp 自动配置</p>
  **/
-@Configuration//声明配置类
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(OkHttpProps.class)
 @ConditionalOnClass(OkHttpCustomClient.class)
 @ConditionalOnProperty(prefix="okhttp",value="enabled",matchIfMissing=true)

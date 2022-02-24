@@ -2,7 +2,7 @@ package com.iscas.base.biz.controller.common;
 
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.config.StaticInfo;
-import com.iscas.base.biz.config.cors.CorsProps;
+import com.iscas.base.biz.autoconfigure.cors.CorsProps;
 import com.iscas.base.biz.util.AccessLogUtils;
 import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.base.biz.util.CorsUtils;
@@ -31,12 +31,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice

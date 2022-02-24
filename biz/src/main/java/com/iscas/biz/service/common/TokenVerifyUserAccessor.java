@@ -2,7 +2,7 @@ package com.iscas.biz.service.common;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.config.Constants;
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.config.stomp.UserAccessor;
 import com.iscas.base.biz.model.auth.User;
 import com.iscas.base.biz.util.JWTUtils;
@@ -14,7 +14,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;

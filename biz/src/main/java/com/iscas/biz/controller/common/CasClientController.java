@@ -1,8 +1,7 @@
 package com.iscas.biz.controller.common;
 
-import com.iscas.base.biz.config.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.config.cas.ConditionalOnCustomCasClient;
-import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.service.common.AuthServiceImpl;
 import com.iscas.templet.common.BaseController;
@@ -10,7 +9,6 @@ import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.LoginException;
 import org.jasig.cas.client.util.AssertionHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

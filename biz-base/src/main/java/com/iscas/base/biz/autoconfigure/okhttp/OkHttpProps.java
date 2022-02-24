@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.okhttp;//package com.iscas.cmi.config.okhttp;
+package com.iscas.base.biz.autoconfigure.okhttp;//package com.iscas.cmi.config.okhttp;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

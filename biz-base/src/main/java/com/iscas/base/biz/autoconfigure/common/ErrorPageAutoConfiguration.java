@@ -1,6 +1,7 @@
-package com.iscas.base.biz.config.common;
+package com.iscas.base.biz.autoconfigure.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
@@ -15,9 +16,10 @@ import org.springframework.http.HttpStatus;
  * @date 2018/7/17 8:41
  * @since jdk1.8
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Slf4j
-public class ErrorPageConfig implements ErrorPageRegistrar {
+@ConditionalOnClass(ErrorPageRegistry.class)
+public class ErrorPageAutoConfiguration implements ErrorPageRegistrar {
     @Override
     public void registerErrorPages(ErrorPageRegistry registry) {
         log.info("-----------错误页面路径配置------------");

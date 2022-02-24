@@ -1,4 +1,4 @@
-package com.iscas.base.biz.config.i18n;
+package com.iscas.base.biz.autoconfigure.i18n;
 
 import cn.hutool.core.util.StrUtil;
 import com.iscas.common.tools.constant.HeaderKey;
@@ -18,8 +18,8 @@ import java.util.Locale;
  * @date 2021/12/6 13:31
  * @since jdk1.8
  */
-@Configuration
-public class I18nConfig {
+@Configuration(proxyBeanMethods = false)
+public class I18nAutoConfiguration {
 
     @Bean
     public LocaleResolver localeResolver() {
