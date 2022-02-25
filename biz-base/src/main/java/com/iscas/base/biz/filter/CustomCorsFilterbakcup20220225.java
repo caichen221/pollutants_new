@@ -1,15 +1,11 @@
 //package com.iscas.base.biz.filter;
 //
 //
-//import com.iscas.base.biz.config.Constants;
 //import com.iscas.base.biz.autoconfigure.cors.CorsProps;
+//import com.iscas.base.biz.config.Constants;
 //import lombok.extern.slf4j.Slf4j;
-//import org.springframework.util.Assert;
-//import org.springframework.web.cors.CorsConfigurationSource;
-//import org.springframework.web.cors.CorsProcessor;
 //import org.springframework.web.cors.CorsUtils;
-//import org.springframework.web.cors.DefaultCorsProcessor;
-//import org.springframework.web.filter.CorsFilter;
+//import org.springframework.web.filter.OncePerRequestFilter;
 //
 //import javax.servlet.FilterChain;
 //import javax.servlet.ServletException;
@@ -28,22 +24,16 @@
 // * @Modified:
 // **/
 //@Slf4j
-//public class CustomCorsFilter_backup extends CorsFilter {
-//    private final CorsConfigurationSource configSource;
-//    private CorsProcessor processor = new DefaultCorsProcessor();
+//public class CustomCorsFilterbakcup20220225 extends OncePerRequestFilter {
 //    private CorsProps corsProps;
 //    private Set<String> ignoreUrlAllMatchSet = new HashSet<>();
 //    Set<String> ignoreUrlPrefixSet = new HashSet<>();
 //
 //
-//    public CustomCorsFilter_backup(CorsConfigurationSource configSource, CorsProps corsProps) {
-//
-//        super(configSource);
+//    public CustomCorsFilterbakcup20220225(CorsProps corsProps) {
 //        if (log.isDebugEnabled()) {
 //            log.debug("进入 CustomCrosFilter 过滤器");
 //        }
-//        Assert.notNull(configSource, "CorsConfigurationSource must not be null");
-//        this.configSource = configSource;
 //        this.corsProps = corsProps;
 //        if (corsProps.getIgnoreUrls() != null) {
 //            for (String urlStr : corsProps.getIgnoreUrls()) {
@@ -57,13 +47,6 @@
 //            }
 //        }
 //
-//    }
-//
-//
-//    @Override
-//    public void setCorsProcessor(CorsProcessor processor) {
-//        Assert.notNull(processor, "CorsProcessor must not be null");
-//        this.processor = processor;
 //    }
 //
 //

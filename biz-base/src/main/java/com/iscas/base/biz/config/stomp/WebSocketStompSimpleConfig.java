@@ -35,7 +35,8 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
         // 来和服务器的WebSocket连接
         StompWebSocketEndpointRegistration stompWebSocketEndpointRegistration = registry.addEndpoint("/webSocketServer", "/webSsh")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins(corsProps.getOrigin());
+                .setAllowedOriginPatterns(corsProps.getOriginPattern());
+//                .setAllowedOrigins(corsProps.getOrigin());
         if (wsSockJsEnabled) {
             stompWebSocketEndpointRegistration.withSockJS();
         }

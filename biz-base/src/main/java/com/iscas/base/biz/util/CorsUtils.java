@@ -25,7 +25,8 @@ public class CorsUtils {
     public static String checkOrigin(HttpServletRequest request, HttpServletResponse response, CorsProps corsProps) throws IOException {
         String origin = request.getHeader(HeaderKey.ORIGIN);
         if (origin == null || "null".equals(origin)) {
-            origin = corsProps.getOrigin();
+//            origin = corsProps.getOrigin();
+            origin = corsProps.getOriginPattern();
         }
         //为了不报安全漏洞，检测一下origin
         Matcher matcher = originErrorPattern.matcher(origin);

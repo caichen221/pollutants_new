@@ -197,7 +197,8 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
             try {
                 origin = CorsUtils.checkOrigin(request, response, corsProps);
             } catch (IOException e) {
-                origin = corsProps.getOrigin();
+//                origin = corsProps.getOrigin();
+                origin = corsProps.getOriginPattern();
             }
             response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
         }

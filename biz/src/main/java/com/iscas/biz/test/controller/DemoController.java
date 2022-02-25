@@ -47,6 +47,7 @@ public class DemoController {
     )
     @PostMapping("/tx2")
     public String tx(@RequestBody Map<String, Object> map) {
+        CookieUtils.setCookie(SpringUtils.getResponse(), "a", "aaa", 1000000);
         return "tx";
     }
 

@@ -16,7 +16,7 @@ import org.springframework.web.cors.CorsConfiguration;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CorsProps.class)
 @ConditionalOnClass(CustomCorsFilter.class)
-@ConditionalOnProperty(prefix = "cors",matchIfMissing = true,value = "enabled")
+@ConditionalOnProperty(prefix = "cors",matchIfMissing = true,value = "enabled", havingValue = "true")
 @Slf4j
 public class CorsAutoConfiguration {
     @Autowired
@@ -37,7 +37,7 @@ public class CorsAutoConfiguration {
         // 注意: CORS请求发送Cookie时，Access-Control-Allow-Origin只能是与请求网页一致的域名。
         // 同时，Cookie依然遵循同源政策，只有用服务器域名设置的Cookie才会上传，其他域名的Cookie并不会上传，
         // 且（跨源）原网页代码中的document.cookie也无法读取服务器域名下的Cookie。
-        corsConfiguration.addAllowedOrigin(corsProps.getOrigin());
+        corsConfiguration.addAllowedOriginPattern(corsProps.getOriginPattern());
         corsConfiguration.addAllowedHeader(corsProps.getHeaders());
         // Access-Control-Allow-Methods
         // 该字段必填。它的值是逗号分隔的一个具体的字符串或者*，表明服务器支持的所有跨域请求的方法。
