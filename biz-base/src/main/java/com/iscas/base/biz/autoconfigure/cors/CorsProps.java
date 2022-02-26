@@ -12,7 +12,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class CorsProps {
-    private String origin = "*";
+//    private String origin = "*";
+    private String originPattern = "*";
     private String credentials = "true";
     private String methods = "POST, GET, PUT, DELETE, OPTIONS";
     private String headers = "Content-Type, Data-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Accept, DataType, responseType";

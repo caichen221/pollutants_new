@@ -53,7 +53,8 @@ public class WebSocketStompProxyRabbitmqConfig /*extends AbstractWebSocketMessag
         // 来和服务器的WebSocket连接
         registry.addEndpoint("/webSocketServer", "/webSsh")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins(corsProps.getOrigin())
+                .setAllowedOriginPatterns(corsProps.getOriginPattern())
+//                .setAllowedOrigins(corsProps.getOrigin())
                 .withSockJS();
 
         //如果想暴露多个节点,继续addEndpoint就可以
