@@ -27,7 +27,14 @@ import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.StrConstantEnum;
 import com.iscas.common.tools.core.io.file.IoRaiseUtils;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.Alias;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -55,6 +62,8 @@ import org.springframework.util.ResourceUtils;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -362,7 +371,28 @@ public class DruidConfiguration implements EnvironmentAware {
 //        factory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
 //                paginationInterceptor() //添加分页功能
 //        });
-        PaginationInnerInterceptor paginationInnerInterceptor = paginationInterceptor();
+//        PaginationInnerInterceptor paginationInnerInterceptor = paginationInterceptor();
+        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
+        Field field = paginationInnerInterceptor.getClass().getDeclaredField("COUNT_SELECT_ITEM");
+        ReflectUtils.makeAccessible(field);
+        Function function = new Function();
+        function.setName("COUNT");
+        List<Expression> expressions = new ArrayList<>();
+        LongValue longValue = new LongValue(1);
+        ExpressionList expressionList = new ExpressionList();
+        expressions.add(longValue);
+        expressionList.setExpressions(expressions);
+        function.setParameters(expressionList);
+        SelectExpressionItem selectExpressionItem = new SelectExpressionItem(function).withAlias(new Alias("total"));
+        Field modifiers = Field.class.getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        //去掉final修饰符
+        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, Collections.singletonList(selectExpressionItem));
+        //再把final修饰符给加回来
+        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+
+
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
