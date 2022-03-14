@@ -107,6 +107,7 @@ public class DruidConfiguration implements EnvironmentAware {
     private ApplicationContext context;
 
     @Bean(name = "dynamicDatasource")
+    @Primary
     public DataSource dynamicDataSource() throws SQLException {
         String db = environment.getProperty("spring.datasource.names");
 
