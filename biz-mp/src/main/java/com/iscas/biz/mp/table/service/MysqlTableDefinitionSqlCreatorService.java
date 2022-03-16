@@ -39,7 +39,7 @@ public class MysqlTableDefinitionSqlCreatorService implements ITableDefinitionSq
 
     @Override
     public String saveDataSql() {
-        return sql();
+        return sql() + ";SELECT @@Identity";
     }
 
     @Override
