@@ -59,6 +59,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.ResourceUtils;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import java.io.*;
@@ -105,6 +106,14 @@ public class DruidConfiguration implements EnvironmentAware {
     private Environment environment;
     @Autowired
     private ApplicationContext context;
+
+    /*
+     * 解决druid 日志报错：discard long time none received connection:xxx
+     * */
+    @PostConstruct
+    public void setProperties(){
+        System.setProperty("druid.mysql.usePingMethod","false");
+    }
 
     @Bean(name = "dynamicDatasource")
     @Primary
