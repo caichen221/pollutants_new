@@ -2,6 +2,9 @@ package com.iscas.common.tools.core.date;
 
 import com.iscas.common.tools.constant.MonthEnum;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -173,5 +176,12 @@ public class DateRaiseUtils {
     public static Date timeOffset(Date time, long offset) {
         time = new Date(time.getTime() + offset);
         return time;
+    }
+
+    /**时间转换*/
+    public static LocalDateTime convert2LocalDateTime(Date date) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant instant1 = date.toInstant();
+        return instant1.atZone(zoneId).toLocalDateTime();
     }
 }
