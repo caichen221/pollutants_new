@@ -8,6 +8,7 @@ import com.iscas.base.biz.config.stomp.WsPushType;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
+import com.iscas.biz.mp.aop.enable.EnableQuartz;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -72,6 +73,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableCustomCasClient //是否开启自定义的Cas客户端
 //@EnableCheckReferer //是否校验referer，需配合配置文件内的域名白名单
 @RetrofitScan("com.iscas.biz.test.retrofit") //扫描retrofit的包
+@EnableQuartz //允许quartz
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

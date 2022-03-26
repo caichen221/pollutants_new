@@ -54,6 +54,10 @@ dependencies {
 
     api group: 'org.springframework.boot', name: 'spring-boot-starter-jta-atomikos'
 
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-quartz'
+
+    api group: 'org.springframework', name: 'spring-jdbc'
+
     api group: 'org.apache.shardingsphere', name: 'sharding-jdbc-core', version: "${shardingJdbcCoreVersion}"
     api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
     api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
