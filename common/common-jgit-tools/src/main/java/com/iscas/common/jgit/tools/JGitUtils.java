@@ -1,7 +1,5 @@
 package com.iscas.common.jgit.tools;
 
-import com.iscas.common.jgit.tools.exception.JGitException;
-import com.iscas.common.jgit.tools.model.CompareResult;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;

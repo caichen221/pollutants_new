@@ -180,6 +180,9 @@ public class DateRaiseUtils {
 
     /**时间转换*/
     public static LocalDateTime convert2LocalDateTime(Date date) {
+        if (date == null) {
+            return null;
+        }
         ZoneId zoneId = ZoneId.systemDefault();
         Instant instant1 = date.toInstant();
         return instant1.atZone(zoneId).toLocalDateTime();
