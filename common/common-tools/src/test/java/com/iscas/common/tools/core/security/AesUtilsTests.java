@@ -15,7 +15,8 @@ public class AesUtilsTests {
      * */
     @Test
     public void aesEncrpty() throws Exception {
-        String sec = AesUtils.aesEncrypt("gfdx");
+        String sec = AesUtils.aesEncrypt("123456");
+        System.out.println(sec);
         Assertions.assertNotNull(sec);
     }
 
