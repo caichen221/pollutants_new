@@ -15,7 +15,7 @@ public class AesUtilsTests {
      * */
     @Test
     public void aesEncrpty() throws Exception {
-        String sec = AesUtils.aesEncrypt("123456");
+        String sec = AesUtils.aesEncrypt("USER2");
         System.out.println(sec);
         Assertions.assertNotNull(sec);
     }

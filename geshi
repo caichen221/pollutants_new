@@ -1,11 +1,9 @@
 方法注释：
 /**
  * //TODO
- * @version 1.0
  * @since jdk1.8
  * @date $date$
  * @param $param$
- * @throws $exception$
  * @return $return$
  */
 
@@ -13,7 +11,7 @@
 类注释：
  /**
  * //TODO
- * @vesion 1.0
+ * @version 1.0
  * @since jdk1.8
  * @author zhuquanwen
  * @date ${DATE} ${TIME}
