@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
+import com.iscas.biz.mp.config.db.DynamicTableNameHolder;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.mp.test.mapper.TestMapper;
 import com.iscas.biz.mp.test.model.Test;
@@ -13,14 +14,10 @@ import com.iscas.biz.mp.test.service.impl.TestService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +41,25 @@ public class TestController extends BaseController {
 
 //    @Autowired
     private final DynamicMapper dynamicMapper;
+
+
+    /**
+     * 测试自定义表名
+     * */
+    @GetMapping("/dynamic-tablename")
+    public ResponseEntity dynamicTableName() {
+        ResponseEntity response = getResponse();
+        try {
+            DynamicTableNameHolder.set("test_copy1");
+            List<Test> tests = testMapper.selectList(null);
+            response.setValue(tests);
+            List<Test> tests1 = testMapper.selectList(null);
+        } finally {
+            DynamicTableNameHolder.remove();
+        }
+        List<Test> tests = testMapper.selectList(null);
+        return response;
+    }
 
     /**
      * 测试分页查询

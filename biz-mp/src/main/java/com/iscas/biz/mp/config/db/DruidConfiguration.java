@@ -16,17 +16,16 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
-import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableShardingJdbc;
 import com.iscas.biz.mp.enhancer.injector.CustomSqlInjector;
 import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.StrConstantEnum;
-import com.iscas.common.tools.core.io.file.IoRaiseUtils;
 import com.iscas.common.tools.core.reflect.ReflectUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Alias;
@@ -35,12 +34,12 @@ import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,18 +50,18 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
@@ -382,30 +381,16 @@ public class DruidConfiguration implements EnvironmentAware {
 //                paginationInterceptor() //添加分页功能
 //        });
 //        PaginationInnerInterceptor paginationInnerInterceptor = paginationInterceptor();
-        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
-        Field field = paginationInnerInterceptor.getClass().getDeclaredField("COUNT_SELECT_ITEM");
-        ReflectUtils.makeAccessible(field);
-        Function function = new Function();
-        function.setName("COUNT");
-        List<Expression> expressions = new ArrayList<>();
-        LongValue longValue = new LongValue(1);
-        ExpressionList expressionList = new ExpressionList();
-        expressions.add(longValue);
-        expressionList.setExpressions(expressions);
-        function.setParameters(expressionList);
-        SelectExpressionItem selectExpressionItem = new SelectExpressionItem(function).withAlias(new Alias("total"));
-        Field modifiers = Field.class.getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        //去掉final修饰符
-        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
-        field.set(null, Collections.singletonList(selectExpressionItem));
-        //再把final修饰符给加回来
-        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+        // 分页插件
+        PaginationInnerInterceptor paginationInnerInterceptor = getPaginationInnerInterceptor();
 
+        // 动态表名
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = getDynamicTableNameInterceptor();
 
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
         factory.setPlugins(interceptor);
         if (StringUtils.isNotBlank(enumPackages)) {
             factory.setTypeEnumsPackage(enumPackages);
@@ -428,6 +413,39 @@ public class DruidConfiguration implements EnvironmentAware {
 
         sqlSessionFactoryCustomizers.customize(configuration, factory);
         return factory.getObject();
+    }
+
+    private DynamicTableNameInnerInterceptor getDynamicTableNameInterceptor() {
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
+        dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
+            String tableName1 = DynamicTableNameHolder.get();
+            return StringUtils.isNotEmpty(tableName1) ? tableName1 : tableName;
+        });
+        return dynamicTableNameInnerInterceptor;
+    }
+
+    @NotNull
+    private PaginationInnerInterceptor getPaginationInnerInterceptor() throws NoSuchFieldException, IllegalAccessException {
+        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
+        Field field = paginationInnerInterceptor.getClass().getDeclaredField("COUNT_SELECT_ITEM");
+        ReflectUtils.makeAccessible(field);
+        Function function = new Function();
+        function.setName("COUNT");
+        List<Expression> expressions = new ArrayList<>();
+        LongValue longValue = new LongValue(1);
+        ExpressionList expressionList = new ExpressionList();
+        expressions.add(longValue);
+        expressionList.setExpressions(expressions);
+        function.setParameters(expressionList);
+        SelectExpressionItem selectExpressionItem = new SelectExpressionItem(function).withAlias(new Alias("total"));
+        Field modifiers = Field.class.getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        //去掉final修饰符
+        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, Collections.singletonList(selectExpressionItem));
+        //再把final修饰符给加回来
+        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+        return paginationInnerInterceptor;
     }
 
     @Bean
