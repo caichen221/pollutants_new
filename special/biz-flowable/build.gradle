@@ -1,0 +1,23 @@
+
+dependencies {
+    api project(":biz-base")
+    api "org.flowable:flowable-spring-boot-starter-basic:${flowableVersion}"
+    api ("org.flowable:flowable-ui-modeler-rest:${flowableVersion}") {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
+        exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+    }
+    api ("org.liquibase:liquibase-core:${liquibaseVersion}") {
+        exclude group: 'ch.qos.logback', module: 'logback-core'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+    api ("org.flowable:flowable-ui-idm-rest:${flowableVersion}") {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
+        exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+    }
+
+    api "com.baidu.ueditor:ueditor:${ueditVersion}"
+    api "org.json:json:${orgJsonVersion}"
+}
+

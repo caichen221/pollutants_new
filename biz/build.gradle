@@ -30,6 +30,7 @@ bootRun {
 
 dependencies {
     api project(":biz-base")
+//    api project(":special:biz-flowable")
 //    api project(":common:common-tools")
 
     api project(":biz-ssh-server")

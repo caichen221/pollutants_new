@@ -1,0 +1,53 @@
+package com.iscas.flowable.common.persistence;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+/**
+ * Activiti Entity类
+ *
+ * @author zhuquanwen
+ * @version 1.0
+ * @date 2022/4/18 21:04
+ * @since jdk11
+ */
+public class ActEntity {
+    private static final long serialVersionUID = 1L;
+
+    protected Flow flow; 		// 流程任务对象
+
+    public ActEntity() {
+        super();
+    }
+
+    public ActEntity(String id) {
+        super(id);
+    }
+
+    @JsonIgnore
+    public Flow getAct() {
+        if (flow == null){
+            flow = new Flow();
+        }
+        return flow;
+    }
+
+    public void setAct(Flow flow) {
+        this.flow = flow;
+    }
+
+    /**
+     * 获取流程实例ID
+     * @return
+     */
+    public String getProcInsId() {
+        return this.getAct().getProcInsId();
+    }
+
+    /**
+     * 设置流程实例ID
+     * @param procInsId
+     */
+    public void setProcInsId(String procInsId) {
+        this.getAct().setProcInsId(procInsId);
+    }
+}

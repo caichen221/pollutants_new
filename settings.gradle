@@ -45,4 +45,6 @@ findProject(':common:common-rocketmq-tools')?.name = 'common-rocketmq-tools'
 //findProject(':special:workflow-webapp')?.name = 'workflow-webapp'
 //include 'special:workflow'
 //findProject(':special:workflow')?.name = 'workflow'
+include 'special:biz-flowable'
+findProject(':special:biz-flowable')?.name = 'biz-flowable'
 
