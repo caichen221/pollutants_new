@@ -26,7 +26,7 @@ import java.util.Map;
  * @date 2021/2/26 9:26
  * @since jdk1.8
  */
-@Component
+//@Component
 public class TokenVerifyUserAccessor implements UserAccessor {
     @Override
     public void accessor(Message<?> message, StompHeaderAccessor accessor) {

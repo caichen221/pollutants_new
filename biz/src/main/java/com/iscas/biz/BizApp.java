@@ -1,5 +1,6 @@
 package com.iscas.biz;
 
+import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
@@ -28,6 +29,9 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+
 /**
  * 启动类
  *
@@ -44,8 +48,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ServletComponentScan //自动扫描servletBean
 @ComponentScan(basePackages = {"com.iscas"}
         , excludeFilters = {
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
+//            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
+//            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
             @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
         }
 )

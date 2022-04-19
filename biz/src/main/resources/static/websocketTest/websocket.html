@@ -20,7 +20,7 @@ Welcome<br/><input id="text" type="text"/>
     };
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:7901/demo/websocket");
+        websocket = new WebSocket("ws://localhost:80/demo/websocket");
         console.log(websocket);
     }
     else {

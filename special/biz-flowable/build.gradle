@@ -1,6 +1,8 @@
 
 dependencies {
+    api fileTree(dir:'libs',include:['*.jar'])
     api project(":biz-base")
+    api project(":biz-mp")
     api "org.flowable:flowable-spring-boot-starter-basic:${flowableVersion}"
     api ("org.flowable:flowable-ui-modeler-rest:${flowableVersion}") {
         exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
@@ -17,7 +19,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'jul-to-slf4j'
     }
 
-    api "com.baidu.ueditor:ueditor:${ueditVersion}"
+//    api "com.baidu.ueditor:ueditor:${ueditVersion}"
     api "org.json:json:${orgJsonVersion}"
 }
 
