@@ -43,6 +43,11 @@ dependencies {
     //引入mybatis,如果引入了这个模块，
     api project(":biz-mp")
 
+    api "org.flowable:flowable-spring-boot-starter-basic:${flowableVersion}"
+    api group: 'org.eweb4j', name: 'fel', version: "${felVersion}"
+    api group: 'xerces', name: 'xercesImpl', version: "${xercesImplVersion}"
+
+
     //引入jpa,如果引入了这个模块
 //    api project(":biz-jpa")
 

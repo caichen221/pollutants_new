@@ -105,9 +105,13 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                     throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
                 }
                 //如果token不为null,校验token
-                String username = null;
+                String username;
+                int userId;
                 try {
-                    username = authService.verifyToken(token);
+                    String userIdAndName = authService.verifyToken(token);
+                    String[] strs = userIdAndName.split(";");
+                    userId = Integer.parseInt(strs[0]);
+                    username = strs[1];
                 } catch (ValidTokenException e) {
                     throw new AuthenticationRuntimeException("校验身份信息出错", "校验token出错");
                 }
@@ -116,6 +120,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 }
 
                 authContext.setUsername(username);
+                authContext.setUserId(userId);
 
                 List<Role> roles = authService.getRoles(username);
                 authContext.setRoles(roles);

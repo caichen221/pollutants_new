@@ -348,6 +348,20 @@
             <AppenderRef ref="consoleAppender"/>
         </AsyncLogger>
 
+        <AsyncLogger name="org.flowable" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="org.apache.ibatis.transaction" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="infoFileAppender"/>
+            <AppenderRef ref="warnFileAppender"/>
+            <AppenderRef ref="errorFileAppender"/>
+            <AppenderRef ref="consoleAppender"/>
+        </AsyncLogger>
+
         <AsyncLogger name="com.iscas.biz.config.log.AccessLogInterceptor" level="debug" includeLocation="true" additivity="false">
             <AppenderRef ref="accessAppender"/>
             <AppenderRef ref="consoleAppender"/>

@@ -34,7 +34,7 @@ public class CasClientController extends BaseController {
         //获取CAS登录的用户名
         String username = AssertionHolder.getAssertion().getPrincipal().getName();
         ResponseEntity response = getResponse();
-        authService.createToken(SpringUtils.getResponse(), username, response, ((Long) tokenProps.getExpire().toMinutes()).intValue(), tokenProps.getCookieExpire(), "", "");
+        authService.createToken(SpringUtils.getResponse(), -1, username, response, ((Long) tokenProps.getExpire().toMinutes()).intValue(), tokenProps.getCookieExpire(), "", "");
         return response;
     }
 }

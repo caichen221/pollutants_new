@@ -204,16 +204,16 @@ public class AuthServiceImpl extends AbstractAuthService {
                 throw new LoginException("校验密码出错");
             }
             //生成token
-            createToken(response, username, responseEntity, expire, cookieExpire, userLockedKey, userLoginErrorCountKey);
+            createToken(response, dbUser.getUserId(), username, responseEntity, expire, cookieExpire, userLockedKey, userLoginErrorCountKey);
         }
     }
 
-    public void createToken(HttpServletResponse response, String username, ResponseEntity responseEntity, int expire, int cookieExpire, String userLockedKey, String userLoginErrorCountKey) throws LoginException {
+    public void createToken(HttpServletResponse response, Integer userId, String username, ResponseEntity responseEntity, int expire, int cookieExpire, String userLockedKey, String userLoginErrorCountKey) throws LoginException {
         String token = null;
         try {
             String sessionId = UUID.randomUUID().toString();
 
-            token = JWTUtils.createToken(username, expire, tokenProps.getCreatorMode());
+            token = JWTUtils.createToken(userId + ";" + username, expire, tokenProps.getCreatorMode());
             //清除以前的TOKEN
             //修改逻辑，改为适应一个用户允许多会话，数目配置在配置文件
             authCacheService.rpush("user-token:" + username, token, Constants.AUTH_CACHE);

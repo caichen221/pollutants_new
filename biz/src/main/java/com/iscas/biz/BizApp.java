@@ -57,7 +57,7 @@ import java.nio.charset.StandardCharsets;
 @EnableCaching //开启缓存
 @EnableTransactionManagement //开启事务支持
 @EnableRateLimiter //开启自定义的限流支持
-//@EnableAuth //开启自定义的用户认证，权限校验
+@EnableAuth //开启自定义的用户认证，权限校验
 @EnableOpenAuthClient //连接自定义的开放平台，与EnableAuth二者取一
 @EnableWebsocketStomp(pushType = WsPushType.SIMPLE) //开启websocketstomp支持
 @EnableLog //允许日志记录
@@ -70,7 +70,7 @@ import java.nio.charset.StandardCharsets;
 //@EnableElasticJob(withDatasource = false) //更新为elastic-job3.0后暂不支持日志记录到数据库
 @EnableMybatis //mybatis开关,不启用Mybatis时最好把@EnableAuth也注释，不然认证授权会报错
 @EnableRetry(proxyTargetClass = true) //是否允许方法重试功能
-@EnableAtomikos //开启Atomikos分布式事务（有些数据库需要给权限）
+//@EnableAtomikos //开启Atomikos分布式事务（有些数据库需要给权限）
 @EnableShedLock //shedlock开关，spring定时任务锁（暂时只能应用到spring的@Scheduled定时任务上）
 //@EnableShardingJdbc //是否开启分库分表
 @EnableSpringBootAdminClient //是否开启springboot-admin客户端，如果不使用可以关闭，防止一直连接admin服务

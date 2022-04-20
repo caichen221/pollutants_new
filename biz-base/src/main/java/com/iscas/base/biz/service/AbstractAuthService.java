@@ -43,10 +43,11 @@ public abstract class AbstractAuthService implements Constants {
         try {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             String username = clainMap.get("username").asString();
+            Integer userId = clainMap.get("userId").asInt();
             if (username == null) {
                 throw new ValidTokenException("token 校验失败");
             }
-            return username;
+            return userId + ";" + username;
         } catch (ValidTokenException e) {
             throw new ValidTokenException(e.getMessage(), e.getMsgDetail());
         } catch (Exception e) {

@@ -54,7 +54,7 @@ public class RequiredRoleAspect implements Constants {
             throw new AuthorizationException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
         //如果token不为null,校验token
-        String username = authService.verifyToken(token);
+        String username = authService.verifyToken(token).split(";")[1];
         List<Role> roles = authService.getRoles(username);
         if (CollectionUtils.isNotEmpty(roles)) {
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +

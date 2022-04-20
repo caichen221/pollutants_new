@@ -77,13 +77,13 @@ public class JWTUtils {
         return createToken(username, expire, AlgorithmType.HMAC256);
     }
 
-    public static String createToken(String username, int expire, AlgorithmType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static String createToken(String userIdAndName, int expire, AlgorithmType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         Date iatDate = new Date();
         Date expiresDate = DateRaiseUtils.afterOffsetDate(expire * 60 * 1000L);
         Map<String, Object> map = new HashMap<>(2 << 2);
         map.put("alg", "HS256");
         map.put("typ", "JWT");
-        String token = doCreateToken(username, iatDate, expiresDate, map, type);
+        String token = doCreateToken(userIdAndName, iatDate, expiresDate, map, type);
         //将token缓存起来
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
         authCacheService.set(token, iatDate, Constants.AUTH_CACHE, expire * 60);
@@ -180,14 +180,24 @@ public class JWTUtils {
         return Algorithm.RSA256(publicKey, privateKey);
     }
 
-    private static String doCreateToken(String username, Date iatDate, Date expiresDate, Map<String, Object> map, AlgorithmType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Algorithm algorithm = null;
+    private static String doCreateToken(String userIdAndName, Date iatDate, Date expiresDate, Map<String, Object> map, AlgorithmType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Algorithm algorithm;
+        String username;
+        Integer userId = -1;
+        if (userIdAndName.contains(";")) {
+            String[] strs = userIdAndName.split(";");
+            userId = Integer.parseInt(strs[0]);
+            username = strs[1];
+        } else {
+            username = userIdAndName;
+        }
         switch (type) {
             case HMAC256:
                 algorithm = Algorithm.HMAC256(SECRET);
                 return JWT.create()
                         .withHeader(map)
                         .withClaim("username", username)
+                        .withClaim("userId", userId)
                         .withClaim("date", iatDate)
                         .withExpiresAt(expiresDate)
                         .withIssuedAt(iatDate)
@@ -197,6 +207,7 @@ public class JWTUtils {
                         .withHeader(map)
                         .withIssuer(ISS)
                         .withClaim("username", username)
+                        .withClaim("userId", userId)
                         .withClaim("date", iatDate)
                         .withClaim("sub", ISS)
                         .withClaim("iss", ISS)
