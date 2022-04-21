@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
  * 节点基本信息污点
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 16:43
  * @since jdk1.8
  */

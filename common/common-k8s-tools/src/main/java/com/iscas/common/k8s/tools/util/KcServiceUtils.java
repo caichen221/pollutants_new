@@ -18,24 +18,24 @@ import java.text.ParseException;
 import java.util.*;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/30 17:30
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class KcServiceUtils {
-    private KcServiceUtils() {}
+    private KcServiceUtils() {
+    }
 
 
     /**
      * 删除一个service
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/12
+     *
      * @param kcService 这里主要使用内部的两个属性：namespace,name
-     * @throws
-     * @return void
+     * @throws K8sClientException K8S异常
+     * @date 2021/1/12
+     * @since jdk1.8
      */
     public static void deleteService(KcService kcService) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
@@ -52,7 +52,7 @@ public class KcServiceUtils {
                 throw new K8sClientException(String.format("无法从k8s的命名空间:[%s]获取services", kcService.getNamespace()));
             }
         } else {
-            throw new K8sClientException(String.format("无法从k8s获取services"));
+            throw new K8sClientException("无法从k8s获取services");
         }
     }
 
@@ -65,44 +65,25 @@ public class KcServiceUtils {
             if (nonNamespaceOperation != null) {
                 ServiceResource<Service> serviceResource = nonNamespaceOperation.withName(name);
                 Service service = serviceResource.get();
-                if (service != null) {
-                    return true;
-                }
+                return service != null;
             } else {
                 throw new K8sClientException(String.format("无法从k8s的命名空间:[%s]获取services", namespace));
             }
         } else {
-            throw new K8sClientException(String.format("无法从k8s获取services"));
+            throw new K8sClientException("无法从k8s获取services");
         }
-        return false;
     }
 
     /**
      * 创建一个service,当前策略是,如果有这个service,直接删除，重新创建
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/12
+     *
      * @param kcService service对应的一些属性，如端口，selector等
-     * @throws
-     * @return void
+     * @throws K8sClientException K8S异常
+     * @date 2021/1/12
+     * @since jdk1.8
      */
     public static void createService(KcService kcService) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        //如果有启动的，先关闭
-//        deleteService(kcService);
-        //这里删除任务提交后k8s可能还未删除，造成后面创建service提示已存在，暂时先做一个处理,最多等3S
-//        for (int i = 0; i < 10; i++) {
-//            boolean exists = serviceExists(kcService.getNamespace(), kcService.getName());
-//            if (exists) {
-//                try {
-//                    TimeUnit.MILLISECONDS.sleep(300);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                break;
-//            }
-//        }
         MixedOperation<Service, ServiceList, ServiceResource<Service>> mixedOperation = kc.services();
         if (mixedOperation != null) {
             NonNamespaceOperation<Service, ServiceList, ServiceResource<Service>> nonNamespaceOperation = mixedOperation.inNamespace(kcService.getNamespace());
@@ -110,7 +91,7 @@ public class KcServiceUtils {
                 //创建新的service
                 List<String[]> selectors = kcService.getSelectors();
                 //构建选择器，可以关联到deployment
-                Map<String, String> selectorMap = new HashMap<>();
+                Map<String, String> selectorMap = new HashMap<>(16);
                 if (CollectionUtils.isNotEmpty(selectors)) {
                     for (String[] selector : selectors) {
                         selectorMap.put(selector[0], selector[1]);
@@ -118,7 +99,7 @@ public class KcServiceUtils {
                 }
 
                 //label暂时构建一个与name一致的label
-                Map<String, String> labels = new HashMap<>();
+                Map<String, String> labels = new HashMap<>(16);
                 labels.put("name", kcService.getName());
 
                 //port
@@ -127,11 +108,21 @@ public class KcServiceUtils {
                 if (CollectionUtils.isNotEmpty(ports)) {
                     for (KcServicePort port : ports) {
                         ServicePort servicePort = new ServicePort();
-                        if (port.getPort() != null) servicePort.setPort(port.getPort());
-                        if (port.getTargetPort() != null) servicePort.setTargetPort(new IntOrString(port.getTargetPort()));
-                        if (port.getNodePort() != null) servicePort.setNodePort(port.getNodePort());
-                        if (port.getPortName() != null) servicePort.setName(port.getPortName());
-                        if (port.getProtocol() != null) servicePort.setProtocol(port.getProtocol());
+                        if (port.getPort() != null) {
+                            servicePort.setPort(port.getPort());
+                        }
+                        if (port.getTargetPort() != null) {
+                            servicePort.setTargetPort(new IntOrString(port.getTargetPort()));
+                        }
+                        if (port.getNodePort() != null) {
+                            servicePort.setNodePort(port.getNodePort());
+                        }
+                        if (port.getPortName() != null) {
+                            servicePort.setName(port.getPortName());
+                        }
+                        if (port.getProtocol() != null) {
+                            servicePort.setProtocol(port.getProtocol());
+                        }
                         servicePorts.add(servicePort);
                     }
                 }
@@ -149,9 +140,6 @@ public class KcServiceUtils {
                 Service service = serviceBuilder.build();
                 ServiceResource<Service> serviceServiceResource = nonNamespaceOperation.withName(kcService.getName());
                 if (serviceServiceResource.get() != null) {
-                    //编辑
-//                    serviceServiceResource.delete();
-//                    nonNamespaceOperation.create(service);
                     serviceServiceResource.edit(n -> service);
                 } else {
                     //新增
@@ -161,20 +149,20 @@ public class KcServiceUtils {
                 throw new K8sClientException(String.format("无法从k8s的命名空间:[%s]获取services", kcService.getNamespace()));
             }
         } else {
-            throw new K8sClientException(String.format("无法从k8s获取services"));
+            throw new K8sClientException("无法从k8s获取services");
         }
     }
 
     /**
      * 获取service的信息
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2020/12/30
+     *
      * @param namespace 命名空间
-     * @throws
      * @return java.util.List<com.iscas.common.k8s.tools.model.deployment.KcDeployment>
+     * @throws ParseException ParseException
+     * @date 2020/12/30
+     * @since jdk1.8
      */
-    public static List<KcService> getServices(String namespace) throws K8sClientException, ParseException {
+    public static List<KcService> getServices(String namespace) throws ParseException {
 
         List<KcService> kcServices = null;
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
@@ -197,7 +185,6 @@ public class KcServiceUtils {
     }
 
     private static KcService getOneService(Service service) throws ParseException {
-//        System.out.println(service);
         KcService kcService = new KcService();
         //版本号
         kcService.setApiVersion(service.getApiVersion());

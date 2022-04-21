@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
  * ConfigMap类型的的环境变量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/10/13 15:03
  * @since jdk1.8
  */
@@ -15,6 +15,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class KcEnvConfigMap extends KcEnv {
 
-    /**configmap的名字*/
+    /**
+     * configmap的名字
+     */
     private String configMapName;
 }

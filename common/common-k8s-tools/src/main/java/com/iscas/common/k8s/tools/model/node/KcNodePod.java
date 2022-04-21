@@ -9,7 +9,7 @@ import java.util.Date;
  * 某个节点下的pod信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/15 12:38
  * @since jdk1.8
  */

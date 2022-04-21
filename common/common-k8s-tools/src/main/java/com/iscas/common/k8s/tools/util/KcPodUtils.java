@@ -34,17 +34,18 @@ import java.util.*;
  * 操作POD的工具
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/31 17:52
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "unchecked"})
 public class KcPodUtils {
     private KcPodUtils() {}
 
     /**
      * 获取pod
      * */
-    public static List<KcPod> getPods(String namespace, boolean metrics) throws ParseException, IOException {
+    public static List<KcPod> getPods(String namespace, boolean metrics) throws ParseException {
         List<KcPod> kcPods = null;
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         NonNamespaceOperation<Pod, PodList, PodResource<Pod>> podsInNamespace = kc.pods().inNamespace(namespace);
@@ -86,8 +87,7 @@ public class KcPodUtils {
             return null;
         }
         try {
-            JSONObject jsonObject = JSONUtil.parseObj(s);
-            return jsonObject;
+            return JSONUtil.parseObj(s);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,9 +178,10 @@ public class KcPodUtils {
                 .setTimeout(probe.getTimeoutSeconds());
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static <T> T getHealth(Class<T> tClass, Probe probe) {
         if (probe != null) {
-            KcProbe kcProbe = null;
+            KcProbe kcProbe;
             if (tClass == KcLivenessProbe.class) {
                 kcProbe = new KcLivenessProbe();
             } else {
@@ -200,7 +201,7 @@ public class KcPodUtils {
                 KcHealthHttpParam healthParam = new KcHealthHttpParam();
                 List<HTTPHeader> httpHeaders = httpGet.getHttpHeaders();
                 if (httpHeaders != null) {
-                    Map<String, String> header = new HashMap<>();
+                    Map<String, String> header = new HashMap<>(16);
                     for (HTTPHeader httpHeader : httpHeaders) {
                         header.put(httpHeader.getName(), httpHeader.getValue());
                     }
@@ -239,6 +240,7 @@ public class KcPodUtils {
         return image;
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static KcPodContainer getContainer(Container container, ContainerStatus containerStatus, KcPod kcPod, PodMetricsList podMetrics) throws ParseException {
         KcPodContainer podContainer = new KcPodContainer();
         String image = container.getImage();
@@ -272,15 +274,6 @@ public class KcPodUtils {
 
         podContainer.setTerminationMessagePath(container.getTerminationMessagePath())
                 .setTerminationMessagePolicy(container.getTerminationMessagePolicy());
-        //    /**
-        //     * 存储 TODO
-        //     * */
-        //    private String volumeMounts;
-        //
-        //    /**
-        //     * 存储 TODO
-        //     * */
-        //    private String volumeDevices;
         podContainer.setContainerId(containerStatus.getContainerID())
                 .setImageId(podContainer.getImageId()).setReady(containerStatus.getReady())
                 .setRestartCount(containerStatus.getRestartCount());
@@ -306,9 +299,7 @@ public class KcPodUtils {
         if (podMetrics != null) {
             List<PodMetrics> items = podMetrics.getItems();
             if (items != null) {
-                Iterator<PodMetrics> iterator = items.iterator();
-                while (iterator.hasNext()) {
-                    PodMetrics item = iterator.next();
+                for (PodMetrics item : items) {
                     if (item != null) {
                         ObjectMeta metadata = item.getMetadata();
                         String name1 = metadata.getName();
@@ -318,9 +309,7 @@ public class KcPodUtils {
                             double usedStorage = 0;
                             List<ContainerMetrics> containers = item.getContainers();
                             if (containers != null) {
-                                Iterator<ContainerMetrics> iterator1 = containers.iterator();
-                                while (iterator1.hasNext()) {
-                                    ContainerMetrics cm = iterator1.next();
+                                for (ContainerMetrics cm : containers) {
                                     if (cm != null) {
                                         Map<String, Quantity> usage = cm.getUsage();
                                         String connStr = cm.getName();
@@ -358,7 +347,7 @@ public class KcPodUtils {
                 KcPodContainerVoMount kcPodContainerVoMount = new KcPodContainerVoMount();
                 kcPodContainerVoMount.setMountPath(volumeMount.getMountPath())
                         .setName(volumeMount.getName())
-                        .setReadOnly(volumeMount.getReadOnly() == null ? false : volumeMount.getReadOnly())
+                        .setReadOnly(volumeMount.getReadOnly() != null && volumeMount.getReadOnly())
                         .setSubPath(volumeMount.getSubPath())
                         .setSubPathExpr(volumeMount.getSubPathExpr());
                 podContainerVoMounts.add(kcPodContainerVoMount);
@@ -473,7 +462,7 @@ public class KcPodUtils {
         return kcResource;
     }
 
-    private static KcPodContainerStateWaiting getWaiting(ContainerStateWaiting containerStateWaiting) throws ParseException {
+    private static KcPodContainerStateWaiting getWaiting(ContainerStateWaiting containerStateWaiting) {
         if (containerStateWaiting != null) {
             KcPodContainerStateWaiting kcPodContainerStateWaiting = new KcPodContainerStateWaiting();
             kcPodContainerStateWaiting.setMessage(containerStateWaiting.getMessage())
@@ -545,10 +534,10 @@ public class KcPodUtils {
         List<OwnerReference> ownerReferences = pod.getMetadata().getOwnerReferences();
         if (CollectionUtils.isNotEmpty(ownerReferences)) {
             for (OwnerReference ownerReference : ownerReferences) {
-                if (ownerReferenceKind != "") {
+                if (!"".equals(ownerReferenceKind)) {
                     ownerReferenceKind += ",";
                 }
-                if (ownerReferenceName != "") {
+                if (!"".equals(ownerReferenceName)) {
                     ownerReferenceName += ",";
                 }
                 String kind = ownerReference.getKind();
@@ -578,13 +567,13 @@ public class KcPodUtils {
     }
 
     private static void setPodMetricsInfo(KcPodBaseInfo baseInfo, PodMetricsList podMetrics) {
-        if (podMetrics == null) return;
+        if (podMetrics == null) {
+            return;
+        }
         String name = baseInfo.getName();
         List<PodMetrics> items = podMetrics.getItems();
         if (items != null) {
-            Iterator<PodMetrics> iterator = items.iterator();
-            while (iterator.hasNext()) {
-                PodMetrics item = iterator.next();
+            for (PodMetrics item : items) {
                 if (item != null) {
                     ObjectMeta metadata = item.getMetadata();
                     String name1 = metadata.getName();
@@ -594,9 +583,7 @@ public class KcPodUtils {
                         double usedStorage = 0;
                         List<ContainerMetrics> containers = item.getContainers();
                         if (containers != null) {
-                            Iterator<ContainerMetrics> iterator1 = containers.iterator();
-                            while (iterator1.hasNext()) {
-                                ContainerMetrics container = iterator1.next();
+                            for (ContainerMetrics container : containers) {
                                 if (container != null) {
                                     Map<String, Quantity> usage = container.getUsage();
                                     if (usage != null) {
@@ -620,49 +607,5 @@ public class KcPodUtils {
             }
         }
     }
-
-//    private static void setPodMetricsInfo(KcPodBaseInfo baseInfo, PodMetricsList podMetrics) {
-//        if (podMetrics == null) return;
-//        String name = baseInfo.getName();
-//        JSONArray items = podMetrics.getJSONArray("items");
-//        if (items != null) {
-//            Iterator<Object> iterator = items.stream().iterator();
-//            while (iterator.hasNext()) {
-//                JSONObject item = (JSONObject) iterator.next();
-//                if (item != null) {
-//                    JSONObject metadata = item.getJSONObject("metadata");
-//                    String name1 = metadata.getStr("name");
-//                    if (Objects.equals(name1, name)) {
-//                        long usedMemory = 0L;
-//                        double usedCpu = 0.0;
-//                        double usedStorage = 0;
-//                        JSONArray containers = item.getJSONArray("containers");
-//                        if (containers != null) {
-//                            Iterator<Object> iterator1 = containers.stream().iterator();
-//                            while (iterator1.hasNext()) {
-//                                JSONObject container = (JSONObject) iterator1.next();
-//                                if (container != null) {
-//                                    JSONObject usage = container.getJSONObject("usage");
-//                                    if (usage != null) {
-//                                        String memoryStr = usage.getStr("memory");
-//                                        String cpuStr = usage.getStr("cpu");
-//                                        if (memoryStr.contains("Ki")) {
-//                                            usedMemory += Long.valueOf(StringUtils.substringBeforeLast(memoryStr, "Ki"));
-//                                        }
-//                                        if (cpuStr.contains("n")) {
-//                                            usedCpu += Double.valueOf(StringUtils.substringBeforeLast(cpuStr, "n")) / 1000 / 1000 / 1000;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        baseInfo.setUsedCpu(usedCpu)
-//                                .setUsedMemory(usedMemory);
-//                        return;
-//                    }
-//                }
-//            }
-//        }
-//    }
 
 }

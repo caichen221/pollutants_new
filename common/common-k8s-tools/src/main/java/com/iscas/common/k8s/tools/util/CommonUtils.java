@@ -9,10 +9,11 @@ import java.util.concurrent.TimeUnit;
  * 通用工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 15:00
  * @since jdk1.8
  */
+@SuppressWarnings("IntegerDivisionInFloatingPointContext")
 public class CommonUtils {
 
     private CommonUtils() {}
@@ -21,7 +22,9 @@ public class CommonUtils {
      * 获取某个时间点距离当前的时间,并作一些处理
      * */
     public static String getTimeDistance(Date date) {
-        if (date == null) return null;
+        if (date == null) {
+            return null;
+        }
         long start = date.getTime();
         long end = System.currentTimeMillis();
         long distance = end - start;
@@ -43,9 +46,7 @@ public class CommonUtils {
     }
 
     public static Date timeOffset(Date time) {
-        if (time == null) return time;
-        time = new Date(time.getTime() + K8sConstants.TIME_OFFSET);
-        return time;
+        return time == null ? null : new Date(time.getTime() + K8sConstants.TIME_OFFSET);
     }
 
 }

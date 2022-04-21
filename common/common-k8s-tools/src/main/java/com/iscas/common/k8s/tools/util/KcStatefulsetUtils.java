@@ -29,21 +29,21 @@ import java.util.stream.Collectors;
  * 有状态服务工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/22 16:28
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "unchecked"})
 public class KcStatefulsetUtils {
     private KcStatefulsetUtils() {}
 
     /**
      * 获取statefulset的信息
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/03/22
      * @param namespace 命名空间
-     * @throws
-     * @return
+     * @throws K8sClientException K8S异常
+     * @return List<KcStatefulset>
      */
     public static List<KcStatefulset> getStatefulset(String namespace) throws K8sClientException {
 
@@ -58,24 +58,23 @@ public class KcStatefulsetUtils {
                     List<StatefulSet> items = statefulSetList.getItems();
                     if (CollectionUtils.isNotEmpty(items)) {
                         kcStatefulsets = new ArrayList<>();
-                        for (int i = 0; i < items.size(); i++) {
+                        for (StatefulSet item : items) {
                             String name = null;
                             Integer currentRepSum = null;
                             Integer planRepSum = null;
                             String runtimeStr = null;
-                            List<KcRuntimeInfo> runtimeInfos = null;
-                            KcDepBaseInfo baseInfo = null;
+                            List<KcRuntimeInfo> runtimeInfos;
+                            KcDepBaseInfo baseInfo;
 
                             KcStatefulset kcStatefulset = new KcStatefulset();
-                            StatefulSet statefulSet = items.get(i);
 
-                            ObjectMeta metadata = statefulSet.getMetadata();
+                            ObjectMeta metadata = item.getMetadata();
                             if (metadata != null) {
                                 //获取name
                                 name = metadata.getName();
                                 //获取运行时间
                                 String creationTimestamp = metadata.getCreationTimestamp();
-                                Date startTime = null;
+                                Date startTime;
                                 try {
                                     startTime = DateSafeUtils.parse(creationTimestamp, K8sConstants.TIME_PATTERN);
                                     startTime = CommonUtils.timeOffset(startTime);
@@ -85,19 +84,19 @@ public class KcStatefulsetUtils {
                                 runtimeStr = CommonUtils.getTimeDistance(startTime);
                             }
 
-                            StatefulSetStatus status = statefulSet.getStatus();
+                            StatefulSetStatus status = item.getStatus();
                             if (status != null) {
                                 planRepSum = status.getReplicas();
                                 currentRepSum = status.getReadyReplicas();
                             }
 
                             //获取基本信息
-                            baseInfo = setBaseInfo(statefulSet);
+                            baseInfo = setBaseInfo(item);
 
-                            setVolumns(statefulSet, kcStatefulset);
+                            setVolumns(item, kcStatefulset);
 
                             //获取运行时信息
-                            runtimeInfos  = setRuntimeInfo(statefulSet);
+                            runtimeInfos = setRuntimeInfo(item);
 
                             kcStatefulset.setCurrentRepSum(currentRepSum)
                                     .setName(name)
@@ -105,10 +104,10 @@ public class KcStatefulsetUtils {
                                     .setRuntimeStr(runtimeStr)
                                     .setBaseInfo(baseInfo)
                                     .setRuntimeInfos(runtimeInfos);
-                            kcStatefulset.setStatefulSetItem(statefulSet);
+                            kcStatefulset.setStatefulSetItem(item);
 
                             //获取存储卷声明
-                            List<KcVolumeClaimTemplate> kcVolumeClaimTemplates = setVolumeClaimTemplate(statefulSet);
+                            List<KcVolumeClaimTemplate> kcVolumeClaimTemplates = setVolumeClaimTemplate(item);
                             kcStatefulset.setVolumeClaimTemplates(kcVolumeClaimTemplates);
                             kcStatefulsets.add(kcStatefulset);
                         }
@@ -183,7 +182,7 @@ public class KcStatefulsetUtils {
         if (StringUtils.isNotEmpty(imagePullSecret)) {
             LocalObjectReference localObjectReference = new LocalObjectReference();
             localObjectReference.setName(imagePullSecret);
-            podSpec.setImagePullSecrets(Arrays.asList(localObjectReference));
+            podSpec.setImagePullSecrets(List.of(localObjectReference));
         }
 
         //template-spec-init container
@@ -229,7 +228,7 @@ public class KcStatefulsetUtils {
                         persistentVolumeClaimSpec.setStorageClassName(vct.getStorageClass());
                         if (vct.getStorage() != 0) {
                            ResourceRequirements resourceRequirements = new ResourceRequirements();
-                           Map<String, Quantity> requests = new HashMap<>();
+                           Map<String, Quantity> requests = new HashMap<>(16);
                            requests.put("storage", Quantity.parse(((Double) vct.getStorage()).intValue() + "Gi"));
                            resourceRequirements.setRequests(requests);
                             persistentVolumeClaimSpec.setResources(resourceRequirements);
@@ -310,12 +309,12 @@ public class KcStatefulsetUtils {
                 kcConditions  = new ArrayList<>();
                 for (StatefulSetCondition condition : conditions) {
                     KcRuntimeInfo kcCondtion = new KcRuntimeInfo();
-                    String type = null;
-                    String status = null;
-                    Date lastUpdateTime = null;
-                    Date lastTransationTime = null;
-                    String reason = null;
-                    String message = null;
+                    String type;
+                    String status;
+                    Date lastUpdateTime;
+                    Date lastTransationTime;
+                    String reason;
+                    String message;
 
                     type = condition.getType();
                     status = condition.getStatus();
@@ -350,13 +349,13 @@ public class KcStatefulsetUtils {
     private static KcDepBaseInfo setBaseInfo(StatefulSet statefulSet) {
         KcDepBaseInfo baseInfo = new KcDepBaseInfo();
         String type = "statefulset";
-        String name = null;
-        List<String[]> labels = new ArrayList<>();
-        List<String[]> annotations = new ArrayList<>();
+        String name;
+        List<String[]> labels;
+        List<String[]> annotations;
         String description = null;
         Integer currentRepSum = null;
         Integer planRepSum = null;
-        String namespace = null;
+        String namespace;
 
         ObjectMeta metadata = statefulSet.getMetadata();
 
@@ -366,7 +365,7 @@ public class KcStatefulsetUtils {
         annotations = (List<String[]>) metaDataResultMap.get("annotations");
 
         StatefulSetSpec spec = statefulSet.getSpec();
-        List<String[]> matchLabels = new ArrayList<>();
+        List<String[]> matchLabels;
         LabelSelector selector = spec.getSelector();
         PodTemplateSpec template = spec.getTemplate();
         Map<String, Object> specResultMap = KcDeploymentUtils.setSpec(selector, template);
@@ -378,6 +377,7 @@ public class KcStatefulsetUtils {
             planRepSum = status.getReplicas();
             currentRepSum = status.getReadyReplicas();
         }
+        //noinspection ConstantConditions
         baseInfo.setType(type)
                 .setName(name)
                 .setDescription(description)

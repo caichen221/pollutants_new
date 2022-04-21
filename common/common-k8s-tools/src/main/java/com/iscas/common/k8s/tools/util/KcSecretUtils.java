@@ -18,7 +18,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.*;
@@ -27,24 +26,23 @@ import java.util.*;
  * secret工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/18 13:37
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaAvoidStartWithDollarAndUnderLineNaming", "AlibabaLowerCamelCaseVariableNaming", "unused", "ConstantConditions"})
 public class KcSecretUtils {
     private KcSecretUtils() {}
 
     /**
      * 新增secret
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/2/19
      * @param namespace 命名空间
      * @param kcSecret secret对象，用父类来表示指向子类的引用
-     * @throws
-     * @return void
+     * @throws BaseException 异常
      */
-    public static void createOrEditSecret(String namespace, KcSecret kcSecret, boolean edit) throws UnsupportedEncodingException, BaseException {
+    public static void createOrEditSecret(String namespace, KcSecret kcSecret, boolean edit) throws BaseException {
 
         String type = kcSecret.getType();
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
@@ -64,7 +62,7 @@ public class KcSecretUtils {
                 auths.put(server, serverJson);
                 configJson.put("auths", auths);
                 String _dockerconfigjson = Base64.getEncoder().encodeToString(configJson.toString().getBytes(StandardCharsets.UTF_8));
-                Map<String, String> data = new HashMap<>();
+                Map<String, String> data = new HashMap<>(16);
                 data.put(".dockerconfigjson", _dockerconfigjson);
                 if (edit) {
                     edit("kubernetes.io/dockerconfigjson", data, kcSecret, namespace, kc);
@@ -77,9 +75,9 @@ public class KcSecretUtils {
                 TlsKcSecret tlsKcSecret = (TlsKcSecret) kcSecret;
                 String tlsCrt = tlsKcSecret.getTlsCrt();
                 String tlsKey = tlsKcSecret.getTlsKey();
-                Map<String, String> data = new HashMap<>();
-                data.put("tls.key", Base64.getEncoder().encodeToString(tlsKey.getBytes("utf-8")));
-                data.put("tls.crt", Base64.getEncoder().encodeToString(tlsCrt.getBytes("utf-8")));
+                Map<String, String> data = new HashMap<>(2);
+                data.put("tls.key", Base64.getEncoder().encodeToString(tlsKey.getBytes(StandardCharsets.UTF_8)));
+                data.put("tls.crt", Base64.getEncoder().encodeToString(tlsCrt.getBytes(StandardCharsets.UTF_8)));
                 if (edit) {
                     edit("kubernetes.io/tls", data, kcSecret, namespace, kc);
                 } else {
@@ -90,7 +88,7 @@ public class KcSecretUtils {
             case "opaque": {
                 OpaqueKcSecret opaqueKcSecret = (OpaqueKcSecret) kcSecret;
                 Map<String, String> kcData = opaqueKcSecret.getData();
-                Map<String, String> data = new HashMap<>();
+                Map<String, String> data = new HashMap<>(16);
                 if (MapUtils.isNotEmpty(kcData)) {
                     for (Map.Entry<String, String> entry : kcData.entrySet()) {
                         String key = entry.getKey();
@@ -120,10 +118,8 @@ public class KcSecretUtils {
 
     /**
      * 获取所有的secret,不区分命名空间和类型
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/2/20
-     * @throws
      * @return java.util.List<io.fabric8.kubernetes.api.model.Secret>
      */
     public static List<Secret> getSecrets() {
@@ -132,8 +128,7 @@ public class KcSecretUtils {
         if (nonNamespaceOperation != null) {
             SecretList secretList = nonNamespaceOperation.list();
             if (secretList != null) {
-                List<Secret> items = secretList.getItems();
-                return items;
+                return secretList.getItems();
             }
         }
         return null;
@@ -141,14 +136,13 @@ public class KcSecretUtils {
 
     /**
      * 获取secret
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/2/18
      * @param namespace 命名空间
-     * @throws
+     * @throws ParseException ParseException
      * @return java.util.List<com.iscas.common.k8s.tools.model.secret.KcSecret>
      */
-    public static List<KcSecret> getSecrets(String namespace) throws ParseException, UnsupportedEncodingException {
+    public static List<KcSecret> getSecrets(String namespace) throws ParseException {
         List<KcSecret> kcSecrets = new ArrayList<>();
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         NonNamespaceOperation<Secret, SecretList, Resource<Secret>> nonNamespaceOperation = kc.secrets().inNamespace(namespace);
@@ -159,11 +153,11 @@ public class KcSecretUtils {
                 if (CollectionUtils.isNotEmpty(items)) {
                     for (Secret secret : items) {
                         ObjectMeta metadata = secret.getMetadata();
-                        KcSecret kcSecret = null;
+                        KcSecret kcSecret;
                         Date createTime = DateSafeUtils.parse(metadata.getCreationTimestamp(), K8sConstants.TIME_PATTERN);
                         createTime = CommonUtils.timeOffset(createTime);
 //                        String type = "dockerConfig|opaque|serviceAccount|tls|bootstrap";
-                        String type = null;
+                        String type;
                         switch (secret.getType()) {
                             case "kubernetes.io/service-account-token": {
                                 kcSecret = new ServiceAccountKcSecret();
@@ -216,7 +210,7 @@ public class KcSecretUtils {
     /**
      * 构建tls得信息
      * */
-    private static void buildTls(Secret secret, KcSecret kcSecret) throws UnsupportedEncodingException {
+    private static void buildTls(Secret secret, KcSecret kcSecret) {
         Map<String, String> data = secret.getData();
         if (MapUtils.isNotEmpty(data)) {
             String tlsCrtBase64 = data.get("tls.crt");
@@ -229,7 +223,7 @@ public class KcSecretUtils {
     /**
      * 构建opaque得信息
      * */
-    private static void buildOpaque(Secret secret, KcSecret kcSecret) throws UnsupportedEncodingException {
+    private static void buildOpaque(Secret secret, KcSecret kcSecret) {
         Map<String, String> data = secret.getData();
         if (MapUtils.isNotEmpty(data)) {
             for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -252,7 +246,7 @@ public class KcSecretUtils {
     /**
      * 构建docker仓库得信息
      * */
-    private static void buildDockerConfigInfo(Secret secret, KcSecret kcSecret) throws UnsupportedEncodingException {
+    private static void buildDockerConfigInfo(Secret secret, KcSecret kcSecret) {
         Map<String, String> data = secret.getData();
         if (MapUtils.isNotEmpty(data)) {
             String dockerConfigJson = data.get(".dockerconfigjson");

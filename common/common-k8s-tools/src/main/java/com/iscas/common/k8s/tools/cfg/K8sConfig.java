@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
  * K8S访问使用的一些连接信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 13:50
  * @since jdk1.8
  */

@@ -6,16 +6,16 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ExecListener;
 import io.fabric8.kubernetes.client.dsl.ExecWatch;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author admin
+ */
 public class PodExecEquivalent {
-    private static final Logger logger = LoggerFactory.getLogger(PodExecEquivalent.class);
-    private static final CountDownLatch execLatch = new CountDownLatch(1);
+    private static final CountDownLatch EXEC_LATCH = new CountDownLatch(1);
 
     public static void main(String[] args) {
         try {
@@ -35,7 +35,7 @@ public class PodExecEquivalent {
                     .usingListener(new MyPodExecListener())
                     .exec("cd", "/");
 
-            boolean latchTerminationStatus = execLatch.await(5, TimeUnit.SECONDS);
+            boolean latchTerminationStatus = EXEC_LATCH.await(5, TimeUnit.SECONDS);
             if (!latchTerminationStatus) {
                 System.out.println("Latch could not terminate within specified time");
             }
@@ -57,13 +57,13 @@ public class PodExecEquivalent {
         @Override
         public void onFailure(Throwable throwable, Response response) {
             System.out.println("Some error encountered");
-            execLatch.countDown();
+            EXEC_LATCH.countDown();
         }
 
         @Override
         public void onClose(int i, String s) {
             System.out.println("Shell Closing");
-            execLatch.countDown();
+            EXEC_LATCH.countDown();
         }
     }
 }

@@ -44,130 +44,14 @@ import java.util.stream.Collectors;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/8 17:30
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unchecked", "unused"})
 public class KcDeploymentUtils {
+    private static final String TCP = "TCP";
     private KcDeploymentUtils() {}
-
-
-//    private static void setContainer(KcContainer container, Container specNestedInitContainer) throws K8sClientException {
-//
-//
-//        specNestedInitContainer.withNewName(container.getName())
-//                .withNewImage(container.getImage())
-//                .withNewImagePullPolicy(container.getImagePullPolicy());
-//        //命令
-//        List<String> commands = container.getCommands();
-//        //参数
-//        List<String> args = container.getArgs();
-//        //环境变量
-//        LinkedHashMap<String, String> env = container.getEnv();
-//        //挂载点
-//        List<KcVolumeMounts> volumeMounts = container.getVolumeMounts();
-//        //就绪检查
-//        KcReadinessProbe readinessProbe = container.getReadinessProbe();
-//        //存活检查
-//        KcLivenessProbe livenessProbe = container.getLivenessProbe();
-//
-//        //资源限制配置
-//        KcResource resource = container.getResource();
-//
-//        //端口
-//        List<KcContainerPort> ports = container.getPorts();
-//
-//        if (CollectionUtils.isNotEmpty(commands)) {
-//            for (String command : commands) {
-//                specNestedInitContainer.addNewCommand(command);
-//            }
-//        }
-//        if (CollectionUtils.isNotEmpty(args)) {
-//            for (String arg : args) {
-//                specNestedInitContainer.addNewArg(arg);
-//            }
-//        }
-//        if (MapUtils.isNotEmpty(env)) {
-//            for (Map.Entry<String ,String> entry : env.entrySet()) {
-//                specNestedInitContainer.addNewEnv()
-//                        .withNewName(entry.getKey())
-//                        .withNewValue(entry.getValue())
-//                        .endEnv();
-//            }
-//
-//        }
-//        if (CollectionUtils.isNotEmpty(volumeMounts)) {
-//            for (KcVolumeMounts volumeMount : volumeMounts) {
-//                specNestedInitContainer.addNewVolumeMount()
-//                        .withNewMountPath(volumeMount.getMountPath())
-//                        .withNewName(volumeMount.getName())
-//                        .withNewSubPath(volumeMount.getSubPath() == null ? volumeMount.getMountPath() : volumeMount.getSubPath())
-//                        .withNewReadOnly(volumeMount.isReadOnly())
-//                        .endVolumeMount();
-//            }
-//        }
-//        if (readinessProbe != null) {
-//            String type = readinessProbe.getType();
-//            if (!"TCP".equalsIgnoreCase(type)) {
-//                throw new K8sClientException("暂时只支持TCP的健康检查");
-//            }
-//            KcHealthTcpParam tcpParam = (KcHealthTcpParam) readinessProbe.getHealthParam();
-//            specNestedInitContainer.withNewReadinessProbe()
-//                    .withNewTcpSocket()
-//                    .withNewPort(tcpParam.getPort())
-//                    .endTcpSocket()
-//                    .withTimeoutSeconds(tcpParam.getTimeout())
-//                    .withInitialDelaySeconds(tcpParam.getInitialDelaySeconds())
-//                    .withPeriodSeconds(tcpParam.getPeriodSeconds())
-//                    .withSuccessThreshold(tcpParam.getHealthThreshold())
-//                    .withFailureThreshold(tcpParam.getUnHealthThreshold())
-//                    .endReadinessProbe();
-//        }
-//
-//        if (livenessProbe != null) {
-//            String type = livenessProbe.getType();
-//            if (!"TCP".equalsIgnoreCase(type)) {
-//                throw new K8sClientException("暂时只支持TCP的健康检查");
-//            }
-//            KcHealthTcpParam tcpParam = (KcHealthTcpParam) livenessProbe.getHealthParam();
-//            specNestedInitContainer.withNewLivenessProbe()
-//                    .withNewTcpSocket()
-//                    .withNewPort(tcpParam.getPort())
-//                    .endTcpSocket()
-//                    .withTimeoutSeconds(tcpParam.getTimeout())
-//                    .withInitialDelaySeconds(tcpParam.getInitialDelaySeconds())
-//                    .withPeriodSeconds(tcpParam.getPeriodSeconds())
-//                    .withSuccessThreshold(tcpParam.getHealthThreshold())
-//                    .withFailureThreshold(tcpParam.getUnHealthThreshold())
-//                    .endLivenessProbe();
-//        }
-//        if (CollectionUtils.isNotEmpty(ports)) {
-//            for (KcContainerPort port : ports) {
-//                ContainerFluent.PortsNested<PodSpecFluent.ContainersNested<PodTemplateSpecFluent.SpecNested<DeploymentSpecFluent.TemplateNested<DeploymentFluent.SpecNested<DoneableDeployment>>>>> containersNestedPortsNested = specNestedInitContainer.addNewPort();
-//                if (StringUtils.isNotEmpty(port.getName())) {
-//                    containersNestedPortsNested.withNewName(port.getName());
-//                }
-//                if (port.getContainerPort() != null) {
-//                    containersNestedPortsNested.withContainerPort(port.getContainerPort());
-//                }
-//
-//                if (port.getHostPort() != null) {
-//                    containersNestedPortsNested.withHostPort(port.getHostPort());
-//                }
-//                specNestedInitContainer = containersNestedPortsNested.endPort();
-//            }
-//        }
-//
-//
-//        if (resource != null) {
-////            specNestedInitContainer.withNewResources()
-////                    .addToLimits()
-////                    .addToRequests()
-////                    .endResources();
-//        }
-//
-//    }
-
 
     public static void setContainer(KcContainer container, Container specNestedInitContainer) throws K8sClientException {
         specNestedInitContainer.setName(container.getName());
@@ -284,7 +168,7 @@ public class KcDeploymentUtils {
         }
         if (readinessProbe != null) {
             String type = readinessProbe.getType();
-            if (!"TCP".equalsIgnoreCase(type)) {
+            if (!TCP.equalsIgnoreCase(type)) {
                 throw new K8sClientException("暂时只支持TCP的健康检查");
             }
             KcHealthTcpParam tcpParam = readinessProbe.getHealthTcpParam();
@@ -341,8 +225,8 @@ public class KcDeploymentUtils {
             Integer cpuMin = resource.getCpuMin();
             Integer memoryMax = resource.getMemoryMax();
             Integer memoryMin = resource.getMemoryMin();
-            Map<String, Quantity> requests = new HashMap<>();
-            Map<String, Quantity> limits = new HashMap<>();
+            Map<String, Quantity> requests = new HashMap<>(4);
+            Map<String, Quantity> limits = new HashMap<>(4);
             if (cpuMax != null) {
                 limits.put("cpu", Quantity.parse(cpuMax + "m"));
             }
@@ -358,14 +242,7 @@ public class KcDeploymentUtils {
             resourceRequirements.setLimits(limits);
             resourceRequirements.setRequests(requests);
             specNestedInitContainer.setResources(resourceRequirements);
-//            resourceRequirements.setLimits();
-//            specNestedInitContainer.setResources();
-//            specNestedInitContainer.withNewResources()
-//                    .addToLimits()
-//                    .addToRequests()
-//                    .endResources();
         }
-
     }
 
     /**
@@ -379,9 +256,6 @@ public class KcDeploymentUtils {
         //命名空间
         String namespace  = baseInfo.getNamespace();
         String name = baseInfo.getName();
-
-        //如果存在，删除这个deployment
-//        KcDeploymentUtils.deleteDeployment(namespace, name);
 
         Map<String, String> labelMap = getLabelMap(baseInfo);
         Map<String, String> annotationMap = getAnnotationMap(baseInfo);
@@ -522,7 +396,7 @@ public class KcDeploymentUtils {
         if (StringUtils.isNotEmpty(imagePullSecret)) {
             LocalObjectReference localObjectReference = new LocalObjectReference();
             localObjectReference.setName(imagePullSecret);
-            podSpec.setImagePullSecrets(Arrays.asList(localObjectReference));
+            podSpec.setImagePullSecrets(List.of(localObjectReference));
         }
     }
 
@@ -582,7 +456,7 @@ public class KcDeploymentUtils {
                             if (CollectionUtils.isNotEmpty(params.getKeyToPath())) {
                                 List<KeyToPath> keyToPaths = new ArrayList<>();
                                 for (Object keyToPathArrayObject : params.getKeyToPath()) {
-                                    String []keyToPathArray = null;
+                                    String []keyToPathArray;
                                     if (keyToPathArrayObject instanceof String[]) {
                                         keyToPathArray = (String[]) keyToPathArrayObject;
                                     } else {
@@ -630,11 +504,10 @@ public class KcDeploymentUtils {
 
     /**
      * 获取deployment的信息
-     * @version 1.0
      * @since jdk1.8
      * @date 2019/12/9
      * @param namespace 命名空间
-     * @throws
+     * @throws K8sClientException 异常
      * @return java.util.List<com.iscas.common.k8s.tools.model.deployment.KcDeployment>
      */
     public static List<KcDeployment> getDeployments(String namespace) throws K8sClientException {
@@ -650,24 +523,23 @@ public class KcDeploymentUtils {
                     List<Deployment> items = deploymentList.getItems();
                     if (CollectionUtils.isNotEmpty(items)) {
                         kcDeployments = new ArrayList<>();
-                        for (int i = 0; i < items.size(); i++) {
+                        for (Deployment item : items) {
                             String name = null;
                             Integer currentRepSum = null;
                             Integer planRepSum = null;
                             String runtimeStr = null;
-                            List<KcRuntimeInfo> runtimeInfos = null;
-                            KcDepBaseInfo baseInfo = null;
+                            List<KcRuntimeInfo> runtimeInfos;
+                            KcDepBaseInfo baseInfo;
 
                             KcDeployment kcDeployment = new KcDeployment();
-                            Deployment deployment = items.get(i);
 
-                            ObjectMeta metadata = deployment.getMetadata();
+                            ObjectMeta metadata = item.getMetadata();
                             if (metadata != null) {
                                 //获取name
                                 name = metadata.getName();
                                 //获取运行时间
                                 String creationTimestamp = metadata.getCreationTimestamp();
-                                Date startTime = null;
+                                Date startTime;
                                 try {
                                     startTime = DateSafeUtils.parse(creationTimestamp, K8sConstants.TIME_PATTERN);
                                     startTime = CommonUtils.timeOffset(startTime);
@@ -677,19 +549,19 @@ public class KcDeploymentUtils {
                                 runtimeStr = CommonUtils.getTimeDistance(startTime);
                             }
 
-                            DeploymentStatus status = deployment.getStatus();
+                            DeploymentStatus status = item.getStatus();
                             if (status != null) {
                                 planRepSum = status.getReplicas();
                                 currentRepSum = status.getReadyReplicas();
                             }
 
                             //获取基本信息
-                            baseInfo = setBaseInfo(deployment);
+                            baseInfo = setBaseInfo(item);
 
-                            setVolumns(deployment, kcDeployment);
+                            setVolumns(item, kcDeployment);
 
                             //获取运行时信息
-                            runtimeInfos  = setRuntimeInfo(deployment);
+                            runtimeInfos = setRuntimeInfo(item);
 
                             kcDeployment.setCurrentRepSum(currentRepSum)
                                     .setName(name)
@@ -697,7 +569,7 @@ public class KcDeploymentUtils {
                                     .setRuntimeStr(runtimeStr)
                                     .setBaseInfo(baseInfo)
                                     .setRuntimeInfos(runtimeInfos)
-                                    .setDeploymentItem(deployment);
+                                    .setDeploymentItem(item);
                             kcDeployments.add(kcDeployment);
                         }
                     }
@@ -717,34 +589,6 @@ public class KcDeploymentUtils {
                     List<Volume> volumes = templateSpec.getVolumes();
                     if (CollectionUtils.isNotEmpty(volumes)) {
                         for (Volume volume : volumes) {
-//                            String name = volume.getName();
-//                            KcVolume kcVolume = new KcVolume();
-//                            kcVolume.setName(name);
-//                            //处理hostPath类型
-//                            HostPathVolumeSource hostPath = volume.getHostPath();
-//                            if (hostPath != null) {
-//                                kcVolume.setType(KcVolume.KcVolumeType.hostPath);
-//                                KcVoHostPathParam kcVoHostPathParam = new KcVoHostPathParam();
-//                                String hostPathType = hostPath.getType();
-//                                if (StringUtils.isEmpty(hostPathType)) hostPathType = "EmptyString";
-//                                kcVoHostPathParam.setPath(hostPath.getPath())
-//                                        .setType(KcVoHostPathParam.KcVoHostPathType.valueOf(hostPathType));
-//                                kcVolume.setParams(kcVoHostPathParam);
-//                            }
-//
-//                            //处理NFS类型
-//                            NFSVolumeSource nfs = volume.getNfs();
-//                            if (nfs != null) {
-//                                String server = nfs.getServer();
-//                                String path = nfs.getPath();
-//                                Boolean readOnly = nfs.getReadOnly();
-//                                kcVolume.setType(KcVolume.KcVolumeType.NFS);
-//                                KcVoNfsParam kcVoNfsParam = new KcVoNfsParam();
-//                                kcVoNfsParam.setPath(path)
-//                                        .setServer(server)
-//                                        .setReadOnly(readOnly == null ? false : readOnly);
-//                                kcVolume.setParams(kcVoNfsParam);
-//                            }
                             KcVolume kcVolume = setOneVolume(volume);
                             kcDeployment.getVolumes().add(kcVolume);
                         }
@@ -764,7 +608,9 @@ public class KcDeploymentUtils {
             kcVolume.setType(KcVolume.KcVolumeType.hostPath);
             KcVoHostPathParam kcVoHostPathParam = new KcVoHostPathParam();
             String hostPathType = hostPath.getType();
-            if (StringUtils.isEmpty(hostPathType)) hostPathType = "EmptyString";
+            if (StringUtils.isEmpty(hostPathType)) {
+                hostPathType = "EmptyString";
+            }
             kcVoHostPathParam.setPath(hostPath.getPath())
                     .setType(KcVoHostPathParam.KcVoHostPathType.valueOf(hostPathType));
             kcVolume.setParams(kcVoHostPathParam);
@@ -780,7 +626,7 @@ public class KcDeploymentUtils {
             KcVoNfsParam kcVoNfsParam = new KcVoNfsParam();
             kcVoNfsParam.setPath(path)
                     .setServer(server)
-                    .setReadOnly(readOnly == null ? false : readOnly);
+                    .setReadOnly(readOnly != null && readOnly);
             kcVolume.setParams(kcVoNfsParam);
         }
 
@@ -806,7 +652,7 @@ public class KcDeploymentUtils {
     /**
      * 重启服务
      * */
-    public static void restartDeployment(String namespace, String name) throws K8sClientException {
+    public static void restartDeployment(String namespace, String name) {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         kc.apps().deployments().inNamespace(namespace).withName(name)
                 .rolling()
@@ -856,12 +702,12 @@ public class KcDeploymentUtils {
                 kcConditions  = new ArrayList<>();
                 for (DeploymentCondition condition : conditions) {
                     KcRuntimeInfo kcCondtion = new KcRuntimeInfo();
-                    String type = null;
-                    String status = null;
-                    Date lastUpdateTime = null;
-                    Date lastTransationTime = null;
-                    String reason = null;
-                    String message = null;
+                    String type;
+                    String status;
+                    Date lastUpdateTime;
+                    Date lastTransationTime;
+                    String reason;
+                    String message;
 
                     type = condition.getType();
                     status = condition.getStatus();
@@ -930,7 +776,7 @@ public class KcDeploymentUtils {
     }
 
     public static Map<String, Object> setSpec(LabelSelector selector,  PodTemplateSpec template) {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>(2);
         List<String[]> matchLabels = new ArrayList<>();
         List<String[]> labels = new ArrayList<>();
         if (selector != null) {
@@ -970,13 +816,13 @@ public class KcDeploymentUtils {
     private static KcDepBaseInfo setBaseInfo(Deployment deployment) {
         KcDepBaseInfo baseInfo = new KcDepBaseInfo();
         String type = "deployment";
-        String name = null;
-        List<String[]> labels = new ArrayList<>();
-        List<String[]> annotations = new ArrayList<>();
+        String name;
+        List<String[]> labels;
+        List<String[]> annotations;
         String description = null;
         Integer currentRepSum = null;
         Integer planRepSum = null;
-        String namespace = null;
+        String namespace;
 
         ObjectMeta metadata = deployment.getMetadata();
 
@@ -986,7 +832,7 @@ public class KcDeploymentUtils {
         annotations = (List<String[]>) metaDataResultMap.get("annotations");
 
         DeploymentSpec spec = deployment.getSpec();
-        List<String[]> matchLabels = new ArrayList<>();
+        List<String[]> matchLabels;
         LabelSelector selector = spec.getSelector();
         PodTemplateSpec template = spec.getTemplate();
         Map<String, Object> specResultMap = setSpec(selector, template);
@@ -998,6 +844,7 @@ public class KcDeploymentUtils {
             planRepSum = status.getReplicas();
             currentRepSum = status.getReadyReplicas();
         }
+        //noinspection ConstantConditions
         baseInfo.setType(type)
                 .setName(name)
                 .setDescription(description)
@@ -1012,12 +859,11 @@ public class KcDeploymentUtils {
 
     /**
      * 获取自动扩容信息
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/22
      * @param namespace 命名空间
      * @param name deployment的名字
-     * @throws
+     * @throws ParseException parseException
      * @return com.iscas.common.k8s.tools.model.autoscale.KcAutoscale
      */
     public static KcAutoscale getAutoScale(String namespace, String name) throws ParseException {
@@ -1026,7 +872,9 @@ public class KcDeploymentUtils {
         Resource<HorizontalPodAutoscaler> resource = autoscaling.v2beta2().horizontalPodAutoscalers()
                 .inNamespace(namespace).withName(name);
         HorizontalPodAutoscaler horizontalPodAutoscaler = resource.get();
-        if (horizontalPodAutoscaler == null) return null;
+        if (horizontalPodAutoscaler == null) {
+            return null;
+        }
         HorizontalPodAutoscalerStatus status = horizontalPodAutoscaler.getStatus();
         ObjectMeta metadata = horizontalPodAutoscaler.getMetadata();
         HorizontalPodAutoscalerSpec spec = horizontalPodAutoscaler.getSpec();

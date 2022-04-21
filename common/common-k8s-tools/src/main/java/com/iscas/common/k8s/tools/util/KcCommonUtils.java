@@ -10,7 +10,7 @@ import lombok.Cleanup;
  * 通用工具
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 14:12
  * @since jdk1.8
  */

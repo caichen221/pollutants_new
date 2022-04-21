@@ -14,10 +14,11 @@ import java.util.List;
  * container
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/31 18:03
  * @since jdk1.8
  */
+@SuppressWarnings("DanglingJavadoc")
 @Data
 @Accessors(chain = true)
 public class KcPodContainer {

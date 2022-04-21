@@ -6,7 +6,7 @@ import lombok.Data;
  * 数据卷
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/9 14:45
  * @since jdk1.8
  */
@@ -27,8 +27,9 @@ public class KcVolume {
      * */
     private Object params;
 
+    @SuppressWarnings({"AlibabaEnumConstantsMustHaveComment", "unused"})
     public enum KcVolumeType {
-        NFS, pv, emptyDir, hostPath, configMap, secret;
+        NFS, pv, emptyDir, hostPath, configMap, secret
     }
 
 }

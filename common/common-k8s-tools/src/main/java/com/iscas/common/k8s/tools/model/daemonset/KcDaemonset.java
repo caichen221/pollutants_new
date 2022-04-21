@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
  * 守护服务
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/10/27 15:34
  * @since jdk1.8
  */

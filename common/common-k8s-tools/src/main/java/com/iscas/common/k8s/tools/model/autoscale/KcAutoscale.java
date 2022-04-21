@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 自动扩容
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/22 10:33
  * @since jdk1.8
  */

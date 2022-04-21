@@ -1,7 +1,6 @@
 package com.iscas.common.k8s.tools.util;
 
 import com.iscas.common.k8s.tools.K8sClient;
-import com.iscas.common.k8s.tools.model.KcNamespace;
 import com.iscas.common.k8s.tools.model.account.KcServiceAccount;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ServiceAccount;
@@ -20,7 +19,7 @@ import java.util.Objects;
  * 用户相关工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/1 19:25
  * @since jdk1.8
  */
@@ -32,7 +31,6 @@ public class KcAccountUtils {
      * */
     public static List<KcServiceAccount> getAccounts() {
         List<KcServiceAccount> accounts = new ArrayList<>();
-        List<KcNamespace> kcNamespaces = null;
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         MixedOperation<ServiceAccount, ServiceAccountList, Resource<ServiceAccount>> serviceAccounts = kc.serviceAccounts();
         if (serviceAccounts != null) {

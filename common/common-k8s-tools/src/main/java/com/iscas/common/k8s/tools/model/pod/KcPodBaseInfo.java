@@ -11,10 +11,11 @@ import java.util.List;
  * pod基本信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/31 16:27
  * @since jdk1.8
  */
+@SuppressWarnings("DanglingJavadoc")
 @Data
 @Accessors(chain = true)
 public class KcPodBaseInfo {

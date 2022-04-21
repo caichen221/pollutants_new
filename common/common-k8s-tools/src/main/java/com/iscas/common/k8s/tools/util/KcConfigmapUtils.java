@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * configmap相关操作
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/10 8:43
  * @since jdk1.8
  */
@@ -38,6 +38,7 @@ public class KcConfigmapUtils {
     /**
      * 获取配置字典的yaml
      * */
+    @SuppressWarnings("unused")
     public static String yaml(ApiClient apiClient, String namespace, String name) throws ApiException, K8sClientException {
         CoreV1Api coreApi = new CoreV1Api(apiClient);
         V1ConfigMapList configMapList = coreApi.listNamespacedConfigMap(namespace, "true", false, null, null, null, 100,
@@ -47,6 +48,7 @@ public class KcConfigmapUtils {
             if (CollectionUtils.isNotEmpty(items)) {
                 for (V1ConfigMap item : items) {
                     V1ObjectMeta metadata = item.getMetadata();
+                    assert metadata != null;
                     String name1 = metadata.getName();
                     if (Objects.equals(name, name1)) {
                         String yaml = Yaml.dump(item);

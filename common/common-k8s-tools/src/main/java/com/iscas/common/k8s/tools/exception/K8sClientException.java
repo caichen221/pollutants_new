@@ -1,15 +1,17 @@
 package com.iscas.common.k8s.tools.exception;
 
 import com.iscas.templet.exception.BaseException;
+import lombok.Getter;
 
 /**
  * K8S客户端错误信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 14:05
  * @since jdk1.8
  */
+@Getter
 public class K8sClientException extends BaseException {
     /**详细信息描述*/
     private String msgDetail;

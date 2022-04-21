@@ -9,7 +9,7 @@ import java.util.Date;
  * 运行时信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 16:43
  * @since jdk1.8
  */

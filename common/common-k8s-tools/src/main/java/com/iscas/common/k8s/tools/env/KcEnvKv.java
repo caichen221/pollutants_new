@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
  * 键值对类型的的环境变量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/10/13 15:03
  * @since jdk1.8
  */
@@ -15,9 +15,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class KcEnvKv extends KcEnv {
 
-    /**键值对类型的子类型,当前支持值、ConfigMap*/
+    /**
+     * 键值对类型的子类型,当前支持值、ConfigMap
+     */
     private String subType;
 
-    /**key*/
+    /**
+     * key
+     */
     private String key;
 }

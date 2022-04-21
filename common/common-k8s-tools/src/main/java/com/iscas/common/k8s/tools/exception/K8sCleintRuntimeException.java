@@ -7,10 +7,11 @@ import lombok.Setter;
 /**
 
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 21:17
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Getter
 @Setter
 public class K8sCleintRuntimeException extends BaseRuntimeException {

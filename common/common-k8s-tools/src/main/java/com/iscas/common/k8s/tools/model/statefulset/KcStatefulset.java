@@ -13,7 +13,7 @@ import java.util.List;
  * Statefulset
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/8 17:39
  * @since jdk1.8
  */
@@ -24,6 +24,8 @@ public class KcStatefulset extends KcDeployment {
 
     private StatefulSet statefulSetItem;
 
-    /**存储卷声明*/
+    /**
+     * 存储卷声明
+     */
     private List<KcVolumeClaimTemplate> volumeClaimTemplates;
 }

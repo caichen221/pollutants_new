@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * K8S自定义访问请求<br/>
@@ -14,12 +15,13 @@ import java.io.IOException;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/23 14:50
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class K8sCustomUtils {
-    private K8sCustomUtils() {};
+    private K8sCustomUtils() {}
 
     /**
      * GET请求
@@ -31,8 +33,7 @@ public class K8sCustomUtils {
         builder.url(url);
         Request request = builder.build();
         Call call = httpClient.newCall(request);
-        String s = call.execute().body().string();
-        return s;
+        return Objects.requireNonNull(call.execute().body()).string();
     }
 
     /**
@@ -45,7 +46,6 @@ public class K8sCustomUtils {
         builder.url(url);
         Request request = builder.build();
         Call call = httpClient.newCall(request);
-        String s = call.execute().body().string();
-        return s;
+        return Objects.requireNonNull(call.execute().body()).string();
     }
 }

@@ -8,13 +8,14 @@ import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
 /**
- * kubernetes-client github地址 https://github.com/fabric8io/kubernetes-client
+ * kubernetes-client github地址 <a href="https://github.com/fabric8io/kubernetes-client">https://github.com/fabric8io/kubernetes-client</a>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 13:49
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class K8sClient {
     private K8sClient() {
     }
@@ -49,27 +50,6 @@ public class K8sClient {
         return getInstance(k8sConfig);
     }
 
-//    public static KubernetesClient getInstance(K8sConfig k8sConfig) {
-//        if (kc == null) {
-//            synchronized (K8sClient.class) {
-//                if (kc == null) {
-//                    System.setProperty("kubernetes.certs.ca.file", k8sConfig.getCaPath());
-//                    Config config = new ConfigBuilder()
-//                            //這是k8s集群訪問的TOKEN
-//                            .withOauthToken(k8sConfig.getToken())
-////                .withOauthToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tNWZrMjQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjNjOWVlMjI2LWE2YTQtNGE0Yi05YjdmLWVhODRiMzMwNGY4MiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.FGCvmtFrwahz2gLwRBT_rAFYccMZwn-uG7pRXxnCq_XyJ9ZcmS68JMzDLj3PqxY6s4UBLZenwTy0JjhQuhEKsKVLnqDYxc1nXbvCSFzisDVNpW732c8KqtNgqIH2DHXGYB67TcNxVr4dgY0H75k0_CW8p0hXjPW6tNhaVNg_HXR8kJDmKQ-jyYCZeAIVAy-FtcXmduMt5qMjt9F66mMn2YFrdyQyiUp46PLbvJegh2H9_o-RAim8O8anWnTYcSr_T8DBhnxuXD69fdvS0rGM8qK4woxp8tMyj_ixkj3z0K1nd4HOhZQNYulIsSlJz8AW1Wu52CqAaEDbPRcifFNknQ")
-//                            //固定用v1就行
-//                            .withApiVersion(k8sConfig.getApiVersion())
-//                            //這是k8s的master節點地址，端口如果沒改應該也是6443
-//                            .withMasterUrl(k8sConfig.getApiServerPath()).build();
-//                    kc = new DefaultKubernetesClient(config);
-//                }
-//            }
-//        }
-//        return kc;
-//    }
-
-
     /**
      * 暂时使用每次创建一个kubernetes-client的方式，使用单例模式，发现程序执行完线程不会退出
      * */
@@ -85,16 +65,14 @@ public class K8sClient {
                     .withApiVersion(k8sConfig.getApiVersion())
                     //這是k8s的master節點地址，端口如果沒改應該也是6443
                     .withMasterUrl(k8sConfig.getApiServerPath()).build();
-            KubernetesClient kc = new DefaultKubernetesClient(config);
-            return kc;
+            return new DefaultKubernetesClient(config);
         }
 
     }
 
     public static KubernetesClient getInstanceByFaric8Config(Config config) {
         synchronized (K8sClient.class) {
-            KubernetesClient kc = new DefaultKubernetesClient(config);
-            return kc;
+            return new DefaultKubernetesClient(config);
         }
 
     }

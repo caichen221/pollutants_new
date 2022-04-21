@@ -30,10 +30,11 @@ import java.util.Objects;
  * 存储资源管理Utils
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/15 11:06
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class KcStorageClassUtils {
     private KcStorageClassUtils() {}
 
@@ -50,6 +51,7 @@ public class KcStorageClassUtils {
             if (CollectionUtils.isNotEmpty(items)) {
                 for (V1StorageClass item : items) {
                     V1ObjectMeta metadata = item.getMetadata();
+                    assert metadata != null;
                     String name1 = metadata.getName();
                     if (Objects.equals(name, name1)) {
                         String yaml = Yaml.dump(item);
@@ -104,6 +106,7 @@ public class KcStorageClassUtils {
         kc.storage().storageClasses().createOrReplace(storageClass);
     }
 
+    @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static void deleteStorageClass(String name) throws BaseException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         StorageAPIGroupDSL storage = kc.storage();

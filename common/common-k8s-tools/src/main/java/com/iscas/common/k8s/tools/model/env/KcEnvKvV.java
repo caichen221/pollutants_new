@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
  * 值类型的环境变量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/10/13 15:06
  * @since jdk1.8
  */

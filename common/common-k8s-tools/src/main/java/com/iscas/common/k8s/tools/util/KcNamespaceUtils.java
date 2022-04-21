@@ -23,7 +23,7 @@ import java.util.List;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 15:59
  * @since jdk1.8
  */
@@ -34,7 +34,7 @@ public class KcNamespaceUtils {
         KcNamespace kcNamespace = new KcNamespace();
 
         String name = null;
-        String apiVersion = "v1";
+        String apiVersion;
         String status = null;
         Date createTime = null;
         String runTimeStr = null;
@@ -120,11 +120,6 @@ public class KcNamespaceUtils {
         objectMeta.setName(nsName);
         namespace.setMetadata(objectMeta);
         kc.namespaces().create(namespace);
-//        kc.namespaces().createNew()
-//                .withNewMetadata()
-//                .withName(nsName)
-//                .endMetadata()
-//                .done();
     }
 
     /**

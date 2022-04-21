@@ -10,7 +10,7 @@ import java.util.List;
  * 节点基本信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 16:27
  * @since jdk1.8
  */
@@ -100,6 +100,7 @@ public class KcNodeBaseInfo {
     /**
      * InternalIP
      * */
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     private String internalIP;
 
     /**

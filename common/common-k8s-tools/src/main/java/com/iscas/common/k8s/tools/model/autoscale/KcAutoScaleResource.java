@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
  * 自动扩容资源
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/22 10:36
  * @since jdk1.8
  */
