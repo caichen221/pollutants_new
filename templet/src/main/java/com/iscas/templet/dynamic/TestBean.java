@@ -12,10 +12,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/8 14:56
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
@@ -42,11 +43,11 @@ public class TestBean extends  DynamicBean{
         testBean.setValue("id", 111);
         testBean.setValue("name", "zhangsan");
         testBean.setValue("children", Arrays.asList("zhangsanson1", "zhangsanson2"));
-        Map map = new HashMap<>();
+        Map map = new HashMap<>(2);
         map.put("awegweg",1111);
         map.put("wgwegwe",1111);
         testBean.setValue("aaa", map);
-        Object object = testBean.getObject();
+        @SuppressWarnings("unused") Object object = testBean.getObject();
         Object id = testBean.getValue("id");
         System.out.println("id:" + id);
         Object name = testBean.getValue("name");

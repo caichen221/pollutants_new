@@ -8,10 +8,8 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2017/12/25 16:41
- * @Modified:
+ * @author zhuquanwen
+ * @date 2017/12/25 16:41
  **/
 @Data
 @ToString(callSuper = true)

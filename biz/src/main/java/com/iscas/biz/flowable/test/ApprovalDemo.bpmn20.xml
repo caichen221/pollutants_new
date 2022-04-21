@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.7.2">
+  <process id="ApprovalDemo" name="ApprovalDemo" isExecutable="true">
+    <documentation>测试审批流程</documentation>
+    <startEvent id="start" name="开始" flowable:formFieldValidation="true" />
+    <userTask id="request" name="请求" flowable:candidateGroups="users" flowable:assignee="${requestUser}" flowable:formFieldValidation="true" />
+    <exclusiveGateway id="gateway1" />
+    <sequenceFlow id="requestFlow" sourceRef="start" targetRef="request" />
+    <serviceTask id="successService" name="成功服务" flowable:class="cn.ac.iscas.flowable.demo.delegate.ApprovalDemoRequestSuccessDelegate" />
+    <userTask id="approval1" name="审批1" flowable:candidateGroups="first" flowable:formFieldValidation="true" />
+    <sequenceFlow id="gateway1Flow" sourceRef="request" targetRef="gateway1" />
+    <exclusiveGateway id="gateway2" />
+    <userTask id="approval2" name="审批2" flowable:candidateGroups="second" flowable:formFieldValidation="true" />
+    <serviceTask id="faileService" name="失败服务" flowable:class="cn.ac.iscas.flowable.demo.delegate.ApprovalDemoFailDelegate" />
+    <sequenceFlow id="approvalFlow1" sourceRef="successService" targetRef="approval1" />
+    <exclusiveGateway id="gateway3" />
+    <sequenceFlow id="gatewayFlow3" sourceRef="approval2" targetRef="gateway3" />
+    <userTask id="bossApproval" name="最终审批" flowable:candidateGroups="boss" flowable:formFieldValidation="true" />
+    <endEvent id="faileEnd" name="失败结束" />
+    <endEvent id="successEnd" name="成功结束" />
+    <sequenceFlow id="faileEndFlow" sourceRef="faileService" targetRef="faileEnd" />
+    <sequenceFlow id="faileFlow1" name="失败" sourceRef="gateway1" targetRef="faileService">
+      <conditionExpression xsi:type="tFormalExpression">${!approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="approvalFlow2" name="成功" sourceRef="gateway2" targetRef="approval2">
+      <conditionExpression xsi:type="tFormalExpression">${approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="faileFlow2" name="失败" sourceRef="gateway2" targetRef="faileService">
+      <conditionExpression xsi:type="tFormalExpression">${!approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bossApprovalFlow" name="成功" sourceRef="gateway3" targetRef="bossApproval">
+      <conditionExpression xsi:type="tFormalExpression">${approved}</conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="gateway4" />
+    <sequenceFlow id="gatewayFlow2" sourceRef="approval1" targetRef="gateway2" />
+    <sequenceFlow id="gatewayFlow4" sourceRef="bossApproval" targetRef="gateway4" />
+    <sequenceFlow id="successFlow1" name="成功" sourceRef="gateway1" targetRef="successService">
+      <conditionExpression xsi:type="tFormalExpression">${approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sucessEndFlow" name="成功" sourceRef="gateway4" targetRef="successEnd">
+      <conditionExpression xsi:type="tFormalExpression">${approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="faileFlow3" name="失败" sourceRef="gateway3" targetRef="faileService">
+      <conditionExpression xsi:type="tFormalExpression">${!approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="faileFlow4" name="失败" sourceRef="gateway4" targetRef="faileService">
+      <conditionExpression xsi:type="tFormalExpression">${!approved}</conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ApprovalDemo">
+    <bpmndi:BPMNPlane id="BPMNPlane_ApprovalDemo" bpmnElement="ApprovalDemo">
+      <bpmndi:BPMNEdge id="BPMNEdge_faileFlow4" bpmnElement="faileFlow4" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1024.2558685446008" y="459.2464788732394" />
+        <omgdi:waypoint x="484.9499999999997" y="583.9393063583815" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="744" y="497" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_faileFlow3" bpmnElement="faileFlow3" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="913.3136645962733" y="288.79413043478263" />
+        <omgdi:waypoint x="484.9499999999999" y="563.4408766564729" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="688" y="401" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_sucessEndFlow" bpmnElement="sucessEndFlow" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="1040.431899641577" y="474.511085243553" />
+        <omgdi:waypoint x="1040.0498211162294" y="581.500087789977" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1030" y="503" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_successFlow1" bpmnElement="successFlow1" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="300.5" y="419" />
+        <omgdi:waypoint x="300.5" y="280.5" />
+        <omgdi:waypoint x="385" y="280.5" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_gatewayFlow4" bpmnElement="gatewayFlow4" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="1040" y="320.45000000000005" />
+        <omgdi:waypoint x="1040" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_gatewayFlow2" bpmnElement="gatewayFlow2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="629.9499999999978" y="280.71623376623376" />
+        <omgdi:waypoint x="675.4130434782609" y="280.9130434782609" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_bossApprovalFlow" bpmnElement="bossApprovalFlow" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="944.5247370727355" y="280.91666666666663" />
+        <omgdi:waypoint x="989.9999999999874" y="280.7181222707424" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="957" y="256" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_faileFlow2" bpmnElement="faileFlow2" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="686.4391304347826" y="291.9117826086957" />
+        <omgdi:waypoint x="468.0905405405406" y="555.5" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="566" y="399" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_approvalFlow2" bpmnElement="approvalFlow2" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="714.5247370727355" y="280.91666666666663" />
+        <omgdi:waypoint x="759.9999999999874" y="280.7181222707424" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="727" y="256" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_faileFlow1" bpmnElement="faileFlow1" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="300.49999999999994" y="457.94394955300123" />
+        <omgdi:waypoint x="300.5" y="595.5" />
+        <omgdi:waypoint x="385" y="595.5" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="290" y="502" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_faileEndFlow" bpmnElement="faileEndFlow" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="484.95000000000005" y="595.5" />
+        <omgdi:waypoint x="555" y="595.5" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_gatewayFlow3" bpmnElement="gatewayFlow3" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="859.9499999999978" y="280.71623376623376" />
+        <omgdi:waypoint x="905.4130434782609" y="280.9130434782609" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_approvalFlow1" bpmnElement="approvalFlow1" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="484.94999999990824" y="280.5" />
+        <omgdi:waypoint x="529.9999999999807" y="280.5" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_gateway1Flow" bpmnElement="gateway1Flow" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="219.95" y="438.3827586206897" />
+        <omgdi:waypoint x="280.3455598455599" y="438.8455598455599" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_requestFlow" bpmnElement="requestFlow" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="44.94999906759471" y="438" />
+        <omgdi:waypoint x="120" y="438" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_start" bpmnElement="start">
+        <omgdc:Bounds x="15" y="423" width="30" height="30" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="19" y="453" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_request" bpmnElement="request">
+        <omgdc:Bounds x="120" y="398" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_gateway1" bpmnElement="gateway1" isMarkerVisible="true">
+        <omgdc:Bounds x="280" y="418.5" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_successService" bpmnElement="successService">
+        <omgdc:Bounds x="385" y="240.5" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_approval1" bpmnElement="approval1">
+        <omgdc:Bounds x="530" y="240.5" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_gateway2" bpmnElement="gateway2" isMarkerVisible="true">
+        <omgdc:Bounds x="675" y="260.5" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_approval2" bpmnElement="approval2">
+        <omgdc:Bounds x="760" y="240.5" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_faileService" bpmnElement="faileService">
+        <omgdc:Bounds x="385" y="555.5" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_gateway3" bpmnElement="gateway3" isMarkerVisible="true">
+        <omgdc:Bounds x="905" y="260.5" width="40" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_bossApproval" bpmnElement="bossApproval">
+        <omgdc:Bounds x="990" y="240.5" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_faileEnd" bpmnElement="faileEnd">
+        <omgdc:Bounds x="555" y="581.5" width="28" height="28" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_successEnd" bpmnElement="successEnd">
+        <omgdc:Bounds x="1026" y="581.5" width="28" height="28" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1018" y="610" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_gateway4" bpmnElement="gateway4" isMarkerVisible="true">
+        <omgdc:Bounds x="1020" y="435" width="40" height="40" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

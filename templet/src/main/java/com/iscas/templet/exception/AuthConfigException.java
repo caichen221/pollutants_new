@@ -1,13 +1,11 @@
 package com.iscas.templet.exception;
 
 
-import com.iscas.templet.exception.BaseException;
-
 /**
  * 权限校验配置读取异常
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 21:15
  * @since jdk1.8
  */

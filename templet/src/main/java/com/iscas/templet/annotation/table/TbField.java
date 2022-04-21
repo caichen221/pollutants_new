@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/20 21:26e
  * @since jdk1.8
  */
@@ -36,7 +36,6 @@ public @interface TbField {
     /**是不是隐藏*/
     boolean hidden() default false;
     /**搜索方式*/
-    @Deprecated
     String searchWay() default "";
     /**如果是下拉列表,返回的下拉列表信息,当前类的静态属性的名称*/
     String option();

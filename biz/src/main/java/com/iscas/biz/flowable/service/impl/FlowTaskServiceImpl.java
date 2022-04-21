@@ -711,8 +711,12 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                                 stringBuilder.append(sysUser.getUserRealName()).append(",");
                             }
                             if (StringUtils.isNotBlank(identityLink.getGroupId())) {
-                                Role sysRole = sysRoleService.getById(Integer.parseInt(identityLink.getGroupId()));
-                                stringBuilder.append(sysRole.getRoleName()).append(",");
+                                try {
+                                    int roleId = Integer.parseInt(identityLink.getGroupId());
+                                    Role sysRole = sysRoleService.getById(roleId);
+                                    stringBuilder.append(sysRole.getRoleName()).append(",");
+                                } catch (Exception ignored){}
+
                             }
                         }
                     }
