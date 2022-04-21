@@ -6,7 +6,7 @@ import lombok.ToString;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/3 9:21
  * @since jdk1.8
  */

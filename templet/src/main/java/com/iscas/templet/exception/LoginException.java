@@ -3,10 +3,11 @@ package com.iscas.templet.exception;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/5 15:39
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class LoginException extends BaseException {
     public LoginException() {
     }

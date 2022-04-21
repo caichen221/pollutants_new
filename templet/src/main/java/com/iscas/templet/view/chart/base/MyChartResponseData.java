@@ -10,14 +10,14 @@ import java.util.List;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/11 20:00
  * @since jdk1.8
  */
 @Getter
 @Setter
 @Deprecated
-public class MyChartResponseData implements Serializable,Cloneable {
+public class MyChartResponseData implements Serializable {
     protected ChartTitle title = new ChartTitle();
     protected List<ChartAxis> xAxis = new ArrayList<>();
     protected List<ChartAxis> yAxis = new ArrayList<>();

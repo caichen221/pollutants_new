@@ -3,7 +3,6 @@ package com.iscas.templet.view.table;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
  * 表格按钮定义
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/3 9:19
  * @since jdk1.8
  */

@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2017/12/28 10:19
- * @Modified:
+ * @author zhuquanwen
+ * @date 2017/12/28 10:19
  **/
+@SuppressWarnings({"rawtypes", "unused"})
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)

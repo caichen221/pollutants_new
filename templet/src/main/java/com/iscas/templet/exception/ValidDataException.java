@@ -3,7 +3,7 @@ package com.iscas.templet.exception;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/6 19:13
  * @since jdk1.8
  */

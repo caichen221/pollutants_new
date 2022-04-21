@@ -1,14 +1,12 @@
 package com.iscas.templet.view.table;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/1/4 13:35
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/1/4 13:35
  **/
-public enum  TableViewType {
+public enum TableViewType {
     //多选
     multi,
     //单选
-    single;
+    single
 }

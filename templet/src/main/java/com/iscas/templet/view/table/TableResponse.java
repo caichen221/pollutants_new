@@ -6,12 +6,12 @@ import lombok.*;
 import java.io.Serializable;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2017/12/25 16:40
- * @Modified:
+ * @author zhuquanwen
+ * @date 2017/12/25 16:40
  **/
+@SuppressWarnings({"unused", "rawtypes"})
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class TableResponse extends ResponseEntity<TableResponseData> implements Serializable{
     public TableResponse(){}

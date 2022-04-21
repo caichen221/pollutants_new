@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/10 13:38
  * @since jdk1.8
  */
@@ -18,10 +17,26 @@ import java.util.List;
 @Getter
 @Deprecated
 public class StackBarSeries<T> implements Serializable {
-    protected String type = "bar"; //暂时使用默认值
-    protected String coordinateSystem = "polar"; //暂时使用默认值
-    protected String stack = "string"; //暂时使用默认值
+
+    /**
+     * 暂时使用默认值
+     */
+    protected String type = "bar";
+
+    /**
+     * 暂时使用默认值
+     */
+    protected String coordinateSystem = "polar";
+
+    /**
+     * 暂时使用默认值
+     */
+    protected String stack = "string";
     protected List<T> data = new ArrayList<>();
-    protected  String name; //名称
+
+    /**
+     * 名称
+     */
+    protected String name;
 
 }

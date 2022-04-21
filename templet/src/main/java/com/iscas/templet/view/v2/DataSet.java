@@ -1,4 +1,4 @@
-package com.iscas.templet.view.chartV2;
+package com.iscas.templet.view.v2;
 
 import lombok.Data;
 import lombok.ToString;
@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/12 8:54
  * @since jdk1.8
  */
@@ -18,6 +17,6 @@ import java.util.List;
 public class DataSet {
     /**
      * 数据
-     * */
-    protected List<List<? extends Object>>  source = new ArrayList<>();
+     */
+    protected List<List<?>> source = new ArrayList<>();
 }

@@ -7,10 +7,9 @@ import lombok.Setter;
  * 自定义optocon基础异常，继承{@link Exception}<br/>
  * 自定义一些属性,定义这个属性{@link #msgDetail}可以在抛出异常的时候,<br/>
  * 定义一些详细描述,这些信息可以不告诉前台用户，但是可以方便调试<br/>
- * 这些信息可以写入{@link com.iscas.templet.common.ResponseEntity#desc} 中。
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 21:17
  * @since jdk1.8
  */

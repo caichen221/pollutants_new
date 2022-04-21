@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/10 11:32
  * @since jdk1.8
  */
+@SuppressWarnings("rawtypes")
 @Getter
 @Setter
 @Deprecated
-public class StackBarResponseData  implements Serializable {
+public class StackBarResponseData implements Serializable {
     protected StackBarAngleAxis angleAxis;
     protected List<StackBarSeries> series = new ArrayList<>();
     protected ChartTitle title = new ChartTitle();

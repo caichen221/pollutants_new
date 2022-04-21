@@ -17,6 +17,27 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+
+-- ----------------------------
+-- Table structure for file_info
+-- ----------------------------
+DROP TABLE IF EXISTS `file_info`;
+CREATE TABLE `file_info`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '相对路径',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名',
+  `suffix` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件后缀',
+  `size` bigint(0) NULL DEFAULT NULL COMMENT '文件大小(字节B)',
+  `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+  `shard_index` int(0) NULL DEFAULT NULL COMMENT '已经上传的分片',
+  `shard_size` int(0) NULL DEFAULT NULL COMMENT '分片大小(字节B)',
+  `shard_total` int(0) NULL DEFAULT NULL COMMENT '分片总数',
+  `file_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件标识',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `file_key`(`file_key`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
 -- ----------------------------
 -- Table structure for act_evt_log
 -- ----------------------------

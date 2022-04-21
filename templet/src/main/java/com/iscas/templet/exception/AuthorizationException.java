@@ -1,15 +1,14 @@
 package com.iscas.templet.exception;
 
-import com.iscas.templet.exception.BaseException;
-
 /**
  * 权限校验失败
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/5 15:39
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class AuthorizationException extends BaseException {
     public AuthorizationException() {
     }

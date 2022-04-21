@@ -12,11 +12,12 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/10 13:59
  * @since jdk1.8
  */
 
+@SuppressWarnings({"rawtypes", "unused", "unchecked", "MismatchedQueryAndUpdateOfCollection"})
 @Setter
 @Getter
 @AllArgsConstructor
@@ -25,10 +26,14 @@ public class MapSeries implements Serializable {
     protected String name;
     protected List<MapSeriesData> data;
     protected boolean roam = true;
-    protected String type = "map"; //类型
-    protected String mapType = "china"; //地图类型
+    /**类型*/
+    protected String type = "map";
 
-    protected Map itemStyle = new HashMap<>(); //写死给前台用的
+    /**地图类型*/
+    protected String mapType = "china";
+
+    /**写死给前台用的*/
+    protected Map itemStyle = new HashMap<>();
 
 
     public MapSeries() {

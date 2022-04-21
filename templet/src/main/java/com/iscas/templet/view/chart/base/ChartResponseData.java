@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/4/11 11:33
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/4/11 11:33
  **/
 @Getter
 @Setter
@@ -25,11 +23,12 @@ public class ChartResponseData implements Serializable,Cloneable {
     protected Legend legend = new Legend();
     protected Object others;
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public ChartResponseData clone() {
-        ByteArrayOutputStream byteOut = null;
+        ByteArrayOutputStream byteOut;
         ObjectOutputStream objOut = null;
-        ByteArrayInputStream byteIn = null;
+        ByteArrayInputStream byteIn;
         ObjectInputStream objIn = null;
         try {
             byteOut = new ByteArrayOutputStream();
@@ -44,15 +43,13 @@ public class ChartResponseData implements Serializable,Cloneable {
             throw new RuntimeException("Class not found.",e);
         } finally {
             try {
-                byteIn = null;
-                byteOut = null;
                 if (objOut != null) {
                     objOut.close();
                 }
                 if (objIn != null) {
                     objIn.close();
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
     }

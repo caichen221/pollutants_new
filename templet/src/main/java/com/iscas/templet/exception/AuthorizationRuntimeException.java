@@ -3,10 +3,11 @@ package com.iscas.templet.exception;
 /**
  * 权限校验错误
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/26 17:54
  * @since jdk1.8
  */
+@SuppressWarnings(value = "unused")
 public class AuthorizationRuntimeException extends BaseRuntimeException {
     public AuthorizationRuntimeException() {
     }

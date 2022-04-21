@@ -9,6 +9,7 @@ package com.iscas.templet.exception;
  * @date 2018/7/16 21:15
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class AuthConfigException extends BaseException {
     public AuthConfigException() {
         super();

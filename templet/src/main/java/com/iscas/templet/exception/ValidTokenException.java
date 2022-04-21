@@ -1,15 +1,14 @@
 package com.iscas.templet.exception;
 
-import com.iscas.templet.exception.BaseException;
-
 /**
  * 不支持的Token异常
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 22:21
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ValidTokenException extends BaseException {
     public ValidTokenException() {
         super();

@@ -1,17 +1,15 @@
 package com.iscas.templet.view.chart.base;
 
 import com.iscas.templet.common.ResponseEntity;
-import com.iscas.templet.view.chartV2.ChartResponseData;
+import com.iscas.templet.view.v2.ChartResponseData;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/4/11 11:31
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/4/11 11:31
  **/
 @Getter
 @Setter

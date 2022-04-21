@@ -6,16 +6,16 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/5/18 16:29
- * @Modified: 曲线图标题信息
+ * 曲线图标题信息
+ * @author zhuquanwen
+ * @date 2018/5/18 16:29
  **/
 @Getter
 @Setter
 @Deprecated
 public class ChartTitle implements Serializable {
-    protected String text = ""; //标题文本
+    /**标题文本*/
+    protected String text = "";
     protected String link = "";
     protected boolean showtitle = true;
     protected String subtext = "";

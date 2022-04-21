@@ -10,7 +10,7 @@ import lombok.Setter;
  * 这些信息可以写入{@link com.iscas.templet.common.ResponseEntity#setDesc(String)} 中。
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 21:17
  * @since jdk1.8
  */

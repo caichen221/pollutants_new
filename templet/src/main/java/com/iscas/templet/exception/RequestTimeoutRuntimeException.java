@@ -3,10 +3,11 @@ package com.iscas.templet.exception;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/09/10 17:54
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class RequestTimeoutRuntimeException extends BaseRuntimeException {
     public RequestTimeoutRuntimeException() {
     }

@@ -12,21 +12,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- *
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/24 21:50
  * @since jdk1.8
  */
+@SuppressWarnings("rawtypes")
 public class HeaderHelper {
-    private HeaderHelper() {}
+    private HeaderHelper() {
+    }
 
-    //将实体转为表头
+    /**
+     * 将实体转为表头
+     */
     public static TableHeaderResponseData convertToHeader(Class clazz) throws HeaderException {
         TableHeaderResponseData headerData = new TableHeaderResponseData();
         //构建tableSetting
-       tableSettingHandle(clazz, headerData);
+        tableSettingHandle(clazz, headerData);
 
         //构建TableField
         tableFieldsHandle(clazz, headerData);
@@ -36,71 +38,70 @@ public class HeaderHelper {
         return headerData;
     }
 
-    private static void tableFieldsHandle(Class clazz, TableHeaderResponseData headerData) throws HeaderException {
+    private static void tableFieldsHandle(Class clazz, TableHeaderResponseData headerData) {
         List<TableField> cols = new ArrayList<>();
         Field[] declaredFields = clazz.getDeclaredFields();
-        if (declaredFields != null) {
-            for (Field declaredField : declaredFields) {
-                TbField tbField = declaredField.getAnnotation(TbField.class);
-                if (tbField != null) {
-                    TableField tableField = new TableField();
-                    tableField.setField(tbField.field())
-                            .setHeader(tbField.header())
-                            .setEditable(tbField.editable())
-                            .setSortable(tbField.sortable())
-                            .setAddable(tbField.addable())
-                            .setType(tbField.type())
-                            .setSearch(tbField.search())
-                            .setSearchType(tbField.searchType())
-                            .setHidden(tbField.hidden())
-                            .setSearchWay(Objects.equals("", tbField.searchWay()) ? null : tbField.searchWay())
-                            .setSelectUrl(Objects.equals("", tbField.selectUrl()) ? null : tbField.selectUrl());
+        for (Field declaredField : declaredFields) {
+            TbField tbField = declaredField.getAnnotation(TbField.class);
+            if (tbField != null) {
+                TableField tableField = new TableField();
+                tableField.setField(tbField.field())
+                        .setHeader(tbField.header())
+                        .setEditable(tbField.editable())
+                        .setSortable(tbField.sortable())
+                        .setAddable(tbField.addable())
+                        .setType(tbField.type())
+                        .setSearch(tbField.search())
+                        .setSearchType(tbField.searchType())
+                        .setHidden(tbField.hidden())
+                        .setSearchWay(Objects.equals("", tbField.searchWay()) ? null : tbField.searchWay())
+                        .setSelectUrl(Objects.equals("", tbField.selectUrl()) ? null : tbField.selectUrl());
 
-                    //构建校验规则
-                    TbFieldRule tableFieldRule = tbField.rule();
-                    if (tableFieldRule != null) {
-                        String desc = tableFieldRule.desc();
-                        if (!Objects.equals("", desc)) {
-                            Rule rule = new Rule();
-                            rule.setRequired(tableFieldRule.required())
-                                    .setDesc(tableFieldRule.desc())
-                                    .setReg("".equals(tableFieldRule.reg()) ? null : tableFieldRule.reg())
-                                    .setDistinct(tableFieldRule.distinct())
-                                    .setContainsHigh(tableFieldRule.containsHigh())
-                                    .setContainsLow(tableFieldRule.containsLow())
-                                    .setHighVal("".equals(tableFieldRule.highValue()) ? null : tableFieldRule.highValue())
-                                    .setLowVal("".equals(tableFieldRule.lowValue()) ? null : tableFieldRule.lowValue());
-                            Map<String,Integer> length = null;
-                            int max = tableFieldRule.maxLength();
-                            int min = tableFieldRule.minLength();
-                            if (max != -1) {
-                                length = new HashMap<>();
-                                length.put("max", max);
-                            }
-                            if (min != -1) {
-                                if (length == null) {
-                                    length = new HashMap<>();
-                                }
-                                length.put("min", min);
-                            }
-                            rule.setLength(length);
-                            tableField.setRule(rule);
+                //构建校验规则
+                TbFieldRule tableFieldRule = tbField.rule();
+                if (tableFieldRule != null) {
+                    String desc = tableFieldRule.desc();
+                    if (!Objects.equals("", desc)) {
+                        Rule rule = new Rule();
+                        rule.setRequired(tableFieldRule.required())
+                                .setDesc(tableFieldRule.desc())
+                                .setReg("".equals(tableFieldRule.reg()) ? null : tableFieldRule.reg())
+                                .setDistinct(tableFieldRule.distinct())
+                                .setContainsHigh(tableFieldRule.containsHigh())
+                                .setContainsLow(tableFieldRule.containsLow())
+                                .setHighVal("".equals(tableFieldRule.highValue()) ? null : tableFieldRule.highValue())
+                                .setLowVal("".equals(tableFieldRule.lowValue()) ? null : tableFieldRule.lowValue());
+                        Map<String, Integer> length = null;
+                        int max = tableFieldRule.maxLength();
+                        int min = tableFieldRule.minLength();
+                        if (max != -1) {
+                            length = new HashMap<>(2);
+                            length.put("max", max);
                         }
+                        if (min != -1) {
+                            if (length == null) {
+                                length = new HashMap<>(2);
+                            }
+                            length.put("min", min);
+                        }
+                        rule.setLength(length);
+                        tableField.setRule(rule);
                     }
+                }
 
-                    //下拉列表
-                    //todo 暂不处理
+                //下拉列表
+                //todo 暂不处理
 //                    /**如果是下拉列表,返回的下拉列表信息,当前类的静态属性的名称*/
 //                    String option();
 
-                    cols.add(tableField);
-                }
+                cols.add(tableField);
             }
         }
 
         headerData.setCols(cols);
     }
 
+    @SuppressWarnings("unchecked")
     private static void tableSettingHandle(Class clazz, TableHeaderResponseData headerData) throws HeaderException {
         TbSetting tbs = (TbSetting) clazz.getAnnotation(TbSetting.class);
         if (tbs == null) {
@@ -114,6 +115,7 @@ public class HeaderHelper {
         headerData.setSetting(tableSetting);
     }
 
+    @SuppressWarnings("unchecked")
     private static void callbackHandle(Class clazz, TableHeaderResponseData headerData) throws HeaderException {
         //回调
         try {
@@ -122,7 +124,8 @@ public class HeaderHelper {
                 BaseTb baseTb = (BaseTb) o;
                 baseTb.headerCallback(headerData);
             }
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new HeaderException(String.format("生成表头失败,获取类:[%s]的无参构造器失败", clazz.getSimpleName()), e);
         }
     }

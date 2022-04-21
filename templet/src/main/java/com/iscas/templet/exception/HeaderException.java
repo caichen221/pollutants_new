@@ -1,12 +1,16 @@
 package com.iscas.templet.exception;
 
+import lombok.Getter;
+
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/26 20:59
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
+@Getter
 public class HeaderException extends BaseException {
     /**详细信息描述*/
     private String msgDetail;

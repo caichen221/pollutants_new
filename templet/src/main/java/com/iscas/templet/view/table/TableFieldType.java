@@ -1,10 +1,8 @@
 package com.iscas.templet.view.table;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2017/12/25 17:08
- * @Modified:
+ * @author zhuquanwen
+ * @date 2017/12/25 17:08
  **/
 public enum  TableFieldType {
     /**文本*/

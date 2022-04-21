@@ -3,10 +3,11 @@ package com.iscas.templet.exception;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/27 22:24
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class RepeatSubmitException extends BaseException {
     @Override
     public void setMsgDetail(String msgDetail) {
