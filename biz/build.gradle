@@ -44,6 +44,11 @@ dependencies {
     api project(":biz-mp")
 
     api "org.flowable:flowable-spring-boot-starter-basic:${flowableVersion}"
+    api group: 'org.flowable', name: 'flowable-rest', version: "${flowableVersion}"
+    api "org.flowable:flowable-spring-boot-starter-process-rest:${flowableVersion}"
+//    api "io.github.markixy:flowable-swagger:1.0.0"
+    api group: 'javax.annotation', name: 'javax.annotation-api', version: "${annotationApiVersion}"
+
     api group: 'org.eweb4j', name: 'fel', version: "${felVersion}"
     api group: 'xerces', name: 'xercesImpl', version: "${xercesImplVersion}"
 

@@ -1,12 +1,12 @@
 package com.iscas.biz.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.ApiOperation;
+import org.flowable.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.*;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
 import springfox.documentation.oas.annotations.EnableOpenApi;
@@ -31,8 +31,8 @@ import java.util.List;
 @Configuration
 @EnableOpenApi
 @EnableKnife4j
-@Import(BeanValidatorPluginsConfiguration.class)
-@Lazy(value = false)
+//@Import(BeanValidatorPluginsConfiguration.class)
+@ComponentScan(basePackages = "org.flowable.rest.service.api")
 public class Swagger3Config {
     @Value("${swagger.enable: true}")
     private boolean swaggerEnable;
@@ -58,8 +58,34 @@ public class Swagger3Config {
     }
 
 
-//
+    @Bean
+    public Docket flowableRestApi() {
 
+        return new Docket(DocumentationType.OAS_30)
+                .groupName("flowable-rest")
+                .apiInfo(new ApiInfoBuilder().title("flowable-API")
+                        .description("flowable-API")
+                        .version(version).build())
+                .enable(swaggerEnable)
+//                .securitySchemes(List.of(tokenScheme()))
+//                .securityContexts(List.of(tokenContext()))
+//                .globalOperationParameters(setHeaderToken())
+                .select()
+                // 自行修改为自己的包路径
+                .apis(RequestHandlerSelectors.basePackage("org.flowable.rest.service.api"))
+                .paths(PathSelectors.any())
+                .build()
+                .pathMapping("/process-api");
+    }
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Bean()
+    public RestResponseFactory restResponseFactory() {
+        RestResponseFactory restResponseFactory = new RestResponseFactory(objectMapper);
+        return restResponseFactory;
+    }
 
     @Bean
     public Docket authApi() {
