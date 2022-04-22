@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author admin
+ */
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 @Mapper
 @Repository
 public interface TestDataMapper extends BaseMapper<TestData> {

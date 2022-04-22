@@ -22,114 +22,85 @@ import java.util.concurrent.ConcurrentHashMap;
  * 为了连接非配置文件内的数据库，
  * 适用于数据归并或抽取时
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/10 0010 下午 15:48
  * @since jdk11
  */
+@SuppressWarnings({"unused", "rawtypes"})
 public class MybatisGeneralUtils {
-    private static volatile Map<String, SqlSessionFactory> sqlSessionFactoryMap = new ConcurrentHashMap<>();
+    private static final Map<String, SqlSessionFactory> SQL_SESSION_FACTORY_MAP = new ConcurrentHashMap<>();
 
     public static SqlSessionFactory getSessionFactory(String envId, DataSource dataSource) {
-        if (!sqlSessionFactoryMap.containsKey(envId)) {
+        if (!SQL_SESSION_FACTORY_MAP.containsKey(envId)) {
             synchronized (envId.intern()) {
-                if (!sqlSessionFactoryMap.containsKey(envId)) {
+                if (!SQL_SESSION_FACTORY_MAP.containsKey(envId)) {
                     Configuration configuration = new Configuration();
                     configuration.addMapper(DynamicMapper.class);
                     TransactionFactory transactionFactory = new JdbcTransactionFactory();
                     Environment environment = new Environment(envId, transactionFactory, dataSource);
                     configuration.setEnvironment(environment);
                     SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-                    sqlSessionFactoryMap.put(envId, sessionFactory);
+                    SQL_SESSION_FACTORY_MAP.put(envId, sessionFactory);
                     return sessionFactory;
                 }
             }
         }
-        return sqlSessionFactoryMap.get(envId);
+        return SQL_SESSION_FACTORY_MAP.get(envId);
 
     }
 
     private static Map<String, String> createSqlMap(String sql) {
-        Map<String, String> sqlMap = new HashMap<>();
+        Map<String, String> sqlMap = new HashMap<>(1);
         sqlMap.put("sql", sql);
         return sqlMap;
     }
 
     public static Map executeSearchOne(SqlSessionFactory sessionFactory, String sql) {
-        SqlSession sqlSession = null;
-        try {
-            sqlSession = sessionFactory.openSession();
+        try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
-            Map result = null;
+            Map result;
             String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
             result = sqlSession.selectOne(method, sqlMap);
             sqlSession.commit();
             return result;
-        } finally {
-            if (sqlSession != null) {
-                sqlSession.close();
-            }
         }
     }
 
     public static List<Map> executeSearch(SqlSessionFactory sessionFactory, String sql) {
-        SqlSession sqlSession = null;
-        try {
-            sqlSession = sessionFactory.openSession();
+        try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
-            List<Map> result = null;
+            List<Map> result;
             String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
             result = sqlSession.selectList(method, sqlMap);
             sqlSession.commit();
             return result;
-        } finally {
-            if (sqlSession != null) {
-                sqlSession.close();
-            }
         }
     }
 
     public static void executeInsert(SqlSessionFactory sessionFactory, String sql) {
-        SqlSession sqlSession = null;
-        try {
-            sqlSession = sessionFactory.openSession();
+        try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
             String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicInsert";
             sqlSession.insert(method, sqlMap);
             sqlSession.commit();
-        } finally {
-            if (sqlSession != null) {
-                sqlSession.close();
-            }
         }
     }
 
     public static void executeUpdate(SqlSessionFactory sessionFactory, String sql) {
-        SqlSession sqlSession = null;
-        try {
-            sqlSession = sessionFactory.openSession();
+        try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
             String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicUpdate";
             sqlSession.update(method, sqlMap);
             sqlSession.commit();
-        } finally {
-            if (sqlSession != null) {
-                sqlSession.close();
-            }
         }
     }
 
     public static void executeDelete(SqlSessionFactory sessionFactory, String sql) {
-        SqlSession sqlSession = null;
-        try {
-            sqlSession = sessionFactory.openSession();
+        try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
             String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicDelete";
             sqlSession.update(method, sqlMap);
             sqlSession.commit();
-        } finally {
-            if (sqlSession != null) {
-                sqlSession.close();
-            }
         }
     }
 
@@ -139,7 +110,7 @@ public class MybatisGeneralUtils {
      * forceExecute 表示是否强制提交，sqls的size小于batchSize
      * */
     public static void executeBatch(SqlSessionFactory sessionFactory, List<String> sqls, int batchSize, boolean forceExecute) throws SQLException {
-        SqlSession sqlSession = null;
+        SqlSession sqlSession;
 
         if (sqls == null) {
             return;
@@ -182,8 +153,8 @@ public class MybatisGeneralUtils {
      * forceExecute 表示是否强制提交，sqls的size小于batchSize
      * 使用ExecutorType.Batch,效率应该没有executeBatch快
      * */
-    public static void executeBatch2(SqlSessionFactory sessionFactory, List<String> sqls, int batchSize, boolean forceExecute) throws SQLException {
-        SqlSession sqlSession = null;
+    public static void executeBatch2(SqlSessionFactory sessionFactory, List<String> sqls, int batchSize, boolean forceExecute) {
+        SqlSession sqlSession;
 
         if (sqls == null) {
             return;

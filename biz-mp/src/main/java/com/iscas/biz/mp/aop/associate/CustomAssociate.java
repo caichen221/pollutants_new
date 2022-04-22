@@ -5,10 +5,11 @@ import java.lang.annotation.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/4 11:18
  * @since jdk1.8
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented

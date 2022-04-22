@@ -10,11 +10,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/15 10:35
  * @since jdk1.8
  */
@@ -24,7 +25,7 @@ public class OnMybatis extends SpringBootCondition {
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
 
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> beansWithAnnotation = context.getBeanFactory().getBeansWithAnnotation(EnableMybatis.class);
+        Map<String, Object> beansWithAnnotation = Objects.requireNonNull(context.getBeanFactory()).getBeansWithAnnotation(EnableMybatis.class);
         boolean match = MapUtils.isNotEmpty(beansWithAnnotation);
         return match ? ConditionOutcome.match(message.foundExactly("EnableMybatis")) :
                 ConditionOutcome.noMatch(message.because("not EnableMybatis"));

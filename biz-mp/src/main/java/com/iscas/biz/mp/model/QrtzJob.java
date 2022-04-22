@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * quartz任务
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/26 10:11
  * @since jdk1.8
  */

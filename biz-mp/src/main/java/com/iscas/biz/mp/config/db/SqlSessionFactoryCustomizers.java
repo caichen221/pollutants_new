@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/5 9:20
  * @since jdk1.8
  */
@@ -22,6 +22,7 @@ public class SqlSessionFactoryCustomizers {
         this.customizers = (customizers != null) ? new ArrayList<>(customizers) : Collections.emptyList();
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public <T extends Configuration,S extends FactoryBean<? extends SqlSessionFactory>> S customize(T configuration, S sessionFactory){
         customizers.forEach(customizer -> customizer.customize(configuration, sessionFactory));
         return sessionFactory;

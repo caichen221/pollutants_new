@@ -8,10 +8,11 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/26 10:22
  * @since jdk1.8
  */
@@ -19,7 +20,7 @@ public class OnQuartz extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> beansWithAnnotation = context.getBeanFactory().getBeansWithAnnotation(EnableQuartz.class);
+        Map<String, Object> beansWithAnnotation = Objects.requireNonNull(context.getBeanFactory()).getBeansWithAnnotation(EnableQuartz.class);
         boolean match = MapUtils.isNotEmpty(beansWithAnnotation);
         return match ? ConditionOutcome.match(message.foundExactly("EnableQuartz")) :
                 ConditionOutcome.noMatch(message.because("not EnableQuartz"));

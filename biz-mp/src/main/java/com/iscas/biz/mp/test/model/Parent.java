@@ -3,6 +3,10 @@ package com.iscas.biz.mp.test.model;
 
 import java.util.List;
 
+/**
+ * @author admin
+ */
+@SuppressWarnings("unused")
 public class Parent {
     private Integer id;
 

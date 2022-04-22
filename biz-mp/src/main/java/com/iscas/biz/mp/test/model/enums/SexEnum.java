@@ -9,11 +9,12 @@ import java.util.Objects;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/4/5 15:23
  * @since jdk1.8
  */
 
+@SuppressWarnings("unused")
 public enum  SexEnum /*implements IEnum<Integer>*/ {
 
     /**
@@ -54,9 +55,4 @@ public enum  SexEnum /*implements IEnum<Integer>*/ {
         }
         return null;
     }
-/*
-    @Override
-    public Integer getValue() {
-        return code;
-    }*/
 }

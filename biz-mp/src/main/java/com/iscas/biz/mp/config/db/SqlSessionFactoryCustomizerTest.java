@@ -4,15 +4,15 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/5 12:03
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @Component
 @ConditionalOnMybatis
 public class SqlSessionFactoryCustomizerTest implements SqlSessionFactoryCustomizer {

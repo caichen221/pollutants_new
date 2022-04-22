@@ -1,35 +1,38 @@
 package com.iscas.biz.mp.table.service;
 
+
 import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorService;
-import org.apache.ibatis.annotations.Delete;
 
 /**
- * mysql xxtable的sql拼接实现
+ * oracle xxtable的sql拼接实现
+ *
+ * 注意，神州通用数据库需要将xxtable 和xxcolumn中配置的对应数据库的表名和列明字段为大写
  *
  * @author zhuquanwen
  * @vesion 1.0
  * @date 2021/12/2 13:53
  * @since jdk1.8
  */
-public class MysqlTableDefinitionSqlCreatorService implements ITableDefinitionSqlCreatorService {
+public class OracleTableDefinitionSqlCreatorServiceImpl implements ITableDefinitionSqlCreatorService {
+
     @Override
     public String getTableByIdentifySql() {
-        return "SELECT * FROM ${tableDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} LIMIT 0,1 ";
+        return "SELECT * FROM ${tableDefinitionTableName} WHERE TABLEIDENTITY = #{tableIdentity} AND ROWNUM < 2 ";
     }
 
     @Override
     public String getHeaderByIdentifySql() {
-        return "SELECT * FROM ${columnDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} ORDER BY sequence";
+        return "SELECT * FROM ${columnDefinitionTableName} WHERE TABLEIDENTITY = #{tableIdentity} ORDER BY (SEQUENCE+'0')";
     }
 
     @Override
     public String getRefTableSql() {
-        return "SELECT ${id} as id,${value} as value FROM ${tableName} ORDER BY id";
+        return "SELECT ${id} as \"id\",${value} as \"value\" FROM ${tableName} ORDER BY id";
     }
 
     @Override
     public String getTableColumnsSql() {
-        return "SELECT COLUMN_NAME from INFORMATION_SCHEMA.columns where TABLE_NAME = #{tableName} AND TABLE_SCHEMA = (select database())";
+        throw new UnsupportedOperationException("oracle数据库暂不支持getTableColumns操作");
     }
 
     @Override
@@ -39,7 +42,7 @@ public class MysqlTableDefinitionSqlCreatorService implements ITableDefinitionSq
 
     @Override
     public String saveDataSql() {
-        return sql() + ";SELECT @@Identity";
+        return sql();
     }
 
     @Override
@@ -58,5 +61,4 @@ public class MysqlTableDefinitionSqlCreatorService implements ITableDefinitionSq
     public String getCountByFieldSql() {
         return "SELECT COUNT(${field}) AS COUNT from (${selectSql}) t where t.${field} = #{fieldValue}";
     }
-
 }

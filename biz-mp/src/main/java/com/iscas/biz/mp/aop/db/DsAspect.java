@@ -10,10 +10,11 @@ import org.springframework.stereotype.Component;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/31 13:23
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Aspect
 @Component
 @Slf4j
@@ -24,10 +25,7 @@ public class DsAspect {
         try {
             DbContextHolder.setDbType(ds.value());
             log.debug("正在访问{}数据源...", ds.value());
-            Object res = joinPoint.proceed();
-            return res;
-        } catch (Throwable e) {
-            throw e;
+            return joinPoint.proceed();
         } finally {
             DbContextHolder.clearDbType();
         }

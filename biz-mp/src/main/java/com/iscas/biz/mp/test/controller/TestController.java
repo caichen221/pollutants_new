@@ -23,23 +23,21 @@ import java.util.List;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/3/26 14:09
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @RestController
 @RequestMapping("/test/mybatis/plus")
 @ConditionalOnMybatis
 @RequiredArgsConstructor
 public class TestController extends BaseController {
 
-//    @Autowired
     private final TestMapper testMapper;
 
-//    @Autowired
     private final TestService testService;
 
-//    @Autowired
     private final DynamicMapper dynamicMapper;
 
 
@@ -67,7 +65,7 @@ public class TestController extends BaseController {
     @GetMapping("/page")
     public ResponseEntity testPage() {
         ResponseEntity response = getResponse();
-        IPage<Test> page = new Page<Test>();
+        IPage<Test> page = new Page<>();
         page.setSize(2);
         page.setCurrent(1);
         IPage<Test> testPage = testMapper.selectPage(page, null);
@@ -90,11 +88,8 @@ public class TestController extends BaseController {
     @GetMapping("/fetchByStream")
     public ResponseEntity fetchByStream() {
         List<Test> result = new ArrayList<>();
-        testMapper.fetchByStream(new QueryWrapper<Test>().eq("name", "222"), resultContext -> {
-            result.add(resultContext.getResultObject());
-        });
-        ResponseEntity responseEntity = getResponse().setValue(result);
-        return responseEntity;
+        testMapper.fetchByStream(new QueryWrapper<Test>().eq("name", "222"), resultContext -> result.add(resultContext.getResultObject()));
+        return getResponse().setValue(result);
     }
 
     /**
@@ -103,7 +98,7 @@ public class TestController extends BaseController {
     @GetMapping("/custom/page")
     public ResponseEntity testCustomMethodPage() {
         ResponseEntity response = getResponse();
-        IPage<Test> page = new Page<Test>();
+        IPage<Test> page = new Page<>();
         page.setSize(2);
         page.setCurrent(1);
         IPage<Test> testPage = testMapper.testSelectPage(page);

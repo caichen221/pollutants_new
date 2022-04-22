@@ -5,7 +5,7 @@ import com.iscas.biz.mp.model.QrtzJob;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/26 10:19
  * @since jdk1.8
  */

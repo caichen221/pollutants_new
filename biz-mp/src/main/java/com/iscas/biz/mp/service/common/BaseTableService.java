@@ -10,13 +10,14 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/5 10:22
  * @since jdk1.8
  */
+@SuppressWarnings("rawtypes")
 public class BaseTableService {
+    @SuppressWarnings({"ConstantConditions", "AlibabaMethodTooLong"})
     protected String getAfterWhereSql(TableSearchRequest<Map<String, List>> request, String extendSqlCondition) {
         Integer pageNumber = request.getPageNumber();
         Integer pageSize = request.getPageSize();
@@ -36,35 +37,27 @@ public class BaseTableService {
                         if (searchType.get(field) != null) {
                             //构建查询方式(like prefix 等)
                             switch (searchType.get(field)) {
-                                case exact: {
-                                    //如果是精确查询
-                                    sb.append(" = '");
-                                    sb.append(value.get(0)).append("'");
-                                    break;
-                                }
-                                case like: {
+                                case like:
                                     //如果模糊匹配
                                     sb.append(" like '%");
                                     sb.append(value.get(0)).append("%'");
                                     break;
-                                }
-                                case prefix: {
+                                case prefix:
                                     //如果是前缀查询
                                     sb.append(" like '");
                                     sb.append(value.get(0)).append("%'");
                                     break;
-                                }
-                                case range: {
+                                case range:
                                     //如果是范围查询
                                     Object v1 = value.get(0);
                                     Object v2 = value.get(1);
-                                    if (v1 == null || Objects.equals("null",v1)) {
+                                    if (v1 == null || Objects.equals("null", v1)) {
                                         sb.append(" < '");
                                         sb.append(v2).append("'");
                                     } else if (v2 == null || Objects.equals("null", v2)) {
                                         sb.append(" > '");
                                         sb.append(v1).append("'");
-                                    } else if (v1 != null && !Objects.equals("null",v1)
+                                    } else if (v1 != null && !Objects.equals("null", v1)
                                             && v2 != null && !Objects.equals("null", v2)) {
                                         sb.append(" > '");
                                         sb.append(v1).append("'");
@@ -74,13 +67,12 @@ public class BaseTableService {
                                         sb.append(v2).append("'");
                                     }
                                     break;
-                                }
-                                default: {
-                                    //默认就是精确查询
+                                case exact:
+                                default:
+                                    //如果是精确查询
                                     sb.append(" = '");
                                     sb.append(value.get(0)).append("'");
                                     break;
-                                }
                             }
                         }
                     } else {

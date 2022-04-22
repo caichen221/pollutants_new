@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/4 11:29
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "deprecation", "rawtypes"})
 @RestController
 @RequestMapping("/asso")
 @ConditionalOnMybatis
@@ -39,20 +40,10 @@ public class TestCustomAssociateController {
                     @CustomAssociate(table1 = "parent", table1Col = "id", table2 = "child", table2Col = "pid", associateType = CustomAssociateType.LEFT),
                     @CustomAssociate(table1 = "adic", table1Col = "a", table2 = "child", table2Col = "a", associateType = CustomAssociateType.RIGHT)
             }
-            //result可以不写按默认结果返回
-//            ,
-//            results = {
-//                    @CustomResult(table="parent",column = "id", alias = "parentId"),
-//                    @CustomResult(table="parent",column = "name", alias = "parentName"),
-//                    @CustomResult(table="child",column = "id", alias = "childId"),
-//                    @CustomResult(table="child",column = "a", alias = "childA"),
-//                    @CustomResult(table="adic",column = "a",alias = "adicA")
-//            }
     )
     public ResponseEntity test1(@RequestBody TableSearchRequest tableSearchRequest){
 
-        ResponseEntity responseEntity = tableAssoService.getTableReponse(tableSearchRequest, null);
-        return responseEntity;
+        return tableAssoService.getTableReponse(tableSearchRequest, null);
     }
 
     @PostMapping("/test2")
@@ -86,16 +77,13 @@ public class TestCustomAssociateController {
             }
     )
     public TableResponse test2(@RequestBody TableSearchRequest request){
-        TableResponse tableReponse = tableAssoService.getTableReponse(request, "user.role='apply'");
-        return tableReponse;
+        return tableAssoService.getTableReponse(request, "user.role='apply'");
     }
 
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/test3")
     public TableResponse test3(@RequestBody TableSearchRequest request){
-        TableResponse tableReponse = tableService.dynamicResponse(request, "user",null);
-        return tableReponse;
+        return tableService.dynamicResponse(request, "user",null);
     }
-
-
 }

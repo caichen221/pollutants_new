@@ -13,11 +13,14 @@ import java.util.Map;
 
 /**
  *
- * Created by ZQM on 2016/5/27.
+ *
+ * @author ZQM
+ * @date 2016/5/27
  *
  *  * <p>为了适配多种数据库的方言，重新实现SQL,使用SelectProvider动态适配第一个数据源的数据库类型，</p>
  *  * <p>生成对应的SQL语句(xxtable在第一个数据源内) update by zqw 2021-12-02</p>
  */
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 @Mapper
 @Repository
 @ConditionalOnMybatis
@@ -42,12 +45,9 @@ public interface TableDefinitionMapper {
 
 	@InsertProvider(method = "saveData", type = TableDefinitionSqlContext.class)
 	@Options(useGeneratedKeys=true, keyProperty= "param.id")
-		//需要用replace
-//	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int saveData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
 	@UpdateProvider(method = "updateData", type = TableDefinitionSqlContext.class)
-//	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int updateData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
 	@DeleteProvider(method = "deleteData", type = TableDefinitionSqlContext.class)

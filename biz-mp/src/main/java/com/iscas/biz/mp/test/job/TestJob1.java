@@ -6,6 +6,9 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+/**
+ * @author admin
+ */
 @Slf4j
 public class TestJob1 implements Job {
     @Override

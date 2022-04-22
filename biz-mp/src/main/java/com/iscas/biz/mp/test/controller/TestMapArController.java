@@ -10,15 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/7 20:57
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RequestMapping("/test/mp/ar")
 @RestController
 @ConditionalOnMybatis

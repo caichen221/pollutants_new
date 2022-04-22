@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/26 10:27
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @RestController
 @RequestMapping("/qrtz/jobs")
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class QrtzJobController extends BaseController {
      * 查询列表数据
      *
      * @param request 查询条件
-     * @return
+     * @return ResponseEntity
      */
     @PostMapping(value = "/data")
     public ResponseEntity listData(@RequestBody TableSearchRequest request) {
@@ -41,7 +42,7 @@ public class QrtzJobController extends BaseController {
      * 更新
      *
      * @param job 定时任务
-     * @return
+     * @return ResponseEntity
      */
     @PutMapping(value = "/renew")
     @ResponseBody
@@ -54,7 +55,7 @@ public class QrtzJobController extends BaseController {
      * 删除
      *
      * @param id 定时任务的ID
-     * @return
+     * @return ResponseEntity
      */
     @DeleteMapping(value = "/{id}/del")
     public ResponseEntity delete(@PathVariable Integer id) throws BaseException {
@@ -67,8 +68,8 @@ public class QrtzJobController extends BaseController {
      * 启动
      *
      * @param id 定时任务ID
-     * @return
-     * @throws ClassNotFoundException
+     * @return ResponseEntity
+     * @throws BaseException 异常
      */
     @PutMapping(value = "{id}/startup")
     public ResponseEntity start(@PathVariable Integer id) throws BaseException {
@@ -80,7 +81,7 @@ public class QrtzJobController extends BaseController {
      * 暂停
      *
      * @param id 任务ID
-     * @return
+     * @return BaseException 异常
      */
     @PutMapping(value = "{id}/paused")
     public ResponseEntity pasue(@PathVariable Integer id) throws BaseException {
@@ -92,7 +93,7 @@ public class QrtzJobController extends BaseController {
      * 立即执行
      *
      * @param id 定时任务id
-     * @return
+     * @return BaseException 异常
      */
     @PutMapping(value = "{id}/trigger")
     public ResponseEntity trigger(@PathVariable Integer id) throws BaseException {
@@ -113,7 +114,7 @@ public class QrtzJobController extends BaseController {
     /**
      * 启动定时器
      *
-     * @return
+     * @return ResponseEntity
      */
     @RequestMapping(value = "/scheduler/start")
     @ResponseBody
@@ -125,7 +126,7 @@ public class QrtzJobController extends BaseController {
     /**
      * 待机定时器
      *
-     * @return
+     * @return ResponseEntity
      */
     @RequestMapping(value = "/scheduler/standby")
     @ResponseBody

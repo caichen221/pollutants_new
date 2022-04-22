@@ -7,10 +7,11 @@ import java.util.Properties;
 /**
  * jdbc操作工具类
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/30 9:29
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class JdbcUtils {
 
     private JdbcUtils() {}

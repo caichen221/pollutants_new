@@ -16,10 +16,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/6/15 10:11
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @RequestMapping("/t/batch")
 @ConditionalOnMybatis
@@ -32,7 +33,7 @@ public class TestBatchController {
 
     @GetMapping("/t1")
     public void t1() throws SQLException {
-        ArrayList<String> stringArrayList = new ArrayList<String>();
+        ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add("insert into test values('3')");
         MybatisGeneralUtils.executeBatch(sqlSessionFactory,
                 stringArrayList, 6, true);
@@ -40,7 +41,7 @@ public class TestBatchController {
 
     @GetMapping("/t11")
     public void t11() throws SQLException {
-        ArrayList<String> stringArrayList = new ArrayList<String>();
+        ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add("insert into test values('3')");
         MybatisGeneralUtils.executeBatch2(sqlSessionFactory,
                 stringArrayList, 6, true);
@@ -51,21 +52,17 @@ public class TestBatchController {
         return dynamicMapper.selectOneBySql("select id as id from test");
     }
 
+    @SuppressWarnings("unchecked")
     @GetMapping("/t3")
     public void t3() throws SQLException {
-        ArrayList<String> stringArrayList = new ArrayList<String>();
+        ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add("insert into test values('6')");
         stringArrayList.add("insert into test values('7')");
         dynamicMapper.batchBySql(stringArrayList);
     }
 
-//    @GetMapping("/t4")
-//    public void t4() throws SQLException {
-//        TTT o = (TTT) dynamicMapper.dynamicSelectOne("select * from test where id =7", TTT.class);
-//        System.out.println(o);
-//    }
-
-    class TTT{
+    @SuppressWarnings("AlibabaClassNamingShouldBeCamel")
+    static class TTT{
         private Integer id;
 
         public Integer getId() {

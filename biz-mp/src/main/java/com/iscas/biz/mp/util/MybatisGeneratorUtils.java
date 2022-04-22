@@ -16,15 +16,16 @@ import java.util.List;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/20 17:43
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class MybatisGeneratorUtils {
     private MybatisGeneratorUtils() {}
     public static void generate(String configPath) throws IOException, XMLParserException,
             InvalidConfigurationException, SQLException, InterruptedException {
-        List<String> warnings = new ArrayList<String>();
+        List<String> warnings = new ArrayList<>();
         boolean overwrite = true;
         ClassPathResource classPathResource = new ClassPathResource("mybatisGeneratorConfig.xml");
 

@@ -22,10 +22,11 @@ import java.time.LocalDateTime;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/26 10:21
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Service
 @RequiredArgsConstructor
 @ConditionalOnQuartz
@@ -36,9 +37,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
      * 启动定时任务
      *
      * @param id 定时任务ID
-     * @return void
-     * @throws BaseException
-     * @version 1.0
+     * @throws BaseException 异常
      * @date 2022/3/14
      * @since jdk11
      */
@@ -62,9 +61,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
      * 暂停定时任务
      *
      * @param id 定时任务ID
-     * @return void
-     * @throws BaseException
-     * @version 1.0
+     * @throws BaseException 异常
      * @date 2022/3/14
      * @since jdk11
      */
@@ -74,7 +71,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         QrtzJob queryJob = this.getById(id);
         Assert.notNull(queryJob, "定时任务不存在");
 
-        String status = null;
+        String status;
         try {
             status = quartzHandler.getStatus(queryJob);
         } catch (SchedulerException e) {
@@ -84,6 +81,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
                 || (Trigger.TriggerState.BLOCKED.toString()).equals(status))) {
             throw new BaseException(String.format("当前定时任务:[%s]不可暂停", queryJob.getJobName()));
         }
+        //noinspection StatementWithEmptyBody
         if ((Trigger.TriggerState.PAUSED.toString()).equals(status)) {
         } else {
             try {
@@ -101,8 +99,6 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
      *
      * @param request 请求条件
      * @return cn.ac.iscas.dmo.templet.view.table.TableResponseData
-     * @throws
-     * @version 1.0
      * @date 2022/3/14
      * @since jdk11
      */
@@ -111,7 +107,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         Integer pageNumber = request.getPageNumber();
         Integer pageSize = request.getPageSize();
         // todo 过滤条件，暂时未处理
-        Object filter = request.getFilter();
+        @SuppressWarnings("unused") Object filter = request.getFilter();
 
         Page<QrtzJob> page = new Page<>(pageNumber, pageSize);
         page = this.page(page, null);
@@ -125,12 +121,10 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
     /**
      * 更新定时任务，只能修改cron表达式
      *
-     * @version 1.0
-     * @since jdk11
-     * @date 2022/3/14
      * @param job 定时任务
-     * @throws
-     * @return void
+     * @throws BaseException 异常
+     * @date 2022/3/14
+     * @since jdk11
      */
     @Override
     public void renew(QrtzJob job) throws BaseException {
@@ -140,7 +134,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         LocalDateTime now = LocalDateTime.now();
         job.setUpdateTime(now);
         this.updateById(job);
-        String status = null;
+        String status;
         try {
             status = quartzHandler.getStatus(job);
         } catch (SchedulerException e) {
@@ -157,19 +151,18 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
 
     /**
      * 删除定时任务
-     * @version 1.0
-     * @since jdk11
-     * @date 2022/3/14
+     *
      * @param id 定时任务ID
-     * @throws
-     * @return void
+     * @throws BaseException 异常
+     * @date 2022/3/14
+     * @since jdk11
      */
     @Override
     public void delete(Integer id) throws BaseException {
 
         AssertObjUtils.assertNotNull(id, "ID不能为空");
         QrtzJob job = this.getById(id);
-        String status = null;
+        String status;
         try {
             status = quartzHandler.getStatus(job);
         } catch (SchedulerException e) {
@@ -189,12 +182,11 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
 
     /**
      * 立即触发执行一个定时任务
-     * @version 1.0
-     * @since jdk11
-     * @date 2022/3/14
+     *
      * @param id 定时任务ID
-     * @throws
-     * @return void
+     * @throws BaseException 异常
+     * @date 2022/3/14
+     * @since jdk11
      */
     @Override
     public void trigger(Integer id) throws BaseException {
@@ -202,7 +194,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         QrtzJob queryJob = this.getById(id);
         Assert.notNull(queryJob, "定时任务不存在");
 
-        String status = null;
+        String status;
         try {
             status = quartzHandler.getStatus(queryJob);
         } catch (SchedulerException e) {
@@ -222,12 +214,11 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
 
     /**
      * 判断定时器是否是待机模式
-     * @version 1.0
-     * @since jdk11
-     * @date 2022/3/14
-     * @param
-     * @throws
+     *
      * @return boolean
+     * @throws BaseException 异常
+     * @date 2022/3/14
+     * @since jdk11
      */
     @Override
     public boolean isInStandbyMode() throws BaseException {
@@ -240,12 +231,10 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
 
     /**
      * 启动定时器
-     * @version 1.0
-     * @since jdk11
+     *
+     * @throws BaseException 异常
      * @date 2022/3/14
-     * @param
-     * @throws
-     * @return
+     * @since jdk11
      */
     @Override
     public void startScheduler() throws BaseException {
@@ -258,12 +247,10 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
 
     /**
      * 待机定时器
-     * @version 1.0
-     * @since jdk11
+     *
+     * @throws BaseException 异常
      * @date 2022/3/14
-     * @param
-     * @throws
-     * @return
+     * @since jdk11
      */
     @Override
     public void standbyScheduler() throws BaseException {

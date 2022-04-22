@@ -20,6 +20,7 @@ import java.util.Map;
 @Mapper
 @Repository
 @ConditionalOnMybatis
+@SuppressWarnings("all")
 public interface TableDefinitionMapperBackup {
 	@Select("SELECT * FROM ${tableDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} LIMIT 0,1 ")
 	TableDefinition getTableByIdentify(@Param("tableDefinitionTableName") String tableDefinitionTableName, @Param("tableIdentity") String tableIdentity);

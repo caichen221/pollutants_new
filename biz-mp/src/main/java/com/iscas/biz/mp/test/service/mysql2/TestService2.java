@@ -11,10 +11,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/10 15:07
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Service
 @ConditionalOnMybatis
 public class TestService2 {

@@ -2,7 +2,6 @@ package com.iscas.biz.mp.test.controller;
 
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
-import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +14,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/6/15 10:11
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaUndefineMagicConstant", "unused", "rawtypes", "unchecked"})
 @RestController
 @ConditionalOnMybatis
 public class TestSearchLargeData {
@@ -40,12 +40,8 @@ public class TestSearchLargeData {
     @GetMapping("/getLargeData")
     public void getLargeData() {
         String sql = "select * from test";
-        dynamicMapper.selectLargeDataBySql(sql, new ResultHandler<Map>() {
-            @Override
-            public void handleResult(ResultContext<? extends Map> resultContext) {
-                Map resultObject = resultContext.getResultObject();
-//                System.out.println(resultObject);
-            }
+        dynamicMapper.selectLargeDataBySql(sql, (ResultHandler<Map>) resultContext -> {
+            Map resultObject = resultContext.getResultObject();
         });
     }
 }

@@ -22,10 +22,11 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/30 17:36
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaUndefineMagicConstant", "unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/test/page")
 @Slf4j
@@ -66,22 +67,6 @@ public class TestPageController {
         log.info("=============rowBounds的耗时" + (end - start) + "ms=============");
     }
 
-//    @GetMapping("/testRowBounds")
-//    public void testRowBounds() {
-//        long start = System.currentTimeMillis();
-//        SqlSession session = sqlSessionFactory.openSession();
-//        Map<String, String> sqlMap = new HashMap<>();
-//        sqlMap.put("sql", "select * from test_data");
-//        List<Map> result = null;
-//        String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
-//        for (int i = 0; i < 10 ; i++) {
-//            RowBounds rowBounds = new RowBounds(600000 + i * 20, 20);
-//            result = session.selectList(method, sqlMap, rowBounds);
-//        }
-//        long end = System.currentTimeMillis();
-//        log.info("=============rowBounds的耗时" + (end - start) + "ms=============");
-//    }
-
     @GetMapping("/testPage")
     public void testPage() {
         long start = System.currentTimeMillis();
@@ -99,11 +84,11 @@ public class TestPageController {
     @GetMapping("/testPageHelper")
     public void testPageHelper() {
         long start = System.currentTimeMillis();
-        SqlSession session = sqlSessionFactory.openSession();
+        @SuppressWarnings("resource") SqlSession session = sqlSessionFactory.openSession();
         String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
         for (int i = 0; i < 10 ; i++) {
             PageHelper.startPage(30000 + i, 20);
-            Map<String, String> sqlMap = new HashMap<>();
+            Map<String, String> sqlMap = new HashMap<>(2);
             sqlMap.put("sql", "select * from test_data");
             List<Map> result = session.selectList(method, sqlMap);
             PageInfo page = new PageInfo(result);

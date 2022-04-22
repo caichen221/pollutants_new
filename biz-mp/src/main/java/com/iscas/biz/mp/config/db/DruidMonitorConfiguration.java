@@ -1,27 +1,25 @@
 package com.iscas.biz.mp.config.db;
 
-import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
-import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Druid监控
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/8/31 16:07
  * @since jdk1.8
  */
-//@Configuration
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 public class DruidMonitorConfiguration {
     /**
      * 注册一个StatViewServlet
-     * @return
+     * @return ServletRegistrationBean
      */
+    @SuppressWarnings("AlibabaRemoveCommentedCode")
     @Bean
     public ServletRegistrationBean druidStatViewServle2(){
 
@@ -44,7 +42,7 @@ public class DruidMonitorConfiguration {
 
     /**
      * 注册一个：filterRegistrationBean
-     * @return
+     * @return FilterRegistrationBean
      */
     @Bean
     public FilterRegistrationBean druidStatFilter2(){

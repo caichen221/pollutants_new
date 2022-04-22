@@ -1,37 +1,35 @@
 package com.iscas.biz.mp.table.service;
 
+
 import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorService;
 
 /**
- * oracle xxtable的sql拼接实现
- *
- * 注意，神州通用数据库需要将xxtable 和xxcolumn中配置的对应数据库的表名和列明字段为大写
+ * mysql xxtable的sql拼接实现
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/2 13:53
  * @since jdk1.8
  */
-public class OracleTableDefinitionSqlCreatorService implements ITableDefinitionSqlCreatorService {
-
+public class MysqlTableDefinitionSqlCreatorServiceImpl implements ITableDefinitionSqlCreatorService {
     @Override
     public String getTableByIdentifySql() {
-        return "SELECT * FROM ${tableDefinitionTableName} WHERE TABLEIDENTITY = #{tableIdentity} AND ROWNUM < 2 ";
+        return "SELECT * FROM ${tableDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} LIMIT 0,1 ";
     }
 
     @Override
     public String getHeaderByIdentifySql() {
-        return "SELECT * FROM ${columnDefinitionTableName} WHERE TABLEIDENTITY = #{tableIdentity} ORDER BY (SEQUENCE+'0')";
+        return "SELECT * FROM ${columnDefinitionTableName} WHERE `tableIdentity` = #{tableIdentity} ORDER BY sequence";
     }
 
     @Override
     public String getRefTableSql() {
-        return "SELECT ${id} as \"id\",${value} as \"value\" FROM ${tableName} ORDER BY id";
+        return "SELECT ${id} as id,${value} as value FROM ${tableName} ORDER BY id";
     }
 
     @Override
     public String getTableColumnsSql() {
-        throw new UnsupportedOperationException("oracle数据库暂不支持getTableColumns操作");
+        return "SELECT COLUMN_NAME from INFORMATION_SCHEMA.columns where TABLE_NAME = #{tableName} AND TABLE_SCHEMA = (select database())";
     }
 
     @Override
@@ -41,7 +39,7 @@ public class OracleTableDefinitionSqlCreatorService implements ITableDefinitionS
 
     @Override
     public String saveDataSql() {
-        return sql();
+        return sql() + ";SELECT @@Identity";
     }
 
     @Override
@@ -60,4 +58,5 @@ public class OracleTableDefinitionSqlCreatorService implements ITableDefinitionS
     public String getCountByFieldSql() {
         return "SELECT COUNT(${field}) AS COUNT from (${selectSql}) t where t.${field} = #{fieldValue}";
     }
+
 }

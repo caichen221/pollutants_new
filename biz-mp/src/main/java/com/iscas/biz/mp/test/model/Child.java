@@ -1,5 +1,9 @@
 package com.iscas.biz.mp.test.model;
 
+/**
+ * @author admin
+ */
+@SuppressWarnings("unused")
 public class Child {
     private Integer id;
 

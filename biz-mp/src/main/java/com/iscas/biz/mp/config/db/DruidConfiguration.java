@@ -54,6 +54,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.lang.NonNull;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -74,12 +75,12 @@ import java.util.stream.Collectors;
  * 多数据源配置例子
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/10 13:48
  * @since jdk1.8
  */
+@SuppressWarnings({"deprecation", "unused", "rawtypes", "unchecked"})
 @Slf4j
-//@Configuration
 public class DruidConfiguration implements EnvironmentAware {
 
     @Value("${mybatis-plus.global-config.db-config.id-type}")
@@ -99,19 +100,18 @@ public class DruidConfiguration implements EnvironmentAware {
 
     @Value("${mybatis-plus.type-enums-package}")
     private String enumPackages;
-    //    @Value("${mp.mapper.locations}")
-//    private String mapMapperLocations;
+
     private final String basePath = "spring.datasource.druid.";
     private Environment environment;
     @Autowired
     private ApplicationContext context;
 
-    /*
+    /**
      * 解决druid 日志报错：discard long time none received connection:xxx
-     * */
+     */
     @PostConstruct
-    public void setProperties(){
-        System.setProperty("druid.mysql.usePingMethod","false");
+    public void setProperties() {
+        System.setProperty("druid.mysql.usePingMethod", "false");
     }
 
     @Bean(name = "dynamicDatasource")
@@ -128,18 +128,16 @@ public class DruidConfiguration implements EnvironmentAware {
                     //初始化数据源
                     //update by zqw 20210520 添加Atomikos支持
                     DruidDataSource dataSource = initOneDatasource(dbName);
-                    if (dataSource != null) {
-                        if (MapUtil.isNotEmpty(enableAtomikosMap)) {
-                            //如果开启了Atomikos
-                            AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
-                            atomikosDataSourceBean.setXaDataSource((XADataSource) dataSource);
-                            //必须设置uniqueResourceName
-                            atomikosDataSourceBean.setUniqueResourceName(dbName);
-                            targetDataSources.put(dbName, atomikosDataSourceBean);
-                        } else {
-                            //如果没开启Atomikos
-                            targetDataSources.put(dbName, dataSource);
-                        }
+                    if (MapUtil.isNotEmpty(enableAtomikosMap)) {
+                        //如果开启了Atomikos
+                        AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
+                        atomikosDataSourceBean.setXaDataSource((XADataSource) dataSource);
+                        //必须设置uniqueResourceName
+                        atomikosDataSourceBean.setUniqueResourceName(dbName);
+                        targetDataSources.put(dbName, atomikosDataSourceBean);
+                    } else {
+                        //如果没开启Atomikos
+                        targetDataSources.put(dbName, dataSource);
                     }
                     //运行初始化脚本 add by zqw 2021-12-26
                     String path = basePath + dbName + ".";
@@ -159,11 +157,7 @@ public class DruidConfiguration implements EnvironmentAware {
         Map<String, Object> enableShardingJdbcMap = context.getBeansWithAnnotation(EnableShardingJdbc.class);
         if (CollectionUtil.isNotEmpty(enableShardingJdbcMap)) {
             IShardingJdbcHandler shardingJdbcHandler = context.getBean(IShardingJdbcHandler.class);
-            if (shardingJdbcHandler != null) {
-                targetDataSources.putAll(shardingJdbcHandler.initShardingDatasource());
-            }
-//            DataSource dataSource = getShardingDatasource();
-//            targetDataSources.put("ds0_ds1", dataSource);
+            targetDataSources.putAll(shardingJdbcHandler.initShardingDatasource());
         }
 
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
@@ -183,7 +177,7 @@ public class DruidConfiguration implements EnvironmentAware {
 
     private DruidDataSource initOneDatasource(String dbName) throws SQLException {
         // update by zqw 20210520 将DruidDataSource修改为DruidXADataSource，为了Atomikos
-        DruidDataSource datasource = null;
+        DruidDataSource datasource;
         Map<String, Object> enableAtomikosMap = context.getBeansWithAnnotation(EnableAtomikos.class);
         if (MapUtil.isNotEmpty(enableAtomikosMap)) {
             datasource = new DruidXADataSource();
@@ -200,11 +194,12 @@ public class DruidConfiguration implements EnvironmentAware {
         if (StringUtils.isNotBlank(value)) {
             List<Filter> filterList = handlerFilters(path + "filter.", value);
             if (filterList.size() > 0) {
+                assert datasource != null;
                 datasource.setProxyFilters(filterList);
             }
         }
+        assert datasource != null;
         datasource.init();
-
         return datasource;
     }
 
@@ -227,7 +222,7 @@ public class DruidConfiguration implements EnvironmentAware {
 
         //密码加密判定
         value = environment.getProperty(path + "connect-properties.config.decrypt");
-        if (Objects.equals("true", value)) {
+        if (Objects.equals(Boolean.TRUE.toString(), value)) {
             //解密
             String publicKey = environment.getProperty(path + "connect-properties.config.decrypt.key");
             value = environment.getProperty(path + "password");
@@ -318,7 +313,7 @@ public class DruidConfiguration implements EnvironmentAware {
     }
 
     private static void runSchema(DataSource datasource, String schemas, String dbName) {
-        InputStream is = null;
+        InputStream is;
         try (Connection conn = datasource.getConnection()) {
             ScriptRunner scriptRunner = new ScriptRunner(conn);
             scriptRunner.setStopOnError(false);
@@ -348,14 +343,18 @@ public class DruidConfiguration implements EnvironmentAware {
             }
             filter = filter.trim();
             Filter filterInstance;
-            if (filter.equals("stat")) {
-                filterInstance = statFilter(path + "stat.");
-            } else if (filter.equals("wall")) {
-                filterInstance = wallFilter(path + "wall.");
-            } else if (filter.equals("slf4j")) {
-                filterInstance = logFilter(path + "slf4j.");
-            } else {
-                continue;
+            switch (filter) {
+                case "stat":
+                    filterInstance = statFilter(path + "stat.");
+                    break;
+                case "wall":
+                    filterInstance = wallFilter(path + "wall.");
+                    break;
+                case "slf4j":
+                    filterInstance = logFilter(path + "slf4j.");
+                    break;
+                default:
+                    continue;
             }
             filterList.add(filterInstance);
         }
@@ -367,20 +366,13 @@ public class DruidConfiguration implements EnvironmentAware {
     public SqlSessionFactory sqlSessionFactory(SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers, @Qualifier(value = "dynamicDatasource") DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
-//        sqlSessionFactory.setDataSource(multipleDataSource);
-        //sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*/*Mapper.xml"));
 
         MybatisConfiguration configuration = new MybatisConfiguration();
-        //configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         configuration.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
         configuration.setCacheEnabled(false);
         configuration.setDefaultEnumTypeHandler(defaultEnumTypeHandler);
         factory.setConfiguration(configuration);
-//        factory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
-//                paginationInterceptor() //添加分页功能
-//        });
-//        PaginationInnerInterceptor paginationInnerInterceptor = paginationInterceptor();
         // 分页插件
         PaginationInnerInterceptor paginationInnerInterceptor = getPaginationInnerInterceptor();
 
@@ -441,55 +433,25 @@ public class DruidConfiguration implements EnvironmentAware {
         Field modifiers = Field.class.getDeclaredField("modifiers");
         modifiers.setAccessible(true);
         //去掉final修饰符
-        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(null, Collections.singletonList(selectExpressionItem));
         //再把final修饰符给加回来
-        modifiers.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         return paginationInnerInterceptor;
     }
 
     @Bean
     @Primary
-    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
-    /**
-     * 分布式事务使用JTA管理，不管有多少个数据源只要配置一个 JtaTransactionManager
-     */
-//    /*atomikos事务管理器*/
-//    public UserTransactionManager userTransactionManager() {
-//        UserTransactionManager userTransactionManager = new UserTransactionManager();
-//        userTransactionManager.setForceShutdown(true);
-//        return userTransactionManager;
-//    }
-//
-//    public UserTransactionImp userTransactionImp() throws SystemException {
-//        UserTransactionImp userTransactionImp = new UserTransactionImp();
-//        userTransactionImp.setTransactionTimeout(5000);
-//        return userTransactionImp;
-//    }
-//
-//    @Bean
-//    public JtaTransactionManager jtaTransactionManager() throws SystemException {
-//        JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
-//        jtaTransactionManager.setTransactionManager(userTransactionManager());
-//        jtaTransactionManager.setUserTransaction(userTransactionImp());
-//        jtaTransactionManager.setAllowCustomIsolationLevels(true);
-//        return jtaTransactionManager;
-//    }
+
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactoryCustomizers sqlSessionFactoryCustomizers(ObjectProvider<SqlSessionFactoryCustomizer<?, ?>> customizers) {
         return new SqlSessionFactoryCustomizers(customizers.stream().collect(Collectors.toList()));
     }
-
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public PaginationInterceptor paginationInterceptor() {
-//        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-//        return paginationInterceptor;
-//    }
 
     /**
      * mybatis-plus新的分页插件注册方式
@@ -514,7 +476,7 @@ public class DruidConfiguration implements EnvironmentAware {
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NonNull Environment environment) {
         this.environment = environment;
     }
 
@@ -535,8 +497,8 @@ public class DruidConfiguration implements EnvironmentAware {
         return statFilter;
     }
 
+    @SuppressWarnings({"AlibabaRemoveCommentedCode", "CommentedOutCode"})
     public Slf4jLogFilter logFilter(String path) {
-        Slf4jLogFilter filter = new Slf4jLogFilter();
 //        filter.setResultSetLogEnabled(false);
 //        filter.setConnectionLogEnabled(false);
 //        filter.setStatementParameterClearLogEnable(false);
@@ -544,7 +506,7 @@ public class DruidConfiguration implements EnvironmentAware {
 //        filter.setStatementCloseAfterLogEnabled(false);
 //        filter.setStatementParameterSetLogEnabled(false);
 //        filter.setStatementPrepareAfterLogEnabled(false);
-        return filter;
+        return new Slf4jLogFilter();
     }
 
     public WallFilter wallFilter(String path) {
@@ -554,13 +516,12 @@ public class DruidConfiguration implements EnvironmentAware {
 
     }
 
-    //
-//    @Bean
-//
     public WallConfig wallConfig() {
         WallConfig config = new WallConfig();
-        config.setMultiStatementAllow(true);//允许一次执行多条语句
-        config.setNoneBaseStatementAllow(true);//允许非基本语句的其他语句
+        //允许一次执行多条语句
+        config.setMultiStatementAllow(true);
+        //允许非基本语句的其他语句
+        config.setNoneBaseStatementAllow(true);
         return config;
 
     }

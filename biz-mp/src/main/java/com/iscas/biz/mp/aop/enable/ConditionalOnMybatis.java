@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/15 10:34
  * @since jdk1.8
  */

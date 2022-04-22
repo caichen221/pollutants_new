@@ -1,55 +1,25 @@
 package com.iscas.biz.mp.config.db;
 
 
-import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.lang.NonNull;
 
-//@Configuration
 
-//@MapperScan({"com.iscas.biz.test.mapper*","com.iscas.base.mp.table.mapper*",
-//        "com.iscas.base.mp.test.mapper*","com.iscas.biz.mp.mapper*"})//这个注解，作用相当于下面的@Bean MapperScannerConfigurer，2者配置1份即可
-public  class MybatisPlusConfig implements EnvironmentAware {
+/**
+ * @author admin
+ */
+@SuppressWarnings("unused")
+public class MybatisPlusConfig implements EnvironmentAware {
 
     private Environment environment;
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NonNull Environment environment) {
         this.environment = environment;
     }
-
-    /**
-     * mybatis-plus分页插件<br>     * 文档：http://mp.baomidou.com<br>
-     */
-//    @Bean
-//    public PaginationInterceptor paginationInterceptor() {
-//        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-//        return paginationInterceptor;
-//    }
-
-    /**
-     * 逻辑删除配置
-     * 3.1.1以上版本无需配置
-    * */
-//    @Bean
-//    public ISqlInjector sqlInjector() {
-//        return new LogicSqlInjector();
-//    }
-
-//    /**
-//     * SQL执行效率插件
-//     */
-//    @Bean
-//    @Profile({"dev","test"})// 设置 dev test 环境开启
-//    public PerformanceInterceptor performanceInterceptor() {
-//        PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
-//        performanceInterceptor.setFormat(true);
-////        performanceInterceptor.setMaxTime(500);
-////        performanceInterceptor.setWriteInLog(true);
-//        return performanceInterceptor;
-//    }
 
     /**
      * 相当于顶部的：

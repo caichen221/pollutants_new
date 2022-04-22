@@ -1,7 +1,6 @@
 package com.iscas.biz.mp.config.db;
 
 import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
-import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.JdkRegexpMethodPointcut;
 import org.springframework.context.annotation.Bean;
@@ -10,17 +9,16 @@ import org.springframework.context.annotation.Scope;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/8/31 17:37
  * @since jdk1.8
  */
-//@Configuration
+@SuppressWarnings("unused")
 public class SpringDaoMethodAspect {
 
     @Bean
     public DruidStatInterceptor druidStatInterceptor() {
-        DruidStatInterceptor dsInterceptor = new DruidStatInterceptor();
-        return dsInterceptor;
+        return new DruidStatInterceptor();
     }
 
     @Bean

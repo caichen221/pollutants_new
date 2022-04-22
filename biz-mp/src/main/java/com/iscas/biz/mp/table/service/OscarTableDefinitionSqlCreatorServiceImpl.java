@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.table.service;
 
+
 import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorService;
 
 /**
@@ -12,7 +13,7 @@ import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorServi
  * @date 2021/12/2 13:53
  * @since jdk1.8
  */
-public class OscarTableDefinitionSqlCreatorService implements ITableDefinitionSqlCreatorService {
+public class OscarTableDefinitionSqlCreatorServiceImpl implements ITableDefinitionSqlCreatorService {
 
     @Override
     public String getTableByIdentifySql() {

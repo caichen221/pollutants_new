@@ -8,10 +8,11 @@ import org.apache.ibatis.mapping.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/23 16:22
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class FetchByStreamMethod extends AbstractMethod {
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {

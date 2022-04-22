@@ -11,18 +11,33 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/7/16 14:44
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/7/16 14:44
  **/
+@SuppressWarnings("rawtypes")
 @Repository
 @Mapper
 @ConditionalOnMybatis
 public interface TableMapMapper {
-    @Select("${sql}" )
+    /**
+     * 动态查询
+     *
+     * @param dynamicSql 动态sql
+     * @return java.util.List<java.util.Map>
+     * @date 2022/4/22
+     * @since jdk11
+     */
+    @Select("${sql}")
     List<Map> dynamicSelect(DynamicSql dynamicSql);
 
+    /**
+     * 动态插入
+     *
+     * @param dynamicSql 动态SQL
+     * @return int
+     * @date 2022/4/22
+     * @since jdk11
+     */
     @Insert("${sql}")
     int dynamicInsert(DynamicSql dynamicSql);
 }

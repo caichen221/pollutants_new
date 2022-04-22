@@ -7,7 +7,7 @@ import lombok.Getter;
  * 动态SQL
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/26 18:08
  * @since jdk1.8
  */

@@ -13,13 +13,14 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * <p>多数据源事务处理<p/>
- * <p>参考：https://blog.csdn.net/gaoshili001/article/details/79378902<p/>
+ * <p>参考：<a href="https://blog.csdn.net/gaoshili001/article/details/79378902">https://blog.csdn.net/gaoshili001/article/details/79378902</a><p/>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/20 15:40
  * @since jdk1.8
  */
+@SuppressWarnings("FieldMayBeFinal")
 @Slf4j
 public class MultiDataSourceTransaction implements Transaction {
 
@@ -52,12 +53,11 @@ public class MultiDataSourceTransaction implements Transaction {
     public Connection getConnection() throws SQLException {
         String databaseIdentification = DbContextHolder.getDbType();
         if (Objects.equals(databaseIdentification, mainDatabaseIdentification)) {
-            if (mainConnection != null) return mainConnection;
-            else {
+            if (mainConnection == null) {
                 openMainConnection();
-                mainDatabaseIdentification =databaseIdentification;
-                return mainConnection;
+                mainDatabaseIdentification = databaseIdentification;
             }
+            return mainConnection;
         } else {
             if (!otherConnectionMap.containsKey(databaseIdentification)) {
                 try {
@@ -123,7 +123,7 @@ public class MultiDataSourceTransaction implements Transaction {
     }
 
     @Override
-    public Integer getTimeout() throws SQLException {
+    public Integer getTimeout() {
         return null;
     }
 

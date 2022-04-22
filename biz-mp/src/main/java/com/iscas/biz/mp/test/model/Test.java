@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/3/26 13:46
  * @since jdk1.8
  */
 @Data
-@TableName(value = "test", excludeProperty = {"realName"}/*, resultMap = "BaseResultMap", autoResultMap = true*/)
+@TableName(value = "test", excludeProperty = {"realName"})
 public class Test {
 
     @TableId(type = IdType.AUTO)

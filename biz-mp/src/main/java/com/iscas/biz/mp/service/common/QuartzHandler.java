@@ -21,11 +21,13 @@ import java.util.Map;
 
 /**
  * 定时任务处理器
+ *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/14 10:04
  * @since jdk11
  */
+@SuppressWarnings("unused")
 @Slf4j
 @Component
 @ConditionalOnQuartz
@@ -39,7 +41,6 @@ public class QuartzHandler {
      * 新增定时任务
      *
      * @param job 定义任务
-     * @return
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void start(QrtzJob job) throws SchedulerException, ClassNotFoundException {
@@ -56,9 +57,7 @@ public class QuartzHandler {
                 if (StrUtil.isNotBlank(jobDataMap)) {
                     if (JSONUtil.isJson(jobDataMap)) {
                         Map parseMap = JSONUtil.toBean(jobDataMap, Map.class);
-                        parseMap.forEach((k, v) -> {
-                            map.put(String.valueOf(k), String.valueOf(v));
-                        });
+                        parseMap.forEach((k, v) -> map.put(String.valueOf(k), String.valueOf(v)));
                     }
                 }
                 // 启动定时任务
@@ -86,7 +85,7 @@ public class QuartzHandler {
      * 暂停定时任务
      *
      * @param job 定时任务
-     * @return
+     * @throws SchedulerException 异常
      */
     public void pasue(QrtzJob job) throws SchedulerException {
         try {
@@ -106,7 +105,7 @@ public class QuartzHandler {
      * 重启定时任务
      *
      * @param job 定时任务
-     * @return
+     * @throws SchedulerException 异常
      */
     public void restart(QrtzJob job) throws SchedulerException {
         try {
@@ -125,7 +124,7 @@ public class QuartzHandler {
      * 立即执行一次
      *
      * @param job 定时任务
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public void trigger(QrtzJob job) throws SchedulerException {
         boolean result = true;
@@ -145,8 +144,8 @@ public class QuartzHandler {
     /**
      * 修改触发时间表达式
      *
-     * @param job               定时任务
-     * @return
+     * @param job 定时任务
+     * @throws SchedulerException 调度异常
      */
     public void updateCronExpression(QrtzJob job) throws SchedulerException {
         try {
@@ -168,7 +167,7 @@ public class QuartzHandler {
      * 删除定时任务
      *
      * @param job 定时任务
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public void delete(QrtzJob job) throws SchedulerException {
         boolean result = true;
@@ -194,7 +193,7 @@ public class QuartzHandler {
      * 判断是否存在定时任务
      *
      * @param job 定时任务
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public boolean has(QrtzJob job) throws SchedulerException {
         boolean result = false;
@@ -217,10 +216,10 @@ public class QuartzHandler {
      * 获得定时任务状态
      *
      * @param job 定时任务
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public String getStatus(QrtzJob job) throws SchedulerException {
-        String status = StrUtil.EMPTY;
+        String status;
         try {
             String jobName = job.getJobName();
             String jobGroup = job.getJobGroup();
@@ -229,7 +228,7 @@ public class QuartzHandler {
             status = triggerState.toString();
         } catch (SchedulerException e) {
             log.info("获得定时任务状态异常：{}", e.getMessage());
-			throw e;
+            throw e;
         }
         return StrUtil.isNotEmpty(status) ? status : TriggerState.NONE.toString();
     }
@@ -237,7 +236,7 @@ public class QuartzHandler {
     /**
      * 启动调度器
      *
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public void startScheduler() throws SchedulerException {
         try {
@@ -251,7 +250,7 @@ public class QuartzHandler {
     /**
      * 关闭调度器
      *
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public void standbyScheduler() throws SchedulerException {
         try {
@@ -267,15 +266,15 @@ public class QuartzHandler {
     /**
      * 判断调度器是否为开启状态
      *
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public boolean isStarted() throws SchedulerException {
-        boolean result = true;
+        boolean result;
         try {
             result = scheduler.isStarted();
         } catch (SchedulerException e) {
             log.info("判断调度器是否为开启状态异常：{}", e.getMessage());
-			throw e;
+            throw e;
         }
         return result;
     }
@@ -283,15 +282,15 @@ public class QuartzHandler {
     /**
      * 判断调度器是否为关闭状态
      *
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public boolean isShutdown() throws SchedulerException {
-        boolean result = true;
+        boolean result;
         try {
             result = scheduler.isShutdown();
         } catch (SchedulerException e) {
             log.info("判断调度器是否为关闭状态异常：{}", e.getMessage());
-			throw e;
+            throw e;
         }
         return result;
     }
@@ -299,15 +298,15 @@ public class QuartzHandler {
     /**
      * 判断调度器是否为待机状态
      *
-     * @return
+     * @throws SchedulerException 调度异常
      */
     public boolean isInStandbyMode() throws SchedulerException {
-        boolean result = true;
+        boolean result;
         try {
             result = scheduler.isInStandbyMode();
         } catch (SchedulerException e) {
             log.info("判断调度器是否为待机状态异常：{}", e.getMessage());
-			throw e;
+            throw e;
         }
         return result;
     }
@@ -316,7 +315,7 @@ public class QuartzHandler {
      * 获得下一次执行时间
      *
      * @param cronExpression cron表达式
-     * @return
+     * @throws ParseException 时间转换异常
      */
     public LocalDateTime getNextFireTime(String cronExpression) throws ParseException {
         LocalDateTime localDateTime = null;
@@ -329,7 +328,7 @@ public class QuartzHandler {
             }
         } catch (ParseException e) {
             log.info("获得下一次执行时间异常：{}", e.getMessage());
-			throw e;
+            throw e;
         }
         return localDateTime;
     }

@@ -20,18 +20,19 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
+import org.springframework.lang.NonNull;
 
 import java.util.Arrays;
 import java.util.Map;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/4 18:17
  * @since jdk1.8
  * 多数据源切换的切面
  */
-//@Configuration
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "AlibabaClassNamingShouldBeCamel"})
 @Slf4j
 public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefinitionRegistryPostProcessor, EnvironmentAware, Ordered, ApplicationContextAware {
 
@@ -55,7 +56,7 @@ public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefi
     }
 
     @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+    public void postProcessBeanDefinitionRegistry(@NonNull BeanDefinitionRegistry registry) throws BeansException {
         String dbNames = env.getProperty("spring.datasource.names");
         if (dbNames != null) {
             String[] names = dbNames.split(",");
@@ -82,32 +83,17 @@ public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefi
         Map<String, Object> enableShardingJdbcMap = context.getBeansWithAnnotation(EnableShardingJdbc.class);
         if (CollectionUtil.isNotEmpty(enableShardingJdbcMap)) {
             IShardingJdbcHandler shardingJdbcHandler = context.getBean(IShardingJdbcHandler.class);
-            if (shardingJdbcHandler != null) {
-                shardingJdbcHandler.registShardingAspect(registry, MultiDatasourceAspectJExpressionPointcutAdvisor.this);
-            }
+            shardingJdbcHandler.registShardingAspect(registry, MultiDatasourceAspectJExpressionPointcutAdvisor.this);
         }
-//        String shardingNames = env.getProperty("spring.datasource.sharding.names");
-//        String shardingPointcutNames = String.join(".", shardingNames.split(","));
-//        String key = "spring.datasource.sharding." + shardingPointcutNames + ".pointcut";
-//        String shardingDbName = String.join("_", shardingNames.split(","));
-//        String value = env.getProperty(key);
-//        if (StringUtils.isNotBlank(value)) {
-//            AbstractBeanDefinition definition = BeanDefinitionBuilder
-//                    .genericBeanDefinition(AspectJExpressionPointcutAdvisor.class, () -> getAspectJExpressionPointcutAdvisor(value, shardingDbName))
-//                    .getBeanDefinition();
-//            registry.registerBeanDefinition(AspectJExpressionPointcutAdvisor.class.getSimpleName() + shardingDbName, definition);
-//        } else {
-//            log.error("{}数据源没有配置切面的目录", shardingDbName);
-//        }
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NonNull Environment environment) {
         this.env = environment;
     }
 
@@ -117,7 +103,7 @@ public class MultiDatasourceAspectJExpressionPointcutAdvisor implements BeanDefi
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
     }
 }

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * MapResult 测试控制器
- * */
+ *
+ * @author admin*/
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/map")
 @ConditionalOnMybatis

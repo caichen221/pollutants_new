@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by ZQM on 2016/5/27.
+ *
+ * @author ZQM
+ * @date 2016/5/27
  */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 @Mapper
 @Repository
 public interface TableDefinitionMapper1 {
@@ -34,16 +37,13 @@ public interface TableDefinitionMapper1 {
 
 	@Insert("${sql}")//需要用replace
 	@Options(useGeneratedKeys=true, keyProperty= "param.id")
-//	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
 	int saveData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
 
-	@Update("${sql}")//需要用replace
-//	@Options( useGeneratedKeys=true, keyProperty= "param.id")
-//	@SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="param.id",keyColumn="id", before=false, resultType=Integer.class)
+	@Update("${sql}")
 	int updateData(@Param("sql") String sql, @Param("param") Map<String, Object> param);
 
-	@Delete("delete from ${TABLENAME} where  ${primaryKey} = #{value}")//需要用replace
+	@Delete("delete from ${TABLENAME} where  ${primaryKey} = #{value}")
 	int deleteData(@Param("TABLENAME") String TABLENAME, @Param("primaryKey") String primaryKey, @Param("value") Object value);
 
 

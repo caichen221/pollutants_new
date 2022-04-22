@@ -11,11 +11,15 @@ import java.util.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/30 9:48
  * @since jdk1.8
  */
 public class MysqlUtils {
+    private static final String PRIMARY_KEY = "PRIMARY KEY";
+    private static final String UNIQUE = "UNIQUE";
+    private static final String FOREIGN_KEY = "FOREIGN KEY";
+
     private MysqlUtils() {}
 
     public static List<MysqlColumn> getColumn(Connection conn, String dbName, String tableName) throws SQLException {
@@ -42,7 +46,7 @@ public class MysqlUtils {
         column.setTableName(rs.getString("TABLE_NAME"));
         column.setColName(rs.getString("COLUMN_NAME"));
         column.setDefaultVal(rs.getObject("COLUMN_DEFAULT"));
-        column.setNullable(Objects.equals("YES", rs.getString("IS_NULLABLE")) ? true : false);
+        column.setNullable(Objects.equals("YES", rs.getString("IS_NULLABLE")));
         column.setDataType(rs.getString("DATA_TYPE"));
         column.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
         column.setComment(rs.getString("COLUMN_COMMENT"));
@@ -58,8 +62,6 @@ public class MysqlUtils {
                 rs.getLong("NUMERIC_PRECISION"));
         column.setNumScale(rs.getObject("NUMERIC_SCALE") == null ? null :
                 rs.getLong("NUMERIC_SCALE"));
-//        column.setDatetimePrecision(rs.getObject("DATETIME_PRECISION") == null ? null :
-//                rs.getInt("DATETIME_PRECISION"));
         return column;
     }
 
@@ -85,7 +87,7 @@ public class MysqlUtils {
         try {
             List<MysqlTable> tables = new ArrayList<>();
             String sql = "select * from information_schema.TABLES where TABLE_SCHEMA = ?";
-            ResultSet rs = JdbcUtils.query(conn, sql, Arrays.asList(dbName));
+            ResultSet rs = JdbcUtils.query(conn, sql, List.of(dbName));
             while (rs.next()) {
                 tables.add(convertOneTable(rs));
             }
@@ -137,10 +139,8 @@ public class MysqlUtils {
 
 
     public static List<MysqlRelation> getRelationByChild(Connection conn, String dbName, String tableName) throws SQLException {
-        try {
+        try (conn) {
             return doGetRelationByChild(conn, dbName, tableName);
-        } finally {
-            conn.close();
         }
     }
 
@@ -213,22 +213,14 @@ public class MysqlUtils {
 
 
     private static List<MysqlStatistic> getStatistic(Connection conn, String dbName, String tableName) throws SQLException {
-        try {
-            List<MysqlStatistic> statistics = new ArrayList<>();
-            String sql = "select * from information_schema.STATISTICS where TABLE_SCHEMA = ? and TABLE_NAME = ?" +
-                    " order by SEQ_IN_INDEX";
-            ResultSet rs = JdbcUtils.query(conn, sql, Arrays.asList(dbName, tableName));
-            while (rs.next()) {
-                statistics.add(convertOneStatistic(rs));
-            }
-            return statistics;
-        } finally {
-//            try {
-//                JdbcUtils.closeConn(conn);
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
+        List<MysqlStatistic> statistics = new ArrayList<>();
+        String sql = "select * from information_schema.STATISTICS where TABLE_SCHEMA = ? and TABLE_NAME = ?" +
+                " order by SEQ_IN_INDEX";
+        ResultSet rs = JdbcUtils.query(conn, sql, Arrays.asList(dbName, tableName));
+        while (rs.next()) {
+            statistics.add(convertOneStatistic(rs));
         }
+        return statistics;
     }
 
     private static MysqlStatistic convertOneStatistic(ResultSet rs) throws SQLException {
@@ -247,11 +239,11 @@ public class MysqlUtils {
         constraint.setTableName(rs.getString("TABLE_NAME"));
         constraint.setConstraint(rs.getString("CONSTRAINT_NAME"));
         String constraintType = rs.getString("CONSTRAINT_TYPE");
-        if (Objects.equals("PRIMARY KEY", constraintType)) {
+        if (Objects.equals(PRIMARY_KEY, constraintType)) {
             constraint.setConstraintType(MysqlConstraint.ConstraintEnum.P);
-        } else if (Objects.equals("UNIQUE", constraintType)) {
+        } else if (Objects.equals(UNIQUE, constraintType)) {
             constraint.setConstraintType(MysqlConstraint.ConstraintEnum.U);
-        } else if (Objects.equals("FOREIGN KEY", constraintType)) {
+        } else if (Objects.equals(FOREIGN_KEY, constraintType)) {
             constraint.setConstraintType(MysqlConstraint.ConstraintEnum.R);
         }
         if (CollectionUtil.isNotEmpty(statistics)) {

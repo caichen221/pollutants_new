@@ -14,10 +14,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/10 15:10
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @ConditionalOnMybatis
 public class TestMultiDbController {
@@ -43,7 +44,6 @@ public class TestMultiDbController {
 
     @GetMapping("/t44")
     public List<TestEntity> test4() {
-        List<TestEntity> entities = testService1.get2();
-        return entities;
+        return testService1.get2();
     }
 }

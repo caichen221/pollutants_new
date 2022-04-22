@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
  * mysql的列结构
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/30 9:08
  * @since jdk1.8
  */

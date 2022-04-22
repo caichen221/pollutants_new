@@ -3,7 +3,7 @@ package com.iscas.biz.mp.enhancer.enums;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/23 14:09
  * @since jdk1.8
  */

@@ -17,29 +17,31 @@ import java.util.Properties;
 
 /**
  * quartz配置
+ *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/13 20:37
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @EnableScheduling
-//@Configuration
 public class QuartzSchedulerConfig {
 
-    // 配置文件路径
+    /**
+     * 配置文件路径
+     */
     private static final String QUARTZ_CONFIG = "/newframe-quartz.properties";
 
     /**
      * 配置任务工厂实例
+     *
      * @param applicationContext spring上下文实例
-     * @return
+     * @return JobFactory
      */
     @Bean
     public JobFactory jobFactory(ApplicationContext applicationContext) {
 
-        /**
-         * 采用自定义任务工厂 整合spring实例来完成构建任务 see {@link AutowiringSpringBeanJobFactory}
-         */
+        // 采用自定义任务工厂 整合spring实例来完成构建任务 see {@link AutowiringSpringBeanJobFactory}
         JobFactory jobFactory = new JobFactory();
         jobFactory.setApplicationContext(applicationContext);
         return jobFactory;
@@ -49,11 +51,11 @@ public class QuartzSchedulerConfig {
     /**
      * 配置任务调度器
      * 使用项目数据源作为quartz数据源
+     *
      * @param jobFactory 自定义配置任务工厂
      * @param dataSource 数据源实例
-     * @return
-     * @throws IOException
-     * @throws Exception
+     * @return SchedulerFactoryBean
+     * @throws IOException IO异常
      */
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory, DataSource dataSource, ApplicationContext applicationContext) throws IOException {
@@ -72,8 +74,9 @@ public class QuartzSchedulerConfig {
         // 将默认数据源注册到spring中
         AutowireCapableBeanFactory autowireCapableBeanFactory = applicationContext.getAutowireCapableBeanFactory();
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) autowireCapableBeanFactory;
+        assert quartzDatasource != null;
         beanFactory.registerSingleton("quartzDatasource", quartzDatasource);
-                                               
+
         // 设置数据源
         schedulerFactoryBean.setDataSource(quartzDatasource);
         // 设置上下文spring bean name
@@ -85,8 +88,9 @@ public class QuartzSchedulerConfig {
 
     /**
      * 从dmo-quartz.properties文件中读取Quartz配置属性
-     * @return
-     * @throws IOException
+     *
+     * @return Properties
+     * @throws IOException IO异常
      */
     @Bean
     public Properties quartzProperties() throws IOException {
@@ -99,7 +103,7 @@ public class QuartzSchedulerConfig {
     /**
      * 初始化监听器
      *
-     * @return
+     * @return QuartzInitializerListener
      */
     @Bean
     public QuartzInitializerListener executorListener() {

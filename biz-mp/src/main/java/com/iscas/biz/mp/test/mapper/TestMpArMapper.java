@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/7 20:56
  * @since jdk1.8
  */

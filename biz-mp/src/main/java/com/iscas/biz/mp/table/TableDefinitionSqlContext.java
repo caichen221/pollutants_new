@@ -4,21 +4,23 @@ import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorServi
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
  * 生成TableDefinition需要的SQL
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/2 13:27
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Component
 public class TableDefinitionSqlContext implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         TableDefinitionSqlContext.applicationContext = applicationContext;
     }
 

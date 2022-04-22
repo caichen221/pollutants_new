@@ -15,10 +15,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/10 15:07
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "unused", "rawtypes", "unchecked"})
 @Service
 @ConditionalOnMybatis
 public class TestService1 {
@@ -32,8 +33,7 @@ public class TestService1 {
     }
 
     public List<TestEntity> get() {
-        List<TestEntity> testEntities = testEntityMapper.selectList(null);
-        return testEntities;
+        return testEntityMapper.selectList(null);
     }
 
     public List<TestEntity> get2() {
@@ -41,7 +41,6 @@ public class TestService1 {
         page.setCurrent(1);
         page.setSize(2);
         IPage<TestEntity> testEntityIPage = testEntityMapper.selectPage(page, null);
-        List<TestEntity> records = testEntityIPage.getRecords();
-        return records;
+        return testEntityIPage.getRecords();
     }
 }

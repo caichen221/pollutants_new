@@ -17,14 +17,15 @@ import java.util.Map;
  * 为了连接非配置文件内的数据库，
  * 适用于数据归并或抽取时
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/10 0010 下午 15:48
  * @since jdk11
  */
+@SuppressWarnings("unused")
 public class MybatisUnCommitUtils {
 
     private static Map<String, String> createSqlMap(String sql) {
-        Map<String, String> sqlMap = new HashMap<>();
+        Map<String, String> sqlMap = new HashMap<>(1);
         sqlMap.put("sql", sql);
         return sqlMap;
     }
@@ -33,14 +34,14 @@ public class MybatisUnCommitUtils {
      * 获取SqlSession
      * */
     public static SqlSession getSqlSession(SqlSessionFactory sessionFactory) {
-        SqlSession sqlSession = sessionFactory.openSession();
-        return sqlSession;
+        return sessionFactory.openSession();
     }
 
 
+    @SuppressWarnings("rawtypes")
     public static List<Map> executeSearch(SqlSession session, String sql) {
         Map<String, String> sqlMap = createSqlMap(sql);
-        List<Map> result = null;
+        List<Map> result;
         String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
         result = session.selectList(method, sqlMap);
         return result;

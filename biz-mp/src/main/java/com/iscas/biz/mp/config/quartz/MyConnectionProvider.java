@@ -10,8 +10,9 @@ import java.sql.SQLException;
 
 /**
  * 替换quartz默认使用的C3P0连接池为取spring中注册好的数据源
+ *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/3/13 20:53
  * @since jdk1.8
  */
@@ -23,6 +24,7 @@ public class MyConnectionProvider implements ConnectionProvider {
     public Connection getConnection() throws SQLException {
         return datasource.getConnection();
     }
+
     @Override
     public void shutdown() {
         if (datasource instanceof DruidDataSource) {
@@ -32,9 +34,10 @@ public class MyConnectionProvider implements ConnectionProvider {
             atomikosDataSourceBean.close();
         }
     }
+
     @Override
     public void initialize() {
-       datasource = (DataSource) ApplicationUtils.getApplicationContext().getBean("quartzDatasource");
+        datasource = (DataSource) ApplicationUtils.getApplicationContext().getBean("quartzDatasource");
     }
 
     public DataSource getDatasource() {

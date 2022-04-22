@@ -9,21 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/7/16 14:45
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/7/16 14:45
  **/
+@SuppressWarnings({"unused", "rawtypes"})
 @Service
 @ConditionalOnMybatis
 public class MapResultService {
     @Autowired
     private MapResultMapper mapResultMapper;
-    public List<Map> selectAll(){
+
+    public List<Map> selectAll() {
         return mapResultMapper.select();
     }
 
-    public Map selectById(Integer id){
+    public Map selectById(Integer id) {
         return mapResultMapper.selectById(id);
     }
 }
