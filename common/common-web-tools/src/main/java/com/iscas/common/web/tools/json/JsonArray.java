@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/9 11:12
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
 public class JsonArray implements Json {
     private int capacity = 12;
     private List<Object> list;
@@ -25,6 +25,7 @@ public class JsonArray implements Json {
     public List<Object> toList() {
         return list;
     }
+
     @Override
     public String toJson() {
         return JsonUtils.toJson(list);

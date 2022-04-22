@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.MessageFormat;
 import java.time.Duration;
@@ -38,13 +37,15 @@ import java.util.concurrent.Executor;
  * JDK的HttpClient工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/29 20:27
  * @since jdk11
  */
+@SuppressWarnings({"unused", "unchecked", "rawtypes"})
 public class CustomHttpClient {
     private volatile HttpClient client;
     private HttpClientProps httpClientProps;
+    private static final int TWO = 2;
 
     public CustomHttpClient(HttpClientProps httpClientProps) {
         if (client == null) {
@@ -67,59 +68,64 @@ public class CustomHttpClient {
 
 
     //=================================GET BEGIN========================================//
+
     /**
-     * @Author: zhuquanwen
-     * @description: 同步GET请求，返回值解析为字符串
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @exception: IOException IO异常
-     * @exception: InterruptedException
-     * @return: java.lang.String
+     * 同步GET请求，返回值解析为字符串
+     *
+     * @param url 访问URL
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @author zhuquanwen
+     * @date 2021/11/29 21:07
      */
     public String doGet(String url) throws IOException, InterruptedException {
         return doGet(url, Map.of());
     }
 
     /**
-     * @Author: zhuquanwen
-     * @description: 同步GET请求，返回值解析为字符串
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @exception: IOException IO异常
-     * @exception: InterruptedException
-     * @return: java.lang.String
+     * 同步GET请求，返回值解析为字符串
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @author zhuquanwen
+     * @date 2021/11/29 21:07
      */
     public String doGet(String url, Map<String, String> headerMap) throws IOException, InterruptedException {
         return doGet(url, headerMap, httpClientProps.getDefaultReadTimeout());
     }
 
     /**
-     * @Author: zhuquanwen
-     * @description: 同步GET请求，返回值解析为字符串
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @exception: IOException IO异常
-     * exception: InterruptedException
-     * @return: java.lang.String
+     * 同步GET请求，返回值解析为字符串
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @author zhuquanwen
+     * @date 2021/11/29 21:07
      */
     public String doGet(String url, Map<String, String> headerMap, long timeout) throws IOException, InterruptedException {
         return doGet(url, headerMap, timeout, String.class);
     }
 
     /**
-     * @Author: zhuquanwen
-     * @description: 同步GET请求，返回值支持的解析类型有byte[]、String、InputStream
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
-     * @exception: IOException IO异常
-     * @exception: InterruptedException
-     * @return: java.lang.String
+     * 同步GET请求，返回值支持的解析类型有byte[]、String、InputStream
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @author zhuquanwen
+     * @date 2021/11/29 21:07
      */
     public <T> T doGet(String url, Map<String, String> headerMap, long timeout, Class<T> resClass) throws IOException, InterruptedException {
         HttpRequest httpRequest = buildGetRequest(url, headerMap, timeout);
@@ -129,14 +135,14 @@ public class CustomHttpClient {
     /**
      * 同步GET请求，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doGetResponse(String url, Map<String, String> headerMap, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -146,14 +152,13 @@ public class CustomHttpClient {
 
     /**
      * 同步GET请求，返回byte[]
-     * @version 1.0
-     * @since jdk11
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse < byte [ ]>>
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @throws
-     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<byte[]>>
+     * @since jdk11
      */
     public CompletableFuture<HttpResponse<byte[]>> doGetByteResponseAsync(String url, Map<String, String> headerMap, long timeout) {
         HttpRequest httpRequest = buildGetRequest(url, headerMap, timeout);
@@ -162,14 +167,13 @@ public class CustomHttpClient {
 
     /**
      * 同步GET请求，返回String
-     * @version 1.0
-     * @since jdk11
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse < byte [ ]>>
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @throws
-     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<byte[]>>
+     * @since jdk11
      */
     public CompletableFuture<HttpResponse<String>> doGetStringResponseAsync(String url, Map<String, String> headerMap, long timeout) {
         HttpRequest httpRequest = buildGetRequest(url, headerMap, timeout);
@@ -178,14 +182,13 @@ public class CustomHttpClient {
 
     /**
      * 同步GET请求，返回InputStream
-     * @version 1.0
-     * @since jdk11
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse < byte [ ]>>
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @throws
-     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<byte[]>>
+     * @since jdk11
      */
     public CompletableFuture<HttpResponse<InputStream>> doGetInputStreamResponseAsync(String url, Map<String, String> headerMap, long timeout) {
         HttpRequest httpRequest = buildGetRequest(url, headerMap, timeout);
@@ -194,16 +197,16 @@ public class CustomHttpClient {
     //=================================GET END========================================//
 
     //=================================POST BEGIN========================================//
+
     /**
      * 同步POST请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param requestBody 请求体
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
      * @since jdk11
      */
     public String doPost(String url, String requestBody) throws IOException, InterruptedException {
@@ -213,13 +216,12 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过form传送数据
      *
+     * @param url  访问URL
+     * @param form form表单
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form form表单
      * @since jdk11
      */
     public String doPost(String url, Map<String, Object> form) throws IOException, InterruptedException {
@@ -229,13 +231,13 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
      * @since jdk11
      */
     public String doPost(String url, Map<String, String> headerMap, String requestBody) throws IOException, InterruptedException {
@@ -245,13 +247,13 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过Form传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
      * @since jdk11
      */
     public String doPost(String url, Map<String, String> headerMap, Map<String, Object> form) throws IOException, InterruptedException {
@@ -261,14 +263,14 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public String doPost(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
@@ -278,14 +280,14 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过FORM传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public String doPost(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) throws IOException, InterruptedException {
@@ -295,15 +297,15 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过请求体传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
+     * @param resClass    返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> T doPost(String url, Map<String, String> headerMap, String requestBody, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -314,15 +316,15 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过FORM传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      form表单
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form form表单
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> T doPost(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -332,15 +334,15 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过请求体传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
+     * @param resClass    返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doPostResponse(String url, Map<String, String> headerMap, String requestBody, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -350,20 +352,20 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，通过FORM表单传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doPostResponse(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout, Class<T> resClass) throws IOException, InterruptedException {
         String[] headers = createHeader(headerMap, "application/x-www-form-urlencoded");
-        Map<String, String> newHeader = new HashMap<>();
+        Map<String, String> newHeader = new HashMap<>(16);
         for (int i = 0; i < headers.length; i = i + 2) {
             newHeader.put(headers[i], headers[i + 1]);
         }
@@ -374,15 +376,15 @@ public class CustomHttpClient {
     /**
      * 同步POST请求，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url           访问URL
+     * @param headerMap     header键值对
+     * @param bodyPublisher 请求体
+     * @param timeout       超时时间
+     * @param resClass      返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: bodyPublisher 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doPostResponse(String url, Map<String, String> headerMap, HttpRequest.BodyPublisher bodyPublisher, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -393,14 +395,12 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<byte[]>> doPostByteResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
@@ -411,14 +411,12 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<InputStream>> doPostInputStreamResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
@@ -429,14 +427,12 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<String>> doPostStringResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
@@ -447,17 +443,15 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
-    public CompletableFuture<HttpResponse<byte[]>> doPostByteResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
+    public CompletableFuture<HttpResponse<byte[]>> doPostByteResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) {
         HttpRequest httpRequest = buildPostRequest(url, headerMap, requestBody, timeout);
         return client.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     }
@@ -465,17 +459,15 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
-    public CompletableFuture<HttpResponse<InputStream>> doPostInputStreamResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
+    public CompletableFuture<HttpResponse<InputStream>> doPostInputStreamResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) {
         HttpRequest httpRequest = buildPostRequest(url, headerMap, requestBody, timeout);
         return client.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
     }
@@ -483,35 +475,33 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
-    public CompletableFuture<HttpResponse<String>> doPostStringResponseAsync(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
+    public CompletableFuture<HttpResponse<String>> doPostStringResponseAsync(String url, Map<String, String> headerMap, String requestBody, long timeout) {
         HttpRequest httpRequest = buildPostRequest(url, headerMap, requestBody, timeout);
         return client.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString());
     }
     //=================================POST END========================================//
 
     //=================================文件上传 BEGIN========================================//
+
     /**
      * 同步上传文件，也可以附带数据，如果是文件，formData的value是FileInfo 或 FileInfo[]类型
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: bodyPublisher 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doUploadResponse(String url, Map<String, String> headerMap, Map<String, Object> formData, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -522,15 +512,14 @@ public class CustomHttpClient {
     /**
      * 同步上传文件，也可以附带数据，如果是文件，formData的value是FileInfo或FileInfo[]类型
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: bodyPublisher 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> T doUpload(String url, Map<String, String> headerMap, Map<String, Object> formData, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -540,14 +529,13 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<byte[]>> doUploadByteResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) throws IOException {
@@ -558,14 +546,13 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<InputStream>> doUploadInputStreamResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) throws IOException {
@@ -576,14 +563,13 @@ public class CustomHttpClient {
     /**
      * 异步POST请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<String>> doUploadStringResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) throws IOException {
@@ -593,6 +579,7 @@ public class CustomHttpClient {
     //=================================文件上传 END========================================//
 
     //=================================文件下载 BEGIN========================================//
+
     /**
      * 同步下载文件，构建httpRequest的方式参见
      * {@link #buildGetRequest(String, Map, long)}
@@ -600,11 +587,11 @@ public class CustomHttpClient {
      * {@link #buildPostRequest(String, Map, Map, long)}
      * {@link #buildPostRequest(String, Map, HttpRequest.BodyPublisher, long)}
      *
-     * @throws
-     * @version 1.0
+     * @param httpRequest 请求
+     * @param filePath    文件路径
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: httpRequest 请求
-     * @param: filePath 文件路径
      * @since jdk11
      */
     public Path doDownload(HttpRequest httpRequest, String filePath) throws IOException, InterruptedException {
@@ -619,11 +606,11 @@ public class CustomHttpClient {
      * {@link #buildPostRequest(String, Map, Map, long)}
      * {@link #buildPostRequest(String, Map, HttpRequest.BodyPublisher, long)}
      *
-     * @throws
-     * @version 1.0
+     * @param httpRequest 请求
+     * @param filePath    文件路径
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: httpRequest 请求
-     * @param: filePath 文件路径
      * @since jdk11
      */
     public HttpResponse<Path> doDownloadResponse(HttpRequest httpRequest, String filePath) throws IOException, InterruptedException {
@@ -633,16 +620,16 @@ public class CustomHttpClient {
 
 
     //=================================PUT BEGIN========================================//
+
     /**
      * 同步PUT请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param requestBody 请求体
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
      * @since jdk11
      */
     public String doPut(String url, String requestBody) throws IOException, InterruptedException {
@@ -652,13 +639,12 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过form传送数据
      *
+     * @param url  访问URL
+     * @param form form表单
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form form表单
      * @since jdk11
      */
     public String doPut(String url, Map<String, Object> form) throws IOException, InterruptedException {
@@ -668,13 +654,13 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
      * @since jdk11
      */
     public String doPut(String url, Map<String, String> headerMap, String requestBody) throws IOException, InterruptedException {
@@ -684,13 +670,13 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过Form传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
      * @since jdk11
      */
     public String doPut(String url, Map<String, String> headerMap, Map<String, Object> form) throws IOException, InterruptedException {
@@ -700,14 +686,14 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public String doPut(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
@@ -717,14 +703,14 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过FORM传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public String doPut(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) throws IOException, InterruptedException {
@@ -734,15 +720,15 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过请求体传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
+     * @param resClass    返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> T doPut(String url, Map<String, String> headerMap, String requestBody, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -753,15 +739,15 @@ public class CustomHttpClient {
     /**
      * 同步PUT请求，通过FORM传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      form表单
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form form表单
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> T doPut(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -771,15 +757,15 @@ public class CustomHttpClient {
     /**
      * 同步Put请求，通过请求体传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
+     * @param resClass    返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doPutResponse(String url, Map<String, String> headerMap, String requestBody, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -789,20 +775,20 @@ public class CustomHttpClient {
     /**
      * 同步Put请求，通过FORM表单传送数据，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doPutResponse(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout, Class<T> resClass) throws IOException, InterruptedException {
         String[] headers = createHeader(headerMap, "application/x-www-form-urlencoded");
-        Map<String, String> newHeader = new HashMap<>();
+        Map<String, String> newHeader = new HashMap<>(16);
         for (int i = 0; i < headers.length; i = i + 2) {
             newHeader.put(headers[i], headers[i + 1]);
         }
@@ -813,15 +799,15 @@ public class CustomHttpClient {
     /**
      * 同步Put请求，返回值支持的解析类型有byte[]、String、InputStream
      *
+     * @param url           访问URL
+     * @param headerMap     header键值对
+     * @param bodyPublisher 请求体
+     * @param timeout       超时时间
+     * @param resClass      返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: bodyPublisher 请求体
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doPutResponse(String url, Map<String, String> headerMap, HttpRequest.BodyPublisher bodyPublisher, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -832,14 +818,12 @@ public class CustomHttpClient {
     /**
      * 异步PUT请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<byte[]>> doPutByteResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
@@ -850,14 +834,12 @@ public class CustomHttpClient {
     /**
      * 异步PUT请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<InputStream>> doPutInputStreamResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
@@ -868,14 +850,12 @@ public class CustomHttpClient {
     /**
      * 异步PUT请求，通过form表单传送数据
      *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param form      表单
+     * @param timeout   超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: form 表单
-     * @param: timeout 超时时间
      * @since jdk11
      */
     public CompletableFuture<HttpResponse<String>> doPutStringResponseAsync(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
@@ -886,17 +866,15 @@ public class CustomHttpClient {
     /**
      * 异步PUT请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
-    public CompletableFuture<HttpResponse<byte[]>> doPutByteResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
+    public CompletableFuture<HttpResponse<byte[]>> doPutByteResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) {
         HttpRequest httpRequest = buildPutRequest(url, headerMap, requestBody, timeout);
         return client.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     }
@@ -904,17 +882,15 @@ public class CustomHttpClient {
     /**
      * 异步Put请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
-    public CompletableFuture<HttpResponse<InputStream>> doPutInputStreamResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
+    public CompletableFuture<HttpResponse<InputStream>> doPutInputStreamResponse(String url, Map<String, String> headerMap, String requestBody, long timeout) {
         HttpRequest httpRequest = buildPutRequest(url, headerMap, requestBody, timeout);
         return client.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
     }
@@ -922,17 +898,15 @@ public class CustomHttpClient {
     /**
      * 异步Put请求，通过请求体传送数据
      *
+     * @param url         访问URL
+     * @param headerMap   header键值对
+     * @param requestBody 请求体
+     * @param timeout     超时时间
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: requestBody 请求体
-     * @param: timeout 超时时间
      * @since jdk11
      */
-    public CompletableFuture<HttpResponse<String>> doPutStringResponseAsync(String url, Map<String, String> headerMap, String requestBody, long timeout) throws IOException, InterruptedException {
+    public CompletableFuture<HttpResponse<String>> doPutStringResponseAsync(String url, Map<String, String> headerMap, String requestBody, long timeout) {
         HttpRequest httpRequest = buildPutRequest(url, headerMap, requestBody, timeout);
         return client.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString());
     }
@@ -940,59 +914,60 @@ public class CustomHttpClient {
 
 
     //=================================DELETE BEGIN========================================//
+
     /**
-     * @Author: zhuquanwen
-     * @description: 同步DELETE请求，返回值解析为字符串
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @exception: IOException IO异常
-     * @exception: InterruptedException
-     * @return: java.lang.String
+     * 同步DELETE请求，返回值解析为字符串
+     *
+     * @param url 访问URL
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @date 2021/11/29 21:07
      */
     public String doDelete(String url) throws IOException, InterruptedException {
         return doDelete(url, Map.of());
     }
 
     /**
-     * @Author: zhuquanwen
-     * @description: 同步DELETE请求，返回值解析为字符串
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @exception: IOException IO异常
-     * @exception: InterruptedException
-     * @return: java.lang.String
+     * 同步DELETE请求，返回值解析为字符串
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @date 2021/11/29 21:07
      */
     public String doDelete(String url, Map<String, String> headerMap) throws IOException, InterruptedException {
         return doDelete(url, headerMap, httpClientProps.getDefaultReadTimeout());
     }
 
     /**
-     * @Author: zhuquanwen
-     * @description: 同步DELETE请求，返回值解析为字符串
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @exception: IOException IO异常
-     * exception: InterruptedException
-     * @return: java.lang.String
+     * 同步DELETE请求，返回值解析为字符串
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @date 2021/11/29 21:07
      */
     public String doDelete(String url, Map<String, String> headerMap, long timeout) throws IOException, InterruptedException {
         return doDelete(url, headerMap, timeout, String.class);
     }
 
     /**
-     * @Author: zhuquanwen
-     * @description: 同步DELETE请求，返回值支持的解析类型有byte[]、String、InputStream
-     * @date: 2021/11/29 21:07
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
-     * @exception: IOException IO异常
-     * @exception: InterruptedException
-     * @return: java.lang.String
+     * 同步DELETE请求，返回值支持的解析类型有byte[]、String、InputStream
+     *
+     * @param url       访问URL
+     * @param headerMap header键值对
+     * @param timeout   超时时间
+     * @param resClass  返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
+     * @return java.lang.String
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
+     * @date 2021/11/29 21:07
      */
     public <T> T doDelete(String url, Map<String, String> headerMap, long timeout, Class<T> resClass) throws IOException, InterruptedException {
         HttpRequest httpRequest = buildDeleteRequest(url, headerMap, timeout);
@@ -1003,13 +978,13 @@ public class CustomHttpClient {
      * 同步DELETE请求，返回值支持的解析类型有byte[]、String、InputStream
      *
      * @return java.net.http.HttpResponse<T>
-     * @throws
-     * @version 1.0
+     * @throws IOException          IO异常
+     * @throws InterruptedException e
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @param: resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
+     * @param url 访问URL
+     * @param headerMap header键值对
+     * @param timeout 超时时间
+     * @param resClass 返回类型，支持byte[].class、String.class、InputStream.class，其他类型会抛出UnsupportedOperationException
      * @since jdk11
      */
     public <T> HttpResponse<T> doDeleteResponse(String url, Map<String, String> headerMap, long timeout, Class<T> resClass) throws IOException, InterruptedException {
@@ -1019,14 +994,13 @@ public class CustomHttpClient {
 
     /**
      * 同步DELETE请求，返回byte[]
-     * @version 1.0
-     * @since jdk11
+     *
+     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse < byte [ ]>>
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @throws
-     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<byte[]>>
+     * @param url 访问URL
+     * @param headerMap header键值对
+     * @param timeout 超时时间
+     * @since jdk11
      */
     public CompletableFuture<HttpResponse<byte[]>> doDeleteByteResponseAsync(String url, Map<String, String> headerMap, long timeout) {
         HttpRequest httpRequest = buildDeleteRequest(url, headerMap, timeout);
@@ -1035,14 +1009,13 @@ public class CustomHttpClient {
 
     /**
      * 同步DELETE请求，返回String
-     * @version 1.0
-     * @since jdk11
+     *
+     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse < byte [ ]>>
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @throws
-     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<byte[]>>
+     * @param url 访问URL
+     * @param headerMap header键值对
+     * @param timeout 超时时间
+     * @since jdk11
      */
     public CompletableFuture<HttpResponse<String>> doDeleteStringResponseAsync(String url, Map<String, String> headerMap, long timeout) {
         HttpRequest httpRequest = buildDeleteRequest(url, headerMap, timeout);
@@ -1051,14 +1024,13 @@ public class CustomHttpClient {
 
     /**
      * 同步Delete请求，返回InputStream
-     * @version 1.0
-     * @since jdk11
+     *
+     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse < byte [ ]>>
      * @date 2021/11/30
-     * @param: url 访问URL
-     * @param: headerMap header键值对
-     * @param: timeout 超时时间
-     * @throws
-     * @return java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<byte[]>>
+     * @param url 访问URL
+     * @param headerMap header键值对
+     * @param timeout 超时时间
+     * @since jdk11
      */
     public CompletableFuture<HttpResponse<InputStream>> doDeleteInputStreamResponseAsync(String url, Map<String, String> headerMap, long timeout) {
         HttpRequest httpRequest = buildDeleteRequest(url, headerMap, timeout);
@@ -1071,7 +1043,6 @@ public class CustomHttpClient {
      * 获取Http客户端
      *
      * @return HttpClient
-     * @version 1.0
      * @date 2021/11/29
      * @since jdk11
      */
@@ -1080,7 +1051,7 @@ public class CustomHttpClient {
     }
 
     private <T> T getResData(HttpRequest httpRequest, Class<T> resClass) throws IOException, InterruptedException {
-        T t = null;
+        T t;
         if (byte[].class == resClass) {
             t = (T) client.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray()).body();
         } else if (String.class == resClass) {
@@ -1094,7 +1065,7 @@ public class CustomHttpClient {
     }
 
     private <T> HttpResponse<T> getRes(HttpRequest httpRequest, Class<T> resClass) throws IOException, InterruptedException {
-        HttpResponse<T> response = null;
+        HttpResponse<T> response;
         if (byte[].class == resClass) {
             response = (HttpResponse<T>) client.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
         } else if (String.class == resClass) {
@@ -1127,18 +1098,14 @@ public class CustomHttpClient {
 
     public HttpRequest buildPostRequest(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
         StringJoiner sj = new StringJoiner("&");
-        form.forEach((k, v) -> {
-            sj.add(k + "=" + v.toString());
-        });
+        form.forEach((k, v) -> sj.add(k + "=" + v.toString()));
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(sj.toString(), StandardCharsets.UTF_8);
         return buildPostRequest(url, headerMap, bodyPublisher, timeout);
     }
 
     public HttpRequest buildPutRequest(String url, Map<String, String> headerMap, Map<String, Object> form, long timeout) {
         StringJoiner sj = new StringJoiner("&");
-        form.forEach((k, v) -> {
-            sj.add(k + "=" + v.toString());
-        });
+        form.forEach((k, v) -> sj.add(k + "=" + v.toString()));
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(sj.toString(), StandardCharsets.UTF_8);
         return buildPutRequest(url, headerMap, bodyPublisher, timeout);
     }
@@ -1214,7 +1181,7 @@ public class CustomHttpClient {
         } else if (data.getClass() == byte[].class) {
             //文件的字节
             builder.addBinaryBody(k, (byte[]) data, contentType, fi.getFileName());
-        }  else if (InputStream.class.isAssignableFrom(data.getClass())) {
+        } else if (InputStream.class.isAssignableFrom(data.getClass())) {
             //输入流
             builder.addBinaryBody(k, (InputStream) data, contentType, fi.getFileName());
         } else {
@@ -1224,20 +1191,21 @@ public class CustomHttpClient {
 
     /**
      * 文件格式的封装，也支持以FileInfo[]的形式以一个key上传多个文件
-     * */
-    public static class FileInfo<T extends Object> {
+     */
+    public static class FileInfo<T> {
         /**
          * File、String(文件路径)、InputStream、byte[]
-         * */
+         */
         private T data;
 
         /**
          * 文件名
-         * */
+         */
         private String fileName;
 
 
-        public FileInfo() {}
+        public FileInfo() {
+        }
 
         public FileInfo(T data, String fileName) {
             this.data = data;
@@ -1264,7 +1232,7 @@ public class CustomHttpClient {
 
     private String[] createHeader(Map<String, String> headerMap, String contentType) {
         if (headerMap == null) {
-            headerMap = new HashMap<>();
+            headerMap = new HashMap<>(2);
             headerMap.put("Content-Type", contentType);
         } else {
             headerMap = new HashMap<>(headerMap);
@@ -1283,6 +1251,7 @@ public class CustomHttpClient {
     }
 
 
+    @SuppressWarnings("CommentedOutCode")
     public static class HttpClientProps {
 
 
@@ -1319,11 +1288,13 @@ public class CustomHttpClient {
         /**
          * sslContext
          */
+        @SuppressWarnings("FieldCanBeLocal")
         private SSLContext sslContext;
 
         /**
          * sslParams
          */
+        @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
         private SSLParameters sslParameters;
 
         /**
@@ -1369,13 +1340,16 @@ public class CustomHttpClient {
             }
 
         }
+
         private static class TrustAllCerts implements X509TrustManager {
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
             }
+
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
             }
+
             @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return new X509Certificate[0];

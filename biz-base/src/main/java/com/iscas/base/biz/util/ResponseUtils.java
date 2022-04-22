@@ -3,7 +3,6 @@ package com.iscas.base.biz.util;
 import cn.hutool.core.io.IoUtil;
 import com.iscas.common.tools.core.io.file.FileTypeEnum;
 import com.iscas.common.tools.core.io.file.FileTypeUtils;
-import com.iscas.common.web.tools.util.IOUtils;
 import com.iscas.templet.exception.BaseException;
 import org.springframework.http.MediaType;
 

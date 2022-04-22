@@ -7,13 +7,13 @@ import java.io.OutputStream;
  * 自己定义一个输出流继承OutputStream
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/14 21:34
  * @since jdk1.8
  */
 public class LimiterOutputStream extends OutputStream {
-    private OutputStream os = null;
-    private BandWidthLimiter bandwidthLimiter = null;
+    private final OutputStream os;
+    private final BandWidthLimiter bandwidthLimiter;
     public LimiterOutputStream(OutputStream os, BandWidthLimiter bandwidthLimiter) {
         this.os = os;
         this.bandwidthLimiter = bandwidthLimiter;
@@ -25,6 +25,7 @@ public class LimiterOutputStream extends OutputStream {
         }
         this.os.write(b);
     }
+    @SuppressWarnings("NullableProblems")
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         if (bandwidthLimiter != null) {

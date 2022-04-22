@@ -12,10 +12,11 @@ import java.io.IOException;
  * JSON-XML转换工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/1/20 15:46
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class JsonXmlConvertUtils {
 
     /**
@@ -27,7 +28,7 @@ public class JsonXmlConvertUtils {
         xmlSerializer.setRootName("json2xml");
         // 不对类型进行设置
         xmlSerializer.setTypeHintsEnabled(false);
-        String xmlStr = "";
+        String xmlStr;
         net.sf.json.JSONObject jobj = net.sf.json.JSONObject.fromObject(json);
         xmlStr = xmlSerializer.write(jobj);
         //去掉根节点
@@ -43,9 +44,9 @@ public class JsonXmlConvertUtils {
     /**
     *  xml转为JSON
      * */
-    public static String xml2Json(String xml) throws IOException {
-        JSONObject xmlJSONObj = XML.toJSONObject(xml);
-        String jsonStr = xmlJSONObj.toString();
+    public static String xml2Json(String xml) {
+        JSONObject xmlJsonObj = XML.toJSONObject(xml);
+        String jsonStr = xmlJsonObj.toString();
         jsonStr = JsonUtils.formatJson(jsonStr);
         return jsonStr;
     }

@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @program: stc-pub
- * @description: JSON工具类
- * @author: LiangJian
- * @create: 2018-08-29 09:56
+ * JSON工具类
+ *
+ * @author LiangJian
+ * @date 2018-08-29 09:56
  **/
+@SuppressWarnings({"rawtypes", "unchecked", "unused"})
 public class JsonUtils {
     private static volatile ObjectMapper mapper;
 
@@ -30,8 +31,8 @@ public class JsonUtils {
     /**
      * 对象转json
      *
-     * @param object
-     * @return
+     * @param object object
+     * @return String
      */
     public static String toJson(Object object) {
         try {
@@ -45,21 +46,18 @@ public class JsonUtils {
     }
 
     public static <T> T fromJson(String json, Class<T> classOfT) {
-        //				return gson.fromJson(json, classOfT);
         try {
             return getMapper().readValue(json, classOfT);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-//        return null;
     }
 
     /**
-     * @param json
-     * @param typeReference
-     * @param <T>           new TypeReference<HashMap<String,Field>>() {}
-     * @return
+     * @param json          json
+     * @param typeReference 类型
+     * @return T
      */
     public static <T> T fromJson(String json, TypeReference typeReference) {
         try {
@@ -102,14 +100,12 @@ public class JsonUtils {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static ObjectMapper getMapper() {
         synchronized (JsonUtils.class) {
             if (mapper == null) {
                 synchronized (JsonUtils.class) {
                     mapper = new ObjectMapper();
-			    /*ObjectMapper configure = mapper
-				.configure(org.codehaus.jackson.map.DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT,
-					true);*/
                     //为null的不输出
                     mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
                     //大小写问题
@@ -117,7 +113,8 @@ public class JsonUtils {
 
                     //设置等同于@JsonIgnoreProperties(ignoreUnknown = true)
                     mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-                    mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);//防止转为json是首字母大写的属性会出现两次
+                    //防止转为json是首字母大写的属性会出现两次
+                    mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
                     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
                     //设置JSON时间格式
@@ -134,7 +131,7 @@ public class JsonUtils {
     /**
      * 单位缩进字符串。
      */
-    private static String SPACE = "\t";
+    private static final String SPACE = "\t";
 
     /**
      * 返回格式化JSON字符串。
@@ -143,11 +140,11 @@ public class JsonUtils {
      * @return 格式化的JSON字符串。
      */
     public static String formatJson(String json) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
         int length = json.length();
         int number = 0;
-        char key = 0;
+        char key;
 
         //遍历输入字符串。
         for (int i = 0; i < length; i++) {
@@ -219,11 +216,7 @@ public class JsonUtils {
      * @return 指定缩进次数的字符串。
      */
     private static String indent(int number) {
-        StringBuffer result = new StringBuffer();
-        for (int i = 0; i < number; i++) {
-            result.append(SPACE);
-        }
-        return result.toString();
+        return SPACE.repeat(Math.max(0, number));
     }
 
     /**
@@ -234,12 +227,12 @@ public class JsonUtils {
         try {
             JsonUtils.fromJson(json, Map.class);
             return true;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         try {
             JsonUtils.fromJson(json, List.class);
             return true;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return flag;
 
@@ -254,7 +247,7 @@ public class JsonUtils {
      * @return 追加后的JSON字符串。
      */
     public static String appendJson(String json, Object[]... data) throws RuntimeException {
-        Map map = null;
+        Map map;
         try {
             map = JsonUtils.fromJson(json, Map.class);
         } catch (Exception e) {
@@ -281,7 +274,7 @@ public class JsonUtils {
     }
 
     public static Object convertValue(Object value) {
-        Object convertData = null;
+        Object convertData;
         if (value instanceof JsonObject) {
             JsonObject jo = (JsonObject) value;
             convertData = jo.toMap();
@@ -351,11 +344,10 @@ public class JsonUtils {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-//        return null;
     }
 
     private static JavaType getJavaType(ParametricTypes parametricTypes) {
-        JavaType javaType = null;
+        JavaType javaType;
         Class clazz = parametricTypes.getClazz();
         List<ParametricTypes> subClazz = parametricTypes.getSubClazz();
         if (CollectionUtils.isEmpty(subClazz)) {

@@ -7,28 +7,38 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.security.SecureRandom;
-import java.util.Random;
 
 /**
  * 验证码校验工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16
  * @since jdk1.8
  */
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal", "SameParameterValue", "unused"})
 @Deprecated
 public class RandomValidateCodeUtils {
     private SecureRandom random = new SecureRandom();
-    /**随机产生的字符串*/
+    /**
+     * 随机产生的字符串
+     */
     private String randString = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    /**图片宽*/
+    /**
+     * 图片宽
+     */
     private int width = 80;
-    /**图片高*/
+    /**
+     * 图片高
+     */
     private int height = 26;
-    /**干扰线数量*/
+    /**
+     * 干扰线数量
+     */
     private int lineSize = 40;
-    /**随机产生字符数量*/
+    /**
+     * 随机产生字符数量
+     */
     private int stringNum = 4;
 
     /**
@@ -87,13 +97,16 @@ public class RandomValidateCodeUtils {
     public String getRandomString(int num) {
         return String.valueOf(randString.charAt(num));
     }
+
     /**
      * 生成随机图片
      */
+    @SuppressWarnings({"AlibabaRemoveCommentedCode", "MagicConstant"})
     public void getRandcode(HttpServletRequest request, HttpServletResponse response, String key) {
         // BufferedImage类是具有缓冲区的Image类,Image类是用于描述图像信息的类
-        BufferedImage image = new BufferedImage(width, height,BufferedImage.TYPE_INT_BGR);
-        Graphics g = image.getGraphics();// 产生Image对象的Graphics对象,改对象可以在图像上进行各种绘制操作
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
+        // 产生Image对象的Graphics对象,改对象可以在图像上进行各种绘制操作
+        Graphics g = image.getGraphics();
         g.fillRect(0, 0, width, height);
         g.setFont(new Font("Times New Roman", Font.ROMAN_BASELINE, 18));
         g.setColor(getRandColor(110, 133));
@@ -110,7 +123,6 @@ public class RandomValidateCodeUtils {
 //        Cookie cookie = new Cookie(key,randomString);
 //        response.addCookie(cookie);
         //2：将随机生成的验证码放入session中
-        //String sessionid = request.getSession().getId();
         request.getSession().setAttribute(key, randomString);
         //System.out.println("*************" + randomString);
         //总结：这两种方式都不是很好，
@@ -125,11 +137,12 @@ public class RandomValidateCodeUtils {
             tmp.close();
             Integer contentLength = tmp.size();
             response.setHeader("content-length", contentLength + "");
-            response.getOutputStream().write(tmp.toByteArray());// 将内存中的图片通过流动形式输出到客户端
+            // 将内存中的图片通过流动形式输出到客户端
+            response.getOutputStream().write(tmp.toByteArray());
         } catch (Exception e) {
             exception = e;
             e.printStackTrace();
-        }finally{
+        } finally {
             try {
                 response.getOutputStream().flush();
                 response.getOutputStream().close();

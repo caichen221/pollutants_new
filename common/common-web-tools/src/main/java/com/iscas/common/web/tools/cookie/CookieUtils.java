@@ -1,33 +1,33 @@
 package com.iscas.common.web.tools.cookie;
 
-import org.apache.commons.collections.MapUtils;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * cookie操作工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/13
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "unchecked"})
 public class CookieUtils {
     private CookieUtils() { }
     /**
      * 根据名字获取cookie
      *
-     * @param request
+     * @param request 请求
      * @param name cookie名字
-     * @return
+     * @return Cookie
      */
     public static Cookie getCookieByName(HttpServletRequest request, String name) {
         Map<String, Cookie> cookieMap = readCookieMap(request);
@@ -36,8 +36,8 @@ public class CookieUtils {
     /**
      * 将cookie封装到Map里面
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return Map
      */
     private static Map<String, Cookie> readCookieMap(HttpServletRequest request) {
         return Optional.ofNullable(request.getCookies())
@@ -66,6 +66,7 @@ public class CookieUtils {
         return response;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static HttpServletResponse setCookie(HttpServletResponse response, String name, String value, int time) {
         return setCookie(response, name, value, time, "/");
     }

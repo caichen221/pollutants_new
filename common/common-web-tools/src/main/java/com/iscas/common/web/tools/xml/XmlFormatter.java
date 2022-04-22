@@ -15,6 +15,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
+/**
+ * @author admin
+ */
 public class XmlFormatter {
 
     /**

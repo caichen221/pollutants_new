@@ -7,13 +7,14 @@ import java.io.InputStream;
  * 限流输入流,自己定义一个输入流继承Inputstream
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/14 21:30
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class LimiterInputStream extends InputStream {
-    private InputStream is = null;
-    private BandWidthLimiter bandwidthLimiter = null;
+    private final InputStream is;
+    private final BandWidthLimiter bandwidthLimiter;
     public LimiterInputStream(InputStream is, BandWidthLimiter bandwidthLimiter) {
         this.is = is;
         this.bandwidthLimiter = bandwidthLimiter;
@@ -25,6 +26,7 @@ public class LimiterInputStream extends InputStream {
         }
         return this.is.read();
     }
+    @SuppressWarnings("NullableProblems")
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (bandwidthLimiter != null) {
