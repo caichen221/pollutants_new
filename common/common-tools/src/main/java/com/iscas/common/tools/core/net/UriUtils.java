@@ -8,21 +8,20 @@ import java.net.URISyntaxException;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/27 8:44
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class UriUtils {
     private UriUtils() {
     }
 
     /**
      * 从url中获取host和port
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/8/27
-     * @param url
-     * @throws
+     * @param url url
      * @return com.iscas.common.tools.core.net.UriUtils.UriInfo
      */
     public static UriInfo getHostPort(String url) {

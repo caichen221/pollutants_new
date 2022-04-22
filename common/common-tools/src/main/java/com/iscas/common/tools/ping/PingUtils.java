@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * 判断连接
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/7/13 13:46
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class PingUtils {
     private PingUtils() {}
 
@@ -40,8 +40,6 @@ public class PingUtils {
     public static boolean isHostReachable(String host, int timeout) {
         try {
             return InetAddress.getByName(host).isReachable(timeout);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

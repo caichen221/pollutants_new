@@ -9,14 +9,16 @@ import java.util.Properties;
  * 配置文件读取工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/10/20 14:30
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ConfigUtils {
-    private ConfigUtils() {}
+    private ConfigUtils() {
+    }
 
-    private static String DEFUALT_PROPERTIES_NAME = "config.properties";
+    private static final String DEFUALT_PROPERTIES_NAME = "config.properties";
 
     public static String readProp(String key) throws RuntimeException {
         return readProp(DEFUALT_PROPERTIES_NAME, key);
@@ -35,8 +37,8 @@ public class ConfigUtils {
 
     /**
      * 读取jar包外部或内部的配置文件
-     *`
-     * */
+     * `
+     */
     public static InputStream getInOutConfigStream(String uri) throws FileNotFoundException {
         String filePath = System.getProperty("user.dir") + uri;
         File file = new File(filePath);

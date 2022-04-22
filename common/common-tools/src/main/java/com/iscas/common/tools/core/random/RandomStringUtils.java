@@ -17,7 +17,7 @@ public final class RandomStringUtils {
      * 获得随机字母数字字符串
      *
      * @param length 随机串长度
-     * @return {@link java.lang.String}
+     * @return {@link String}
      * @date 2018/7/13 18:02
      */
     public static String randomStr(int length) {
@@ -26,7 +26,7 @@ public final class RandomStringUtils {
         for (int i = 0; i < length; i++) {
             //选择从数字，大写,小写中随机
             int r = random.nextInt(3);
-            int charInfo = 48;
+            int charInfo;
             switch (r) {
                 case 0:
                     //从数字中拿一个

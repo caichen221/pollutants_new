@@ -9,7 +9,9 @@ import java.io.StringWriter;
 
 /**
  * 异常处理工具函数
- * Created by LJian on 2017/4/14.
+ *
+ * @author LJian
+ * @date 2017/4/14
  */
 public class ExceptionUtils {
     /**
@@ -17,8 +19,6 @@ public class ExceptionUtils {
      *
      * @param e 异常
      * @return java.lang.String
-     * @throws
-     * @version 1.0
      * @date 2021/1/6
      * @since jdk1.8
      */

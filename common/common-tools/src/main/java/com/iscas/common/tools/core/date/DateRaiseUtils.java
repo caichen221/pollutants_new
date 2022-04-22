@@ -1,5 +1,7 @@
 package com.iscas.common.tools.core.date;
 
+
+
 import com.iscas.common.tools.constant.MonthEnum;
 
 import java.time.Instant;
@@ -16,6 +18,7 @@ import java.util.Date;
  * @since jdk1.8
  */
 
+@SuppressWarnings("unused")
 public class DateRaiseUtils {
 
     private DateRaiseUtils(){}
@@ -25,6 +28,7 @@ public class DateRaiseUtils {
      * 将格林威治时间格式的字符串转为时间毫秒数
      * 时间字符串例如：Wed, 25 Aug 2021 02:46:52 GMT
      * */
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static long convertGMTToMs(String gmtStr) {
         ZonedDateTime zdt = ZonedDateTime.parse(gmtStr, DateTimeFormatter.RFC_1123_DATE_TIME);
         return zdt.toInstant().toEpochMilli();
@@ -33,7 +37,6 @@ public class DateRaiseUtils {
 
     /**
      * 获取当前日期里的年份
-     * @version 1.0
      * @since jdk1.8
      * @param date 日期
      * @return int 年份
@@ -47,7 +50,6 @@ public class DateRaiseUtils {
 
     /**
      * 获取当前日期里的月份
-     * @version 1.0
      * @since jdk1.8
      * @param date 日期
      * @return int 月份
@@ -61,7 +63,6 @@ public class DateRaiseUtils {
 
     /**
      * 获取当前日期里的天
-     * @version 1.0
      * @since jdk1.8
      * @param date 日期
      * @return int 天
@@ -75,7 +76,6 @@ public class DateRaiseUtils {
 
     /**
      * 获取当前日期里的小时
-     * @version 1.0
      * @since jdk1.8
      * @param date 日期
      * @return int 小时
@@ -88,7 +88,6 @@ public class DateRaiseUtils {
     }
     /**
      * 获取当前日期里的分钟
-     * @version 1.0
      * @since jdk1.8
      * @param date 日期
      * @return int 分钟
@@ -102,7 +101,6 @@ public class DateRaiseUtils {
 
     /**
      * 获取当前日期里的秒数
-     * @version 1.0
      * @since jdk1.8
      * @param date 日期
      * @return int 秒数
@@ -116,7 +114,6 @@ public class DateRaiseUtils {
 
     /**
      * 判断当前月份是否是季度末
-     * @version 1.0
      * @since jdk1.8
      * @param date 时间
      * @return boolean
@@ -143,7 +140,6 @@ public class DateRaiseUtils {
     }
     /**
      * 计算从现在开始偏移毫秒数后的时间,支持负数
-     * @version 1.0
      * @since jdk1.8
      * @param offset 偏移的时候毫秒数
      * @return java.util.Date
@@ -155,7 +151,6 @@ public class DateRaiseUtils {
 
     /**
      * 计算从某个时间偏移毫秒数后的时间,支持负数
-     * @version 1.0
      * @since jdk1.8
      * @param offset 偏移的时候毫秒数
      * @param date 日期时间
@@ -163,14 +158,14 @@ public class DateRaiseUtils {
      */
     public static Date afterOffsetDate(Date date, long offset){
         assert date != null;
-        long time = date.getTime() * 1L;
+        long time = date.getTime();
         time = time + offset;
         return new Date(time);
     }
 
     /**
      * 时间偏移一定毫秒数
-     * @see {@link #afterOffsetDate(Date, long)}
+     * {@link #afterOffsetDate(Date, long)}
      * */
     @Deprecated
     public static Date timeOffset(Date time, long offset) {
@@ -178,7 +173,6 @@ public class DateRaiseUtils {
         return time;
     }
 
-    /**时间转换*/
     public static LocalDateTime convert2LocalDateTime(Date date) {
         if (date == null) {
             return null;

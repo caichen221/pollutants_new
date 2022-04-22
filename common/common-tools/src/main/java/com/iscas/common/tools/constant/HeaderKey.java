@@ -4,10 +4,11 @@ package com.iscas.common.tools.constant;
  * HTTP请求的常用KEY
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/25 17:40
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface HeaderKey {
 
     /**

@@ -1,19 +1,15 @@
 package com.iscas.common.tools.office.iceblue;
 
 import com.spire.doc.Document;
-import com.spire.doc.DocumentObject;
-import com.spire.doc.Section;
-import com.spire.doc.collections.DocumentObjectCollection;
-import com.spire.doc.documents.Paragraph;
-import com.spire.doc.documents.ParagraphStyle;
 
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/25 16:55
  * @since jdk1.8
  */
+@SuppressWarnings({"CommentedOutCode", "AlibabaRemoveCommentedCode"})
 public class ReadWord {
     public static String readWord() {
         //加载Word文档

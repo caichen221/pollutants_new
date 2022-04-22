@@ -4,7 +4,7 @@ package com.iscas.common.tools.constant;
  * 月份枚举
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/19 14:28
  * @since jdk1.8
  */

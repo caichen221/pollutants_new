@@ -12,18 +12,19 @@ import java.util.Map;
 /**
  *  <p>使用freemarker将模板文件转为Word</p>
  *  <p>模板文件构建方式参见</p>
- *  <p>https://www.cnblogs.com/duanrantao/p/9377818.html</p>
+ *  <p><a href="https://www.cnblogs.com/duanrantao/p/9377818.html">https://www.cnblogs.com/duanrantao/p/9377818.html</a></p>
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/22 15:47
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class Template2DocUtils {
     private Template2DocUtils() {}
     private static final String ENCODING = "UTF-8";
 
-    private static String TYPE_RS = "resources";
-    private static String TYPE_DIR = "dir";
+    private static final String TYPE_RS = "resources";
+    private static final String TYPE_DIR = "dir";
 
     /**
      * 据数据及模板生成文件,从某个绝对路径下读取模板文件
@@ -36,6 +37,7 @@ public class Template2DocUtils {
     }
 
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static File crateWord(Map<String, Object> data, String templateFileName, String outFilePath, String type) throws IOException, TemplateException {
         templateFileName = templateFileName.replace(StrConstantEnum.BACKSLASH.getValue(), StrConstantEnum.SLASH.getValue());
         Configuration cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
@@ -44,8 +46,6 @@ public class Template2DocUtils {
         String ftlFileName = templateFileName;
         if (templateFileName.contains(StrConstantEnum.SLASH.getValue())) {
             path = StringUtils.substringBeforeLast(templateFileName, StrConstantEnum.SLASH.getValue()) + StrConstantEnum.SLASH.getValue();
-//            path = templateFileName.substring(0, templateFileName.lastIndexOf("/") + 1);
-//            ftlFileName = templateFileName.substring(templateFileName.lastIndexOf("/") + 1);
             ftlFileName = StringUtils.substringAfterLast(templateFileName, StrConstantEnum.SLASH.getValue());
         }
         if (TYPE_RS.equals(type)) {
@@ -100,32 +100,31 @@ public class Template2DocUtils {
         return crateWord(data, templateFileName, outFilePath, "resources");
     }
 
-    //获得图片的base64码
+    /**获得图片的base64码*/
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static String getImageBase(InputStream in) throws IOException {
         if (in == null) {
             return "";
         }
-        byte[] data = null;
+        byte[] data;
         try {
             data = new byte[in.available()];
             in.read(data);
             in.close();
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(data);
     }
 
-    //获得图片的base64码
+    /**获得图片的base64码*/
     public static String getImageBase(String src) throws IOException {
-        if (src == null || src == "") {
+        if (src == null || "".equals(src)) {
             return "";
         }
         File file = new File(src);

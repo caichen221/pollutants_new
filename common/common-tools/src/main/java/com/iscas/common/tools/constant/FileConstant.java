@@ -4,10 +4,11 @@ package com.iscas.common.tools.constant;
  * 文件相关常量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/25 17:24
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface FileConstant {
     /**
      * gif图片后缀

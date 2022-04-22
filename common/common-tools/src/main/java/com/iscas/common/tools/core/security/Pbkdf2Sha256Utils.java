@@ -1,6 +1,12 @@
 package com.iscas.common.tools.core.security;
 
-import java.nio.charset.Charset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -8,25 +14,23 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
  
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
- 
 /**
  * pbkdf2_sha256加密验证算法
  *
  *
+ * @author admin
  */
 
+@SuppressWarnings("unused")
 public class Pbkdf2Sha256Utils {
 
     private static final Logger logger = LoggerFactory.getLogger(Pbkdf2Sha256Utils.class);
-    //默认迭代计数为 20000
+    /**默认迭代计数为 20000*/
     private static final Integer DEFAULT_ITERATIONS = 20000;
-    //算法名称
-    private static final String algorithm = "pbkdf2_sha256";
+    /**算法名称*/
+    private static final String ALGORITHM = "pbkdf2_sha256";
+
+    private static final int FOUR = 4;
 
     /**
      * 获取密文
@@ -34,7 +38,7 @@ public class Pbkdf2Sha256Utils {
      * @param password   密码明文
      * @param salt       加盐
      * @param iterations 迭代计数
-     * @return
+     * @return String
      */
     private static String getEncodedHash(String password, String salt, int iterations) {
         // Returns only the last part of whole encoded password
@@ -44,13 +48,15 @@ public class Pbkdf2Sha256Utils {
         } catch (NoSuchAlgorithmException e) {
             logger.error("Could NOT retrieve PBKDF2WithHmacSHA256 algorithm", e);
         }
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(Charset.forName("UTF-8")), iterations, 256);
+        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
         SecretKey secret = null;
         try {
+            assert keyFactory != null;
             secret = keyFactory.generateSecret(keySpec);
         } catch (InvalidKeySpecException e) {
             logger.error("Could NOT generate secret key", e);
         }
+        assert secret != null;
         byte[] rawHash = secret.getEncoded();
         byte[] hashBase64 = Base64.getEncoder().encode(rawHash);
         String str = new String(hashBase64);
@@ -84,8 +90,8 @@ public class Pbkdf2Sha256Utils {
      * rand salt
      * iterations is default 20000
      *
-     * @param password
-     * @return
+     * @param password password
+     * @return String
      */
     public static String encode(String password) {
         return encode(password, getsalt());
@@ -94,8 +100,8 @@ public class Pbkdf2Sha256Utils {
     /**
      * rand salt
      *
-     * @param password
-     * @return
+     * @param password password
+     * @return String
      */
     public static String encode(String password, int iterations) {
         return encode(password, getsalt(), iterations);
@@ -104,9 +110,9 @@ public class Pbkdf2Sha256Utils {
     /**
      * iterations is default 20000
      *
-     * @param password
-     * @param salt
-     * @return
+     * @param password password
+     * @param salt salt
+     * @return String
      */
     public static String encode(String password, String salt) {
         return encode(password, salt, DEFAULT_ITERATIONS);
@@ -116,12 +122,12 @@ public class Pbkdf2Sha256Utils {
      * @param password   密码明文
      * @param salt       加盐
      * @param iterations 迭代计数
-     * @return
+     * @return String
      */
     public static String encode(String password, String salt, int iterations) {
         // returns hashed password, along with algorithm, number of iterations and salt
         String hash = getEncodedHash(password, salt, iterations);
-        return String.format("%s$%d$%s$%s", algorithm, iterations, salt, hash);
+        return String.format("%s$%d$%s$%s", ALGORITHM, iterations, salt, hash);
     }
 
     /**
@@ -129,23 +135,24 @@ public class Pbkdf2Sha256Utils {
      *
      * @param password       明文
      * @param hashedPassword 密文
-     * @return
+     * @return boolean
      */
     public static boolean verification(String password, String hashedPassword) {
         // hashedPassword consist of: ALGORITHM, ITERATIONS_NUMBER, SALT and
         // HASH; parts are joined with dollar character ("$")
         String[] parts = hashedPassword.split("\\$");
-        if (parts.length != 4) {
+        if (parts.length != FOUR) {
             // wrong hash format
             return false;
         }
-        Integer iterations = Integer.parseInt(parts[1]);
+        int iterations = Integer.parseInt(parts[1]);
         String salt = parts[2];
-        String hash = null;
+        String hash;
         try {
             hash = encode(password, salt, iterations);
             return hash.equals(hashedPassword);
         } finally {
+            //noinspection UnusedAssignment
             hash = null;
         }
     }

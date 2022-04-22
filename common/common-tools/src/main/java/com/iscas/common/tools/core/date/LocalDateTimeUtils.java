@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
  * @date 2022/4/6 18:17
  * @since jdk11
  */
+@SuppressWarnings("unused")
 public class LocalDateTimeUtils {
 
     private static final String DATE_FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";

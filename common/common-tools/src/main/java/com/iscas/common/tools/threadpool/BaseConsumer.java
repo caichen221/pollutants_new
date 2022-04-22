@@ -3,8 +3,11 @@ package com.iscas.common.tools.threadpool;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Created by ISCAS on 2016/12/8.
+ *
+ * @author ISCAS
+ * @date 2016/12/8
  */
+@SuppressWarnings("unused")
 public abstract class BaseConsumer implements Runnable {
 	private ConcurrentLinkedQueue<Object> taskQueue;
 
@@ -16,6 +19,7 @@ public abstract class BaseConsumer implements Runnable {
 		this.taskQueue = taskQueue;
 	}
 
+	@SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
 	@Override
     public void run() {
 		while (true) {
@@ -30,12 +34,15 @@ public abstract class BaseConsumer implements Runnable {
 				if (task != null) {
 					consume(task);
 				}
-//				if(log.isDebugEnabled()) {
-//					log.debug(Thread.currentThread().getId()+"->consume one task");
-//				}
 			}
 		}
 	}
 
+	/**
+	 * consume
+	 * @since jdk11
+	 * @date 2022/4/22
+	 * @param task task
+	 */
 	public abstract void consume(Object task);
 }

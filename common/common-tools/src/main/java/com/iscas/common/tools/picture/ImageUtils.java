@@ -12,15 +12,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Iterator;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/24 21:10
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
 public class ImageUtils {
     private ImageUtils() {
     }
@@ -45,47 +47,50 @@ public class ImageUtils {
         FileInputStream is=null;
         ImageInputStream iis=null;
         try{
-            is=new FileInputStream(srcpath); //读取原始图片
-            Iterator<ImageReader> it= ImageIO.getImageReadersByFormatName("jpg"); //ImageReader声称能够解码指定格式
+            //读取原始图片
+            is=new FileInputStream(srcpath);
+            //ImageReader声称能够解码指定格式
+            Iterator<ImageReader> it= ImageIO.getImageReadersByFormatName("jpg");
             ImageReader reader=it.next();
-            iis=ImageIO.createImageInputStream(is); //获取图片流
-            reader.setInput(iis, true); //将iis标记为true（只向前搜索）意味着包含在输入源中的图像将只按顺序读取
-            ImageReadParam param=reader.getDefaultReadParam(); //指定如何在输入时从 Java Image I/O框架的上下文中的流转换一幅图像或一组图像
-            Rectangle rect=new Rectangle(x, y, width, height); //定义空间中的一个区域
-            param.setSourceRegion(rect); //提供一个 BufferedImage，将其用作解码像素数据的目标。
-            BufferedImage bi=reader.read(0, param); //读取索引imageIndex指定的对象
-            ImageIO.write(bi, "jpg", new File(subpath)); //保存新图片
+            //获取图片流
+            iis=ImageIO.createImageInputStream(is);
+            //将iis标记为true（只向前搜索）意味着包含在输入源中的图像将只按顺序读取
+            reader.setInput(iis, true);
+            //指定如何在输入时从 Java Image I/O框架的上下文中的流转换一幅图像或一组图像
+            ImageReadParam param=reader.getDefaultReadParam();
+            //定义空间中的一个区域
+            Rectangle rect=new Rectangle(x, y, width, height);
+            //提供一个 BufferedImage，将其用作解码像素数据的目标。
+            param.setSourceRegion(rect);
+            //读取索引imageIndex指定的对象
+            BufferedImage bi=reader.read(0, param);
+            //保存新图片
+            ImageIO.write(bi, "jpg", new File(subpath));
         }finally{
-            if(is!= null)
+            if(is!= null) {
                 is.close();
-            if(iis != null)
+            }
+            if(iis != null) {
                 iis.close();
+            }
         }
     }
 
     public void cutByTemplate2(BufferedImage oriImage,BufferedImage newSrc,BufferedImage newSrc2,int x,int y,int width,int height, int c_a, int c2_b){
         //固定圆半径为5
         int c_r=10;
-        double rr=Math.pow(c_r, 2);//r平方
-        //圆心的位置 cb
-        //System.out.println(c_a);
-        int c_b=y;
-
-        //第二个圆（排除圆内的点） c2_a
-        int c2_a=x;
-
-        //System.out.println(oriImage.getWidth()+"   "+oriImage.getHeight());
+        //r平方
+        double rr=Math.pow(c_r, 2);
         for(int i=0;i<oriImage.getWidth();i++){
             for(int j=0;j<oriImage.getHeight();j++){
-                //data[i][j]=oriImage.getRGB(i,j);
 
-                //(x-a)²+(y-b)²=r²中，有三个参数a、b、r，即圆心坐标为(a，b)，半径r。
-                double f=Math.pow((i-c_a), 2)+Math.pow((j-c_b), 2);
+                double f=Math.pow((i-c_a), 2)+Math.pow((j- y), 2);
 
-                double f2=Math.pow((i-c2_a), 2)+Math.pow((j-c2_b), 2);
+                double f2=Math.pow((i- x), 2)+Math.pow((j-c2_b), 2);
 
                 int rgb=oriImage.getRGB(i,j);
-                if(i>=x&&i<(x+width) &&j>=y&&j<(y+height) && f2>=rr){//在矩形内
+                //在矩形内
+                if(i>=x&&i<(x+width) &&j>=y&&j<(y+height) && f2>=rr){
                     //块范围内的值
                     in(newSrc, newSrc2, i, j, rgb);
                 }else if(f<=rr){
@@ -139,9 +144,7 @@ public class ImageUtils {
     private static ConvolveOp createBlurOp(int size) {
         float[] data = new float[size * size];
         float value = 1f / (float) (size * size);
-        for (int i = 0; i < data.length; i++) {
-            data[i] = value;
-        }
+        Arrays.fill(data, value);
         return new ConvolveOp(new Kernel(size, size, data),
                 ConvolveOp.EDGE_NO_OP, null);
     }

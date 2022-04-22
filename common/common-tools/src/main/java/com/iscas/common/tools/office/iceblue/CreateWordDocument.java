@@ -8,10 +8,12 @@ import java.awt.*;
 
 
 /**
- * 参考https://www.e-iceblue.cn/spiredocforjavaoperating/create-word-document-in-java.html
- * */
+ * 参考<a href="https://www.e-iceblue.cn/spiredocforjavaoperating/create-word-document-in-java.html">https://www.e-iceblue.cn/spiredocforjavaoperating/create-word-document-in-java.html</a>
+ *
+ * @author admin*/
 
 public class CreateWordDocument {
+    @SuppressWarnings("AlibabaMethodTooLong")
     public static void main(String[] args){
         //创建Word文档
         Document document = new Document();

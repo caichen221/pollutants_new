@@ -3,29 +3,27 @@ package com.iscas.common.tools.core.string;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
  *
  * 字符串扩展工具
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/22 20:02
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class StringRaiseUtils {
     private StringRaiseUtils() {
     }
 
     /**
      * 删除字符串中所有包含的字符串
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param str 原字符串
      * @param delStr 待删除的字符串
-     * @throws
      * @return java.lang.String
      */
     public static String deleteAllString(String str, String delStr) {
@@ -41,15 +39,13 @@ public class StringRaiseUtils {
 
     /**
      * 破折号后的字符转为驼峰
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/7/9
-     * @param str
-     * @throws
+     * @param str str
      * @return java.lang.String
      */
     public static String dashToHump(String str) {
-        String result = null;
+        String result;
         if (str == null || "".equalsIgnoreCase(str)) {
             result = str;
         } else {
@@ -61,7 +57,7 @@ public class StringRaiseUtils {
                 if (i != 0 && '-' == ch) {
                     flag = true;
                 } else {
-                    if (flag == true) {
+                    if (flag) {
                         ch = Character.toUpperCase(ch);
                     }
                     flag = false;
@@ -77,15 +73,13 @@ public class StringRaiseUtils {
 
     /**
      * 将字符串的下划线转为驼峰命名
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param str 原字符串
-     * @throws
      * @return java.lang.String
      */
     public static String convertToHump(String str) {
-        String result = null;
+        String result;
         if (str == null || "".equalsIgnoreCase(str)) {
             result = str;
         } else {
@@ -97,7 +91,7 @@ public class StringRaiseUtils {
                 if (i != 0 && '_' == ch) {
                     flag = true;
                 } else {
-                    if (flag == true) {
+                    if (flag) {
                         ch = Character.toUpperCase(ch);
                     }
                     flag = false;
@@ -113,15 +107,13 @@ public class StringRaiseUtils {
 
     /**
      * 将驼峰转为下划线
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param str 字符串
-     * @throws
      * @return java.lang.String
      */
     public static String convertToUnderline(String str) {
-        String result = null;
+        String result;
         if (str == null || "".equalsIgnoreCase(str)) {
             result = str;
         } else {
@@ -140,12 +132,10 @@ public class StringRaiseUtils {
 
     /**
      * 比较多个字符串equals，只要一个满足，返回true
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/22
      * @param str 待比较字符串
      * @param strs 比较的字符串
-     * @throws
      * @return boolean
      */
     public static boolean multiEqualsOr(String str, String ... strs) {
@@ -159,12 +149,10 @@ public class StringRaiseUtils {
 
     /**
      * 比较多个字符串equals，只有都满足，返回true
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/22
      * @param str 待比较字符串
      * @param strs 比较的字符串
-     * @throws
      * @return boolean
      */
     public static boolean multiEqualsAnd(String str, String ... strs) {
@@ -177,6 +165,7 @@ public class StringRaiseUtils {
     }
 
     /**将字符串格式化，像log的一样，使用{}替换*/
+    @SuppressWarnings("RegExpRedundantEscape")
     public static String format(String str, Object... objs) {
         if (objs != null) {
             for (Object obj : objs) {

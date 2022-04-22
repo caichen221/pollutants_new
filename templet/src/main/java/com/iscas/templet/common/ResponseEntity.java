@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author zhuquanwen
  * @date 2017/12/25 16:41
  **/
+@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)

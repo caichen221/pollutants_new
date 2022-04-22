@@ -11,13 +11,13 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
- * 使用OKio的一些压缩操作，效率比普通方式高
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/30 11:01
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ZipUtils {
     private ZipUtils() {
     }
@@ -31,13 +31,12 @@ public class ZipUtils {
      * @param name             压缩后的名称
      * @param keepDirStructure 是否保留原来的目录结构,true:保留目录结构;
      *                         false:所有文件跑到压缩包根目录下(注意：不保留目录结构可能会出现同名文件,会压缩失败)
-     * @throws Exception
+     * @throws Exception 异常
      */
     public static void compress(File sourceFile, ZipOutputStream os, String name, boolean keepDirStructure) throws Exception {
         if (sourceFile.isFile()) {
             os.putNextEntry(new org.apache.tools.zip.ZipEntry(name));
             FileInputStream is = new FileInputStream(sourceFile);
-//            is.transferTo(os);
             IoUtil.copy(is, os);
             is.close();
         } else {
@@ -49,7 +48,6 @@ public class ZipUtils {
                     // 空文件夹的处理
                     os.putNextEntry(new ZipEntry(name + "/"));
                     // 没有文件，不需要文件的copy
-//                    os.closeEntry();
                 }
             } else {
                 for (File file : listFiles) {
@@ -57,9 +55,9 @@ public class ZipUtils {
                     if (keepDirStructure) {
                         // 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
                         // 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
-                        compress(file, os, name + "/" + file.getName(), keepDirStructure);
+                        compress(file, os, name + "/" + file.getName(), true);
                     } else {
-                        compress(file, os, file.getName(), keepDirStructure);
+                        compress(file, os, file.getName(), false);
                     }
                 }
             }
@@ -74,12 +72,12 @@ public class ZipUtils {
      * @param destinationFileName 压缩包名字，带不带后缀名均可
      * @return 处理后的压缩包绝对路径
      */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
+    @SuppressWarnings({"AlibabaUndefineMagicConstant", "ResultOfMethodCallIgnored"})
     public static String toZip(String sourcePath, String destinationPath, String destinationFileName)
             throws Exception {
         /*参数预处理*/
         if (StringUtils.isEmpty(sourcePath) || StringUtils.isEmpty(destinationPath) || StringUtils.isEmpty(destinationFileName)) {
-            throw new Exception(String.format("parameter is null or empty"));
+            throw new Exception("parameter is null or empty");
         }
         File sourceFile = new File(sourcePath);
         if (!sourceFile.exists()) {
@@ -98,7 +96,7 @@ public class ZipUtils {
         }
         /*压缩*/
         ZipOutputStream zip = null;
-        String result = null;
+        String result;
         try {
             result = destinationPath + destinationFileName;
             zip = new ZipOutputStream(new FileOutputStream(result));
@@ -113,7 +111,7 @@ public class ZipUtils {
                     zip.closeEntry();
                     zip.close();
                 }
-            } catch (IOException e1) {
+            } catch (IOException ignored) {
             }
         }
 
@@ -130,7 +128,7 @@ public class ZipUtils {
     public static String toZip(String sourcePath, String destinationPath) throws Exception {
         /*参数预处理*/
         if (StringUtils.isEmpty(sourcePath)) {
-            throw new Exception(String.format("parameter is null or empty"));
+            throw new Exception("parameter is null or empty");
         }
 
         String sourceFileName = sourcePath.substring(1 + Math.max(sourcePath.lastIndexOf("/"), sourcePath.lastIndexOf("\\")));
@@ -147,6 +145,7 @@ public class ZipUtils {
      * @throws RuntimeException 解压失败会抛出运行时异常
      **/
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void unZip(File srcFile, String destDirPath) throws RuntimeException {
         long start = System.currentTimeMillis();
         // 判断源文件是否存在
@@ -179,7 +178,7 @@ public class ZipUtils {
                     targetFile.createNewFile();
                     // 将压缩文件内容写入到这个文件中
                     try (InputStream is = zipFile.getInputStream(entry);
-                         FileOutputStream fos = new FileOutputStream(targetFile);) {
+                         FileOutputStream fos = new FileOutputStream(targetFile)) {
                         is.transferTo(fos);
                     }
                 }

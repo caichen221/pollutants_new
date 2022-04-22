@@ -6,53 +6,51 @@ import java.io.File;
 
 /**
  * 生成缩略图工具类
+ *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/14 18:05
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ThumbnailPicUtils {
     /**
-     * 私有方法，防止别人实例化使用*/
-    private ThumbnailPicUtils(){}
+     * 私有方法，防止别人实例化使用
+     */
+    private ThumbnailPicUtils() {
+    }
+
     /**
      * 将图片生成一个缩略图
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/16
-     * @param originalFile 原图路径
+     *
+     * @param originalFile  原图路径
      * @param thumbnailFile 缩略图路径
-     * @param thumbWidth, 缩略图宽
-     * @param thumbHeight 缩略图高
-     * @throws
-     * @return void
+     * @param thumbWidth,   缩略图宽
+     * @param thumbHeight   缩略图高
+     * @throws Exception 异常
+     * @date 2018/7/16
+     * @since jdk1.8
      */
-    public static void transform(String originalFile, String thumbnailFile, int thumbWidth, int thumbHeight) throws Exception
-    {
+    public static void transform(String originalFile, String thumbnailFile, int thumbWidth, int thumbHeight) throws Exception {
 
         Image image = javax.imageio.ImageIO.read(new File(originalFile));
 
-        double thumbRatio = (double)thumbWidth / (double)thumbHeight;
-        int imageWidth    = image.getWidth(null);
-        int imageHeight   = image.getHeight(null);
-        double imageRatio = (double)imageWidth / (double)imageHeight;
-        if (thumbRatio < imageRatio)
-        {
-            thumbHeight = (int)(thumbWidth / imageRatio);
-        }
-        else
-        {
-            thumbWidth = (int)(thumbHeight * imageRatio);
+        double thumbRatio = (double) thumbWidth / (double) thumbHeight;
+        int imageWidth = image.getWidth(null);
+        int imageHeight = image.getHeight(null);
+        double imageRatio = (double) imageWidth / (double) imageHeight;
+        if (thumbRatio < imageRatio) {
+            thumbHeight = (int) (thumbWidth / imageRatio);
+        } else {
+            thumbWidth = (int) (thumbHeight * imageRatio);
         }
 
-        if(imageWidth < thumbWidth && imageHeight < thumbHeight)
-        {
+        if (imageWidth < thumbWidth && imageHeight < thumbHeight) {
             thumbWidth = imageWidth;
             thumbHeight = imageHeight;
-        }
-        else if(imageWidth < thumbWidth) {
+        } else if (imageWidth < thumbWidth) {
             thumbWidth = imageWidth;
-        } else if(imageHeight < thumbHeight) {
+        } else if (imageHeight < thumbHeight) {
             thumbHeight = imageHeight;
         }
 

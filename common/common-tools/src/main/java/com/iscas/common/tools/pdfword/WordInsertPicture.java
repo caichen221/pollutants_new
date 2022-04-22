@@ -5,23 +5,27 @@ import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.jacob.com.ComThread;
 
+/**
+ * @author admin
+ */
+@SuppressWarnings("unused")
 public class WordInsertPicture {
     public WordInsertPicture() {
     }
 
-    // 声明一个静态的类实例化对象
+    /**声明一个静态的类实例化对象*/
     private static WordInsertPicture instance;
-    // 声明word文档对象
+    /**声明word文档对象*/
     private Dispatch doc = null;
-    // 声明word文档当前活动视窗对象
+    /**声明word文档当前活动视窗对象*/
     private Dispatch activeWindow = null;
-    // 声明word文档选定区域或插入点对象
+    /**声明word文档选定区域或插入点对象*/
     private Dispatch docSelection = null;
-    // 声明所有word文档集合对象
+    /**声明所有word文档集合对象*/
     private Dispatch wrdDocs = null;
-    // 声明word文档名称对象
+    /**声明word文档名称对象*/
     private String fileName;
-    // 声明ActiveX组件对象：word.Application,Excel.Application,Powerpoint.Application等等
+    /**声明ActiveX组件对象：word.Application,Excel.Application,Powerpoint.Application等等*/
     private ActiveXComponent wrdCom;
 
     /**
@@ -29,7 +33,7 @@ public class WordInsertPicture {
      *
      * @return 报表汇总业务操作
      */
-    public final static synchronized WordInsertPicture getInstance() {
+    public static synchronized WordInsertPicture getInstance() {
         if (instance == null) {
             instance = new WordInsertPicture();
         }
@@ -42,9 +46,11 @@ public class WordInsertPicture {
      * @return 是否初始化成功
      */
     public boolean initWordObj() {
-        boolean retFlag = false;
-        ComThread.InitSTA();// 初始化com的线程，非常重要！！使用结束后要调用 realease方法
-        wrdCom = new ActiveXComponent("Word.Application");// 实例化ActiveX组件对象：对word进行操作
+        boolean retFlag;
+        // 初始化com的线程，非常重要！！使用结束后要调用 realease方法
+        ComThread.InitSTA();
+        // 实例化ActiveX组件对象：对word进行操作
+        wrdCom = new ActiveXComponent("Word.Application");
         try {
                 /*
                  * 返回wrdCom.Documents的Dispatch
@@ -85,7 +91,7 @@ public class WordInsertPicture {
     /**
      * 打开一个已存在的文档
      *
-     * @param docPath
+     * @param docPath docPath
      */
     public void openDocument(String docPath) {
         if (this.doc != null) {
@@ -134,7 +140,6 @@ public class WordInsertPicture {
         Dispatch.call(picture, "Select");
         Dispatch.put(picture, "Left", new Variant(0));
         Dispatch.put(picture, "Top", new Variant(0));
-//        Dispatch.put(picture, "Width", new Variant(200));
         Dispatch.put(picture, "Height", new Variant(780));
 
         // 关闭页眉

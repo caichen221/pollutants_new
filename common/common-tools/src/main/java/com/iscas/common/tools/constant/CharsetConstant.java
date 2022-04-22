@@ -4,10 +4,11 @@ package com.iscas.common.tools.constant;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/26 8:50
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface CharsetConstant {
 
     /**

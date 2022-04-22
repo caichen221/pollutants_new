@@ -5,7 +5,7 @@ import java.util.EventObject;
 /**
  * 网关服务的监听事件
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/7/31 17:22
  * @since jdk1.8
  */

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 /**
  * IP地域相关工具
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/29 17:42
  * @since jdk1.8
  */
@@ -21,28 +21,30 @@ public class Ip2RegionUtils {
 
     /**
      * 根据IP地址查IP地域信息
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/9/30
      * @param ip　IP地址
      * @param dbPath ip2region.db文件所在位置，这个文件若没有请到以下地址下载：
-     *                  https://gitee.com/lionsoul/ip2region/tree/master/data
-     * @throws
+     *                  <a href="https://gitee.com/lionsoul/ip2region/tree/master/data">https://gitee.com/lionsoul/ip2region/tree/master/data</a>
+     * @throws DbMakerConfigException 异常
+     * @throws FileNotFoundException 异常
+     * @throws NoSuchMethodException 异常
+     * @throws InvocationTargetException 异常
+     * @throws IllegalAccessException 异常
      * @return java.lang.String
      */
 
-    public static String getCityInfo(String ip, String dbPath) throws DbMakerConfigException, FileNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-
-
-
-
+    @SuppressWarnings("ConstantConditions")
+    public static String getCityInfo(String ip, String dbPath) throws DbMakerConfigException, FileNotFoundException,
+            NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         File file = new File(dbPath);
-        if (file.exists() == false) {
+        if (!file.exists()) {
             System.out.println("Error: Invalid ip2region.db file");
         }
 
         //查询算法
-        int algorithm = DbSearcher.BTREE_ALGORITHM; //B-tree
+        //B-tree
+        int algorithm = DbSearcher.BTREE_ALGORITHM;
         //DbSearcher.BINARY_ALGORITHM //Binary
         //DbSearcher.MEMORY_ALGORITYM //Memory
 
@@ -63,8 +65,8 @@ public class Ip2RegionUtils {
             default: break;
         }
 
-        DataBlock dataBlock = null;
-        if (Util.isIpAddress(ip) == false) {
+        DataBlock dataBlock;
+        if (!Util.isIpAddress(ip)) {
             System.out.println("Error: Invalid ip address");
         }
         dataBlock = (DataBlock) method.invoke(searcher, ip);

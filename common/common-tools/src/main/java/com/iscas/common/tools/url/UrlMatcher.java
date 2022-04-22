@@ -12,19 +12,23 @@ import java.util.regex.Pattern;
  * URI匹配工具
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/4 17:20
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class UrlMatcher {
     /** Default path separator: "/" */
     public static final String DEFAULT_PATH_SEPARATOR = "/";
 
     private static final int CACHE_TURNOFF_THRESHOLD = 65536;
 
+    @SuppressWarnings("RegExpRedundantEscape")
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?\\}");
 
     private static final char[] WILDCARD_CHARS = { '*', '?', '{' };
+
+    private static final String ALL = "*";
 
 
     private String pathSeparator;
@@ -171,11 +175,11 @@ public class UrlMatcher {
             if (!fullMatch) {
                 return true;
             }
-            if (pattIdxStart == pattIdxEnd && "*".equals(pattDirs[pattIdxStart]) && path.endsWith(this.pathSeparator)) {
+            if (pattIdxStart == pattIdxEnd && ALL.equals(pattDirs[pattIdxStart]) && path.endsWith(this.pathSeparator)) {
                 return true;
             }
             for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
-                if (!"**".equals(pattDirs[i])) {
+                if (!(ALL + ALL).equals(pattDirs[i])) {
                     return false;
                 }
             }
@@ -322,6 +326,7 @@ public class UrlMatcher {
     protected String[] tokenizePattern(String pattern) {
         String[] tokenized = null;
         Boolean cachePatterns = this.cachePatterns;
+        //noinspection UnnecessaryUnboxing
         if (cachePatterns == null || cachePatterns.booleanValue()) {
             tokenized = this.tokenizedPatternCache.get(pattern);
         }
@@ -334,7 +339,7 @@ public class UrlMatcher {
                 deactivatePatternCache();
                 return tokenized;
             }
-            if (cachePatterns == null || cachePatterns.booleanValue()) {
+            if (cachePatterns == null || cachePatterns) {
                 this.tokenizedPatternCache.put(pattern, tokenized);
             }
         }
@@ -377,6 +382,7 @@ public class UrlMatcher {
      * @param str the String which must be matched against the pattern (never {@code null})
      * @return {@code true} if the string matches against the pattern, or {@code false} otherwise
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean matchStrings(String pattern, String str,
                                  Map<String, String> uriTemplateVariables) {
 
@@ -399,7 +405,7 @@ public class UrlMatcher {
     protected AntPathStringMatcher getStringMatcher(String pattern) {
         AntPathStringMatcher matcher = null;
         Boolean cachePatterns = this.cachePatterns;
-        if (cachePatterns == null || cachePatterns.booleanValue()) {
+        if (cachePatterns == null || cachePatterns) {
             matcher = this.stringMatcherCache.get(pattern);
         }
         if (matcher == null) {
@@ -411,7 +417,7 @@ public class UrlMatcher {
                 deactivatePatternCache();
                 return matcher;
             }
-            if (cachePatterns == null || cachePatterns.booleanValue()) {
+            if (cachePatterns == null || cachePatterns) {
                 this.stringMatcherCache.put(pattern, matcher);
             }
         }
@@ -582,6 +588,7 @@ public class UrlMatcher {
      */
     protected static class AntPathStringMatcher {
 
+        @SuppressWarnings("RegExpRedundantEscape")
         private static final Pattern GLOB_PATTERN = Pattern.compile("\\?|\\*|\\{((?:\\{[^/]+?\\}|[^/{}]|\\\\[{}])+?)\\}");
 
         private static final String DEFAULT_VARIABLE_PATTERN = "(.*)";

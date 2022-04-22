@@ -4,10 +4,11 @@ package com.iscas.common.tools.constant;
  * 媒体类型常量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/25 17:36
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface MediaType {
     /**
      * text/html

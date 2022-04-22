@@ -4,20 +4,19 @@ package com.iscas.common.tools.core.convert;
  * 字节转换工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/18 10:28
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "AlibabaAvoidStartWithDollarAndUnderLineNaming"})
 public class BytesConvertUtils {
     private BytesConvertUtils() {}
 
     /**
      * 以大端模式将一个32位的数值转成byte[]，目前支持float、int
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param value 数据
-     * @throws
      * @return byte[]
      */
     public static <T> byte[] _32ToBytesBig(T value) {
@@ -32,11 +31,9 @@ public class BytesConvertUtils {
 
     /**
      * 以小端模式将32位的数值转成byte[]，目前支持float、int
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param value 数据
-     * @throws
      * @return byte[]
      */
     public static <T> byte[] _32ToBytesLittle(T value) {
@@ -51,76 +48,68 @@ public class BytesConvertUtils {
 
     /**
      * 以大端模式将byte[]转成32位
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param src 待转换字节数组
      * @param offset 偏移量
      * @param clazz 转换后的class对象
-     * @throws
      * @return T
      */
+    @SuppressWarnings("unchecked")
     public static <T> T bytesTo_32Big(byte[] src, int offset, Class<T> clazz) {
-        int obj = 0;
-        obj = (int) (((src[offset] & 0xFF) << 24)
+        int obj;
+        obj = ((src[offset] & 0xFF) << 24)
                 | ((src[offset + 1] & 0xFF) << 16)
                 | ((src[offset + 2] & 0xFF) << 8)
-                | (src[offset + 3] & 0xFF));
+                | (src[offset + 3] & 0xFF);
         Object o = castIntToValue(obj, clazz);
         return (T)o;
     }
 
     /**
      * 以小端模式将byte[]转成32位
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param src 待转换字节数组
      * @param offset 偏移量
      * @param clazz 转换后的class对象
-     * @throws
      * @return T
      */
+    @SuppressWarnings("unchecked")
     public static <T> T bytesTo_32Little(byte[] src, int offset, Class<T> clazz) {
-        int obj = 0;
-        obj = (int) ((src[offset] & 0xFF)
+        int obj;
+        obj = (src[offset] & 0xFF)
                 | ((src[offset + 1] & 0xFF) << 8)
                 | ((src[offset + 2] & 0xFF) << 16)
-                | ((src[offset + 3] & 0xFF) << 24));
+                | ((src[offset + 3] & 0xFF) << 24);
         Object o = castIntToValue(obj, clazz);
         return (T)o;
     }
 
     /**
      * 以大端模式将byte[]转成16位short
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param src 字节数组
      * @param offset 偏移量
-     * @throws
      * @return short
      */
     public static short bytesToShortBig(byte[] src, int offset) {
-        short obj = (short) (((src[offset] & 0xFF) << 8)
+        return (short) (((src[offset] & 0xFF) << 8)
                 | (src[offset] & 0xFF));
-        return obj;
     }
 
     /**
      * 以小端模式将byte[]转成16位short
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param src 字节数组
      * @param offset 偏移量
-     * @throws
      * @return short
      */
     public static short bytesToShortLittle(byte[] src, int offset) {
-        short obj = (short) ((src[offset] & 0xFF)
+        return (short) ((src[offset] & 0xFF)
                 | ((src[offset + 1] & 0xFF) << 8));
-        return obj;
     }
 
 
@@ -135,14 +124,14 @@ public class BytesConvertUtils {
     }
 
     private static int getIntData(Object value) {
-        int data = 0;
+        int data;
         if (value instanceof Float) {
             float datax = (float) value;
             data = Float.floatToIntBits(datax);
         } else if (value instanceof Integer) {
             data = (int) value;
         } else {
-            throw new IllegalArgumentException("参数：" + String.valueOf(value) + "不合法");
+            throw new IllegalArgumentException("参数：" + value + "不合法");
         }
         return data;
     }

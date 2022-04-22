@@ -1,8 +1,15 @@
 package com.iscas.common.tools.core.io.file;
 
-import java.util.*;
-import java.io.*;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Properties;
 
+/**
+ * @author admin
+ */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "DeprecatedIsStillUsed", "unused", "rawtypes", "unchecked"})
 @Deprecated
 public class PropsUtils {
 
@@ -12,36 +19,29 @@ public class PropsUtils {
 
     public String getPropsFilePath()
     {
-        String filePath = this.getClass().getResource("/").getPath().toString();
+        String filePath = Objects.requireNonNull(this.getClass().getResource("/")).getPath();
         filePath = filePath.substring(0, filePath.indexOf("classes")-1) + "/destinations.properties";
         return filePath;
     }
 
     public InputStream getPropsIS()
     {
-        InputStream ins = this.getClass().getResourceAsStream("/destinations.properties");
-        return ins;
+        return this.getClass().getResourceAsStream("/destinations.properties");
     }
 
 
 
     /**
      * 获取字符型属性值
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param attr 属性key
-     * @throws
      * @return java.lang.String
      */
     public String readSingleProps(String attr){
-        String retValue = "";
+        String retValue;
         Properties props = new Properties();
         try {
-            /*if (!FileUtil.isFileExist(getPropsFilePath())) {
-                return "";
-            }
-            FileInputStream fi = new FileInputStream(getPropsFilePath());*/
             InputStream fi = getPropsIS();
             props.load(fi);
             fi.close();
@@ -55,15 +55,13 @@ public class PropsUtils {
 
     /**
      * 获取所有属性
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @throws
      * @return java.util.HashMap
      */
     public HashMap readAllProps(){
 
-        HashMap h = new HashMap();
+        HashMap h = new HashMap(16);
         Properties props = new Properties();
 
         try {
@@ -77,7 +75,7 @@ public class PropsUtils {
                 h.put(paramName, props.getProperty(paramName));
             }
         } catch (Exception e) {
-            return new HashMap();
+            return new HashMap(0);
         }
         return h;
     }

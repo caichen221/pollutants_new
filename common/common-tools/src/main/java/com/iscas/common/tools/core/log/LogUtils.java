@@ -6,10 +6,11 @@ import org.slf4j.Logger;
  * 为了不与上层模块日志冲突，做一个判断处理的工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 14:15
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class LogUtils {
     private LogUtils() {}
 

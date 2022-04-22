@@ -20,6 +20,7 @@ import java.io.*;
  * @since jdk1.8
  */
 @Deprecated
+@SuppressWarnings("all")
 public class GradleRepo2MavenRepoUtils {
     private GradleRepo2MavenRepoUtils() {}
 

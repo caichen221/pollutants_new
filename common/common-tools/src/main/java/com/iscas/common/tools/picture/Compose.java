@@ -5,13 +5,16 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
-public class compose {
+/**
+ * @author admin
+ */
+@SuppressWarnings("unused")
+public class Compose {
 
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static void mergeImage(String bigPath, String smallPath, String x, String y) throws IOException {
+    public static void mergeImage(String bigPath, String smallPath, String x, String y) {
 
         try {
             BufferedImage small;
@@ -37,15 +40,5 @@ public class compose {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
-//    public static void main(String[] args) throws WriterException {
-//        try {
-//            compose.mergeImage("F://111.png", "F://TDC-1536638784409test.png", "2000", "13");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 }

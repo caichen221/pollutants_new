@@ -8,9 +8,13 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 
+/**
+ * @author admin
+ */
+@SuppressWarnings({"rawtypes", "unused"})
 public class MyFileFilter implements FileFilter {
 
-    private Hashtable filters = null;
+    private Hashtable filters;
     private String description = null;
     private String fullDescription = null;
     private boolean useExtensionsInDescription = true;
@@ -52,9 +56,7 @@ public class MyFileFilter implements FileFilter {
                 return true;
             }
             String extension = getExtension(f);
-            if (extension != null && filters.get(getExtension(f)) != null) {
-                return true;
-            }
+            return extension != null && filters.get(getExtension(f)) != null;
         }
         return false;
     }
@@ -70,6 +72,7 @@ public class MyFileFilter implements FileFilter {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public void addExtension(String extension) {
         if (filters == null) {
             filters = new Hashtable(5);
@@ -78,6 +81,7 @@ public class MyFileFilter implements FileFilter {
         fullDescription = null;
     }
 
+    @SuppressWarnings("StringConcatenationInLoop")
     public String getDescription() {
         if (fullDescription == null) {
             if (description == null || isExtensionListInDescription()) {
@@ -85,9 +89,9 @@ public class MyFileFilter implements FileFilter {
                 // build the description from the extension list
                 Enumeration extensions = filters.keys();
                 if (extensions != null) {
-                    fullDescription += "." + (String) extensions.nextElement();
+                    fullDescription += "." + extensions.nextElement();
                     while (extensions.hasMoreElements()) {
-                        fullDescription += ", ." + (String) extensions.nextElement();
+                        fullDescription += ", ." + extensions.nextElement();
                     }
                 }
                 fullDescription += ")";

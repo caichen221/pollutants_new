@@ -13,6 +13,7 @@ import java.util.function.Function;
  * @date 2021/2/18 15:20
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "unchecked", "AlibabaLowerCamelCaseVariableNaming", "rawtypes"})
 public class Either<L, R> {
     private final L left;
     private final R right;

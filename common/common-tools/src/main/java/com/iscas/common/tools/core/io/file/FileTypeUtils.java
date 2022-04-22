@@ -10,19 +10,21 @@ import java.io.InputStream;
  * 判断一个文件类型的工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/8/6 8:48
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class FileTypeUtils {
     public static int FILE_PREFIX_LENGTH = 15;
-    public static String bytesToHexString(byte[] src){
+
+    public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder();
         if (src == null || src.length <= 0) {
             return null;
         }
-        for (int i = 0; i < src.length; i++) {
-            int v = src[i] & 0xFF;
+        for (byte b : src) {
+            int v = b & 0xFF;
             String hv = Integer.toHexString(v);
             if (hv.length() < 2) {
                 stringBuilder.append(0);
@@ -34,13 +36,14 @@ public class FileTypeUtils {
 
     /**
      * 判断一个文件的类型
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param is 输入流
-     * @throws
      * @return com.iscas.common.tools.core.io.file.FileTypeEnum
+     * @throws IOException io异常
+     * @date 2021/1/6
+     * @since jdk1.8
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static FileTypeEnum getFileType(InputStream is) throws IOException {
 
         //读取FILE_PREFIX_LENGTH个字节，少于FILE_PREFIX_LENGTH，后面都是0
@@ -48,29 +51,17 @@ public class FileTypeUtils {
         byte[] b = new byte[length];
         is.read(b);
         return getFileType(b);
-//        String prefix = bytesToHexString(b);
-//        FileTypeEnum[] values = FileTypeEnum.values();
-//        if (ArrayUtils.isNotEmpty(values)) {
-//            for (FileTypeEnum fileTypeEnum : values) {
-//                String enumPrefix = fileTypeEnum.getPrefix();
-//                if (prefix.toLowerCase().startsWith(enumPrefix.toLowerCase())) {
-//                    return fileTypeEnum;
-//                }
-//            }
-//        }
-//        return FileTypeEnum.UNKOWN;
     }
 
     /**
      * 判断一个文件的类型
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param b FILE_PREFIX_LENGTH个字符串
-     * @throws
      * @return com.iscas.common.tools.core.io.file.FileTypeEnum
+     * @date 2021/1/6
+     * @since jdk1.8
      */
-    public static FileTypeEnum getFileType(byte[] b) throws IOException {
+    public static FileTypeEnum getFileType(byte[] b) {
 
         //读取FILE_PREFIX_LENGTH个字节，少于FILE_PREFIX_LENGTH，后面都是0
         String prefix = bytesToHexString(b);
@@ -78,6 +69,7 @@ public class FileTypeUtils {
         if (ArrayUtils.isNotEmpty(values)) {
             for (FileTypeEnum fileTypeEnum : values) {
                 String enumPrefix = fileTypeEnum.getPrefix();
+                assert prefix != null;
                 if (prefix.toLowerCase().startsWith(enumPrefix.toLowerCase())) {
                     return fileTypeEnum;
                 }
@@ -88,22 +80,16 @@ public class FileTypeUtils {
 
     /**
      * 判断一个文件的类型
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param path 文件路径
-     * @throws
      * @return com.iscas.common.tools.core.io.file.FileTypeEnum
+     * @throws IOException IO异常
+     * @date 2021/1/6
+     * @since jdk1.8
      */
     public static FileTypeEnum getFileType(String path) throws IOException {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(path);
+        try (InputStream is = new FileInputStream(path)) {
             return getFileType(is);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
         }
     }
 

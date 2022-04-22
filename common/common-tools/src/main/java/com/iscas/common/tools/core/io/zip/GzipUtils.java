@@ -11,21 +11,23 @@ import java.util.zip.GZIPOutputStream;
  * gzip工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/12 14:56
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class GzipUtils {
-    private GzipUtils() {}
+    private GzipUtils() {
+    }
 
     /**
      * 字符串压缩
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param str 字符串
-     * @throws
      * @return byte[]
+     * @throws IOException IO异常
+     * @date 2021/1/6
+     * @since jdk1.8
      */
     public static byte[] compress(String str) throws IOException {
         if (str == null) {
@@ -36,12 +38,12 @@ public class GzipUtils {
 
     /**
      * 解压
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param bytes 字节数组
-     * @throws
      * @return java.lang.String
+     * @throws IOException IO异常
+     * @date 2021/1/6
+     * @since jdk1.8
      */
     public static String uncompress(byte[] bytes) throws IOException {
         byte[] bytes1 = uncompressToBytes(bytes);
@@ -50,12 +52,12 @@ public class GzipUtils {
 
     /**
      * 字节数组压缩
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param bytes 字节数组
-     * @throws
      * @return byte[]
+     * @throws IOException IO异常
+     * @date 2021/1/6
+     * @since jdk1.8
      */
     public static byte[] compressFromBytes(byte[] bytes) throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -70,12 +72,12 @@ public class GzipUtils {
 
     /**
      * 字节数组解压
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
+     *
      * @param bytes 字节数组
-     * @throws
      * @return byte[]
+     * @throws IOException IO异常
+     * @date 2021/1/6
+     * @since jdk1.8
      */
     public static byte[] uncompressToBytes(byte[] bytes) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

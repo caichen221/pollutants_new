@@ -6,10 +6,11 @@ import java.util.Arrays;
  * 数组增强操作
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/18 15:50
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ArrayRaiseUtils {
     private ArrayRaiseUtils() {
     }
@@ -17,7 +18,6 @@ public class ArrayRaiseUtils {
     /**
      * 判断一个数组中是否含有某个元素，使用equals方法判断
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/7/18
      * @param objects 数组
@@ -42,7 +42,6 @@ public class ArrayRaiseUtils {
     /**
      * 合并两个二维数组
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/7/18
      * @param array1 数组1

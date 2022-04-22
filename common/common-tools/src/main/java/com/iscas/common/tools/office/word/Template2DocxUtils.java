@@ -10,6 +10,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -18,12 +19,13 @@ import java.util.zip.ZipOutputStream;
 /**
  *  <p>使用freemarker将模板文件转为Word</p>
  *  <p>模板文件构建方式参见</p>
- *  <p>https://blog.csdn.net/fenfenguai/article/details/78731331</p>
+ *  <p><a href="https://blog.csdn.net/fenfenguai/article/details/78731331">https://blog.csdn.net/fenfenguai/article/details/78731331</a></p>
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/23 15:34
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 public class Template2DocxUtils {
 
     /**
@@ -35,12 +37,10 @@ public class Template2DocxUtils {
      * @param xmlHeader             docx中 header1.xml 模板文件 用来配置docx文档的页眉文件
      * @param outputFileName        所生成的docx文件名称  如  xxx.docx  或  xxx.doc
      * */
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "AlibabaMethodTooLong"})
     public static void crateDocxFromDir(Map dataMap, String docxTemplateFile, String xmlDocument, String xmlDocumentXmlRels,
                                         String xmlContentTypes, String xmlHeader,
                                         String outputFileName) throws Exception {
-
-//        URL basePath = Template2DocxUtils.class.getClassLoader().getResource("");
-//        String realTemplatePath = /*basePath.getPath() +*/ templatePath;
         //临时文件产出的路径
         String outputPath =/* basePath.getPath() +*/ UUID.randomUUID().toString();
         File file = new File(outputPath);
@@ -74,8 +74,10 @@ public class Template2DocxUtils {
 
             //读取 document.xml.rels  文件 并获取rId 与 图片的关系 (如果没有图片 此文件不用编辑直接读取就行了)
             Document document = DocumentHelper.parseText(xmlDocumentXmlRelsComment);
-            Element rootElt = document.getRootElement(); // 获取根节点
-            Iterator iter = rootElt.elementIterator();// 获取根节点下的子节点head
+            // 获取根节点
+            Element rootElt = document.getRootElement();
+            // 获取根节点下的子节点head
+            Iterator iter = rootElt.elementIterator();
             List<Map<String, String>> picList = (List<Map<String, String>>) dataMap.get("images");
 
             // 遍历Relationships节点
@@ -84,9 +86,6 @@ public class Template2DocxUtils {
                 String id = recordEle.attribute("Id").getData().toString();
                 String target = recordEle.attribute("Target").getData().toString();
                 if (target.indexOf("media") == 0) {
-//                        System.out.println("id>>>"+id+"   >>>"+target);
-//                        id>>>rId18   >>>media/pic1
-//
                     for (Map<String, String> picMap : picList) {
                         if (target.endsWith(picMap.get("name"))) {
                             picMap.put("rId", id);
@@ -94,7 +93,8 @@ public class Template2DocxUtils {
                     }
                 }
             }
-            dataMap.put("images", picList);//覆盖原来的picList;
+            //覆盖原来的picList;
+            dataMap.put("images", picList);
 
             //================================获取 document.xml 输入流================================
             ByteArrayInputStream documentInput = getFreemarkerContentInputStream(dataMap, xmlDocument);
@@ -107,15 +107,14 @@ public class Template2DocxUtils {
 
 
             //------------------覆盖文档------------------
-            int len = -1;
+            int len;
             byte[] buffer = new byte[1024];
             while (zipEntrys.hasMoreElements()) {
                 ZipEntry next = zipEntrys.nextElement();
                 InputStream is = zipFile.getInputStream(next);
-                if (next.toString().indexOf("media") < 0) {
+                if (!next.toString().contains("media")) {
                     // 把输入流的文件传到输出流中 如果是word/document.xml由我们输入
                     zipout.putNextEntry(new ZipEntry(next.getName()));
-//                    System.out.println("next.getName()>>>" + next.getName() + "  next.isDirectory()>>>" + next.isDirectory());
                     //写入图片配置类型
                     if ("[Content_Types].xml".equals(next.getName())) {
                         if (contentTypesInput != null) {
@@ -127,12 +126,10 @@ public class Template2DocxUtils {
 
                     } else if (next.getName().indexOf("document.xml.rels") > 0) {
                         //写入填充数据后的主数据配置信息
-                        if (documentXmlRelsInput != null) {
-                            while ((len = documentXmlRelsInput.read(buffer)) != -1) {
-                                zipout.write(buffer, 0, len);
-                            }
-                            documentXmlRelsInput.close();
+                        while ((len = documentXmlRelsInput.read(buffer)) != -1) {
+                            zipout.write(buffer, 0, len);
                         }
+                        documentXmlRelsInput.close();
                     } else if ("word/document.xml".equals(next.getName())) {
                         //写入填充数据后的主数据信息
                         if (documentInput != null) {
@@ -164,7 +161,6 @@ public class Template2DocxUtils {
             //------------------覆盖文档------------------
 
             //------------------写入新图片------------------
-            len = -1;
             if (picList != null && !picList.isEmpty()) {
                 for (Map<String, String> pic : picList) {
                     ZipEntry next = new ZipEntry("word" + "/" + "media" + "/" + pic.get("name"));
@@ -184,11 +180,9 @@ public class Template2DocxUtils {
             e.printStackTrace();
             throw new Exception("生成docx文件失败！");
         } finally {
-            if (delFileList != null) {
-                for (File file1 : delFileList) {
-                    if (file1.exists()) {
-                        file1.delete();
-                    }
+            for (File file1 : delFileList) {
+                if (file1.exists()) {
+                    file1.delete();
                 }
             }
         }
@@ -199,7 +193,7 @@ public class Template2DocxUtils {
      * 获取模板字符串
      * @param dataMap   参数
      * @param templateName  模板名称
-     * @return
+     * @return String
      */
     public static String getFreemarkerContent(Map dataMap, String templateName) {
         String result = "";
@@ -242,6 +236,7 @@ public class Template2DocxUtils {
      * @param templateName 模板名称 eg: xxx.xml
      * @param filePath     生成路径 eg: d:/ex/ee/xxx.xml
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void createTemplateXml(Map dataMap, String templateName, String filePath) {
         try {
             //创建配置实例
@@ -261,17 +256,15 @@ public class Template2DocxUtils {
             configuration.setDirectoryForTemplateLoading(new File(path));
             //获取模板
             Template template = configuration.getTemplate(name);
-//            System.out.println("filePath ==> " + filePath);
             //输出文件
             File outFile = new File(filePath);
-//            System.out.println("outFile.getParentFile() ==> " + outFile.getParentFile());
             //如果输出目标文件夹不存在，则创建
             if (!outFile.getParentFile().exists()) {
                 outFile.getParentFile().mkdirs();
             }
 
             //将模板和数据模型合并生成文件
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), CharsetConstant.UTF8));
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8));
 
 
             //生成文件
@@ -289,7 +282,7 @@ public class Template2DocxUtils {
      * 获取模板字符串输入流
      * @param dataMap   参数
      * @param templateName  模板名称
-     * @return
+     * @return ByteArrayInputStream
      */
     public static ByteArrayInputStream getFreemarkerContentInputStream(Map dataMap, String templateName) {
         ByteArrayInputStream in = null;

@@ -3,7 +3,6 @@ package com.iscas.common.tools.core.reflect;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -18,20 +17,19 @@ import static cn.hutool.core.util.ClassUtil.getClassLoader;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/11 20:41
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ClassUtils {
     private ClassUtils() {}
 
     /**
      * 获取某个包下的所有类
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param packageName 包名
-     * @throws
      * @return java.util.Set<java.lang.Class<?>>
      */
     public static Set<Class<?>> getClasses(String packageName) throws IOException {
@@ -45,9 +43,9 @@ public class ClassUtils {
                     String packagePath = url.getPath().replaceAll("%20", " ");
                     addClass(classSet, packagePath, packageName);
                 } else if ("jar".equals(protocol)) {
-                    JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
-                    if (jarURLConnection != null) {
-                        JarFile jarFile = jarURLConnection.getJarFile();
+                    JarURLConnection jarUrlConnection = (JarURLConnection) url.openConnection();
+                    if (jarUrlConnection != null) {
+                        JarFile jarFile = jarUrlConnection.getJarFile();
                         if (jarFile != null) {
                             Enumeration<JarEntry> jarEntries = jarFile.entries();
                             while (jarEntries.hasMoreElements()) {
@@ -68,12 +66,8 @@ public class ClassUtils {
     }
 
     private static void addClass(Set<Class<?>> classSet, String packagePath, String packageName) {
-        File[] files = new File(packagePath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return (file.isFile() && file.getName().endsWith(".class")) || file.isDirectory();
-            }
-        });
+        File[] files = new File(packagePath).listFiles(file -> (file.isFile() && file.getName().endsWith(".class")) || file.isDirectory());
+        assert files != null;
         for (File file : files) {
             String fileName = file.getName();
             if (file.isFile()) {
@@ -98,12 +92,10 @@ public class ClassUtils {
 
     /**
      * 加载类
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param className 类名
      * @param isInitialized 是否被初始化
-     * @throws
      * @return java.lang.Class<?>
      */
     public static Class<?> loadClass(String className, boolean isInitialized) {
@@ -118,11 +110,9 @@ public class ClassUtils {
 
     /**
      * 加载类（默认将初始化类）
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param className 类名
-     * @throws
      * @return java.lang.Class<?>
      */
     public static Class<?> loadClass(String className) {

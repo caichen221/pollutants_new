@@ -13,41 +13,38 @@ import java.util.Set;
  * Map扩展工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/26 15:55
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 public class MapRaiseUtils {
     private MapRaiseUtils() {}
 
     /**
      * 删除map中多个对象
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @param map
+     * @param map map
      * @param keys 待删除的key
-     * @throws
-     * @return void
      */
     public static void remove(Map map, Object... keys) {
         Assert.notNull(map, "map不能为空");
         Assert.notNull(keys, "要删除的key不能为空");
-        for (int i = 0; i < keys.length; i++) {
-            map.remove(keys[i]);
+        for (Object key : keys) {
+            map.remove(key);
         }
     }
 
 
     /**
      * 判断Map是不是为空，如果Map里全都是null也判断
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @param map
-     * @throws
+     * @param map map
      * @return boolean
      */
+    @SuppressWarnings("unchecked")
     public static boolean isEmpty(Map map) {
         boolean flag = map == null || map.size() <= 0;
         if (!flag) {
@@ -56,6 +53,7 @@ public class MapRaiseUtils {
             for (Map.Entry entry: entrySet) {
                 if (entry.getKey() != null) {
                     notnullFlag = true;
+                    break;
                 }
             }
             flag = !notnullFlag;
@@ -65,11 +63,9 @@ public class MapRaiseUtils {
 
     /**
      * 判断Map是不是不为空，如果Map里全都是null也判断
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @param map
-     * @throws
+     * @param map map
      * @return boolean
      */
     public static boolean isNotEmpty(Map map) {
@@ -78,12 +74,9 @@ public class MapRaiseUtils {
 
     /**
      * 移除Map中的null值
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @param map
-     * @throws
-     * @return void
+     * @param map map
      */
     public static void removeNullValue(Map<Object, Object> map) {
         Assert.notNull(map, "map不能为空");
@@ -103,11 +96,9 @@ public class MapRaiseUtils {
 
     /**
      * 将Map的Key转为驼峰的
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @param map
-     * @throws
+     * @param map map
      * @return java.util.Map<K,V>
      */
     public static <K, V> Map<K, V> convertToHump(Map<K, V> map) {

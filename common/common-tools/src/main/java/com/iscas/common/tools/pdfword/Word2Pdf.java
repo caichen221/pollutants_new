@@ -10,13 +10,15 @@ import java.io.File;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/8/28 14:54
  * @since jdk1.8
  */
-public class Word2PDF {
-    private static final int WD_FORMAT_PDF = 17;// PDF 格式
-    public static void wordToPDF(String startFile,String overFile){
+@SuppressWarnings("unused")
+public class Word2Pdf {
+    /**PDF 格式*/
+    private static final int WD_FORMAT_PDF = 17;
+    public static void wordToPdf(String startFile, String overFile){
 
         ActiveXComponent app = null;
         Dispatch doc = null;
@@ -25,33 +27,21 @@ public class Word2PDF {
             app.setProperty("Visible", new Variant(false));
             Dispatch docs = app.getProperty("Documents").toDispatch();
 
-            //转换前的文件路径
-//            String startFile = "E:/math2017-2.docx";
-            //转换后的文件路劲
-//            String overFile =  "E:/math2017-2.pdf";
-
             doc = Dispatch.call(docs,  "Open" , startFile).toDispatch();
             File tofile = new File(overFile);
             if (tofile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 tofile.delete();
             }
             Dispatch.call(doc,"SaveAs", overFile, WD_FORMAT_PDF);
         } catch (Exception e) {
             e.printStackTrace();
-//            System.out.println(e.getMessage());
         } finally {
+            assert doc != null;
             Dispatch.call(doc,"Close",false);
-            if (app != null) {
-                app.invoke("Quit", new Variant[] {});
-            }
+            app.invoke("Quit", new Variant[] {});
         }
         //结束后关闭进程
         ComThread.Release();
     }
-
-
-//    public static void main(String[] args) {
-//        wordToPDF();
-//    }
-
 }

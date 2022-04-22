@@ -3,10 +3,11 @@ package com.iscas.common.tools.constant;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/27 17:19
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface CommonConstant {
 
     String UNKNOWN = "unknown";
@@ -18,5 +19,5 @@ public interface CommonConstant {
     String CLASSPATH = "classpath:";
 
     /**bearer*/
-    String BEARER = "Bearer";
+    String BEARER = "bearer";
 }

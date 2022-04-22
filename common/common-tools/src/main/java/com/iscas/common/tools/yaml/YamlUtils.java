@@ -7,10 +7,11 @@ import java.util.Map;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/15 16:45
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class YamlUtils {
     private YamlUtils() {}
 
@@ -22,7 +23,6 @@ public class YamlUtils {
         //将 JSON 字符串转成 Map
         Map<String,Object> map = yaml.load(json);
         //转换成 YAML 字符串
-        String yamlStr = "---\n" + yaml.dumpAsMap(map);
-        return yamlStr;
+        return "---\n" + yaml.dumpAsMap(map);
     }
 }

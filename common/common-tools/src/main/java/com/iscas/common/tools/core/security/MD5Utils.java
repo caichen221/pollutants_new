@@ -1,11 +1,8 @@
 package com.iscas.common.tools.core.security;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -18,10 +15,11 @@ import java.util.Random;
  * @date 2018/7/13
  **/
 
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "AlibabaClassNamingShouldBeCamel"})
 public final class MD5Utils {
-    private static int LENGTH_16 = 16;
-    private static int LENGTH_48 = 48;
-    private static int NUMBER_3 = 3;
+    private static final int LENGTH_16 = 16;
+    private static final int LENGTH_48 = 48;
+    private static final int NUMBER_3 = 3;
     private MD5Utils(){}
     /**
      * MD5加密，不带盐
@@ -30,6 +28,7 @@ public final class MD5Utils {
      * @throws NoSuchAlgorithmException 获取MessageDigest对象失败 {@link MessageDigest}
      * @return java.lang.String
      */
+    @SuppressWarnings("UnusedAssignment")
     public static String md5(String input) throws NoSuchAlgorithmException {
 
         assert StringUtils.isNotBlank(input);
@@ -57,9 +56,7 @@ public final class MD5Utils {
         sb.append(r.nextInt(99999999)).append(r.nextInt(99999999));
         int len = sb.length();
         if (len < LENGTH_16) {
-            for (int i = 0; i < LENGTH_16 - len; i++) {
-                sb.append("0");
-            }
+            sb.append("0".repeat(Math.max(0, LENGTH_16 - len)));
         }
         String salt = sb.toString();
         str = md5Hex(str + salt);
@@ -114,12 +111,12 @@ public final class MD5Utils {
     public static String md5(byte[] input) throws NoSuchAlgorithmException {
 
         assert input != null;
-        MessageDigest md5 = null;
+        MessageDigest md5;
         md5 = MessageDigest.getInstance("md5");
         byte[] md5Bytes = md5.digest(input);
-        StringBuffer hexValue = new StringBuffer();
-        for (int i = 0; i < md5Bytes.length; i++) {
-            int val = ((int) md5Bytes[i]) & 0xff;
+        StringBuilder hexValue = new StringBuilder();
+        for (byte md5Byte : md5Bytes) {
+            int val = ((int) md5Byte) & 0xff;
             if (val < 16) {
                 hexValue.append("0");
             }

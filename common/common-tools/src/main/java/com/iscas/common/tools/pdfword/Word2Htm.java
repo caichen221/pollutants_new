@@ -7,10 +7,11 @@ import com.jacob.com.Variant;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/13 14:44
  * @since jdk1.8
  */
+@SuppressWarnings("UnusedReturnValue")
 public class Word2Htm {
 
     public static boolean chageFormat(String docPath, String htmPath) {
@@ -35,6 +36,7 @@ public class Word2Htm {
         e.printStackTrace();
     } finally {
         //关闭WINWORD.exe进程
+        assert app != null;
         Dispatch.call(app, "Quit");
     }
         return flag;

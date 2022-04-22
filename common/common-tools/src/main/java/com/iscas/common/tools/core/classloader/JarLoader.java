@@ -6,46 +6,55 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 
 /**
  * 提供Jar隔离的加载机制，会把传入的路径、及其子路径、以及路径中的jar文件加入到class path。
  * 破坏双亲委派机制，改为逆向
- * */
+ *
+ * @author admin*/
+@SuppressWarnings({"rawtypes", "unused"})
 public class JarLoader extends URLClassLoader {
-    private static ThreadLocal<URL[]> threadLocal = new ThreadLocal<>();
+    @SuppressWarnings("AlibabaThreadLocalShouldRemove")
+    private static final ThreadLocal<URL[]> THREAD_LOCAL = new ThreadLocal<>();
+    @SuppressWarnings("FieldMayBeFinal")
     private URL[] allUrl;
-    private boolean useCache = false;
+    @SuppressWarnings("FieldMayBeFinal")
+    private boolean useCache;
+    @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "unused"})
     private String[] paths;
+    @SuppressWarnings("FieldMayBeFinal")
     private String pathStr;
+    private String dbType;
+    /**缓存当前类加载器加载的类*/
+    private final Map<String, Class<?>>  jarLoaderClasses = new ConcurrentHashMap<>();
 
-    //缓存对象
-    private static Map<String, Map<String, byte[]>> classBytes = new ConcurrentHashMap<>();
+    /**
+     * 缓存对应类型的加载的类
+     * */
+    public static Map<String, Map<String, Class>> typeJarLoaderClasses = new ConcurrentHashMap<>();
+
+    /**缓存对象*/
+    private static final Map<String, Map<String, byte[]>> CLASS_BYTES = new ConcurrentHashMap<>();
 
 
-    public JarLoader(String[] paths, boolean useCache) {
+    public JarLoader(String[] paths, boolean useCache, String type) {
         this(paths, JarLoader.class.getClassLoader(), useCache);
+        this.dbType = type;
     }
 
     public JarLoader(String[] paths, ClassLoader parent, boolean useCache) {
-        super(getURLs(paths), parent);
+        super(getUrls(paths), parent);
         //暂时先这样
-        allUrl = threadLocal.get();
+        allUrl = THREAD_LOCAL.get();
         this.useCache = useCache;
         this.paths = paths;
-        pathStr = Arrays.stream(paths).collect(Collectors.joining(";"));
-//        StringBuilder pathBuilder = new StringBuilder();
-//        for (String path : paths) {
-//            pathBuilder.append(path).append(";");
-//        }
-//        pathStr = pathBuilder.toString();
-
+        pathStr = String.join(";", paths);
     }
 
     public JarLoader(String[] paths) {
@@ -61,8 +70,8 @@ public class JarLoader extends URLClassLoader {
      * 可适用于不想重启服务，但更新了外部插件的jar包的情况下调用
      * */
     public static void clearCache(String[] paths) {
-        String pathStr = Arrays.stream(paths).collect(Collectors.joining(";"));
-        classBytes.remove(pathStr);
+        String pathStr = String.join(";", paths);
+        CLASS_BYTES.remove(pathStr);
     }
 
 
@@ -73,7 +82,7 @@ public class JarLoader extends URLClassLoader {
         return Thread.currentThread().getContextClassLoader().loadClass(name);
     }
 
-    private static URL[] getURLs(String[] paths) {
+    private static URL[] getUrls(String[] paths) {
         if (null == paths || 0 == paths.length) {
             throw new RuntimeException("jar包路径不能为空.");
         }
@@ -89,15 +98,15 @@ public class JarLoader extends URLClassLoader {
             }
         }
 
-        List<String> dirs = new ArrayList<String>();
+        List<String> dirs = new ArrayList<>();
         for (String path : dirFiles) {
             dirs.add(path);
             JarLoader.collectDirs(path, dirs);
         }
 
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         for (String path : dirs) {
-            urls.addAll(doGetURLs(path));
+            urls.addAll(doGetUrls(path));
         }
 
         for (File jarFile : jarFiles) {
@@ -111,7 +120,7 @@ public class JarLoader extends URLClassLoader {
         }
 
         URL[] urls1 = urls.toArray(new URL[0]);
-        threadLocal.set(urls1);
+        THREAD_LOCAL.set(urls1);
         return urls1;
     }
 
@@ -125,7 +134,7 @@ public class JarLoader extends URLClassLoader {
             return;
         }
 
-        for (File child : current.listFiles()) {
+        for (File child : Objects.requireNonNull(current.listFiles())) {
             if (!child.isDirectory()) {
                 continue;
             }
@@ -135,7 +144,7 @@ public class JarLoader extends URLClassLoader {
         }
     }
 
-    private static List<URL> doGetURLs(final String path) {
+    private static List<URL> doGetUrls(final String path) {
         if (null == path || "".equalsIgnoreCase(path)) {
             throw new RuntimeException("jar包路径不能为空.");
         }
@@ -146,43 +155,48 @@ public class JarLoader extends URLClassLoader {
         }
 
         /* set filter */
-        FileFilter jarFilter = new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith(".jar");
-            }
-        };
+        FileFilter jarFilter = pathname -> pathname.getName().endsWith(".jar");
 
         /* iterate all jar */
         File[] allJars = new File(path).listFiles(jarFilter);
-        List<URL> jarURLs = new ArrayList<URL>(allJars.length);
+        assert allJars != null;
+        List<URL> jarUrls = new ArrayList<>(allJars.length);
 
-        for (int i = 0; i < allJars.length; i++) {
+        for (File allJar : allJars) {
             try {
-                jarURLs.add(allJars[i].toURI().toURL());
+                jarUrls.add(allJar.toURI().toURL());
             } catch (Exception e) {
                 throw new RuntimeException("系统加载jar包出错", e);
             }
         }
-        return jarURLs;
+        return jarUrls;
     }
-    //破坏双亲委派模型,采用逆向双亲委派
+    /**破坏双亲委派模型,采用逆向双亲委派*/
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        Class<?> aClass = findClass(name);
+        //读取缓存
+        Class<?> aClass = jarLoaderClasses.get(name);
+        if (aClass == null) {
+            aClass = findClass(name);
+        }
+
         if (aClass == null) {
             return super.loadClass(name);
+        } else {
+            // 放入缓存
+            jarLoaderClasses.put(name, aClass);
+            // 放入带数据库类型的缓存
+            typeJarLoaderClasses.computeIfAbsent(dbType, key -> new ConcurrentHashMap<>(32)).put(name, aClass);
         }
         return aClass;
     }
 
     @Override
     public Class<?> findClass(String name) {
-
         //如果开启了缓存，查看class文件对应字节数组有没有缓存起来，如果有缓存，直接使用缓存的字节数组
         if (useCache) {
             synchronized (name.intern()) {
-                Map<String, byte[]> cacheMap = classBytes.get(pathStr);
+                Map<String, byte[]> cacheMap = CLASS_BYTES.get(pathStr);
                 if (MapUtils.isNotEmpty(cacheMap)) {
                     byte[] bytes = cacheMap.get(name);
                     if (bytes != null) {
@@ -202,38 +216,36 @@ public class JarLoader extends URLClassLoader {
             classPath = classPath.concat(".class");
 
             for (URL url : allUrl) {
-                byte[] data = null;
+                byte[] data;
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 InputStream is = null;
                 try {
                     File file = new File(url.toURI());
-                    if (file != null && file.exists()) {
-                        JarFile jarFile = new JarFile(file);
-                        if (jarFile != null) {
-                            JarEntry jarEntry = jarFile.getJarEntry(classPath);
-                            if (jarEntry != null) {
-                                is = jarFile.getInputStream(jarEntry);
-                                int c = 0;
-                                byte[] buff = new byte[4096];
-                                while (-1 != (c = is.read(buff))) {
-                                    baos.write(buff, 0, c);
-                                }
-                                data = baos.toByteArray();
-                                aClass = this.defineClass(name, data, 0, data.length);
-
-                                synchronized (name.intern()) {
-                                    if (useCache && aClass != null) {
-                                        System.out.println("写入缓存---");
-                                        Map<String, byte[]> classByteMap = classBytes.get(pathStr);
-                                        if (MapUtils.isEmpty(classByteMap)) {
-                                            classByteMap = new ConcurrentHashMap<>();
-                                            classBytes.put(pathStr, classByteMap);
-                                        }
-                                        classBytes.get(pathStr).put(name, data);
-                                    }
-                                }
-
+                    if (file.exists()) {
+                        @SuppressWarnings("resource") JarFile jarFile = new JarFile(file);
+                        JarEntry jarEntry = jarFile.getJarEntry(classPath);
+                        if (jarEntry != null) {
+                            is = jarFile.getInputStream(jarEntry);
+                            int c;
+                            byte[] buff = new byte[4096];
+                            while (-1 != (c = is.read(buff))) {
+                                baos.write(buff, 0, c);
                             }
+                            data = baos.toByteArray();
+                            aClass = this.defineClass(name, data, 0, data.length);
+
+                            synchronized (name.intern()) {
+                                if (useCache && aClass != null) {
+                                    System.out.println("写入缓存---");
+                                    Map<String, byte[]> classByteMap = CLASS_BYTES.get(pathStr);
+                                    if (MapUtils.isEmpty(classByteMap)) {
+                                        classByteMap = new ConcurrentHashMap<>(2);
+                                        CLASS_BYTES.put(pathStr, classByteMap);
+                                    }
+                                    CLASS_BYTES.get(pathStr).put(name, data);
+                                }
+                            }
+
                         }
                     }
                 } catch (Exception e) {

@@ -3,27 +3,25 @@ package com.iscas.common.tools.core.arithmetic;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.stream.Stream;
 
 /**
  *
  * 数学运算扩展函数
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/23 17:30
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class MathUtils {
 
     /**
      * 为浮点型数据取有效数字
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/12/23
      * @param data 数据
      * @param scale 保留有效数字
-     * @throws
      * @return double
      */
 
@@ -45,7 +43,7 @@ public class MathUtils {
     public static double percent2Double(String percent, int scale) {
 
         percent = percent.replace("%", "");
-        Double value = Double.valueOf(percent) / 100;
+        double value = Double.parseDouble(percent) / 100;
         return scale(value, scale);
     }
 
@@ -53,9 +51,7 @@ public class MathUtils {
         StringBuilder b = new StringBuilder("0");
         if (scale > 0) {
             b.append(".").append("0");
-            for (int i = 1; i < scale; i++) {
-                b.append("0");
-            }
+            b.append("0".repeat(scale - 1));
         }
         return b.toString();
     }

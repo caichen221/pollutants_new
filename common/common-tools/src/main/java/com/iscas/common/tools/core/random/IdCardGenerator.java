@@ -1,13 +1,5 @@
 package com.iscas.common.tools.core.random;
 
-/**
- *
- * @author zhuquanwen
- * @vesion 1.0
- * @date 2018/10/8 17:31
- * @since jdk1.8
- */
-
 
 import com.iscas.common.tools.constant.MonthEnum;
 
@@ -39,15 +31,16 @@ import java.util.*;
  *
  *
  *
- * @author longgangbai
+ * @author admin
  *
  */
+@SuppressWarnings("OverwrittenKey")
 public class IdCardGenerator {
 
-    public static final Map<String, Integer> AREA_CODE = new HashMap<String, Integer>();
-    private static int LENGTH = 17;
-    private static int RANDOM_CODE_10 = 10;
-    private static int RANDOM_CODE_100 = 100;
+    public static final Map<String, Integer> AREA_CODE = new HashMap<>();
+    private static final int LENGTH = 17;
+    private static final int RANDOM_CODE_10 = 10;
+    private static final int RANDOM_CODE_100 = 100;
 
     static {
         IdCardGenerator.AREA_CODE.put("北京市", 110000);
@@ -3569,10 +3562,8 @@ public class IdCardGenerator {
 
     /**
      * 随机生成人员信息
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @throws
      * @return java.lang.String
      */
     public String generate() {
@@ -3586,10 +3577,8 @@ public class IdCardGenerator {
 
     /**
      * 随机生成邮编
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @throws
      * @return int
      */
     public int randomAreaCode() {
@@ -3605,15 +3594,6 @@ public class IdCardGenerator {
         return code;
     }
 
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
-    /**
-     * 随机生日
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/1/6
-     * @throws
-     * @return java.lang.String
-     */
     public String randomBirthday() {
         Calendar birthday = Calendar.getInstance();
         birthday.set(Calendar.YEAR, (int) (Math.random() * 60) + 1950);
@@ -3675,17 +3655,4 @@ public class IdCardGenerator {
             return "" + code;
         }
     }
-
-//    public static void main(String[] args) {
-//        IdCardGenerator g = new IdCardGenerator();
-//        for (int i = 0; i < 10; i++) {
-////            System.out.print(IdcardUtils.validateCard(g.generate()));
-//            System.out.print("\t");
-//            System.out.print(g.generate());
-//            System.out.print("\t");
-//            System.out.print(g.generate());
-//            System.out.print("\t");
-//            System.out.println(g.generate());
-//        }
-//    }
 }

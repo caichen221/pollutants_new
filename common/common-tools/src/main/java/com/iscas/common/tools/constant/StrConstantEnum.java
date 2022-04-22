@@ -4,10 +4,11 @@ package com.iscas.common.tools.constant;
  * 特殊字符枚举
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/19 14:42
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public enum StrConstantEnum {
 
     /**

@@ -4,10 +4,11 @@ package com.iscas.common.tools.constant;
  * HTTP协议相关术语
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/26 8:36
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface HttpTerminology {
 
     /**

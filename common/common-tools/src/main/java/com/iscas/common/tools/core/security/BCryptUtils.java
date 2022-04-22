@@ -1,7 +1,7 @@
 package com.iscas.common.tools.core.security;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.regex.Pattern;
 
@@ -10,17 +10,18 @@ import java.util.regex.Pattern;
  * @author zhuquanwen
  * @version 1.0
  * @since jdk1.8
- * @date: 2021/03/14 13:02
+ * @date 2021/03/14 13:02
  **/
+@SuppressWarnings({"CStyleArrayDeclaration", "unused", "AliArrayNamingShouldHaveBracket", "AlibabaLowerCamelCaseVariableNaming", "AlibabaClassNamingShouldBeCamel", "AlibabaConstantFieldShouldBeUpperCase", "RegExpSimplifiable"})
 public class BCryptUtils {
-    private static Pattern BCRYPT_PATTERN = Pattern
+    private static final Pattern BCRYPT_PATTERN = Pattern
             .compile("\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
 
     private static final int GENSALT_DEFAULT_LOG2_ROUNDS = 10;
     private static final int BCRYPT_SALT_LEN = 16;
-    // Blowfish parameters
+    /**Blowfish parameters*/
     private static final int BLOWFISH_NUM_ROUNDS = 16;
-    // Initial contents of key schedule
+    /**Initial contents of key schedule*/
     private static final int P_orig[] = {0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344,
             0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89, 0x452821e6, 0x38d01377,
             0xbe5466cf, 0x34e90c6c, 0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917,
@@ -196,16 +197,13 @@ public class BCryptUtils {
             0x77afa1c5, 0x20756060, 0x85cbfe4e, 0x8ae88dd8, 0x7aaaf9b0, 0x4cf9aa7e,
             0x1948c25c, 0x02fb8a8c, 0x01c36ae4, 0xd6ebe1f9, 0x90d4f869, 0xa65cdea0,
             0x3f09252d, 0xc208e69f, 0xb74e6132, 0xce77e25b, 0x578fdfe3, 0x3ac372e6};
-    // bcrypt IV: "OrpheanBeholderScryDoubt"
     static private final int bf_crypt_ciphertext[] = {0x4f727068, 0x65616e42,
             0x65686f6c, 0x64657253, 0x63727944, 0x6f756274};
-    // Table for Base64 encoding
     static private final char base64_code[] = {'.', '/', 'A', 'B', 'C', 'D', 'E', 'F',
             'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
             'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
             'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    // Table for Base64 decoding
     static private final byte index_64[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 54, 55,
@@ -213,23 +211,12 @@ public class BCryptUtils {
             8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
             -1, -1, -1, -1, -1, -1, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
             41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, -1, -1, -1, -1, -1};
-    // Expanded Blowfish key
     private static int P[];
     private static int S[];
 
-//    public static void main(String[] args) {
-//        //10是不确定的  此处只是个例子
-//        String salt = gensalt(10, new SecureRandom());
-//        System.out.println(salt.length());
-//        //对123456加密
-//        System.out.println(hashpw("123456", salt));
-//        //是否匹配
-//        System.out.println(matches("123456", "$2a$10$TyaV8cTJ1PWOyXrFlBtdwe0pGkWqj7Xkjh5GDKqf/9gQP1CURCb1."));
-//    }
-
     private static void init_key() {
-        P = (int[]) P_orig.clone();
-        S = (int[]) S_orig.clone();
+        P = P_orig.clone();
+        S = S_orig.clone();
     }
 
     static void encode_base64(byte d[], int len, StringBuilder rs)
@@ -264,16 +251,16 @@ public class BCryptUtils {
         }
     }
 
-    static byte[] decode_base64(String s, int maxolen) throws IllegalArgumentException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(maxolen);
+    static byte[] decode_base64(String s) throws IllegalArgumentException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream(BCryptUtils.BCRYPT_SALT_LEN);
         int off = 0, slen = s.length(), olen = 0;
         byte c1, c2, c3, c4, o;
 
-        if (maxolen <= 0) {
+        if (BCryptUtils.BCRYPT_SALT_LEN <= 0) {
             throw new IllegalArgumentException("Invalid maxolen");
         }
 
-        while (off < slen - 1 && olen < maxolen) {
+        while (off < slen - 1 && olen < BCryptUtils.BCRYPT_SALT_LEN) {
             c1 = char64(s.charAt(off++));
             c2 = char64(s.charAt(off++));
             if (c1 == -1 || c2 == -1) {
@@ -282,7 +269,7 @@ public class BCryptUtils {
             o = (byte) (c1 << 2);
             o |= (c2 & 0x30) >> 4;
             out.write(o);
-            if (++olen >= maxolen || off >= slen) {
+            if (++olen >= BCryptUtils.BCRYPT_SALT_LEN || off >= slen) {
                 break;
             }
             c3 = char64(s.charAt(off++));
@@ -292,7 +279,7 @@ public class BCryptUtils {
             o = (byte) ((c2 & 0x0f) << 4);
             o |= (c3 & 0x3c) >> 2;
             out.write(o);
-            if (++olen >= maxolen || off >= slen) {
+            if (++olen >= BCryptUtils.BCRYPT_SALT_LEN || off >= slen) {
                 break;
             }
             c4 = char64(s.charAt(off++));
@@ -335,7 +322,7 @@ public class BCryptUtils {
         String real_salt;
         byte passwordb[], saltb[], hashed[];
         char minor = (char) 0;
-        int rounds, off = 0;
+        int rounds, off;
         StringBuilder rs = new StringBuilder();
 
         int saltLength = salt.length();
@@ -368,13 +355,9 @@ public class BCryptUtils {
         rounds = Integer.parseInt(salt.substring(off, off + 2));
 
         real_salt = salt.substring(off + 3, off + 25);
-        try {
-            passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes("UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            throw new AssertionError("UTF-8 is not supported");
-        }
+        passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes(StandardCharsets.UTF_8);
 
-        saltb = decode_base64(real_salt, BCRYPT_SALT_LEN);
+        saltb = decode_base64(real_salt);
 
         hashed = crypt_raw(passwordb, saltb, rounds);
 
@@ -394,7 +377,7 @@ public class BCryptUtils {
     }
 
     private static byte[] crypt_raw(byte password[], byte salt[], int log_rounds) {
-        int cdata[] = (int[]) bf_crypt_ciphertext.clone();
+        int cdata[] = bf_crypt_ciphertext.clone();
         int clen = cdata.length;
         byte ret[];
 
@@ -471,7 +454,7 @@ public class BCryptUtils {
         return word;
     }
 
-    private static final void encipher(int lr[], int off) {
+    private static void encipher(int lr[], int off) {
         int i, n, l = lr[off], r = lr[off + 1];
 
         l ^= P[0];

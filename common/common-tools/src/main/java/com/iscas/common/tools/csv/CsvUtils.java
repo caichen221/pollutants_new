@@ -7,10 +7,8 @@ import lombok.Cleanup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,20 +16,26 @@ import java.util.stream.Collectors;
  * Csv读写工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/24 10:04
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 public class CsvUtils {
-    private CsvUtils() {}
+    private CsvUtils() {
+    }
 
     /**
      * Csv结果类bean
-     * */
-    public static class CsvResult<T>{
-        /**表头键值对 key : en ; value :ch*/
-        private LinkedHashMap<String,String> header;
-        /**Excel数据*/
+     */
+    public static class CsvResult<T> {
+        /**
+         * 表头键值对 key : en ; value :ch
+         */
+        private LinkedHashMap<String, String> header;
+        /**
+         * Excel数据
+         */
         private List<T> content;
 
         public LinkedHashMap<String, String> getHeader() {
@@ -54,16 +58,15 @@ public class CsvUtils {
 
     /**
      * 写入csv
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param filePath 文件路径
+     *
+     * @param filePath       文件路径
      * @param fieldSeparator 列分隔符
-     * @param csvResult 待写入的数据
-     * @param withHeader 是否写入表头(第一行)
-     * @param charset 编码格式
-     * @throws
-     * @return void
+     * @param csvResult      待写入的数据
+     * @param withHeader     是否写入表头(第一行)
+     * @param charset        编码格式
+     * @throws IOException IO异常
+     * @date 2021/3/24
+     * @since jdk1.8
      */
     public static void writeCsv(String filePath, char fieldSeparator, CsvResult csvResult, boolean withHeader, String charset) throws IOException {
         File file = new File(filePath);
@@ -71,19 +74,17 @@ public class CsvUtils {
     }
 
 
-
     /**
      * 写入csv
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param file 文件
+     *
+     * @param file           文件
      * @param fieldSeparator 列分隔符
-     * @param csvResult 待写入的数据
-     * @param withHeader 是否写入表头(第一行)
-     * @param charset 编码格式
-     * @throws
-     * @return void
+     * @param csvResult      待写入的数据
+     * @param withHeader     是否写入表头(第一行)
+     * @param charset        编码格式
+     * @throws IOException io异常
+     * @date 2021/3/24
+     * @since jdk1.8
      */
     public static void writeCsv(File file, char fieldSeparator, CsvResult csvResult, boolean withHeader, String charset) throws IOException {
         @Cleanup OutputStream os = new FileOutputStream(file);
@@ -93,64 +94,50 @@ public class CsvUtils {
 
     /**
      * 写入csv
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param writer writer对象
+     *
+     * @param writer         writer对象
      * @param fieldSeparator 列分隔符
-     * @param csvResult 待写入的数据
-     * @param withHeader 是否写入表头(第一行)
-     * @throws
-     * @return void
+     * @param csvResult      待写入的数据
+     * @param withHeader     是否写入表头(第一行)
+     * @date 2021/3/24
+     * @since jdk1.8
      */
+    @SuppressWarnings("unchecked")
     public static void writeCsv(Writer writer, char fieldSeparator, CsvResult csvResult, boolean withHeader) {
         CsvWriteConfig csvWriteConfig = new CsvWriteConfig();
         csvWriteConfig.setFieldSeparator(fieldSeparator);
         @Cleanup CsvWriter csvWriter = new CsvWriter(writer, csvWriteConfig);
         LinkedHashMap<String, String> header = csvResult.getHeader();
         if (withHeader) {
-            String[] headerLine = header.entrySet().stream()
-                    .map(Map.Entry::getValue)
-                    .toArray(String[]::new);
+            String[] headerLine = header.values().toArray(String[]::new);
             csvWriter.write(headerLine);
         }
         List content = csvResult.getContent();
-        Map<ClassField, MethodHandle> methodHandleMap = new HashMap<>();
+        Map<ClassField, MethodHandle> methodHandleMap = new HashMap<>(16);
 
         String[][] contentArray = (String[][]) content.stream().map(t ->
-            header.entrySet().stream()
-                    .map(entry -> {
-                        Object o = null;
-                        if (t instanceof Map) {
-                            o = ((Map) t).get(entry.getKey());
-                        } else {
-                            try {
-                                MethodHandle methodHandle = methodHandleMap.compute(new ClassField(t.getClass(), entry.getKey()), (k, v) -> {
-                                    try {
-                                        return v == null ?
-                                                ReflectUtils.getGetterMethodHandle(t.getClass(), entry.getKey()) : v;
-                                    } catch (Throwable e) {
-                                        throw new RuntimeException("获取java对象数据的值出错", e);
-                                    }
-                                });
-                                o = methodHandle.invoke(t.getClass());
-                            } catch (Throwable e) {
-                                throw new RuntimeException("获取java对象数据的值出错", e);
+                header.keySet().stream()
+                        .map(s -> {
+                            Object o;
+                            if (t instanceof Map) {
+                                o = ((Map) t).get(s);
+                            } else {
+                                try {
+                                    MethodHandle methodHandle = methodHandleMap.compute(new ClassField(t.getClass(), s), (k, v) -> {
+                                        try {
+                                            return v == null ?
+                                                    ReflectUtils.getGetterMethodHandle(t.getClass(), s) : v;
+                                        } catch (Throwable e) {
+                                            throw new RuntimeException("获取java对象数据的值出错", e);
+                                        }
+                                    });
+                                    o = methodHandle.invoke(t.getClass());
+                                } catch (Throwable e) {
+                                    throw new RuntimeException("获取java对象数据的值出错", e);
+                                }
                             }
-
-//                            //如果是Java对象，利用反射
-//                            PropertyDescriptor pd = null;
-//                            try {
-////                                pd = new PropertyDescriptor(entry.getKey(), t.getClass());
-//                                pd = new PropertyDescriptor (( String ) entry.getKey(), t.getClass() );
-//                                Method getMethod = pd.getReadMethod();//获得get方法
-//                                o = getMethod.invoke(t);//执行get方法返回一个Object
-//                            } catch (Exception e) {
-//                                throw new RuntimeException("获取java对象数据的值出错", e);
-//                            }
-                        }
-                        return o == null ? "" : o.toString();
-                    }).toArray(String[]::new)
+                            return o == null ? "" : o.toString();
+                        }).toArray(String[]::new)
         ).toArray(String[][]::new);
         csvWriter.write(contentArray);
     }
@@ -165,13 +152,12 @@ public class CsvUtils {
 
     /**
      * 读取CSV文件
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param reader
+     *
+     * @param reader         reader
      * @param fieldSeparator 分隔符
-     * @throws
-     * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @date 2021/3/24
+     * @since jdk1.8
      */
     public static List<Map<String, Object>> readCsvWithHeader(Reader reader, char fieldSeparator) {
         CsvReadConfig csvReadConfig = new CsvReadConfig();
@@ -179,54 +165,51 @@ public class CsvUtils {
         CsvReader csvReader = new CsvReader(csvReadConfig);
         CsvData csvData = csvReader.read(reader);
         List<String> header = csvData.getRow(0);
-        Optional<List<Map<String, Object>>> optionalMaps = Optional.ofNullable(csvData.getRows())
+        Optional<List<Map<String, Object>>> optionalMaps = Optional.of(csvData.getRows())
                 .map(row -> row.stream()
                         .skip(1)
                         .map(csvRow -> {
-                            Map<String, Object> dataMap = new HashMap<>();
+                            Map<String, Object> dataMap = new HashMap<>(16);
                             int[] i = new int[1];
-                            header.stream().forEach(h -> {
-                                dataMap.put(h, csvRow.get(i[0]++));
-                            });
+                            header.forEach(h -> dataMap.put(h, csvRow.get(i[0]++)));
                             return dataMap;
                         }).collect(Collectors.toList())
                 );
-        return optionalMaps.isPresent() ? optionalMaps.get() : null;
+        return optionalMaps.orElse(null);
     }
 
     /**
      * 读取CSV文件，无表头
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param reader
+     *
+     * @param reader         reader
      * @param fieldSeparator 分隔符
-     * @throws
-     * @return java.util.List<java.util.List<java.lang.String>>
+     * @return java.util.List<java.util.List < java.lang.String>>
+     * @date 2021/3/24
+     * @since jdk1.8
      */
     public static List<List<String>> readCsv(Reader reader, char fieldSeparator) {
         CsvReadConfig csvReadConfig = new CsvReadConfig();
         csvReadConfig.setFieldSeparator(fieldSeparator);
         CsvReader csvReader = new CsvReader(csvReadConfig);
         CsvData csvData = csvReader.read(reader);
-        Optional<List<List<String>>> optional = Optional.ofNullable(csvData.getRows())
+        Optional<List<List<String>>> optional = Optional.of(csvData.getRows())
                 .map(vd -> vd.stream()
-                        .map(csvRow -> csvRow.getRawList())
+                        .map(CsvRow::getRawList)
                         .collect(Collectors.toList())
                 );
-        return optional.isPresent() ? optional.get() : null;
+        return optional.orElse(null);
     }
 
     /**
      * 读取CSV文件，无表头
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param file 文件
+     *
+     * @param file           文件
      * @param fieldSeparator 分隔符
-     * @param charset 编码格式
-     * @throws
-     * @return java.util.List<java.util.List<java.lang.String>>
+     * @param charset        编码格式
+     * @return java.util.List<java.util.List < java.lang.String>>
+     * @throws IOException io异常
+     * @date 2021/3/24
+     * @since jdk1.8
      */
     public static List<List<String>> readCsv(File file, char fieldSeparator, String charset) throws IOException {
         @Cleanup InputStream is = new FileInputStream(file);
@@ -236,14 +219,14 @@ public class CsvUtils {
 
     /**
      * 读取CSV文件，无表头
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2021/3/24
-     * @param path 文件路径
+     *
+     * @param path           文件路径
      * @param fieldSeparator 分隔符
-     * @param charset 编码格式
-     * @throws
-     * @return java.util.List<java.util.List<java.lang.String>>
+     * @param charset        编码格式
+     * @return java.util.List<java.util.List < java.lang.String>>
+     * @throws IOException IO异常
+     * @date 2021/3/24
+     * @since jdk1.8
      */
     public static List<List<String>> readCsv(String path, char fieldSeparator, String charset) throws IOException {
         File file = new File(path);

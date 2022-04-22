@@ -19,6 +19,6 @@ public class LinuxWord2PDFTests {
     @Test
     @Disabled
     public void test() throws IOException, InterruptedException {
-        LinuxWord2PDF.wordToPdf("D:\\文档资料\\三部软件研发-java.docx", "D:a.pdf");
+        LinuxWord2Pdf.wordToPdf("D:\\文档资料\\三部软件研发-java.docx", "D:a.pdf");
     }
 }

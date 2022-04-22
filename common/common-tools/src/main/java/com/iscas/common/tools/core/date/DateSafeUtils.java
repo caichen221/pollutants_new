@@ -13,6 +13,7 @@ import java.util.Map;
  * @since jdk1.8
  * @date 2018/7/16
  **/
+@SuppressWarnings("unused")
 public class DateSafeUtils {
     private DateSafeUtils(){}
     public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
@@ -23,30 +24,24 @@ public class DateSafeUtils {
     /**
      * 存放不同的日期模板格式的sdf的Map
      */
-    private static Map<String, ThreadLocal<SimpleDateFormat>> sdfMap = new HashMap<String, ThreadLocal<SimpleDateFormat>>();
+    private static final Map<String, ThreadLocal<SimpleDateFormat>> SDF_MAP = new HashMap<>();
     /**
      * 返回一个ThreadLocal的sdf,每个线程只会new一次sdf
      *
-     * @param pattern
-     * @return
+     * @param pattern PATTERN
+     * @return simpleDataFormat
      */
     private static SimpleDateFormat getSdf(final String pattern) {
-        ThreadLocal<SimpleDateFormat> tl = sdfMap.get(pattern);
+        ThreadLocal<SimpleDateFormat> tl = SDF_MAP.get(pattern);
         // 此处的双重判断和同步是为了防止sdfMap这个单例被多次put重复的sdf
         if (tl == null) {
             synchronized (LOCK_OBJ) {
-                tl = sdfMap.get(pattern);
+                tl = SDF_MAP.get(pattern);
                 if (tl == null) {
                     // 只有Map中还没有这个pattern的sdf才会生成新的sdf并放入map
-//                    System.out.println("put new sdf of pattern " + pattern + " to map");
                     // 这里是关键,使用ThreadLocal<SimpleDateFormat>替代原来直接new SimpleDateFormat
-                    tl = new ThreadLocal<SimpleDateFormat>() {
-                        @Override
-                        protected SimpleDateFormat initialValue() {
-                            return new SimpleDateFormat(pattern);
-                        }
-                    };
-                    sdfMap.put(pattern, tl);
+                    tl = ThreadLocal.withInitial(() -> new SimpleDateFormat(pattern));
+                    SDF_MAP.put(pattern, tl);
                 }
             }
         }

@@ -10,20 +10,19 @@ import java.util.function.Predicate;
  * 集合扩展工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/19 14:45
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 public class CollectionRaiseUtils {
     private CollectionRaiseUtils() {}
 
     /**
      * 判断集合是不是为空，如果集合里全都是null也判断
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param collection 集合
-     * @throws
      * @return boolean
      */
     public static boolean isEmpty(Collection collection) {
@@ -44,11 +43,9 @@ public class CollectionRaiseUtils {
 
     /**
      * 判断集合是不是不为空，如果集合里全都是null也判断
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param collection 集合
-     * @throws
      * @return boolean
      */
     public static boolean isNotEmpty(Collection collection) {
@@ -57,12 +54,10 @@ public class CollectionRaiseUtils {
 
     /**
      * 将一个集合按照一个条件分割
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/8/23
      * @param list 待分割的集合
      * @param predicate 分割条件
-     * @throws
      * @return java.util.List<java.util.List>
      */
     public static List<List> split(List list, Predicate<Object> predicate) {
@@ -75,6 +70,7 @@ public class CollectionRaiseUtils {
                     tmpList = new ArrayList();
                 }
             } else {
+                //noinspection unchecked
                 tmpList.add(o);
             }
         }

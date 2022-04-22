@@ -2,7 +2,6 @@ package com.iscas.common.tools.core.security;
 
 
 import javax.crypto.Cipher;
-import java.io.IOException;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -12,18 +11,19 @@ import java.util.Base64;
  * RSA工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/9/27 15:48
  * @since jdk1.8
  */
 
+@SuppressWarnings("unused")
 public class RsaUtils {
-    private static String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjh7unmMBs" +
+    private static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjh7unmMBs" +
             "QrAxJRHd3iXZD65fZClHxyEjxTzQB5F/UbYmyrEBzZfgw7u0UgSqnc+SQX+HUScHuMG+eC+KotoNPY1JlOC8x" +
             "A358khG6rBB3WDIqoZJ3PnZP3DkJ0IM8RO70xMFmqnQhWuGKrC28vOpqwopo8GvEaCoq7ec39/oJhV7skoYt+X" +
             "fYGLld9HVaKZyAvpbZSXhoX8GAOlXpAukhjuRZfyX0+313ZS4DUYibqczwHS6KNR8Cv5bz6lZACwaLIruZtdyD" +
             "7XacjHsDlHEqSgPPqRCRJNk3KC82dyyLWfEAEwb/CHMfQrTAUeCJuMbwmcZ5HJ9P5lXb6zBH5rgwIDAQAB";
-    private static String PRIVATE_KEY = "RSA私钥Base64编码:MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjA" +
+    private static final String PRIVATE_KEY = "RSA私钥Base64编码:MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjA" +
             "gEAAoIBAQCOHu6eYwGxCsDElEd3eJdkPrl9kKUfHISPFPNAHkX9RtibKsQHNl+DDu7RSBKqdz5JBf4dRJwe4wb5" +
             "4L4qi2g09jUmU4LzEDfnySEbqsEHdYMiqhknc+dk/cOQnQgzxE7vTEwWaqdCFa4YqsLby86mrCimjwa8RoKirt5" +
             "zf3+gmFXuyShi35d9gYuV30dVopnIC+ltlJeGhfwYA6VekC6SGO5Fl/JfT7fXdlLgNRiJupzPAdLoo1HwK/lvPq" +
@@ -46,27 +46,23 @@ public class RsaUtils {
 
     /**
      * 生成秘钥对
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
-     * @throws
+     * @throws Exception 异常
      * @return java.security.KeyPair
      */
     public static KeyPair getKeyPair() throws Exception {
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        return keyPair;
+        return keyPairGenerator.generateKeyPair();
     }
 
     /**
      * 获取公钥(Base64编码)
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param keyPair 密钥对
-     * @throws
      * @return java.lang.String
      */
     public static String getPublicKey(KeyPair keyPair){
@@ -77,11 +73,9 @@ public class RsaUtils {
 
     /**
      * 获取私钥(Base64编码)
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param keyPair 密钥对
-     * @throws
      * @return java.lang.String
      */
     public static String getPrivateKey(KeyPair keyPair){
@@ -92,62 +86,54 @@ public class RsaUtils {
 
     /**
      * 将Base64编码后的公钥转换成PublicKey对象
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param pubStr 公钥
-     * @throws
      * @return java.security.PublicKey
      */
     public static PublicKey string2PublicKey(String pubStr) throws Exception{
         byte[] keyBytes = base642Byte(pubStr);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(keySpec);
-        return publicKey;
+        return keyFactory.generatePublic(keySpec);
     }
 
     /**
      * 将Base64编码后的私钥转换成PrivateKey对象
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param priStr 私钥
-     * @throws
      * @return java.security.PrivateKey
      */
     public static PrivateKey string2PrivateKey(String priStr) throws Exception{
         byte[] keyBytes = base642Byte(priStr);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-        return privateKey;
+        return keyFactory.generatePrivate(keySpec);
     }
 
-    //公钥加密
+    /**公钥加密*/
     private static byte[] publicEncrypt(byte[] content, PublicKey publicKey) throws Exception{
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        byte[] bytes = cipher.doFinal(content);
-        return bytes;
+        return cipher.doFinal(content);
     }
 
-    //私钥解密
+    /**私钥解密*/
     private static byte[] privateDecrypt(byte[] content, PrivateKey privateKey) throws Exception{
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        byte[] bytes = cipher.doFinal(content);
-        return bytes;
+        return cipher.doFinal(content);
     }
 
-    //字节数组转Base64编码
+    /**字节数组转Base64编码*/
     private static String byte2Base64(byte[] bytes){
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(bytes);
     }
 
-    //Base64编码转字节数组
-    private static byte[] base642Byte(String base64Key) throws IOException{
+    /**Base64编码转字节数组*/
+    private static byte[] base642Byte(String base64Key) {
         Base64.Decoder decoder = Base64.getDecoder();
         return decoder.decode(base64Key);
     }
@@ -155,13 +141,11 @@ public class RsaUtils {
 
     /**
      * RSA 加密
-     * @version 1.0
      * @since jdk1.8
      * @date 2019/9/27
      * @param str 待加密的字符串
      * @param publicKeyStr 公钥字符串
      * @param charset 编码格式
-     * @throws
      * @return java.lang.String
      */
     public static String encrypt(String str, String publicKeyStr, String charset) throws Exception {
@@ -177,19 +161,16 @@ public class RsaUtils {
         //用公钥加密
         byte[] publicEncrypt = RsaUtils.publicEncrypt(str.getBytes(charset), publicKey);
         //加密后的内容Base64编码
-        String byte2Base64 = RsaUtils.byte2Base64(publicEncrypt);
-        return byte2Base64;
+        return RsaUtils.byte2Base64(publicEncrypt);
     }
 
     /**
      * RSA解密
-     * @version 1.0
      * @since jdk1.8
      * @date 2019/9/27
      * @param str 待解密的字符串
      * @param privateKeyStr 私钥字符串
      * @param charset 编码格式
-     * @throws
      * @return java.lang.String
      */
     public static String decrypt(String str, String privateKeyStr, String charset) throws Exception {

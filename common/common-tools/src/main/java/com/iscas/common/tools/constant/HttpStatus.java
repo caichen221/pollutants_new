@@ -3,10 +3,11 @@ package com.iscas.common.tools.constant;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/2 10:15
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaAvoidStartWithDollarAndUnderLineNaming"})
 public interface HttpStatus {
     int _200 = 200;
     int _400 = 400;

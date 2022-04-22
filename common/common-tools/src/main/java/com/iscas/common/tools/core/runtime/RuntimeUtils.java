@@ -5,10 +5,11 @@ import java.lang.management.ManagementFactory;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/7/31 13:21
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class RuntimeUtils {
     private RuntimeUtils() {}
 
@@ -18,7 +19,6 @@ public class RuntimeUtils {
     public static Integer getCurrentPid() {
         String name = ManagementFactory.getRuntimeMXBean().getName();
         String[] names = name.split("@");
-        int pid = Integer.parseInt(names[0]);
-        return pid;
+        return Integer.parseInt(names[0]);
     }
 }

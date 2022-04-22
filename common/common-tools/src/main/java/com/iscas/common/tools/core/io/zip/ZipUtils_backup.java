@@ -10,15 +10,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-//import java.util.zip.ZipEntry;
-//import java.util.zip.ZipOutputStream;
-
 /**
  * @Author: DataDong
  * @Descrition: zip压缩包处理工具类
  * @Date: Create in 2018/9/5 19:10
  * @Modified By:
  */
+@SuppressWarnings("ALL")
 public class ZipUtils_backup {
 	private static final int  BUFFER_SIZE = 4096;
 

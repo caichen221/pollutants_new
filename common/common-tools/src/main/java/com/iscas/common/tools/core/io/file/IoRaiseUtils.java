@@ -1,7 +1,5 @@
 package com.iscas.common.tools.core.io.file;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,10 +7,11 @@ import java.io.OutputStream;
 /**
  * 一些IO增强操作
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/4 19:45
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class IoRaiseUtils {
     private IoRaiseUtils() {}
 

@@ -3,8 +3,9 @@ package com.iscas.common.tools.core.security;
 /**
  * 字符编解码工具类
  * @author zhuquanwen
- * @ate: 2018/7/13 16:04d
+ * @date 2018/7/13 16:04d
  **/
+@SuppressWarnings("unused")
 public class EscapeUtils {
     private EscapeUtils(){}
     private final static String[] HEX = { "00", "01", "02", "03", "04", "05",
@@ -59,16 +60,14 @@ public class EscapeUtils {
 
     /**
      * 编码
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param s 字符串
-     * @throws
      * @return java.lang.String
      */
     public static String escape(String s) {
 
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
         int len = s.length();
         for (int i = 0; i < len; i++) {
             int ch = s.charAt(i);
@@ -97,16 +96,15 @@ public class EscapeUtils {
 
     /**
      * 解码 说明：本方法保证 不论参数s是否经过escape()编码，均能得到正确的“解码”结果
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/1/6
      * @param s 待解码字符串
-     * @throws
      * @return java.lang.String
      */
+    @SuppressWarnings("ConstantConditions")
     public static String unescape(String s) {
 
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
         int i = 0;
         int len = s.length();
         while (i < len) {

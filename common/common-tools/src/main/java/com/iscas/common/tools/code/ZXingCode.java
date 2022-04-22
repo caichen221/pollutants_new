@@ -20,10 +20,11 @@ import java.util.Map;
  * @author：luoguohui
  * @date：2015-10-29 下午05:27:13
  */
+@SuppressWarnings("ALL")
 public class ZXingCode
 {
-    private static final int QRCOLOR = 0xFF000000;   //默认是黑色
-    private static final int BGWHITE = 0xFFFFFFFF;   //背景颜色
+    private static final int QRCOLOR = 0xFF000000;
+    private static final int BGWHITE = 0xFFFFFFFF;
     private static int STR_WIDTH = 199;
 
 //
@@ -43,8 +44,8 @@ public class ZXingCode
     /**
      * 生成带logo的二维码图片
      *
-//     * @param qrPic
-//     * @param logoPic
+     //     * @param qrPic
+     //     * @param logoPic
      */
     public static String getLogoQRCode(String qrUrl, String productName, String filePath, String localPath)
     {
@@ -68,7 +69,7 @@ public class ZXingCode
     /**
      * 给二维码图片添加Logo
      *
-//     * @param qrPic
+     //     * @param qrPic
      * @param logoPic
      */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
@@ -120,7 +121,7 @@ public class ZXingCode
                 outg.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
                 //画文字到新的面板
                 outg.setColor(Color.BLACK);
-                outg.setFont(new Font("宋体", Font.BOLD,30)); //字体、字型、字号
+                outg.setFont(new Font("宋体", Font.BOLD,30));
                 int strWidth = outg.getFontMetrics().stringWidth(productName);
                 if (strWidth > STR_WIDTH) {
 //                  //长度过长就截取前面部分

@@ -1,10 +1,9 @@
 package com.iscas.common.tools.core.io.file;
 
-import com.iscas.common.tools.constant.CharsetConstant;
+
 import com.iscas.common.tools.constant.FileConstant;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -12,23 +11,22 @@ import java.nio.charset.StandardCharsets;
  * Jar包路径工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/13
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class JarPathUtils {
     private JarPathUtils(){}
     /**
      * 获得jar包或者class 文件所在的位置
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/7/14
      * @param clazz 随便传入一个类的class对象
-     * @throws UnsupportedEncodingException
      * @return java.lang.String
      */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static String getJarPath(Class clazz) throws UnsupportedEncodingException {
+    @SuppressWarnings({"AlibabaUndefineMagicConstant", "rawtypes"})
+    public static String getJarPath(Class clazz) {
 
         String basePath = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
         basePath = URLDecoder.decode(basePath, StandardCharsets.UTF_8);

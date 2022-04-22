@@ -23,10 +23,11 @@ import java.util.List;
  *
  * @author zhuquanwen
  * @version 1.0
- * @date: 2018/7/16
+ * @date 2018/7/16
  * @since jdk1.8
  **/
 
+@SuppressWarnings({"unused", "rawtypes", "unchecked", "RegExpRedundantEscape", "AlibabaLowerCamelCaseVariableNaming"})
 public class FileUtils {
     /**
      * 私有构造方法，防止类的实例化，因为工具类不需要实例化。
@@ -78,8 +79,8 @@ public class FileUtils {
      * @since jdk1.8
      */
     public static void touch(File[] files) throws IOException {
-        for (int i = 0; i < files.length; i++) {
-            touch(files[i]);
+        for (File file : files) {
+            touch(file);
         }
     }
 
@@ -122,10 +123,9 @@ public class FileUtils {
     public static boolean makeDirectory(File file) {
         if (!file.exists()) {
             return file.mkdirs();
-        } else if (file.isDirectory()) {
-            return true;
+        } else {
+            return file.isDirectory();
         }
-        return false;
     }
 
     /**
@@ -154,8 +154,9 @@ public class FileUtils {
     public static boolean emptyDirectory(File directory) {
         boolean result = true;
         File[] entries = directory.listFiles();
-        for (int i = 0; i < entries.length; i++) {
-            if (!entries[i].delete()) {
+        assert entries != null;
+        for (File entry : entries) {
+            if (!entry.delete()) {
                 result = false;
             }
         }
@@ -201,54 +202,23 @@ public class FileUtils {
         }
 
         File[] entries = dir.listFiles();
+        assert entries != null;
         int sz = entries.length;
 
-        for (int i = 0; i < sz; i++) {
-            if (entries[i].isDirectory()) {
-                if (!deleteDirectory(entries[i])) {
+        for (File entry : entries) {
+            if (entry.isDirectory()) {
+                if (!deleteDirectory(entry)) {
                     return false;
                 }
             } else {
-                if (!entries[i].delete()) {
+                if (!entry.delete()) {
                     return false;
                 }
             }
         }
 
-        if (!dir.delete()) {
-            return false;
-        }
-        return true;
+        return dir.delete();
     }
-
-    /**
-     * 列出目录中的所有内容，包括其子目录中的内容。
-     * @param fileName 要列出的目录的目录名
-     * @return 目录内容的文件数组。
-     * @since jdk1.8
-     */
-  /*public static File[] listAll(String fileName) {
-    return listAll(new File(fileName));
-  }*/
-
-    /**
-     * 列出目录中的所有内容，包括其子目录中的内容。
-     * @param file 要列出的目录
-     * @return 目录内容的文件数组。
-     * @since jdk1.8
-     */
-  /*public static File[] listAll(File file) {
-    ArrayList list = new ArrayList();
-    File[] files;
-    if (!file.exists() || file.isFile()) {
-      return null;
-    }
-    list(list, file, new AllFileFilter());
-    list.remove(file);
-    files = new File[list.size()];
-    list.toArray(files);
-    return files;
-  }*/
 
     /**
      * 列出目录中的所有内容，包括其子目录中的内容。
@@ -288,8 +258,9 @@ public class FileUtils {
         }
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                list(list, files[i], filter);
+            assert files != null;
+            for (File value : files) {
+                list(list, value, filter);
             }
         }
 
@@ -300,15 +271,14 @@ public class FileUtils {
      *
      * @param file 文件
      * @return 文件对应的的URL地址
-     * @throws MalformedURLException
+     * @throws MalformedURLException 异常
      * @since jdk1.8
      * @deprecated 在实现的时候没有注意到File类本身带一个toURL方法将文件路径转换为URL。
      * 请使用File.toURL方法。
      */
     public static URL getURL(File file) throws MalformedURLException {
         String fileURL = "file:/" + file.getAbsolutePath();
-        URL url = new URL(fileURL);
-        return url;
+        return new URL(fileURL);
     }
 
     /**
@@ -551,15 +521,15 @@ public class FileUtils {
      * 检查给定目录的存在性
      * 保证指定的路径可用，如果指定的路径不存在，那么建立该路径，可以为多级路径
      *
-     * @param path
+     * @param path path
      * @return 真假值
      * @since jdk1.8
      */
-    public static final boolean pathValidate(String path) {
+    public static boolean pathValidate(String path) {
         String[] arraypath = path.split("/");
-        String tmppath = "";
-        for (int i = 0; i < arraypath.length; i++) {
-            tmppath += "/" + arraypath[i];
+        StringBuilder tmppath = new StringBuilder();
+        for (String s : arraypath) {
+            tmppath.append("/").append(s);
             File d = new File(tmppath.substring(1));
             if (!d.exists()) {
                 //检查Sub目录是否存在
@@ -580,18 +550,22 @@ public class FileUtils {
      * @return 以行读取文件后的内容。
      * @since jdk1.8
      */
-    public static final String getFileContent(String path) throws IOException {
-        String filecontent = "";
+    @SuppressWarnings("CaughtExceptionImmediatelyRethrown")
+    public static String getFileContent(String path) throws IOException {
+        StringBuilder filecontent = new StringBuilder();
         try {
             File f = new File(path);
             if (f.exists()) {
                 FileReader fr = new FileReader(path);
-                BufferedReader br = new BufferedReader(fr); //建立BufferedReader对象，并实例化为br
-                String line = br.readLine(); //从文件读取一行字符串
+                //建立BufferedReader对象，并实例化为br
+                BufferedReader br = new BufferedReader(fr);
+                //从文件读取一行字符串
+                String line = br.readLine();
                 //判断读取到的字符串是否不为空
                 while (line != null) {
-                    filecontent += line + "\n";
-                    line = br.readLine(); //从文件中继续读取一行数据
+                    filecontent.append(line).append("\n");
+                    //从文件中继续读取一行数据
+                    line = br.readLine();
                 }
                 br.close(); //关闭BufferedReader对象
                 fr.close(); //关闭文件
@@ -600,7 +574,7 @@ public class FileUtils {
         } catch (IOException e) {
             throw e;
         }
-        return filecontent;
+        return filecontent.toString();
     }
 
     /**
@@ -611,13 +585,14 @@ public class FileUtils {
      * @return 真假值
      * @since jdk1.8
      */
-    public static final boolean genModuleTpl(String path, String modulecontent) throws IOException {
+    @SuppressWarnings("CaughtExceptionImmediatelyRethrown")
+    public static boolean genModuleTpl(String path, String modulecontent) throws IOException {
 
         path = getUNIXfilePath(path);
         String[] patharray = path.split("\\/");
-        String modulepath = "";
+        StringBuilder modulepath = new StringBuilder();
         for (int i = 0; i < patharray.length - 1; i++) {
-            modulepath += "/" + patharray[i];
+            modulepath.append("/").append(patharray[i]);
         }
         File d = new File(modulepath.substring(1));
         if (!d.exists()) {
@@ -626,7 +601,8 @@ public class FileUtils {
             }
         }
         try {
-            FileWriter fw = new FileWriter(path); //建立FileWriter对象，并实例化fw
+            //建立FileWriter对象，并实例化fw
+            FileWriter fw = new FileWriter(path);
             //将字符串写入文件
             fw.write(modulecontent);
             fw.close();
@@ -644,7 +620,7 @@ public class FileUtils {
      * @since jdk1.8
      */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static final String getPicExtendName(String picPath) {
+    public static String getPicExtendName(String picPath) {
         picPath = getUNIXfilePath(picPath);
         String picExtend = "";
         if (isFileExist(picPath + FileConstant.FILENAME_SUFFIX_GIF)) {
@@ -659,16 +635,16 @@ public class FileUtils {
         if (isFileExist(picPath + FileConstant.FILENAME_SUFFIX_PNG)) {
             picExtend = FileConstant.FILENAME_SUFFIX_PNG;
         }
-        return picExtend; //返回图片扩展名
+        //返回图片扩展名
+        return picExtend;
     }
 
-    //拷贝文件
-    public static final boolean copyFile(File in, File out) throws Exception {
+    public static boolean copyFile(File in, File out) {
         try {
             FileInputStream fis = new FileInputStream(in);
             FileOutputStream fos = new FileOutputStream(out);
             byte[] buf = new byte[1024];
-            int i = 0;
+            int i;
             while ((i = fis.read(buf)) != -1) {
                 fos.write(buf, 0, i);
             }
@@ -681,27 +657,23 @@ public class FileUtils {
         }
     }
 
-    //拷贝文件
-    public static final boolean copyFile(String infile, String outfile) throws Exception {
-        try {
-            File in = new File(infile);
-            File out = new File(outfile);
-            return copyFile(in, out);
-        } catch (IOException ie) {
-            ie.printStackTrace();
-            return false;
-        }
+    public static boolean copyFile(String infile, String outfile) {
+        File in = new File(infile);
+        File out = new File(outfile);
+        return copyFile(in, out);
 
     }
 
     /**
      * 计算图片数量
      *
-     * @param id
-     * @param dtime
-     * @return
+     * @param id         id
+     * @param dtime      dtime
+     * @param extensions extensions
+     * @return int
      */
-    public static final int countPics(String id, String dtime, String extensions) {
+    @SuppressWarnings("deprecation")
+    public static int countPics(String id, String dtime, String extensions) {
         int counts = 0;
 
         MyFileFilter mfilter = new MyFileFilter(extensions.split(","));
@@ -712,19 +684,14 @@ public class FileUtils {
         String filename;
         if (lfile.isDirectory()) {
             File[] files = lfile.listFiles(mfilter);
-            for (int i = 0; i < files.length; i++) {
-                filename = files[i].getName();
-                if ((filename.indexOf(id + "_") == 0) && (filename.indexOf("_small") > -1)) {
+            assert files != null;
+            for (File file : files) {
+                filename = file.getName();
+                if ((filename.indexOf(id + "_") == 0) && (filename.contains("_small"))) {
                     counts++;
                 }
             }
-            files = null;
         }
-        filename = null;
-        lfile = null;
-        pu = null;
-        mfilter = null;
-
         return counts;
     }
 
@@ -733,15 +700,14 @@ public class FileUtils {
      *
      * @param isr 输入流
      * @return java.util.List<java.lang.String>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/4/28
      * @since jdk1.8
      */
     public static List<String> readLines(InputStreamReader isr) throws IOException {
 
         List<String> lines = new ArrayList<>();
-        String line = null;
+        String line;
         @Cleanup BufferedReader br = new BufferedReader(isr);
         while ((line = br.readLine()) != null) {
             lines.add(line);
@@ -754,14 +720,13 @@ public class FileUtils {
      *
      * @param isr 输入流
      * @return java.util.List<java.lang.String>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/4/28
      * @since jdk1.8
      */
     public static List<String> readLines(InputStreamReader isr, int count) throws IOException {
         List<String> lines = new ArrayList<>();
-        String line = null;
+        String line;
         @Cleanup BufferedReader br = new BufferedReader(isr);
         int i = 1;
         while ((line = br.readLine()) != null) {
@@ -776,18 +741,17 @@ public class FileUtils {
     /**
      * 反向按行读取
      *
-     * @param file
-     * @param charset
-     * @param count
+     * @param file    file
+     * @param charset 编码格式
+     * @param count   数目
      * @return java.util.List<java.lang.String>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/4/28
      * @since jdk1.8
      */
     public static List<String> reverseReadLines(File file, String charset, int count) throws IOException {
         List<String> lines = new ArrayList<>();
-        String line = null;
+        String line;
         @Cleanup ReversedLinesFileReader rlfr = new ReversedLinesFileReader(file, Charset.forName(charset));
         int i = 1;
         while ((line = rlfr.readLine()) != null) {
@@ -803,16 +767,16 @@ public class FileUtils {
     /**
      * 获取文件夹下的所有文件,包括子文件和文件夹
      *
-     * @param file
+     * @param file file
      * @return java.util.List<java.lang.String>
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2021/11/27
      * @since jdk1.8
      */
+    @SuppressWarnings("resource")
     public static File[] listAllFiles(File file) throws IOException {
         return Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS).map(i -> i.getFileName().toFile())
-                .filter(i -> !i.getName().equals(".") && !i.getName().equals("..")).toArray(File[]::new);
+                .filter(i -> !".".equals(i.getName()) && !"..".equals(i.getName())).toArray(File[]::new);
     }
 
 }

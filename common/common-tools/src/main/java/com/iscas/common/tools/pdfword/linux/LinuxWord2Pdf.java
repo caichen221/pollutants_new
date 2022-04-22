@@ -6,12 +6,13 @@ import java.io.IOException;
  * linux下word转为pdf,需要服务器安装libreoffice7.0
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/22 17:57
  * @since jdk1.8
  */
-public class LinuxWord2PDF {
-    private LinuxWord2PDF() {}
+@SuppressWarnings("UnusedReturnValue")
+public class LinuxWord2Pdf {
+    private LinuxWord2Pdf() {}
 
     /**
      * word转为PDF，转换过程很慢
@@ -23,7 +24,6 @@ public class LinuxWord2PDF {
         int status = process.waitFor();
         // 销毁process
         process.destroy();
-        process = null;
         return status;
     }
 

@@ -1,12 +1,13 @@
 package com.iscas.common.tools.listener.event;
 
+
 import com.iscas.common.tools.listener.CustomEvent;
 
 /**
  * 测试的一个事件
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/1 9:21
  * @since jdk1.8
  */
