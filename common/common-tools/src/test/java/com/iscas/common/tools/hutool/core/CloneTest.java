@@ -13,7 +13,7 @@ import java.io.Serializable;
  * 克隆单元测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 15:26
  * @since jdk1.8
  */

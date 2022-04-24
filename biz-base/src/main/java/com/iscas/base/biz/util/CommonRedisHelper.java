@@ -1,24 +1,25 @@
 package com.iscas.base.biz.util;
- 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
- 
+
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
  
 /**
  * Redis帮助类
+ * @author zhuquanwen
  */
+@SuppressWarnings({"rawtypes", "unchecked", "ConstantConditions"})
 @Component
 @ConditionalOnBean(RedisTemplate.class)
 public class CommonRedisHelper {
  
     public static final String LOCK_PREFIX = "redis_lock";
-    public static final int LOCK_EXPIRE = 3000; // ms
+    /**ms*/
+    public static final int LOCK_EXPIRE = 3000;
  
     @Autowired
     RedisTemplate redisTemplate;
@@ -64,8 +65,9 @@ public class CommonRedisHelper {
     /**
      * 删除锁
      *
-     * @param key
+     * @param key key
      */
+    @SuppressWarnings("unused")
     public void delete(String key) {
         String lock = LOCK_PREFIX + key;
         redisTemplate.execute((RedisCallback) connection -> {

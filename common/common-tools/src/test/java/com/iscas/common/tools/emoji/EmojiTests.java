@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
  * emoji符号存储
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/29 17:34
  * @since jdk1.8
  */

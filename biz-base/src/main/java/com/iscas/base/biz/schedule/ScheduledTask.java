@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledFuture;
  * 定时任务控制类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/2/25 18:18
  * @since jdk1.8
  */

@@ -24,7 +24,7 @@ import java.util.List;
  * ssh连接控制器
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/27 14:26
  * @since jdk1.8
  */

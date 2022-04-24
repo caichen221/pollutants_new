@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * //TODO
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/19 17:55
  * @since jdk1.8
  */

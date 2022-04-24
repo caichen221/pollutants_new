@@ -11,7 +11,7 @@ import java.util.concurrent.locks.StampedLock;
  * <p>读的时候可以尝试获取锁，获取不到不会直接上锁，可以循环尝试，也可以尝试一定次数后上悲观读锁</p>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/7 10:24
  * @since jdk1.8
  */

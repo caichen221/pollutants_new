@@ -14,7 +14,7 @@ import java.util.*;
  * 服务启动后过滤器处理
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/4/21 14:37
  * @since jdk1.8
  */
@@ -32,7 +32,6 @@ public class ListenerStartedHelper {
             List<AbstractStartedFilter> startedFilterList = new ArrayList<>();
             for (AbstractStartedFilter startedFilter : startedFilters) {
                 StartedFilterComponent annotation = AnnotationUtils.findAnnotation(startedFilter.getClass(), StartedFilterComponent.class);
-//                StartedFilterComponent annotation = startedFilter.getClass().getAnnotation(StartedFilterComponent.class);
                 if (annotation == null) {
                     log.warn("过滤器：{}没有@StartedFilterComponent，不会被注册生效", startedFilter.getName() == null ?
                             startedFilter.getClass().getName() :startedFilter.getName());
@@ -42,9 +41,12 @@ public class ListenerStartedHelper {
 
             }
             log.debug("=============启动过滤器按照order顺序排序==============");
-            Collections.sort(startedFilterList, (o1, o2) -> {
+            startedFilterList.sort((o1, o2) -> {
                 StartedFilterComponent annotation1 = AnnotationUtils.findAnnotation(o1.getClass(), StartedFilterComponent.class);
                 StartedFilterComponent annotation2 = AnnotationUtils.findAnnotation(o2.getClass(), StartedFilterComponent.class);
+                assert annotation1 != null;
+                assert annotation2 != null;
+                //noinspection ComparatorMethodParameterNotUsed
                 return annotation1.order() <= annotation2.order() ? -1 : 1;
             });
 

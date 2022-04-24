@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,44 +38,41 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 继承{@link OncePerRequestFilter} 是为了保证每个请求只执行一次过滤，例如转发不再次执行。
  *
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/3/21 16:05
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/3/21 16:05
  **/
+@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
 @Slf4j
 public class LoginFilter extends OncePerRequestFilter implements Constants {
 
     private static volatile Map<RequestMappingInfo, HandlerMethod> requestInfoMethodMap;
 
-    private AbstractAuthService authService;
+    private final AbstractAuthService authService;
 
-    private AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     /**
      * URL是否跳过权限认证的本地缓存，为了提升匹配效率
      */
-    private Map<String, Boolean> skipAuthenticationMap = new ConcurrentHashMap<>();
+    private final Map<String, Boolean> skipAuthenticationMap = new ConcurrentHashMap<>();
 
     public LoginFilter(AbstractAuthService authService) {
         this.authService = authService;
     }
 
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
+    @SuppressWarnings({"AlibabaUndefineMagicConstant", "AlibabaMethodTooLong"})
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("进入 LoginFilter 过滤器");
         }
         String contextPath = request.getContextPath();
         AuthContext authContext = new AuthContext();
         try {
-            Map<String, Url> urlMap = null;
-//        Map<String, Role> roleMap = null;
+            Map<String, Url> urlMap;
             try {
                 urlMap = authService.getUrls();
-//            roleMap  = authService.getAuth();
             } catch (Exception e) {
                 throw new AuthenticationRuntimeException("获取角色信息失败", e);
             }
@@ -171,6 +169,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : requestInfoMap.entrySet()) {
                     RequestMappingInfo requestMappingInfo = entry.getKey();
                     PatternsRequestCondition patternsCondition = requestMappingInfo.getPatternsCondition();
+                    assert patternsCondition != null;
                     List<String> matchingPatterns = patternsCondition.getMatchingPatterns(requestURI);
                     if (CollectionUtils.isNotEmpty(matchingPatterns)) {
                         //匹配到了这个URL后，检测method或其类上是否有@SkipAuthentication注解，如果有直接返回true

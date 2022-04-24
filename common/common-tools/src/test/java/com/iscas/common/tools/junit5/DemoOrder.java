@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
  * //顺序测试
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/18 15:30
  * @since jdk1.8
  */

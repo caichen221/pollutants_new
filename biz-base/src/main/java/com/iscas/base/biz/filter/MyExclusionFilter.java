@@ -3,21 +3,17 @@ package com.iscas.base.biz.filter;
 import cn.hutool.core.collection.CollectionUtil;
 import com.iscas.base.biz.aop.enable.EnableSpringBootAdminClient;
 import de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurationImportFilter;
 import org.springframework.boot.autoconfigure.AutoConfigurationMetadata;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -26,10 +22,11 @@ import java.util.Objects;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/3 18:09
  * @since jdk1.8
  */
+@SuppressWarnings("unchecked")
 public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFactoryAware, EnvironmentAware {
     private BeanFactory beanFactory;
     private Environment environment;
@@ -73,12 +70,12 @@ public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFac
     }
 
     @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(@NotNull BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NotNull Environment environment) {
         this.environment = environment;
     }
 }

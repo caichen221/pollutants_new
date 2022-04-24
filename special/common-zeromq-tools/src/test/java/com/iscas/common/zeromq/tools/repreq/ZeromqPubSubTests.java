@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * 测试zeromq发布订阅模式
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/16 11:23
  * @since jdk1.8
  */

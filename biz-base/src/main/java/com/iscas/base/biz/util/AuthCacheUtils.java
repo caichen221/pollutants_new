@@ -13,12 +13,12 @@ import java.util.Optional;
  * 登录以及权限校验缓存工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/9 9:25
  * @since jdk1.8
  */
 public class AuthCacheUtils {
-    private static Cache<String, Object> fifoCache = CacheUtil.newFIFOCache(1000000);
+    private static final Cache<String, Object> FIFO_CACHE = CacheUtil.newFIFOCache(1000000);
 
 
     public static void put(String key, Object value, String cacheKey, int ttl) {
@@ -30,7 +30,7 @@ public class AuthCacheUtils {
             }
             loginCache.put(key, value);
         } else {
-            fifoCache.put(cacheKey + ":" + key, value, DateUnit.SECOND.getMillis() * ttl);
+            FIFO_CACHE.put(cacheKey + ":" + key, value, DateUnit.SECOND.getMillis() * ttl);
         }
     }
 
@@ -39,12 +39,12 @@ public class AuthCacheUtils {
         if (cacheManager instanceof RedisCacheManager) {
 
             RedisCacheManager redisCacheManager = (RedisCacheManager) cacheManager;
-            return (String) Optional.ofNullable(redisCacheManager.getCache(cacheKey))
+            return Optional.ofNullable(redisCacheManager.getCache(cacheKey))
                     .map(authCache -> authCache.get(key))
                     .map(org.springframework.cache.Cache.ValueWrapper::get)
                     .orElse(null);
         } else {
-            return fifoCache.get(cacheKey + ":" + key, false);
+            return FIFO_CACHE.get(cacheKey + ":" + key, false);
         }
     }
 
@@ -57,7 +57,7 @@ public class AuthCacheUtils {
             }
             loginCache.evict(key);
         } else {
-            fifoCache.remove(cacheKey + ":" + key);
+            FIFO_CACHE.remove(cacheKey + ":" + key);
         }
 
     }

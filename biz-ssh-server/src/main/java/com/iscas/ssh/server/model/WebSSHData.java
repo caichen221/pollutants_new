@@ -6,7 +6,7 @@ import lombok.Data;
  * SSH信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/27 14:09
  * @since jdk1.8
  */

@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 /**
  * 扩展mybatis-plus的配置
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/3 19:58
  * @since jdk1.8
  */

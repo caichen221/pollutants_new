@@ -22,7 +22,7 @@ import java.io.InputStream;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/21 10:04
  * @since jdk1.8
  */

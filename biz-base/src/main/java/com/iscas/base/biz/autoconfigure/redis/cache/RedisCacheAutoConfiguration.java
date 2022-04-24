@@ -33,12 +33,13 @@ import java.util.Map;
  * Redis缓存配置
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/7 21:42
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis", matchIfMissing = false)
+@ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis")
 public class RedisCacheAutoConfiguration {
     @Value("${spring.cache.redis.time-to-live:2000000}")
     private int timeToLive;
@@ -67,13 +68,15 @@ public class RedisCacheAutoConfiguration {
     @Primary
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         return new RedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
-                this.getRedisCacheConfigurationWithTtl(timeToLive), // 默认策略，未配置的 key 会使用这个
-                this.getRedisCacheConfigurationMap() // 指定 key 策略
+                // 默认策略，未配置的 key 会使用这个
+                this.getRedisCacheConfigurationWithTtl(timeToLive),
+                // 指定 key 策略
+                this.getRedisCacheConfigurationMap()
         );
     }
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
-        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
+        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>(4);
         redisCacheConfigurationMap.put("auth", this.getRedisCacheConfigurationWithTtl((int) (tokenProps.getExpire().getSeconds())));
         redisCacheConfigurationMap.put("test", this.getRedisCacheConfigurationWithTtl(18000));
         redisCacheConfigurationMap.put("loginCache", this.getRedisCacheConfigurationWithTtl(randomTimeToLive));
@@ -85,7 +88,6 @@ public class RedisCacheAutoConfiguration {
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-//        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
         redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(

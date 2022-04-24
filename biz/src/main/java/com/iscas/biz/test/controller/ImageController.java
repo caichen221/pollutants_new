@@ -18,7 +18,7 @@ import java.util.Base64;
  * 测试返回图片
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/10 16:04
  * @since jdk1.8
  */

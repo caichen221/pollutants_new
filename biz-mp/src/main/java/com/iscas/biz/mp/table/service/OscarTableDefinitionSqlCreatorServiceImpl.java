@@ -9,7 +9,7 @@ import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorServi
  * 注意，神州通用数据库需要将xxtable 和xxcolumn中配置的对应数据库的表名和列明字段为大写
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/2 13:53
  * @since jdk1.8
  */

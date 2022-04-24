@@ -4,7 +4,7 @@ package com.iscas.base.biz.config.health;
  * 健康检测处理扩展接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/10 15:18
  * @since jdk1.8
  */

@@ -17,7 +17,7 @@ import java.util.Base64;
  * 图片生成缩略图工具类测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/14 18:10
  * @since jdk1.8
  */

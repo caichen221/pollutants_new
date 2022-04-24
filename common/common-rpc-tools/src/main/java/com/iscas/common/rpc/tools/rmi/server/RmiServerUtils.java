@@ -11,7 +11,7 @@ import java.rmi.registry.LocateRegistry;
  * RMI服务工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/21 18:46
  * @since jdk1.8
  */

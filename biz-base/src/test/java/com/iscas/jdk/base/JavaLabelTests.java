@@ -6,7 +6,7 @@ import org.junit.Test;
  * 测试Java label在多重循环中的使用
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/26 13:44
  * @since jdk1.8
  */

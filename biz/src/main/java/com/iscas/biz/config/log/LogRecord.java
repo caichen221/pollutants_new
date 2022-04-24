@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * 日志记录
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/02/21
  * @since jdk1.8
  */

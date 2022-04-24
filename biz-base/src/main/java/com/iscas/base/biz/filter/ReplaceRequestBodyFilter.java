@@ -1,5 +1,6 @@
 package com.iscas.base.biz.filter;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -13,13 +14,13 @@ import java.io.IOException;
  *  替换请求体过滤器，使得requestbody可以被多次获取使用
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/2/21 15:52
  * @since jdk1.8
  */
 public class ReplaceRequestBodyFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest requestWrapper = new RequestWrapper(request);
         chain.doFilter(requestWrapper, response);
     }

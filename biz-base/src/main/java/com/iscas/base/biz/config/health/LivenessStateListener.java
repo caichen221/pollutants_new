@@ -4,9 +4,12 @@ import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.boot.availability.LivenessState;
 import org.springframework.context.event.EventListener;
 
-//@Component
-//@Lazy(value = false)
-public class LivenessStateListener extends HealthBaseListener{
+
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings("unused")
+public class LivenessStateListener extends HealthBaseListener {
 
     @EventListener
     public void onStateChange(AvailabilityChangeEvent<LivenessState> event) {

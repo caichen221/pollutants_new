@@ -7,7 +7,7 @@ import java.util.Base64;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/1 9:52
  * @since jdk1.8
  */

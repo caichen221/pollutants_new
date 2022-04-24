@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * 服务启动后过滤器，
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/4/20 9:45
  * @since jdk1.8
  */
@@ -58,6 +58,7 @@ public abstract class AbstractStartedFilter {
     /**
      * 获取过滤器名字
      * */
+    @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
     public abstract String getName();
 
     public void setNextFilter(AbstractStartedFilter nextFilter) {

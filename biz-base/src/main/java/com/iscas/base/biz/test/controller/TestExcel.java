@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/6 20:35
  * @since jdk1.8
  */

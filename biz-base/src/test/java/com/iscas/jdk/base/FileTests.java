@@ -12,7 +12,7 @@ import java.util.Arrays;
  * 文件一些操作测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/26 14:24
  * @since jdk1.8
  */

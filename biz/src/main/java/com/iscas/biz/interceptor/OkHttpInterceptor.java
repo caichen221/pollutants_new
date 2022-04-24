@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/1 17:38
  * @since jdk1.8
  */

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * 单机redis测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/5 15:36
  * @since jdk1.8
  */

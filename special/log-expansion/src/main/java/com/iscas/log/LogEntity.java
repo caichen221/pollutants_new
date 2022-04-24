@@ -4,7 +4,7 @@ package com.iscas.log;
  * 日志记录的实体
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/2 16:06
  * @since jdk1.8
  */

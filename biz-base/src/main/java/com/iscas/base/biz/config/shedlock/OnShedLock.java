@@ -1,6 +1,5 @@
 package com.iscas.base.biz.config.shedlock;
 
-import com.iscas.base.biz.aop.enable.EnableElasticJob;
 import com.iscas.base.biz.aop.enable.EnableShedLock;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
@@ -12,11 +11,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/05/20 19:41
  * @since jdk1.8
  */
@@ -25,7 +25,7 @@ public class OnShedLock extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> enableShedLockMap = context.getBeanFactory().getBeansWithAnnotation(EnableShedLock.class);
+        Map<String, Object> enableShedLockMap = Objects.requireNonNull(context.getBeanFactory()).getBeansWithAnnotation(EnableShedLock.class);
         return MapUtils.isNotEmpty(enableShedLockMap) ? ConditionOutcome.match(message.foundExactly("EnableShedLock")) :
                 ConditionOutcome.noMatch(message.because("not EnableShedLock"));
     }

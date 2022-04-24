@@ -7,7 +7,7 @@ import org.apache.thrift.transport.TTransport;
  * thrift客户端工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/21 13:02
  * @since jdk1.8
  */

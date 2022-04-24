@@ -36,7 +36,7 @@ import java.nio.charset.StandardCharsets;
  * 启动类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/10 17:45
  * @since jdk1.8
  */
@@ -46,7 +46,7 @@ import java.nio.charset.StandardCharsets;
         RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class,
         MybatisPlusAutoConfiguration.class, DataSourceHealthContributorAutoConfiguration.class, XADataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
-@ComponentScan(basePackages = {"com.iscas"}
+@ComponentScan(basePackages = {"com.iscas", "org.flowable.rest.service.api"}
         , excludeFilters = {
             @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
             @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),

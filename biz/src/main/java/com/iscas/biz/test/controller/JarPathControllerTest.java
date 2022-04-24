@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/2/23 21:03
  * @since jdk1.8
  */

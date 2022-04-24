@@ -13,10 +13,11 @@ import java.util.Properties;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/6 14:01
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
 public class ValidatorAutoConfiguration {
     @Autowired
@@ -27,7 +28,7 @@ public class ValidatorAutoConfiguration {
      */
     @Bean
     public Validator validator() {
-        LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
+        @SuppressWarnings("resource") LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
         // 设置国际化源
         factoryBean.setValidationMessageSource(messageSource);
         // 设置使用 HibernateValidator 校验器

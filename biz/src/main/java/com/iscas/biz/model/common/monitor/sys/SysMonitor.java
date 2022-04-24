@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/18 16:00
  * @since jdk1.8
  */

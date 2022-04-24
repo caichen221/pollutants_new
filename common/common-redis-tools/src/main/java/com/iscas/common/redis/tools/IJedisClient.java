@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
  * 字符串操作拆分为新接口类{@link IJedisStrClient}
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/5 14:44
  * @since jdk1.8
  */

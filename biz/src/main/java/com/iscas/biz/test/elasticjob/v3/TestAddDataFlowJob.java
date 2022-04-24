@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 测试动态开启一个流式定时任务,不配置流式拉取，实际和普通的效果差不多
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/17 10:55
  * @since jdk1.8
  */

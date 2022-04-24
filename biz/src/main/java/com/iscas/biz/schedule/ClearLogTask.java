@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/25 14:44
  * @since jdk1.8
  * 清理之前的log

@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/18 16:18
  * @since jdk1.8
  * 内存使用情况

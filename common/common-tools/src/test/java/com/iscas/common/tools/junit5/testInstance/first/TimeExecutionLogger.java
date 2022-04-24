@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * //TODO
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/19 17:41
  * @since jdk1.8
  */

@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
  * 用户实体转换接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/9 16:34
  * @since jdk1.8
  */

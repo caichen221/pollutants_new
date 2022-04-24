@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 规则引擎用到的业务操作类的工厂
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 13:55
  * @since jdk1.8
  */

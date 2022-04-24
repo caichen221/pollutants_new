@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * //允许日志记录
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/8/30 18:04
  * @since jdk1.8
  */

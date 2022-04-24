@@ -20,7 +20,7 @@ import java.util.Map;
  *
  *  测试远程被调用的feign接口
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/13 9:26
  * @since jdk1.8
  */

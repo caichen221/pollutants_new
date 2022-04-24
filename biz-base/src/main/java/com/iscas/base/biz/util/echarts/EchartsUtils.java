@@ -3,24 +3,23 @@ package com.iscas.base.biz.util.echarts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.iscas.common.tools.constant.CharsetConstant;
-import org.apache.http.client.ClientProtocolException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 参考：https://www.jianshu.com/p/dfc28fd7d786
+ * 参考：<a href="https://www.jianshu.com/p/dfc28fd7d786">https://www.jianshu.com/p/dfc28fd7d786</a>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/24 21:00
  * @since jdk1.8
  */
 public class EchartsUtils {
     private static final String SUCCESS_CODE = "1";
 
-    public static String generateEchartsBase64(String phantomjsUrl, String option) throws ClientProtocolException, IOException {
+    public static String generateEchartsBase64(String phantomjsUrl, String option) throws IOException {
         String base64 = "";
         if (option == null) {
             return base64;
@@ -28,7 +27,7 @@ public class EchartsUtils {
         option = option.replaceAll("\\s+", "").replaceAll("\"", "'");
 
         // 将option字符串作为参数发送给echartsConvert服务器
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>(2);
         params.put("opt", option);
         String response = HttpUtil.post(phantomjsUrl, params, CharsetConstant.UTF8);
 

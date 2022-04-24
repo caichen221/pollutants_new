@@ -9,10 +9,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * 定时任务配置类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/2/25 18:14
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration
 public class SchedulingConfig {
     @Bean

@@ -8,10 +8,11 @@ import java.lang.annotation.*;
 /**
  * 校验referer的开关
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/7 13:46
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

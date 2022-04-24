@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * 接口与Redis统一，适应不需要Redis的环境
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/05/08 12:53
  * @since jdk1.8
  */

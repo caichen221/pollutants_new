@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
  * 测试异步回调
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/30 20:57
  * @since jdk1.8
  */

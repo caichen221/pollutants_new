@@ -10,7 +10,9 @@ import java.util.List;
 
 /**
  * 用于获取客户服务器的基本信息，如：IP、Mac地址、CPU序列号、主板序列号等
+ * @author zhuquanwen
  */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "rawtypes"})
 public abstract class AbstractServerInfos {
 
 
@@ -67,8 +69,7 @@ public abstract class AbstractServerInfos {
                 InetAddress inetAddr = (InetAddress) inetAddresses.nextElement();
 
                 //排除LoopbackAddress、SiteLocalAddress、LinkLocalAddress、MulticastAddress类型的IP地址
-                if (!inetAddr.isLoopbackAddress() /*&& !inetAddr.isSiteLocalAddress()*/
-                        && !inetAddr.isLinkLocalAddress() && !inetAddr.isMulticastAddress()) {
+                if (!inetAddr.isLoopbackAddress() && !inetAddr.isLinkLocalAddress() && !inetAddr.isMulticastAddress()) {
                     result.add(inetAddr);
                 }
             }
@@ -80,13 +81,13 @@ public abstract class AbstractServerInfos {
      * 获取某个网络接口的Mac地址
      */
     protected String getMacByInetAddress(InetAddress inetAddr) {
-        byte[] mac = new byte[0];
+        byte[] mac;
         try {
             mac = NetworkInterface.getByInetAddress(inetAddr).getHardwareAddress();
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
 
         for (int i = 0; i < mac.length; i++) {
             if (i != 0) {
@@ -96,7 +97,7 @@ public abstract class AbstractServerInfos {
             //将十六进制byte转化为字符串
             String temp = Integer.toHexString(mac[i] & 0xff);
             if (temp.length() == 1) {
-                stringBuffer.append("0" + temp);
+                stringBuffer.append("0").append(temp);
             } else {
                 stringBuffer.append(temp);
             }

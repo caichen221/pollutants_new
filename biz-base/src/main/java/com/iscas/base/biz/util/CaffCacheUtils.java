@@ -10,27 +10,28 @@ import java.util.concurrent.TimeUnit;
 /**
  * 咖啡因缓存工具类
  *
- * @author: zhuquanwen
- * @date: 2018/3/21 15:09
+ * @author zhuquanwen
+ * @date 2018/3/21 15:09
  *
  **/
+@SuppressWarnings("unused")
 public class CaffCacheUtils {
     private CaffCacheUtils() { }
-    private static Logger log = LoggerFactory.getLogger(CaffCacheUtils.class);
-    //初始化
-    private static int initialCapcity = 100;
-    //最大容量
-    private static int maximumSize = 10000;
-    //目前没查到资料怎样使缓存用不失效，设置尽量一个大的值10年
-    private static int expireAfterWrite = 3650 * 24 * 60;
+    private static final Logger log = LoggerFactory.getLogger(CaffCacheUtils.class);
+    /**初始化*/
+    private static final int INITIAL_CAPCITY = 100;
+    /**最大容量*/
+    private static final int MAXIMUM_SIZE = 10000;
+    /**目前没查到资料怎样使缓存用不失效，设置尽量一个大的值10年*/
+    private static final int EXPIRE_AFTER_WRITE = 3650 * 24 * 60;
     private static volatile LoadingCache<String,Object> localCache = null;
     private static void initLocalCache() {
         if (localCache == null) {
             synchronized (CaffCacheUtils.class) {
                 localCache = Caffeine.newBuilder()
-                        .initialCapacity(initialCapcity)
-                        .maximumSize(maximumSize)
-                        .expireAfterWrite(expireAfterWrite, TimeUnit.MINUTES)
+                        .initialCapacity(INITIAL_CAPCITY)
+                        .maximumSize(MAXIMUM_SIZE)
+                        .expireAfterWrite(EXPIRE_AFTER_WRITE, TimeUnit.MINUTES)
                         .build(s -> null);
             }
         }
@@ -52,7 +53,7 @@ public class CaffCacheUtils {
     @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static Object get(String key) {
         initLocalCache();
-        Object value = null;
+        Object value;
         try {
             value = localCache.get(key);
             if ("null".equals(value)) {

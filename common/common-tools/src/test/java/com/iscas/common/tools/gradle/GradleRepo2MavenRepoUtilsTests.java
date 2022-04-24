@@ -9,7 +9,7 @@ import java.io.IOException;
  * gradlemaven仓库转为maven仓库
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/8 21:28
  * @since jdk1.8
  */

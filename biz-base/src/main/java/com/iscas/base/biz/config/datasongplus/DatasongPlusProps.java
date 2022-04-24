@@ -10,7 +10,6 @@ import java.util.List;
  * */
 @ConfigurationProperties(prefix = "datasong.client.plus")
 @Data
-//@Component
 public class DatasongPlusProps {
     /**配置的数组*/
     private List<String> packages;

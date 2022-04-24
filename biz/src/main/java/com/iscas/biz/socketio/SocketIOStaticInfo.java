@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 一些静态变量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/22 21:26
  * @since jdk1.8
  */

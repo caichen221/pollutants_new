@@ -32,7 +32,7 @@ import java.util.Properties;
  * <p>侵入性太强，提取到biz模块让用户自行配置</p>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/28 22:00
  * @since jdk1.8
  */

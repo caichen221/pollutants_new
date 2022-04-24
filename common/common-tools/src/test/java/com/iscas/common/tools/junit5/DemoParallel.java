@@ -9,7 +9,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * //并行执行
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/20 9:24
  * @since jdk1.8
  */

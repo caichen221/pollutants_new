@@ -20,12 +20,13 @@ import io.undertow.servlet.api.WebResourceCollection;
 /**
  * 采用Undertow作为服务器,支持Https服务配置
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/15 18:59
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "server.ssl.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "server.ssl.enabled", havingValue = "true")
 public class HttpsAutoConfiguration {
 
     /**

@@ -14,7 +14,7 @@ import java.io.PrintWriter;
  * Ssh-Client创建结果
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/9 17:07
  * @since jdk1.8
  */

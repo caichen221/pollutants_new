@@ -1,6 +1,7 @@
 package com.iscas.base.biz.service.common;
 
 import com.iscas.base.biz.util.SpringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
  * 此类将弃用，请使用{@link com.iscas.base.biz.util.SpringUtils}
  * spirng 操作
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/26 16:47
  * @since jdk1.8
  */
@@ -25,7 +26,7 @@ public class SpringService implements ApplicationContextAware {
 
     @Deprecated
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
         SpringService.applicationContext = applicationContext;
     }
 
@@ -48,6 +49,6 @@ public class SpringService implements ApplicationContextAware {
      * 弃用，请使用{@link SpringUtils#getBean(Class)}}
      * */
     public static <T> T getBean(Class<T> tClass) throws BeansException {
-        return (T) applicationContext.getBean(tClass);
+        return applicationContext.getBean(tClass);
     }
 }

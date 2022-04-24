@@ -6,14 +6,14 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
  * jasypt加解密工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/24 21:44
  * @since jdk1.8
  */
 public class JasyptUtils {
     private JasyptUtils() {}
 
-    private static String DEFAULT_KEY = "iscas";
+    private static final String DEFAULT_KEY = "iscas";
 
     public static String encrypt(String content, String key) {
         StandardPBEStringEncryptor se = new StandardPBEStringEncryptor();

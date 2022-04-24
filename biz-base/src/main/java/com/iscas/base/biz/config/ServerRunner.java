@@ -13,10 +13,11 @@ import java.util.Optional;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/25 10:07
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
 @Component
 public class ServerRunner implements CommandLineRunner {
     @Autowired(required = false)
@@ -28,10 +29,6 @@ public class ServerRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (socketIOServer != null) {
-            /*Optional.ofNullable(SpringService.getBean("messageEventHandler"))
-                    .ifPresent(handler -> socketIOServer.getNamespace("/").addListeners(handler));*/
-
-
             Optional.ofNullable(namespaces).ifPresent(nss ->
                     Arrays.stream(nss).forEach(ns -> {
                         //获取命名空间
@@ -40,13 +37,12 @@ public class ServerRunner implements CommandLineRunner {
                         String className = ns.substring(1) + "MessageEventHandler";
                         try {
                             Object bean = SpringUtils.getBean(className);
-                            Optional.ofNullable(bean).ifPresent(socketIONamespace::addListeners);
-                        } catch (Exception e) {
+                            Optional.of(bean).ifPresent(socketIONamespace::addListeners);
+                        } catch (Exception ignored) {
 
                         }
 
                     }));
-//            socketIOServer.getNamespace("/chat").addListeners(messageEventHandler);
             socketIOServer.start();
         }
     }

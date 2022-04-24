@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Share模式获取Jedis连接
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/5 14:21
  * @since jdk1.8
  */

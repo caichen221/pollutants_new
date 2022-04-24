@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/2 14:30
  * @since jdk1.8
  */

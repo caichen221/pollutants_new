@@ -8,7 +8,7 @@
 ///**
 // * 测试普通定时任务
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2021/3/26
 // * @since jdk1.8
 // */

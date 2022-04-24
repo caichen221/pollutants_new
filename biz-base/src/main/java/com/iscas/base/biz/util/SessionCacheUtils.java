@@ -3,7 +3,6 @@ package com.iscas.base.biz.util;
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.date.DateUnit;
-import com.google.gson.Gson;
 
 import java.util.Map;
 
@@ -11,26 +10,25 @@ import java.util.Map;
  * session-cache工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/9 16:56
  * @since jdk1.8
  */
+@SuppressWarnings("unchecked")
 public class SessionCacheUtils {
-    private static Gson gson = new Gson();
-    //超时时间秒
-    private static long timeout = 36000;
-    private static Cache<String,Object> fifoCache = CacheUtil.newFIFOCache(2000);
+    /**超时时间秒*/
+    private static final long TIMEOUT = 36000;
+    private static final Cache<String,Object> FIFO_CACHE = CacheUtil.newFIFOCache(2000);
 
     public static void put(String sessionId, Object obj) {
         //超时时间十个小时
-        fifoCache.put(sessionId, obj, DateUnit.SECOND.getMillis() * timeout);
+        FIFO_CACHE.put(sessionId, obj, DateUnit.SECOND.getMillis() * TIMEOUT);
     }
     public static Map<String, Object> get(String sessionId) {
-        Map<String, Object> map = (Map<String, Object>) fifoCache.get(sessionId);
-        return map;
+        return (Map<String, Object>) FIFO_CACHE.get(sessionId);
     }
 
     public static void remove(String sessionId) {
-        fifoCache.remove(sessionId);
+        FIFO_CACHE.remove(sessionId);
     }
 }

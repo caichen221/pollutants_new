@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  * 最近最久未使用缓存策略测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 15:05
  * @since jdk1.8
  */

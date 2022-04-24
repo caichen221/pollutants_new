@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/25 10:15
  * @since jdk1.8
  */

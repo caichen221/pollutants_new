@@ -9,10 +9,11 @@ import org.springframework.context.annotation.Bean;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/16 11:24
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ElasticRegCenterConfig {
     @Bean(initMethod = "init")
     public CoordinatorRegistryCenter regCenter(

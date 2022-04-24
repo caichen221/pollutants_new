@@ -4,7 +4,7 @@ package com.iscas.common.redis.tools;
  * redis信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/6 13:59
  * @since jdk1.8
  */

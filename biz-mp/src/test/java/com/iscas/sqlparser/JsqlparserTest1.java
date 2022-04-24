@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/7 16:01
  * @since jdk1.8
  */

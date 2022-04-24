@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * 对象断言测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/3/14 17:59
  * @since jdk1.8
  */

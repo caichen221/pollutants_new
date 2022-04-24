@@ -17,7 +17,7 @@
 // * swagger配置
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2018/7/17 22:51
 // * @since jdk1.8
 // */

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.*;
  *
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/18 9:58
  * @since jdk1.8
  */

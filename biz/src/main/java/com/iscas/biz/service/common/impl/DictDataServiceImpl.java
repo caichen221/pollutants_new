@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/25 16:13
  * @since jdk1.8
  */

@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
  * jar包路径测试类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/13
  * @since jdk1.8
  */

@@ -4,10 +4,11 @@ package com.iscas.base.biz.config;
  * 常量定义类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 18:47
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public interface Constants {
     /**权限配置XML名称*/
     String AUTH_CONFIG_XML_NAME = "auth.xml";
@@ -65,5 +66,7 @@ public interface Constants {
 
     String LOGIN_CACHE = "loginCache";
     String AUTH_CACHE = "auth";
+
+    String KEY_USER_TOKEN = "user-token:";
 
 }

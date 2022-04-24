@@ -19,7 +19,7 @@
 // * 邮件发送测试
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2020/8/12 22:05
 // * @since jdk1.8
 // */

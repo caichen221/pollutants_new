@@ -19,7 +19,7 @@ import java.util.Objects;
  * 生成一个datasource
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/20 19:56
  * @since jdk1.8
  */

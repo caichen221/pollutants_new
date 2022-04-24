@@ -24,7 +24,7 @@ import java.util.Set;
  * 业务注册工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 14:08
  * @since jdk1.8
  */

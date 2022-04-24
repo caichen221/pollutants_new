@@ -13,7 +13,7 @@ import java.util.Arrays;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/29 21:18
  * @since jdk1.8
  */

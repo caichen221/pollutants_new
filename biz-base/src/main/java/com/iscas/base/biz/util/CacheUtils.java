@@ -8,10 +8,11 @@ import java.util.Optional;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/1 10:41
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 public class CacheUtils {
 
     public static CacheManager getCacheManager() {
@@ -31,7 +32,7 @@ public class CacheUtils {
      */
     public static void evictCache(String cacheName, Collection cacheKeys) {
         Cache cache = getCacheManager().getCache(cacheName);
-        Optional.ofNullable(cache).ifPresent(a -> Optional.ofNullable(cacheKeys).ifPresent(keys -> keys.stream().forEach(cache::evict)));
+        Optional.ofNullable(cache).flatMap(a -> Optional.ofNullable(cacheKeys)).ifPresent(keys -> keys.forEach(cache::evict));
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.concurrent.locks.Lock;
  * JDK连接，不使用Redis,为了和其他的方式统一，也写了空的Connection
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/8 15:13
  * @since jdk1.8
  */

@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.ApiOperation;
 import org.flowable.rest.service.api.RestResponseFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.*;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
 import springfox.documentation.oas.annotations.EnableOpenApi;
@@ -15,16 +19,19 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
+import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * swagger配置
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/08/28
  * @since jdk1.8
  */
@@ -32,7 +39,7 @@ import java.util.List;
 @EnableOpenApi
 @EnableKnife4j
 //@Import(BeanValidatorPluginsConfiguration.class)
-@ComponentScan(basePackages = "org.flowable.rest.service.api")
+//@ComponentScan(basePackages = "org.flowable.rest.service.api")
 public class Swagger3Config {
     @Value("${swagger.enable: true}")
     private boolean swaggerEnable;
@@ -72,11 +79,13 @@ public class Swagger3Config {
 //                .globalOperationParameters(setHeaderToken())
                 .select()
                 // 自行修改为自己的包路径
-                .apis(RequestHandlerSelectors.basePackage("org.flowable.rest.service.api"))
+                .apis(RequestHandlerSelectors.basePackage("org.flowable.rest.service.api")
+                        .and(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)))
                 .paths(PathSelectors.any())
-                .build()
-                .pathMapping("/process-api");
+                .build();
+//                .pathMapping("/process-api");
     }
+
 
     @Autowired
     protected ObjectMapper objectMapper;

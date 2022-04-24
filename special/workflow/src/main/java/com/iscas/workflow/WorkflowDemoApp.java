@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/27 17:18
  * @since jdk1.8
  */

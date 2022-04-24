@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * jedis-cluster 连接
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/7 8:37
  * @since jdk1.8
  */

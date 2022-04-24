@@ -1,6 +1,7 @@
 package com.iscas.base.biz.config.stomp;
 
 import com.iscas.base.biz.aop.enable.EnableWebsocketStomp;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
@@ -10,15 +11,16 @@ import org.springframework.core.type.AnnotationMetadata;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/27 21:43
  * @since jdk1.8
  */
 public class WsImportSelector implements ImportSelector {
 
     @Override
-    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+    public String @NotNull [] selectImports(AnnotationMetadata importingClassMetadata) {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EnableWebsocketStomp.class.getName(), false));
+        assert attributes != null;
         WsPushType pushType = attributes.getEnum("pushType");
         switch (pushType) {
             case SIMPLE: {

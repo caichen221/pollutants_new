@@ -3,7 +3,7 @@ package com.iscas.biz.domain.common;
 /**
  * 文件上传的实体
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/10 14:47
  * @since jdk1.8
  */

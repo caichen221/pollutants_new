@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 自定义session
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/9 16:53
  * @since jdk1.8
  */
@@ -20,7 +20,7 @@ public class CustomSession {
 
     private static String getSessionId() {
         String token = AuthUtils.getToken();
-        String sessionId = null;
+        String sessionId;
         try {
             Map<String, Claim> stringClaimMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             Claim claim = stringClaimMap.get("sessionId");
@@ -55,8 +55,7 @@ public class CustomSession {
         String sessionId = getSessionId();
         Map<String, Object> sessionMap = SessionCacheUtils.get(sessionId);
         if (sessionMap != null) {
-            Object o = sessionMap.get(key);
-            return o;
+            return sessionMap.get(key);
         }
         return null;
     }

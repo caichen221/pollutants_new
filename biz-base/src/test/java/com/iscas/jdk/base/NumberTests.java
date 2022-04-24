@@ -6,7 +6,7 @@ import org.junit.Test;
  * 测试Number类型
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/25 10:30
  * @since jdk1.8
  */

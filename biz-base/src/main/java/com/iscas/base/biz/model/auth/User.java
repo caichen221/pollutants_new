@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * @author zhuquanwen
+ */
 @Getter
 @Setter
 public class User implements Principal, Serializable {

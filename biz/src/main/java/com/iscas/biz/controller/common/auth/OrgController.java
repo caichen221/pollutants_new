@@ -27,7 +27,7 @@ import java.util.List;
  * 组织机构管理
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/20 18:07
  * @since jdk1.8
  */

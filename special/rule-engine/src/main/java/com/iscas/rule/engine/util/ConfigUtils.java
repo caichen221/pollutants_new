@@ -11,7 +11,7 @@ import java.util.Properties;
  * 配置文件读取工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/10/20 14:30
  * @since jdk1.8
  */

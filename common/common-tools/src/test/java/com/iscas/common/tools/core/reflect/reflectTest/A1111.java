@@ -3,7 +3,7 @@ package com.iscas.common.tools.core.reflect.reflectTest;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/15 15:26
  * @since jdk1.8
  */

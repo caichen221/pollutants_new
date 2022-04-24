@@ -6,17 +6,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
-/**
- * Stomp-rabbitmq相关配置
- *
- * @author zhuquanwen
- * @vesion 1.0
- * @date 2020/12/21 11:02
- * @since jdk1.8
- */
 
-//@Configuration
-//@ConditionalOnClass(WebSocketStompProxyRabbitmqConfig.class)
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "unused", "CommentedOutCode"})
 public class WebSocketStompClusterUseRabbitConfig {
 
     @Value("${rabbitmq.virtual-host:/}")
@@ -37,40 +31,14 @@ public class WebSocketStompClusterUseRabbitConfig {
     private int amqpPort;
 
 
-//    //绑定键
-//    public final static String msgTopicKey = "topic.public";
-//    //队列
-//    public final static String msgTopicQueue = "topicQueue";
-//
-//    @Bean
-//    public Queue topicQueue() {
-//        return new Queue(msgTopicQueue,true);
-//    }
-//
-//
-//    @Bean
-//    TopicExchange exchange() {
-//        return new TopicExchange("topicWebSocketExchange",true,false);
-//    }
-//
-//
-//    //将firstQueue和topicExchange绑定,而且绑定的键值为topic.man
-//    //这样只要是消息携带的路由键是topic.man,才会分发到该队列
-//    @Bean
-//    Binding bindingExchangeMessage() {
-//        return BindingBuilder.bind(topicQueue()).to(exchange()).with(msgTopicKey);
-//    }
-
-
-
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(relayHost, amqpPort);
         connectionFactory.setUsername(user);
         connectionFactory.setPassword(password);
         connectionFactory.setVirtualHost(virtualHost);
-//        connectionFactory.setPublisherConfirms(true); // 发送消息回调,必须要设置
-        connectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED); // 发送消息回调,必须要设置
+        // 发送消息回调,必须要设置
+        connectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
         connectionFactory.setPublisherReturns(true);
         return connectionFactory;
     }

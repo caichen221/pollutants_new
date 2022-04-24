@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
  * okhttp文件流式传输测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/7/23 15:51
  * @since jdk1.8
  */

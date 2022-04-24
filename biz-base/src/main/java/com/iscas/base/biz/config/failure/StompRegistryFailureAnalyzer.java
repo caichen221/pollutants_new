@@ -10,14 +10,15 @@ import org.springframework.boot.diagnostics.FailureAnalysis;
  * 服务启动错误解析
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/10 11:24
  * @since jdk1.8
  */
 @Slf4j
 public class StompRegistryFailureAnalyzer extends AbstractFailureAnalyzer<StompRegistryException> {
 
-    private String action = "注册websocket-stomp过程中出错";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String action = "注册websocket-stomp过程中出错";
 
     @Override
     protected FailureAnalysis analyze(Throwable rootFailure, StompRegistryException cause) {

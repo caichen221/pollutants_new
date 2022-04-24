@@ -19,16 +19,18 @@ import java.util.regex.Pattern;
  * xss过滤器
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/1/18 14:43
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
 public class XssFilter implements Filter {
-    private static Logger logger = LoggerFactory.getLogger(XssFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(XssFilter.class);
 
-    private static boolean IS_INCLUDE_RICH_TEXT = false;//是否过滤富文本内容
+    /**是否过滤富文本内容*/
+    private static boolean IS_INCLUDE_RICH_TEXT = false;
 
-    public List<String> excludes = new ArrayList<String>();
+    public List<String> excludes = new ArrayList<>();
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException,ServletException {
@@ -47,6 +49,7 @@ public class XssFilter implements Filter {
         filterChain.doFilter(xssRequest, response);
     }
 
+    @SuppressWarnings("unused")
     private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response) {
         if (excludes == null || excludes.isEmpty()) {
             return false;

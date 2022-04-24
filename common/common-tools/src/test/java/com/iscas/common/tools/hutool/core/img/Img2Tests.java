@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * hutools图像操作
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/15 8:28
  * @since jdk1.8
  */

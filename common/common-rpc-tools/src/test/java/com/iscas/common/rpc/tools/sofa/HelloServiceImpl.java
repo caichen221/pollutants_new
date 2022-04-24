@@ -3,7 +3,7 @@ package com.iscas.common.rpc.tools.sofa;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/20 11:06
  * @since jdk1.8
  */

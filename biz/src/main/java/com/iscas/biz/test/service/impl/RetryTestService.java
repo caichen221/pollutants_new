@@ -20,7 +20,7 @@ import java.util.Random;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/7 17:57
  * @since jdk1.8
  */

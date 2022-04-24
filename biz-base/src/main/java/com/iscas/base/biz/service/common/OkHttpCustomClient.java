@@ -17,14 +17,12 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Author: zhuquanwen
- * @Description:
- * @Date: 2018/3/19 15:49
- * @Modified:
+ * @author zhuquanwen
+ * @date 2018/3/19 15:49
  **/
 public class OkHttpCustomClient {
     private volatile OkHttpClient client;
-    private OkHttpProps okHttpConfig;
+    private final OkHttpProps okHttpConfig;
 
     public OkHttpClient getClient() {
         return client;

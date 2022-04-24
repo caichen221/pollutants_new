@@ -24,7 +24,7 @@ import java.util.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/24 21:05
  * @since jdk1.8
  */

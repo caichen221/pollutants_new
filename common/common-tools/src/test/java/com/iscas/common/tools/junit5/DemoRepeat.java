@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  * //@RepeatedTest 重复测试
  *
  * @author yuemimgyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/18 16:28
  * @since jdk1.8
  */

@@ -5,7 +5,7 @@ import com.iscas.base.biz.util.SpringUtils;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/10 15:46
  * @since jdk1.8
  */

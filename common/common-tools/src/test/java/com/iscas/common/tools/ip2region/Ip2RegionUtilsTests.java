@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/29 17:45
  * @since jdk1.8
  */

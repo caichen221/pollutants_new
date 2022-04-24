@@ -15,7 +15,7 @@ import java.util.Objects;
  * grpc 服务端工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/20 17:56
  * @since jdk1.8
  */

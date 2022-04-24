@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
  * 镜像信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/8 21:20
  * @since jdk1.8
  */

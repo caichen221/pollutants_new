@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * 访问/审计日志
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/29 20:42
  * @since jdk1.8
  */

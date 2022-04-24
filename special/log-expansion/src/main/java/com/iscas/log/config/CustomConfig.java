@@ -3,7 +3,7 @@ package com.iscas.log.config;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/6 11:27
  * @since jdk1.8
  */

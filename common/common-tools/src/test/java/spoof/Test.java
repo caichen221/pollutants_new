@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/9/20 16:51
  * @since jdk1.8
  */

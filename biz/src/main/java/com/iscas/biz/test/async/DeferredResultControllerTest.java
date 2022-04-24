@@ -14,7 +14,7 @@ import org.springframework.web.context.request.async.DeferredResult;
  * 测试DeferredResult
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/9 21:02
  * @since jdk1.8
  */

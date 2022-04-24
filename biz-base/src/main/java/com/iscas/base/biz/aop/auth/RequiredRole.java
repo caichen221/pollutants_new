@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * 注解权限控制
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/18 15:29
  * @since jdk1.8
  */

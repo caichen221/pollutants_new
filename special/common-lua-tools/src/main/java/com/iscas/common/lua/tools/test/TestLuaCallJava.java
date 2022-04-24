@@ -4,7 +4,7 @@ package com.iscas.common.lua.tools.test;
  * 测试Lua脚本调用java
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/2 18:22
  * @since jdk1.8
  */

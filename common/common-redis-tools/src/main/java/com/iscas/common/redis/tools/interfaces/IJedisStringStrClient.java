@@ -6,7 +6,7 @@ import java.util.List;
  * string 相关操作接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/18 20:25
  * @since jdk1.8
  */

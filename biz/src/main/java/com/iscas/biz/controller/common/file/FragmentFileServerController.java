@@ -22,7 +22,7 @@ import java.util.List;
  * 文件服务控制器-带断点续传
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/10 14:38
  * @since jdk1.8
  */

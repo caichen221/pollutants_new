@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Mock单元测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/15 20:46
  * @since jdk1.8
  */

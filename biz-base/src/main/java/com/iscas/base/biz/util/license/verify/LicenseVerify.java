@@ -10,14 +10,16 @@ import java.util.prefs.Preferences;
 
 /**
  * License校验类
+ * @author zhuquanwen
  */
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public class LicenseVerify {
 
     /**
      * 安装License证书
      */
     public synchronized LicenseContent install(LicenseVerifyParam param) throws Exception {
-        LicenseContent result = null;
+        LicenseContent result;
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         //1. 安装证书
@@ -43,7 +45,6 @@ public class LicenseVerify {
         //2. 校验证书
 
         LicenseContent licenseContent = licenseManager.verify();
-//            System.out.println(licenseContent.getSubject());
 
         return true;
 

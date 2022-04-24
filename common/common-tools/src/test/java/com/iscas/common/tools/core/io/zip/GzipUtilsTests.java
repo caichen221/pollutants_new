@@ -12,7 +12,7 @@ import java.util.Map;
  * gzip工具测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/7/12 15:00
  * @since jdk1.8
  */

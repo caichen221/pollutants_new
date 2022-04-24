@@ -21,13 +21,14 @@ import java.util.Map;
  * 默认文件上传处理
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/9/25 15:24
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/file")
-@Api(description="文件上传")
+@Api(tags="文件上传")
 public class FileServerController extends BaseController {
     @Autowired
     private FileServerService fileServerService;
@@ -47,10 +48,10 @@ public class FileServerController extends BaseController {
         try {
             Map<String, String> result = fileServerService.upload(files);
             response.setValue(result);
+            return response;
         } catch (IOException e) {
             throw new BaseException("文件上传出错", e);
         }
-        return response;
     }
 
     @ApiOperation(value="[文件服务/xxx]文件下载", notes="create by:朱全文 2019-09-25")

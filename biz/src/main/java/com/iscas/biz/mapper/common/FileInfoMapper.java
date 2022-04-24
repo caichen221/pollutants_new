@@ -6,7 +6,7 @@ import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/10 14:58
  * @since jdk1.8
  */

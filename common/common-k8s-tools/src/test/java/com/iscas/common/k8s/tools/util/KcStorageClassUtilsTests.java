@@ -17,7 +17,7 @@ import java.nio.file.Files;
  * storageclassUtils 测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/15 11:09
  * @since jdk1.8
  */

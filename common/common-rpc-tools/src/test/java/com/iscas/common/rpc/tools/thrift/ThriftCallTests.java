@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * thrift测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/21 13:11
  * @since jdk1.8
  */

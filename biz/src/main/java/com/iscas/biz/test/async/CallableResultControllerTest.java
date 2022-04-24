@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * 返回Callable 异步返回数据
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/9 20:41
  * @since jdk1.8
  */

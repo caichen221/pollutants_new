@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * 业务操作类的注解，类似于spring的Component
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 14:02
  * @since jdk1.8
  */

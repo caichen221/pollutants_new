@@ -25,7 +25,7 @@ import java.util.List;
  * rocketmq操作工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/22 17:53
  * @since jdk1.8
  */

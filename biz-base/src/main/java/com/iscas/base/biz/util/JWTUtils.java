@@ -31,10 +31,11 @@ import java.util.*;
  * JWT工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 22:29
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "AlibabaClassNamingShouldBeCamel", "unused"})
 public class JWTUtils {
     private JWTUtils() {
     }
@@ -53,7 +54,7 @@ public class JWTUtils {
          */
         RSA("rsa");
 
-        private String value;
+        private final String value;
 
         public String getValue() {
             return value;
@@ -101,7 +102,7 @@ public class JWTUtils {
             throw new ValidTokenException("登录凭证校验失败", "token:" + token + "不存在或已经被注销");
         }
         Algorithm algorithm = getVerifyAlgorithm(type);
-        JWTVerifier jwtVerifier = null;
+        JWTVerifier jwtVerifier;
         switch (type) {
             case HMAC256:
                 jwtVerifier = JWT.require(algorithm).build();
@@ -112,7 +113,7 @@ public class JWTUtils {
             default: throw new UnsupportedOperationException(MessageFormat.format("不支持的加密算法类型:[{0}]", type));
         }
 
-        DecodedJWT decodedJWT = null;
+        DecodedJWT decodedJWT;
         try {
             decodedJWT = jwtVerifier.verify(token);
         } catch (Exception e) {
@@ -130,7 +131,7 @@ public class JWTUtils {
             throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
         //如果token不为null,校验token
-        String username = null;
+        String username;
         try {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
@@ -141,17 +142,12 @@ public class JWTUtils {
             throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-//        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);
 
         //修改为支持用户多会话模式
-        if (!authCacheService.listContains("user-token:" + username, token, Constants.LOGIN_CACHE)) {
+        if (!authCacheService.listContains(Constants.KEY_USER_TOKEN + username, token, Constants.LOGIN_CACHE)) {
             throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }
 
-//        String tokenx = (String) authCacheService.get("user-token:" + username);
-//        if(!Objects.equals(token, tokenx)){
-//            throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
-//        }
         return username;
     }
 
@@ -169,7 +165,7 @@ public class JWTUtils {
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             privateKey = (RSAPrivateKey) kf.generatePrivate(spec);
-        } else if (privateKeyFlag == null || !privateKeyFlag) {
+        } else {
             InputStream is2 = ConfigUtils.getInOutConfigStream("/rsakey/rsa-public-key.pem");
             @Cleanup PemReader pemReader = new PemReader(new InputStreamReader(is2));
             PemObject pemObject = pemReader.readPemObject();
@@ -180,10 +176,11 @@ public class JWTUtils {
         return Algorithm.RSA256(publicKey, privateKey);
     }
 
+    @SuppressWarnings("AlibabaUndefineMagicConstant")
     private static String doCreateToken(String userIdAndName, Date iatDate, Date expiresDate, Map<String, Object> map, AlgorithmType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         Algorithm algorithm;
         String username;
-        Integer userId = -1;
+        int userId = -1;
         if (userIdAndName.contains(";")) {
             String[] strs = userIdAndName.split(";");
             userId = Integer.parseInt(strs[0]);

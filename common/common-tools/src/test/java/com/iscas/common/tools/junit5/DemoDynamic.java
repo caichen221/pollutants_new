@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
  * //动态测试
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/19 8:58
  * @since jdk1.8
  */

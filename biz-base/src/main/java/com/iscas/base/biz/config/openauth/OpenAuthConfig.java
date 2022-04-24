@@ -9,10 +9,11 @@ import org.springframework.context.annotation.Bean;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/22 13:26
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class OpenAuthConfig {
 
     @Value("${security.oauth2.open.auth.client.clientId:}")

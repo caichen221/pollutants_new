@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
  * 默认健康检测处理
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/10 15:20
  * @since jdk1.8
  */

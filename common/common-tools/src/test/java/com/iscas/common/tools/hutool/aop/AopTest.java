@@ -4,7 +4,7 @@ package com.iscas.common.tools.hutool.aop;
  * 动态代理测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/30 9:33
  * @since jdk1.8
  */

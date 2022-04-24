@@ -11,10 +11,11 @@ import java.util.Map;
  * 文件服务service
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/9/25 15:52
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface FileServerService {
     Map<String, String> upload(MultipartFile[] files) throws IOException;
 

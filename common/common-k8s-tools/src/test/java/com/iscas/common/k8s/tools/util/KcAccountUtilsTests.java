@@ -14,7 +14,7 @@ import java.util.List;
  * K8S service account 测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/01/01 10:32
  * @since jdk1.8
  */

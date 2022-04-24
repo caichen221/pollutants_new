@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/18 15:06
  * @since jdk1.8
  * 从系统启动开始累计到当前时刻，cpu情况

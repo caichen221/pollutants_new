@@ -1,20 +1,17 @@
 package com.iscas.base.biz.filter;
 
 import com.google.common.util.concurrent.RateLimiter;
-import com.google.gson.Gson;
 import com.iscas.base.biz.config.ratelimiter.RateLimiterProps;
-import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,12 +23,13 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhuquanwen
  **/
+@SuppressWarnings("UnstableApiUsage")
 public class RateLimiterFilter extends OncePerRequestFilter {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
-    private RateLimiterProps rateLimiterProps;
-    private RateLimiter rateLimiter = null;
-    private List<String> staticUrls;
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final RateLimiterProps rateLimiterProps;
+    private final RateLimiter rateLimiter;
+    private final List<String> staticUrls;
 
     public RateLimiterFilter(RateLimiterProps rateLimiterProps) {
         this.rateLimiterProps = rateLimiterProps;
@@ -40,7 +38,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("进入 RateLimiterFilter 过滤器");
         }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16
  * @since jdk1.8
  */

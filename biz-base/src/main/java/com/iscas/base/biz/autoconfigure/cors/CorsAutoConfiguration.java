@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "unused", "rawtypes"})
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CorsProps.class)
 @ConditionalOnClass(CustomCorsFilter.class)
@@ -22,6 +26,7 @@ public class CorsAutoConfiguration {
     @Autowired
     private CorsProps corsProps;
 
+    @SuppressWarnings("CommentedOutCode")
     @Bean
     @ConditionalOnMissingBean(CustomCorsFilter.class)
     public CustomCorsFilter corsFilter() {
@@ -63,8 +68,8 @@ public class CorsAutoConfiguration {
 
 
 
+    @SuppressWarnings("unchecked")
     @Bean
-//    @Order(Ordered.HIGHEST_PRECEDENCE)
     public FilterRegistrationBean crosFilterRegistrationBean() {
         log.info("-----注册跨域过滤器-------");
         FilterRegistrationBean frb = new FilterRegistrationBean();

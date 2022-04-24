@@ -3,7 +3,7 @@ package com.iscas.log.handler;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/2 17:20
  * @since jdk1.8
  */

@@ -11,10 +11,11 @@ import java.util.Properties;
 /**
  * 验证码配置类
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/17 20:52
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled")
 public class VerificationCodeAutoConfiguration {

@@ -4,10 +4,11 @@ import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.boot.availability.ReadinessState;
 import org.springframework.context.event.EventListener;
 
-//@Component
-//@Lazy(value = false)
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"FieldMayBeFinal", "unused"})
 public class ReadinessStateListener extends HealthBaseListener {
-    private volatile IHealthCheckHandler healthCheckHandler = null;
 
     @EventListener
     public void onStateChange(AvailabilityChangeEvent<ReadinessState> event) {

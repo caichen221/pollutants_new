@@ -9,7 +9,7 @@ import java.io.IOException;
  * 多线程下异常处理
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/26 16:04
  * @since jdk1.8
  */

@@ -21,7 +21,7 @@
 // * Mybatis-Plus 单元测试
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2018/10/12
 // * @since jdk1.8
 // */

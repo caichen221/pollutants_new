@@ -13,10 +13,11 @@ import java.io.InputStream;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/10 16:20
  * @since jdk1.8
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class ResponseUtils {
 
     /**
@@ -33,7 +34,7 @@ public class ResponseUtils {
     public static void returnStream(InputStream is, HttpServletResponse response) throws IOException, BaseException {
         byte[] buf = new byte[FileTypeUtils.FILE_PREFIX_LENGTH];
         is.read(buf);
-        String contentType = null;
+        String contentType;
         FileTypeEnum fileType = FileTypeUtils.getFileType(buf);
         switch (fileType) {
             case JPEG: {
@@ -61,7 +62,7 @@ public class ResponseUtils {
                 break;
             }
             default: {
-                throw new BaseException(String.format("不支持的文件类型:%s", fileType.toString()));
+                throw new BaseException(String.format("不支持的文件类型:%s", fileType));
             }
         }
         //现将读到的前几个字符传出去

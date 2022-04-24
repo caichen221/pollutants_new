@@ -9,7 +9,7 @@ import com.iscas.templet.view.table.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/24 21:53
  * @since jdk1.8
  */

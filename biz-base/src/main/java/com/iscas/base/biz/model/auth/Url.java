@@ -9,7 +9,7 @@ import java.io.Serializable;
  * URL
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 18:41
  * @since jdk1.8
  */

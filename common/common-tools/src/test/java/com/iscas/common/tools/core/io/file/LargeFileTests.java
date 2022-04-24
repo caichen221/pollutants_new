@@ -10,7 +10,7 @@ import java.io.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 8:37
  * @since jdk1.8
  */

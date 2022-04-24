@@ -4,7 +4,7 @@ package spoof;
  * QQ Wechat轰炸机
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/9/16 14:58
  * @since jdk1.8
  */

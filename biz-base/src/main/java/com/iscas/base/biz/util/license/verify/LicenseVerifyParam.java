@@ -2,7 +2,9 @@ package com.iscas.base.biz.util.license.verify;
 
 /**
  * License校验类需要的参数
+ * @author zhuquanwen
  */
+@SuppressWarnings("unused")
 public class LicenseVerifyParam {
 
     /**

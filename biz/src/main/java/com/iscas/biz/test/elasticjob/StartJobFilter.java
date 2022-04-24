@@ -11,7 +11,7 @@
 ///**
 // * 开启测试定时任务
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2021/3/26 19:21
 // * @since jdk1.8
 // */

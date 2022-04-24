@@ -14,7 +14,7 @@ import java.util.*;
  * JedisClient
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/5 14:46
  * @since jdk1.8
  */

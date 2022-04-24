@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/6/27 10:54
  * @since jdk1.8
  */

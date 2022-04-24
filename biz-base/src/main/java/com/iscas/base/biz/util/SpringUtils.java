@@ -3,15 +3,11 @@ package com.iscas.base.biz.util;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.HeaderKey;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
@@ -22,16 +18,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * spring相关操作工具类
  *
- * @auth zhuquanwen
+ * @author zhuquanwen
  **/
+@SuppressWarnings({"unused", "unchecked"})
 @Component
 public class SpringUtils implements ApplicationContextAware, CommonConstant, HeaderKey {
     private static ApplicationContext applicationContext;
@@ -136,7 +134,7 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
                 ipAddress = request.getRemoteAddr();
                 if (Objects.equals(LOCAL_IP, ipAddress)) {
                     // 根据网卡取本机配置的IP
-                    InetAddress inet = null;
+                    InetAddress inet;
                     try {
                         inet = InetAddress.getLocalHost();
                         ipAddress = inet.getHostAddress();
@@ -147,7 +145,7 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
             }
             // "***.***.***.***".length()
             // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
-            if (ipAddress != null && ipAddress.length() > 1 && ipAddress.indexOf(",") > 0) {
+            if (ipAddress != null && ipAddress.indexOf(",") > 0) {
                 ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
             }
         } catch (Exception e) {
@@ -169,7 +167,7 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
         SpringUtils.applicationContext = applicationContext;
     }
 
@@ -183,7 +181,7 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
     }
 
     public static <T> T getBean(Class<T> tClass) throws BeansException {
-        return (T) applicationContext.getBean(tClass);
+        return applicationContext.getBean(tClass);
     }
 
     /**

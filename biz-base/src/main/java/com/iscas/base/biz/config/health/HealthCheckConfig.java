@@ -8,10 +8,11 @@ import org.springframework.context.annotation.Lazy;
  * 健康检测注册
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/10 15:13
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class HealthCheckConfig {
 
     @Bean

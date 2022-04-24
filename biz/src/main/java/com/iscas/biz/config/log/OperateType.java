@@ -2,7 +2,7 @@ package com.iscas.biz.config.log;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/20 18:13
  * @since jdk1.8
  */

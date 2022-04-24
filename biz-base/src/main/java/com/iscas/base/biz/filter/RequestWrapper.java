@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/2/21 15:55
  * @since jdk1.8
  */
@@ -35,7 +35,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
         return new ServletInputStream() {
 
             @Override
-            public int read() throws IOException {
+            public int read() {
                 // 使用内存输入流读取数据
                 return bais.read();
             }
@@ -64,7 +64,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
         try {
             inputStream = request.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }

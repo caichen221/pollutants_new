@@ -7,10 +7,11 @@ import java.util.List;
  * 字符串工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/25 17:14
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class StringUtils {
     public static boolean isEmpty(Object str) {
         return (str == null || "".equals(str));

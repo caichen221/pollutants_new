@@ -20,36 +20,28 @@ import java.util.stream.Collectors;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/2/21 14:11
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "rawtypes", "SuspiciousMethodCalls", "unused"})
 public class ApiSignUtils {
     public static String DEFAULT_SECRET_KEY = "ISCAS123";
 
-    private static String TIME_STAMP_KEY = "timeStamp";
+    private static final String TIME_STAMP_KEY = "timeStamp";
 
-    // 随机字符串，防止重放攻击
-    private static String NONCE_KEY = "nonce";
-    private static String SIGN_KEY = "sign";
-    //超时时效，超过此时间认为签名过期
-    private static Long EXPIRE_TIME = 5 * 60 * 1000L;
+    /**随机字符串，防止重放攻击*/
+    private static final String NONCE_KEY = "nonce";
+    private static final String SIGN_KEY = "sign";
+    /**超时时效，超过此时间认为签名过期*/
+    private static final Long EXPIRE_TIME = 5 * 60 * 1000L;
 
 
     /**
      * 生成签名
      */
     public static Map getSignature(Object param, String secretKey) {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Map params;
-//        try {
-//            String jsonStr = objectMapper.writeValueAsString(param);
-//            params = objectMapper.readValue(jsonStr, Map.class);
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException("生成签名：转换json失败");
-//        }
-        Map<String, Object> params = null;
+        Map<String, Object> params;
         try {
             params = jsonToMap(JSONObject.toJSONString(param));
         } catch (Exception e) {
@@ -104,10 +96,7 @@ public class ApiSignUtils {
         //校验签名
         Map paramMap = getSignature(param, secretKey);
         String signature = (String) paramMap.get("sign");
-        if (sign.equals(signature)) {
-            return true;
-        }
-        return false;
+        return sign.equals(signature);
     }
 
     private static Long convertTimestamp(Object timestampObj) {
@@ -120,13 +109,12 @@ public class ApiSignUtils {
      */
     public static SortedMap<String, Object> getAllParams(HttpServletRequest request) throws IOException {
 
-        SortedMap<String, Object> result = new TreeMap<>();
         //获取URL上的参数,并放入结果中
-        result.putAll(getUrlParams(request));
+        SortedMap<String, Object> result = new TreeMap<>(getUrlParams(request));
 
         // get请求和DELETE请求不需要拿body参数
         if (!StringUtils.equalsAny(request.getMethod(), HttpMethod.GET.name(), HttpMethod.DELETE.name())) {
-            Optional.ofNullable(getBodyParams(request))
+            Optional.of(getBodyParams(request))
                     .ifPresent(result::putAll);
         }
         return result;
@@ -139,14 +127,13 @@ public class ApiSignUtils {
     public static Map<String, Object> getBodyParams(final HttpServletRequest request) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        String str = "";
+        String str;
         StringBuilder wholeStr = new StringBuilder();
         //一行一行的读取body体里面的内容；
         while ((str = reader.readLine()) != null) {
             wholeStr.append(str);
         }
         //转化成json对象
-//        return StringUtils.isNoneBlank(wholeStr) ? JsonUtils.fromJson(wholeStr.toString(), Map.class) : new HashMap<>();
         return StringUtils.isNoneBlank(wholeStr) ? jsonToMap(wholeStr.toString()) : new TreeMap<>();
     }
 
@@ -157,12 +144,10 @@ public class ApiSignUtils {
      * @return 响应的map
      */
     public static Map<String, Object> jsonToMap(String jsonStr) {
-        Map<String, Object> treeMap = new TreeMap();
+        Map<String, Object> treeMap = new TreeMap<>();
         //Feature.OrderedField实现解析后保存不乱序
         JSONObject json = JSONObject.parseObject(jsonStr, Feature.OrderedField);
-        Iterator<String> keys = json.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
+        for (String key : json.keySet()) {
             Object value = json.get(key);
             //判断传入kay-value中是否含有""或null
             if (json.get(key) == null || value == null || value.toString().length() == 0) {
@@ -202,7 +187,7 @@ public class ApiSignUtils {
      * @param json 传入数据
      * @return 是JSON返回true, 否则false
      */
-    public final static boolean isJSONValid(String json) {
+    public static boolean isJSONValid(String json) {
         try {
             JSONObject.parseObject(json);
         } catch (JSONException ex) {
@@ -219,7 +204,7 @@ public class ApiSignUtils {
                 .map(queryStr -> URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8))
                 .map(params -> Arrays.stream(params.split("&"))
                         .collect(Collectors.toMap(s -> s.substring(0, s.indexOf("=")), s -> s.substring(s.indexOf("=") + 1))))
-                .orElse(new HashMap<>());
+                .orElse(new HashMap<>(0));
 
     }
 

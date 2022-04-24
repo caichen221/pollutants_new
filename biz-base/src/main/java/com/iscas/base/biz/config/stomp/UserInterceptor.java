@@ -1,6 +1,7 @@
 package com.iscas.base.biz.config.stomp;
 
 import com.iscas.base.biz.util.SpringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -10,13 +11,15 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 
 /**
  *用户拦截器
- **/
+ *
+ * @author admin*/
 public class UserInterceptor implements ChannelInterceptor {
 
   private volatile UserAccessor userAccessor = null;
 
+    @SuppressWarnings({"AlibabaRemoveCommentedCode", "StatementWithEmptyBody"})
     @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+    public Message<?> preSend(@NotNull Message<?> message, @NotNull MessageChannel channel) {
         if (userAccessor == null) {
             synchronized (UserInterceptor.class) {
                 if (userAccessor == null) {
@@ -25,6 +28,7 @@ public class UserInterceptor implements ChannelInterceptor {
             }
         }
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+        assert accessor != null;
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             userAccessor.accessor(message,accessor);
 //            Object raw = message.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
@@ -61,7 +65,7 @@ public class UserInterceptor implements ChannelInterceptor {
         } else if (StompCommand.SEND.equals(accessor.getCommand())) {
             //发送数据
 //            long[] heartbeat = accessor.setH
-//            System.out.println(11111);
+
         } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
 
         }
@@ -70,27 +74,27 @@ public class UserInterceptor implements ChannelInterceptor {
     }
 
     @Override
-    public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
+    public void postSend(@NotNull Message<?> message, @NotNull MessageChannel channel, boolean sent) {
 
     }
 
     @Override
-    public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent, Exception ex) {
+    public void afterSendCompletion(@NotNull Message<?> message, @NotNull MessageChannel channel, boolean sent, Exception ex) {
 
     }
 
     @Override
-    public boolean preReceive(MessageChannel channel) {
+    public boolean preReceive(@NotNull MessageChannel channel) {
         return false;
     }
 
     @Override
-    public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+    public Message<?> postReceive(@NotNull Message<?> message, @NotNull MessageChannel channel) {
         return null;
     }
 
     @Override
-    public void afterReceiveCompletion(Message<?> message, MessageChannel channel, Exception ex) {
+    public void afterReceiveCompletion(Message<?> message, @NotNull MessageChannel channel, Exception ex) {
 
     }
 }

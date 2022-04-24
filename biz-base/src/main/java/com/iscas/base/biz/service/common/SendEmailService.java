@@ -1,14 +1,10 @@
 package com.iscas.base.biz.service.common;
 
 import cn.hutool.core.io.IoUtil;
-import com.iscas.templet.common.ResponseEntity;
-import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,17 +16,17 @@ import org.thymeleaf.context.Context;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * 发送邮件工具
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/12 21:52
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Service
 @Slf4j
 @ConditionalOnBean(value = {JavaMailSender.class, TemplateEngine.class})
@@ -43,7 +39,6 @@ public class SendEmailService {
     /**
      * 发送普通文本邮件
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/8/12
      * @param from 发送邮件地址
@@ -70,7 +65,6 @@ public class SendEmailService {
 
     /**
      * 发送HTML邮件
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/8/12
      * @param from 发送邮件地址
@@ -100,7 +94,6 @@ public class SendEmailService {
      * 发送附件
      *
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/8/12
      * @param from 发送邮件地址
@@ -142,7 +135,6 @@ public class SendEmailService {
      * 测试发送thymeleaf模板邮件
      * templateName必须在resources/templates下
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/8/12
      * @param from 发送邮件地址
@@ -175,7 +167,6 @@ public class SendEmailService {
     /**
      * 测试发送thymeleaf模板邮件,并携带附件
      * templateName必须在resources/templates下
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/8/12
      * @param from 发送邮件地址

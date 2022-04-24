@@ -19,12 +19,14 @@ import java.util.List;
 
 /**
  * 自定义LicenseManager，用于增加额外的服务器硬件信息校验
+ * @author zhuquanwen
  */
+@SuppressWarnings({"AlibabaUndefineMagicConstant", "unused"})
 public class CustomLicenseManager extends LicenseManager {
 
-    //XML编码
+    /**XML编码*/
     private static final String XML_CHARSET = "UTF-8";
-    //默认BUFSIZE
+    /**默认BUFSIZE*/
     private static final int DEFAULT_BUFSIZE = 8 * 1024;
 
     public CustomLicenseManager() {
@@ -73,6 +75,7 @@ public class CustomLicenseManager extends LicenseManager {
      * 复写verify方法，调用本类中的validate方法，校验IP地址、Mac地址等其他信息
      *
      */
+    @SuppressWarnings("UnusedAssignment")
     @Override
     protected synchronized LicenseContent verify(final LicenseNotary notary)
             throws Exception {
@@ -188,7 +191,7 @@ public class CustomLicenseManager extends LicenseManager {
     private LicenseCheckModel getServerInfos() throws Exception {
         //操作系统类型
         String osName = System.getProperty("os.name").toLowerCase();
-        AbstractServerInfos abstractServerInfos = null;
+        AbstractServerInfos abstractServerInfos;
 
         //根据不同操作系统类型选择不同的数据获取方法
         if (osName.startsWith("windows")) {
@@ -206,6 +209,7 @@ public class CustomLicenseManager extends LicenseManager {
      * 校验当前服务器的IP/Mac地址是否在可被允许的IP范围内<br/>
      * 如果存在IP在可被允许的IP/Mac地址范围内，则返回true
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean checkIpAddress(List<String> expectedList, List<String> serverList) {
         if (expectedList != null && expectedList.size() > 0) {
             if (serverList != null && serverList.size() > 0) {
@@ -226,12 +230,11 @@ public class CustomLicenseManager extends LicenseManager {
      * 校验当前服务器硬件（主板、CPU等）序列号是否在可允许范围内
      *
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean checkSerial(String expectedSerial, String serverSerial) {
         if (StringUtils.isNotBlank(expectedSerial)) {
             if (StringUtils.isNotBlank(serverSerial)) {
-                if (expectedSerial.equals(serverSerial)) {
-                    return true;
-                }
+                return expectedSerial.equals(serverSerial);
             }
 
             return false;

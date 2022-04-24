@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/3 17:54
  * @since jdk1.8
  */

@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *  <p>大部分单元测试使用的Junit4，待升级至Junit5后再弃用此类<p/>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/28 21:21
  * @since jdk1.8
  */

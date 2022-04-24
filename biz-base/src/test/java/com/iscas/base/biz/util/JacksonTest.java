@@ -10,7 +10,7 @@ import java.util.*;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/24 15:02
  * @since jdk1.8
  */

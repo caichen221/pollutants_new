@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 下拉列表
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/21 19:48
  * @since jdk1.8
  */

@@ -20,10 +20,11 @@ import java.util.Map;
  * 用户权限认证service
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 18:58
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "rawtypes"})
 public abstract class AbstractAuthService implements Constants {
     public abstract Map<String, Role> getAuth() ;
     public abstract Map<String, Url> getUrls() ;

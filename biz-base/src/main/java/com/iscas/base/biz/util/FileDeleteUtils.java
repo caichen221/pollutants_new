@@ -8,20 +8,19 @@ import java.util.concurrent.*;
  *未用到，将在未来版本删除。
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/9/6 9:11
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaThreadShouldSetName")
 @Deprecated
 public class FileDeleteUtils {
-    private static ExecutorService es = new ThreadPoolExecutor(1, 1,
+    private static final ExecutorService ES = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new LinkedBlockingQueue<>());
     private FileDeleteUtils(){}
     public static boolean delete(File file) throws ExecutionException, InterruptedException {
-        Future<Boolean> submit = es.submit(() -> {
-            return file.delete();
-        });
+        Future<Boolean> submit = ES.submit(file::delete);
         return submit.get();
     }
 }

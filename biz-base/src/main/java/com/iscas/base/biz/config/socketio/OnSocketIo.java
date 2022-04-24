@@ -9,11 +9,12 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/30
  * @since jdk1.8
  */
@@ -21,7 +22,7 @@ public class OnSocketIo extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition("");
-        Map<String, Object> enableSocketioMap = context.getBeanFactory().getBeansWithAnnotation(EnableSocketio.class);
+        Map<String, Object> enableSocketioMap = Objects.requireNonNull(context.getBeanFactory()).getBeansWithAnnotation(EnableSocketio.class);
         return MapUtils.isNotEmpty(enableSocketioMap) ? ConditionOutcome.match(message.foundExactly("EnableSocketio")) :
                 ConditionOutcome.noMatch(message.because("not EnableSocketio"));
     }

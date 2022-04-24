@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.Arrays;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/1/18 14:42
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    HttpServletRequest orgRequest = null;
-    private boolean isIncludeRichText = false;
+    HttpServletRequest orgRequest;
+    private final boolean isIncludeRichText;
 
     public XssHttpServletRequestWrapper(HttpServletRequest request, boolean isIncludeRichText) {
         super(request);
@@ -29,9 +29,10 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      * 如果需要获得原始的值，则通过super.getParameterValues(name)来获取<br/>
      * getParameterNames,getParameterValues和getParameterMap也可能需要覆盖
      */
+    @SuppressWarnings("AlibabaUndefineMagicConstant")
     @Override
     public String getParameter(String name) {
-        if(StringUtils.equalsAny("content", "WithHtml") && !isIncludeRichText){
+        if (StringUtils.equalsAny("content", "WithHtml") && !isIncludeRichText) {
             return super.getParameter(name);
         }
         name = JsoupUtils.clean(name);
@@ -45,7 +46,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
         String[] arr = super.getParameterValues(name);
-        if(arr != null){
+        if (arr != null) {
             Arrays.stream(arr).forEach(JsoupUtils::clean);
         }
         return arr;
@@ -70,7 +71,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     /**
      * 获取最原始的request
      *
-     * @return
+     * @return HttpServletRequest
      */
     public HttpServletRequest getOrgRequest() {
         return orgRequest;
@@ -79,7 +80,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     /**
      * 获取最原始的request的静态方法
      *
-     * @return
+     * @return HttpServletRequest
      */
     public static HttpServletRequest getOrgRequest(HttpServletRequest req) {
         if (req instanceof XssHttpServletRequestWrapper) {

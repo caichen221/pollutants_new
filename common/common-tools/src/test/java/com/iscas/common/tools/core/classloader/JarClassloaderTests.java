@@ -12,7 +12,7 @@ import java.util.Map;
  * 类加载器测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/11 10:07
  * @since jdk1.8
  */

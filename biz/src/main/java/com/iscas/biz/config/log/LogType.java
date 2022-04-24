@@ -4,7 +4,7 @@ package com.iscas.biz.config.log;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/2/21 9:26
  * @since jdk1.8
  */

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/20 20:39
  * @since jdk1.8
  */

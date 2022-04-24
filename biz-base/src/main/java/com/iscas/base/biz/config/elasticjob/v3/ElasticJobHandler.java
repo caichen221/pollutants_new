@@ -12,10 +12,11 @@ import org.springframework.stereotype.Component;
  * elastic-job处理
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/17 14:33
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @ConditionalOnElasticJob
 @Component
 public class ElasticJobHandler {

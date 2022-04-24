@@ -10,10 +10,11 @@ import javax.servlet.http.HttpSession;
  * 用户认证、权限认证service接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "rawtypes"})
 public interface IUserService {
     User findByUsername(String username);
     void loginHandler(HttpServletResponse response, HttpSession session,

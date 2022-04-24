@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * 是否启动健康检测
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/10 15:14
  * @since jdk1.8
  */

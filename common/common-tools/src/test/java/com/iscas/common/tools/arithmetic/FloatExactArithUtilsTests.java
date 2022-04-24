@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * 浮点精确计算工具类测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/11 21:05
  * @since jdk1.8
  */

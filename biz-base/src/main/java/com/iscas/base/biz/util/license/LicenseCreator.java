@@ -1,24 +1,18 @@
 package com.iscas.base.biz.util.license;
 
-import de.schlichtherle.license.CipherParam;
-import de.schlichtherle.license.DefaultCipherParam;
-import de.schlichtherle.license.DefaultLicenseParam;
-import de.schlichtherle.license.KeyStoreParam;
-import de.schlichtherle.license.LicenseContent;
-import de.schlichtherle.license.LicenseManager;
-import de.schlichtherle.license.LicenseParam;
+import de.schlichtherle.license.*;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.prefs.Preferences;
 
 /**
  * License生成类
+ * @author zhuquanwen
  */
 public class LicenseCreator {
     private final static X500Principal DEFAULT_HOLDER_AND_ISSUER = new X500Principal("CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN");
-    private LicenseCreatorParam param;
+    private final LicenseCreatorParam param;
 
     public LicenseCreator(LicenseCreatorParam param) {
         this.param = param;
@@ -46,9 +40,7 @@ public class LicenseCreator {
         KeyStoreParam privateStoreParam = new CustomKeyStoreParam(LicenseCreator.class, param.getPrivateKeysStorePath(),
                 param.getPrivateAlias(), param.getStorePass(), param.getKeyPass());
 
-        LicenseParam licenseParam = new DefaultLicenseParam(param.getSubject(), preferences, privateStoreParam, cipherParam);
-
-        return licenseParam;
+        return new DefaultLicenseParam(param.getSubject(), preferences, privateStoreParam, cipherParam);
     }
 
     /**

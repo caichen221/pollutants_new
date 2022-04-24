@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
  * freemarker工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/24
  * @since jdk1.8
  */

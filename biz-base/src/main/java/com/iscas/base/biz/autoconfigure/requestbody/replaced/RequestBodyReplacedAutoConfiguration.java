@@ -11,10 +11,11 @@ import org.springframework.core.Ordered;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/2/21 16:38
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = "requestbody.replaced.enabled", havingValue = "true")
@@ -26,7 +27,7 @@ public class RequestBodyReplacedAutoConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean requestbodyReplacedFilterRegistrationBean() throws Exception {
+    public FilterRegistrationBean requestbodyReplacedFilterRegistrationBean() {
         log.info("-----注册替换requestbody过滤器-------");
         FilterRegistrationBean frb = new FilterRegistrationBean();
         frb.setFilter(replaceRequestBodyFilter());

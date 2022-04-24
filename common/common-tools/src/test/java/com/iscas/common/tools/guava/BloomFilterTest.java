@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 14:40
  * @since jdk1.8
  */

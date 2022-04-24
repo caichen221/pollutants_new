@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,11 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class TableInfoUtils {
     public static Map<String, TableHeaderResponseData> tableHeaderInfoMap =
-            new ConcurrentHashMap<String, TableHeaderResponseData>();
+            new ConcurrentHashMap<>();
     private TableInfoUtils(){
 
     }
-    /*获得tableHeader,（线程安全）*/
+    /**获得tableHeader,（线程安全）*/
     public static TableHeaderResponseData getTableHeader(String tableName) throws IOException {
         TableHeaderResponseData tableHeaderResponseData = tableHeaderInfoMap.get(tableName);
         if(tableHeaderResponseData == null){
@@ -33,14 +34,14 @@ public class TableInfoUtils {
         }
         return tableHeaderInfoMap.get(tableName).clone();
     }
-    /*读取JSON的Header至内存，（线程安全）*/
+    /**读取JSON的Header至内存，（线程安全）*/
     public static void readHeaderToMap(String tableName) throws IOException {
         Resource resource = new ClassPathResource("tableInfo/" + tableName + ".json");
         @Cleanup InputStream is  = resource.getInputStream();
-        @Cleanup InputStreamReader inputStreamReader = new InputStreamReader(is, "utf-8");
+        @Cleanup InputStreamReader inputStreamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
         @Cleanup BufferedReader br = new BufferedReader(inputStreamReader);
-        StringBuffer sb = new StringBuffer();
-        String line = null;
+        StringBuilder sb = new StringBuilder();
+        String line;
         while ((line = br.readLine()) != null) {
             sb.append(line).append("\n");
         }

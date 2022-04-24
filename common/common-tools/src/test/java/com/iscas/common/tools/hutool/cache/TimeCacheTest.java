@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * 超时缓存
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 15:08
  * @since jdk1.8
  */

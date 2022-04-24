@@ -22,10 +22,11 @@ import java.util.Objects;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/5 21:19
  * @since jdk1.8
  */
+@SuppressWarnings({"unchecked", "unused"})
 public class WebSocketUtils {
     private WebSocketUtils() {}
 
@@ -39,7 +40,7 @@ public class WebSocketUtils {
             synchronized (WebSocketUtils.class) {
                 if (websocketSessionsHolder == null) {
                     WebMvcStompEndpointRegistry endpointRegistry = (WebMvcStompEndpointRegistry) WebSocketStompSimpleConfig.endpointRegistry;
-                    Field registrationsField = null;
+                    Field registrationsField;
                     if (endpointRegistry instanceof MyWebMvcStompEndpointRegistry) {
                         //自定义的类型，获取父类的
                         registrationsField = endpointRegistry.getClass().getSuperclass().getDeclaredField("registrations");
@@ -47,19 +48,16 @@ public class WebSocketUtils {
                         registrationsField = endpointRegistry.getClass().getDeclaredField("registrations");
                     }
                     //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-//                    registrationsField.setAccessible(true);
                     ReflectUtils.makeAccessible(registrationsField);
                     List<WebMvcStompWebSocketEndpointRegistration> webMvcStompWebSocketEndpointRegistrations = (List<WebMvcStompWebSocketEndpointRegistration>) registrationsField.get(endpointRegistry);
                     WebMvcStompWebSocketEndpointRegistration webMvcStompWebSocketEndpointRegistration = webMvcStompWebSocketEndpointRegistrations.get(0);
                     Field webSocketHandlerField = webMvcStompWebSocketEndpointRegistration.getClass().getDeclaredField("webSocketHandler");
                     //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-//                    webSocketHandlerField.setAccessible(true);
                     ReflectUtils.makeAccessible(webSocketHandlerField);
 
                     SubProtocolWebSocketHandler webSocketHandler = (SubProtocolWebSocketHandler) webSocketHandlerField.get(webMvcStompWebSocketEndpointRegistration);
                     Field field = webSocketHandler.getClass().getDeclaredField("sessions");
                     //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-//                    field.setAccessible(true);
                     ReflectUtils.makeAccessible(field);
 
                     websocketSessionsHolder  = (Map<String, Object>) field.get(webSocketHandler);
@@ -74,7 +72,7 @@ public class WebSocketUtils {
      * map的key为ws://19.168.100.88:7901/demo/webSocketServer/xxx/yyy/websocket中的yyy
      * */
     public static Map<String, WebSocketSession> getSessions() throws NoSuchFieldException, IllegalAccessException {
-        Map<String, WebSocketSession> result = new HashMap<>();
+        Map<String, WebSocketSession> result = new HashMap<>(16);
         Map<String, Object> sessionsHolder = getSessionsHolder();
         if (sessionsHolder != null) {
             for (Map.Entry<String, Object> holderEntry : sessionsHolder.entrySet()) {
@@ -82,7 +80,6 @@ public class WebSocketUtils {
                 Object val = holderEntry.getValue();
                 Field sessionField = val.getClass().getDeclaredField("session");
                 //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-//                sessionField.setAccessible(true);
                 ReflectUtils.makeAccessible(sessionField);
 
                 WebSocketSession session = (WebSocketSession) sessionField.get(val);
@@ -97,7 +94,6 @@ public class WebSocketUtils {
      * mkey为ws://19.168.100.88:7901/demo/webSocketServer/xxx/yyy/websocket中的yyy
      * */
     public static WebSocketSession getSession(String matchKey) throws NoSuchFieldException, IllegalAccessException {
-        Map<String, WebSocketSession> result = new HashMap<>();
         Map<String, Object> sessionsHolder = getSessionsHolder();
         if (sessionsHolder != null) {
             for (Map.Entry<String, Object> holderEntry : sessionsHolder.entrySet()) {
@@ -106,11 +102,9 @@ public class WebSocketUtils {
                     Object val = holderEntry.getValue();
                     Field sessionField = val.getClass().getDeclaredField("session");
                     //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-//                    sessionField.setAccessible(true);
                     ReflectUtils.makeAccessible(sessionField);
 
-                    WebSocketSession session = (WebSocketSession) sessionField.get(val);
-                    return session;
+                    return (WebSocketSession) sessionField.get(val);
                 }
             }
         }

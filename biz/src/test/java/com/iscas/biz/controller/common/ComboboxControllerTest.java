@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/19 20:39
  * @since jdk1.8
  */

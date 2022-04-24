@@ -18,7 +18,7 @@ import java.util.Arrays;
  * 这个类没有写在base-biz下的原因是AOP 切入点 对应表达式的包名 没法在父模块定义
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/9 13:56
  * @since jdk1.8
  */

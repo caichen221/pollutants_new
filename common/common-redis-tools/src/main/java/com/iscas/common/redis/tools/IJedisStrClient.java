@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * 存储字符串的方式单独拆分出来，以免造成对象存储与字符串存储调用时混淆
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/15 14:44
  * @since jdk1.8
  */

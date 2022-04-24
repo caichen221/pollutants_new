@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/20 17:51
  * @since jdk1.8
  */

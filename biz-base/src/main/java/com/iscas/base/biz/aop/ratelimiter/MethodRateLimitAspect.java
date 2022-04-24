@@ -18,19 +18,18 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-/*
+/**
  * 方法级别限流
- * */
+ *
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"unused", "UnstableApiUsage"})
 @Aspect
 @Component
 public class MethodRateLimitAspect {
-    private Logger logger = LoggerFactory.getLogger(MethodRateLimitAspect.class);
-    private Map<String, RateLimiter> rateLimiterMap = new ConcurrentHashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(MethodRateLimitAspect.class);
+    private final Map<String, RateLimiter> rateLimiterMap = new ConcurrentHashMap<>();
 
-    //    @Pointcut(("@annotation(com.iscas.quickframe.aop.MethodRateLimit)"))
-//    public void rateLimit(){
-//
-//    }
     @Around("@annotation(methodRateLimit)")
     public Object before(final ProceedingJoinPoint joinPoint, MethodRateLimit methodRateLimit) throws Throwable {
         //如果未开启限流注解，不进行方法限流逻辑判断

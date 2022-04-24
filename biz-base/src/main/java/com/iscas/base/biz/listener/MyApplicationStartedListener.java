@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
  * 启动启动后监听
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/1/24 8:48
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "CommentedOutCode"})
 @Slf4j
 @Component
 public class MyApplicationStartedListener implements ApplicationListener<ApplicationStartedEvent> {

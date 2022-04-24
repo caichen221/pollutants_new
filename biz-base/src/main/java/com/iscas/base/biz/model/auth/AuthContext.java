@@ -9,7 +9,7 @@ import java.util.List;
  * 身份认证、授权的上下文
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/21 10:57
  * @since jdk1.8
  */

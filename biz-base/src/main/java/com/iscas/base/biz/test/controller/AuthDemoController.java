@@ -17,7 +17,7 @@ import java.io.IOException;
  * 权限验证过滤器
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/17 8:35
  * @since jdk1.8
  */

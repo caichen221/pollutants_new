@@ -11,12 +11,12 @@ import java.util.Date;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/2 9:52
  * @since jdk1.8
  */
 public class AccessLogUtils {
-    private static Logger accessLogger = LoggerFactory.getLogger("accessLogger");
+    private static final Logger ACCESS_LOGGER = LoggerFactory.getLogger("accessLogger");
 
     private AccessLogUtils() {
     }
@@ -26,6 +26,7 @@ public class AccessLogUtils {
 
         Date createTime = new Date();
         AuthContext context = AuthContextHolder.getContext();
+        assert request != null;
         AccessLog accessLog = new AccessLog()
                 .setIp(SpringUtils.getIpAddr(request))
                 .setMethod(request.getMethod())
@@ -34,6 +35,6 @@ public class AccessLogUtils {
                 .setDuration(startTime != null ? createTime.getTime() - startTime : null)
                 .setStatus(status)
                 .setUsername(context == null ? null : context.getUsername());
-        accessLogger.info(accessLog.toString());
+        ACCESS_LOGGER.info(accessLog.toString());
     }
 }

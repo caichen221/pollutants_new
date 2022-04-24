@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * 暂时废弃，guava冲突，暂时用不了了
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/26 10:14
  * @since jdk1.8
  */

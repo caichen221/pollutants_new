@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
  * InetAddress测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/26 16:47
  * @since jdk1.8
  */

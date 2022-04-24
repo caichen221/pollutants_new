@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  * rar工具测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/3/14 16:19
  * @since jdk1.8
  */

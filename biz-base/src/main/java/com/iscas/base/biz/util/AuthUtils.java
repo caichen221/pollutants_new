@@ -21,10 +21,11 @@ import java.util.Optional;
  * 用户工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/2/21 9:07
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class AuthUtils {
 
     private AuthUtils() {
@@ -40,7 +41,7 @@ public class AuthUtils {
         }
 
         //如果token不为null,校验token
-        String username = null;
+        String username;
         try {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
@@ -50,10 +51,6 @@ public class AuthUtils {
         } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
         }
-//        String tokenx = (String) CaffCacheUtils.get("user-token:" + username);
-//        if(!Objects.equals(token, tokenx)){
-//            throw new AuthorizationRuntimeException("身份认证信息有误", "token有误或已被注销");
-//        }
         return username;
     }
 

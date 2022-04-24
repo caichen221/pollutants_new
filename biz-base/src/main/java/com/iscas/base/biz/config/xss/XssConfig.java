@@ -12,11 +12,11 @@ import java.util.Map;
  * xss过滤器配置类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/1/18 14:46
  * @since jdk1.8
  */
-//@Configuration
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @Slf4j
 public class XssConfig {
     @Bean

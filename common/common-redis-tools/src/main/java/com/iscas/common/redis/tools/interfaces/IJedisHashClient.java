@@ -9,7 +9,7 @@ import java.util.Set;
  * jedis-hash操作接口，适用于对象，自动序列化与反序列化
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/17 15:50
  * @since jdk1.8
  */

@@ -12,7 +12,7 @@ import java.security.spec.InvalidKeySpecException;
  * JWT测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/17 19:18
  * @since jdk1.8
  */

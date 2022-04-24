@@ -4,30 +4,24 @@ import com.iscas.base.biz.aop.enable.EnableNoRepeatSubmit;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
-
+import org.springframework.lang.NonNull;
 
 
 /**
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/27 21:43
  * @since jdk1.8
  */
 public class NoRepeatSubmitLockTypeImportSelector implements ImportSelector {
 
     @Override
-    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
-//        Class<?> annType = GenericTypeResolver.resolveTypeArgument(getClass(), NoRepeatSubmitLockTypeImportSelector.class);
-//        Assert.state(annType != null, "Unresolvable type argument for AdviceModeImportSelector");
+    @NonNull
+    public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EnableNoRepeatSubmit.class.getName(), false));
-//        if (attributes == null) {
-//            throw new IllegalArgumentException(String.format(
-//                    "@%s is not present on importing class '%s' as expected",
-//                    annType.getSimpleName(), importingClassMetadata.getClassName()));
-//        }
-
+        assert attributes != null;
         NoRepeatSubmitLockType lockType = attributes.getEnum("lockType");
         switch (lockType) {
             case JVM: {

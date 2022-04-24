@@ -11,11 +11,12 @@ import java.util.Map;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/7 14:34
  * @since jdk1.8
  * 注册用户信息的默认方式
  */
+@SuppressWarnings("rawtypes")
 public class DefaultUserAccessor implements UserAccessor {
     @Override
     public void accessor(Message<?> message, StompHeaderAccessor accessor) {

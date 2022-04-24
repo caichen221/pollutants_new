@@ -10,7 +10,7 @@ import java.io.IOException;
  * 测试GRPC流式调用
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/12 17:39
  * @since jdk1.8
  */

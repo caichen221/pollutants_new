@@ -9,7 +9,7 @@ import java.util.Date;
  * 访问日志的实体
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/29 20:37
  * @since jdk1.8
  */

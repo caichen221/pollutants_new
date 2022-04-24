@@ -4,7 +4,7 @@ package com.iscas.rule.engine.exception;
  * 自定义规则异常类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/10/20 15:19
  * @since jdk1.8
  */

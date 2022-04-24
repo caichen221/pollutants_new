@@ -6,10 +6,11 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/7 15:09
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration
 public class UserAccessorConfiguration {
 

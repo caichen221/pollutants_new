@@ -8,7 +8,7 @@ import java.util.List;
  * 多变量区间
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/1/19 14:32
  * @since jdk1.8
  */

@@ -31,7 +31,7 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.MATCH_ALL;
  * //参数化测试 @ParameterizedTest
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/18 16:42
  * @since jdk1.8
  */

@@ -3,7 +3,7 @@ package com.iscas.common.jgit.tools.exception;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/24 10:29
  * @since jdk1.8
  */

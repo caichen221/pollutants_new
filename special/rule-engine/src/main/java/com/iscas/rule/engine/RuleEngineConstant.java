@@ -4,7 +4,7 @@ package com.iscas.rule.engine;
  * 一些常量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 14:29
  * @since jdk1.8
  */

@@ -10,7 +10,7 @@ import redis.clients.jedis.JedisPool;
  * ReJson工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/29 9:14
  * @since jdk1.8
  */

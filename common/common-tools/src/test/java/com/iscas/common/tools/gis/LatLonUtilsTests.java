@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
  * 距离测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/17 15:32
  * @since jdk1.8
  */

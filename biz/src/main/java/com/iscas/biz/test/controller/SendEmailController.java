@@ -21,7 +21,7 @@ import javax.mail.internet.MimeMessage;
  * 邮件发送测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/12 21:16
  * @since jdk1.8
  */

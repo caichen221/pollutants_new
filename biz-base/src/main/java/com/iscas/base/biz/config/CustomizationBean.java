@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/28 21:03
  * @since jdk1.8
  */
 
+@SuppressWarnings("unused")
 @Component
 public class CustomizationBean implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {
 

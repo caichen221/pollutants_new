@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
  * thrift服务端工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/21 12:47
  * @since jdk1.8
  */

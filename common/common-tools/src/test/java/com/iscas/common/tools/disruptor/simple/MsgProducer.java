@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  * Disruptor 生产者
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/18 14:54
  * @since jdk1.8
  */

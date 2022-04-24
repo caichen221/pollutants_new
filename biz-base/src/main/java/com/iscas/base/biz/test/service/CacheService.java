@@ -12,7 +12,7 @@
 // * 缓存测试
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2018/7/16 17:29
 // * @since jdk1.8
 // */

@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
  * websocket消息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/26 9:14
  * @since jdk1.8
  */

@@ -4,7 +4,7 @@ package com.iscas.common.tools.junit5.testInstance.second;
  * //编写接口协定的测试
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/19 17:56
  * @since jdk1.8
  */

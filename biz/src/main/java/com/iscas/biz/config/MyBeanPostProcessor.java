@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * 自定义BeanPostProcessor
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/29
  * @since jdk11/
  */

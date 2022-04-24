@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *  测试SSE推送消息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/11 21:01
  * @since jdk1.8
  */

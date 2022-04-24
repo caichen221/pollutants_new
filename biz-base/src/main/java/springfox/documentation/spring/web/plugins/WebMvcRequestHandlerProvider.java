@@ -18,11 +18,6 @@
  */
 package springfox.documentation.spring.web.plugins;
 
-
-/**
- * 为了修复swagger与springboot2.6不兼容的问题，等swagger更新以后会删除
- * */
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Conditional;
@@ -52,10 +47,15 @@ import static springfox.documentation.builders.BuilderDefaults.*;
 import static springfox.documentation.spi.service.contexts.Orderings.*;
 import static springfox.documentation.spring.web.paths.Paths.*;
 
+/**
+ * 为了修复swagger与springboot2.6不兼容的问题，等swagger更新以后会删除
+ * */
+
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Conditional(OnServletBasedWebApplication.class)
+@SuppressWarnings("all")
 public class WebMvcRequestHandlerProvider implements RequestHandlerProvider {
     private final List<RequestMappingInfoHandlerMapping> handlerMappings;
     private final HandlerMethodResolver methodResolver;

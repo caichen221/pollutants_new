@@ -11,10 +11,11 @@ import java.util.List;
  * 角色信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 18:43
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Data
 @Accessors(chain = true)
 public class Role implements Serializable {

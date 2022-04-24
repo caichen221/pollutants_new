@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * 校验token
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/26 9:26
  * @since jdk1.8
  */

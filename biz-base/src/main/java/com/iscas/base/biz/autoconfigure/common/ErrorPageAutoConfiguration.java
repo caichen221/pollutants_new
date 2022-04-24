@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
  * 错误页面配置
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/17 8:41
  * @since jdk1.8
  */

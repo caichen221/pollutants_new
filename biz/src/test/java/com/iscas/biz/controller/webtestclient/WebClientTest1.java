@@ -12,7 +12,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/17 14:10
  * @since jdk1.8
  */

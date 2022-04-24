@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  *  规则引擎启动入口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 13:53
  * @since jdk1.8
  */

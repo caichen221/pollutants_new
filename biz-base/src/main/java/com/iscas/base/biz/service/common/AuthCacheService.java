@@ -17,10 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/7 22:50
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaServiceOrDaoClassShouldEndWithImpl", "AlibabaUndefineMagicConstant", "rawtypes", "unchecked"})
 @Service
 public class AuthCacheService implements IAuthCacheService {
     private static final String CACHE_AUTH = "auth";
@@ -34,7 +35,7 @@ public class AuthCacheService implements IAuthCacheService {
     @Value("${user.max.sessions:1}")
     private int userMaxSessions;
 
-    private Map<String, List<String>> jdkList = new WeakHashMap<>();
+    private final Map<String, List<String>> jdkList = new WeakHashMap<>();
 
     public AuthCacheService(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
@@ -46,6 +47,7 @@ public class AuthCacheService implements IAuthCacheService {
         UUID uuid = UUID.randomUUID();
         Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
         String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
+        assert loginRandomCacheTime != null;
         int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
         AuthCacheUtils.put(uuid.toString(), secretKey, "loginCache", loginRandomCacheSenconds);
         return uuid.toString();
@@ -54,42 +56,16 @@ public class AuthCacheService implements IAuthCacheService {
     @Override
     public void remove(String key, String cacheKey) {
         AuthCacheUtils.remove(key, cacheKey);
-//        if (!isRedisCacheManager()) {
-//            CaffCacheUtils.remove(key);
-//        } else {
-//            RedisCacheManager redisCacheManager = castToRedisCacheManager();
-//            Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
-//                    .ifPresent(authCache -> authCache.evict(key));
-//        }
     }
 
     @Override
     public void set(String key, Object value, String cacheKey, int ttl) {
         AuthCacheUtils.put(key, value, cacheKey, ttl);
-//        if (!isRedisCacheManager()) {
-//            CaffCacheUtils.set(key, value);
-//        } else {
-//            RedisCacheManager redisCacheManager = castToRedisCacheManager();
-//            Cache authCache = redisCacheManager.getCache(CACHE_AUTH);
-//            if (authCache == null) {
-//                throw new RuntimeException("找不到缓存：auth");
-//            }
-//            authCache.put(key, value);
-//        }
     }
 
     @Override
     public Object get(String key, String cacheKey) {
         return AuthCacheUtils.get(key, cacheKey);
-//        if (!isRedisCacheManager()) {
-//            return CaffCacheUtils.get(key);
-//        } else {
-//            RedisCacheManager redisCacheManager = castToRedisCacheManager();
-//            return Optional.ofNullable(redisCacheManager.getCache(CACHE_AUTH))
-//                    .map(authCache -> authCache.get(key))
-//                    .map(Cache.ValueWrapper::get)
-//                    .orElse(null);
-//        }
     }
 
     @Override
@@ -169,6 +145,7 @@ public class AuthCacheService implements IAuthCacheService {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isRedisCacheManager() {
         return cacheManager instanceof RedisCacheManager;
     }

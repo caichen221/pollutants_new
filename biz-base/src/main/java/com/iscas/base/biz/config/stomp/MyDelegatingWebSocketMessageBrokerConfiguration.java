@@ -1,6 +1,7 @@
 package com.iscas.base.biz.config.stomp;
 
 import cn.hutool.core.util.ReflectUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -15,19 +16,18 @@ import java.lang.reflect.Method;
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写DelegatingWebSocketMessageBrokerConfiguration
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/25 13:12
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration
-@ConditionalOnProperty(name = "ws.stomp.register", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "ws.stomp.register", havingValue = "true")
 public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingWebSocketMessageBrokerConfiguration {
 
-//    @Bean
-//    @Primary
     @Override
-    public HandlerMapping stompWebSocketHandlerMapping(WebSocketHandler subProtocolWebSocketHandler,
-                                                       TaskScheduler messageBrokerTaskScheduler) {
+    public @NotNull HandlerMapping stompWebSocketHandlerMapping(@NotNull WebSocketHandler subProtocolWebSocketHandler,
+                                                                @NotNull TaskScheduler messageBrokerTaskScheduler) {
         WebSocketHandler handler = decorateWebSocketHandler(subProtocolWebSocketHandler);
         MyWebMvcStompEndpointRegistry registry = new MyWebMvcStompEndpointRegistry(
                 handler, getTransportRegistration(), messageBrokerTaskScheduler());
@@ -36,24 +36,9 @@ public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingW
         if (applicationContext != null) {
             Method method = ReflectUtil.getMethod(MyWebMvcStompEndpointRegistry.class, "setApplicationContext", ApplicationContext.class);
             ReflectUtil.invoke(registry, method, applicationContext);
-//            setApplicationContext(applicationContext);
         }
         registerStompEndpoints(registry);
         return registry.getHandlerMapping();
     }
-
-//    public HandlerMapping stompWebSocketHandlerMapping(WebSocketHandler subProtocolWebSocketHandler,
-//                                                       TaskScheduler messageBrokerTaskScheduler) {
-//        WebSocketHandler handler = decorateWebSocketHandler(subProtocolWebSocketHandler);
-//        WebMvcStompEndpointRegistry registry = new WebMvcStompEndpointRegistry(
-//                handler, getTransportRegistration(), messageBrokerTaskScheduler);
-//        ApplicationContext applicationContext = getApplicationContext();
-//        if (applicationContext != null) {
-//            registry.setApplicationContext(applicationContext);
-//        }
-//        registerStompEndpoints(registry);
-//        return registry.getHandlerMapping();
-//    }
-
 
 }

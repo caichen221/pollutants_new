@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * sofa-rpc服务端工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/20 11:29
  * @since jdk1.8
  */

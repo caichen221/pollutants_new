@@ -10,19 +10,22 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Slf4j
-public class LoginConfig /*extends AdviceModeImportSelector<EnableAuth>*/ {
+public class LoginConfig {
     @Autowired(required = false)
     private AbstractAuthService authService;
 
     @Bean
-    public LoginFilter loginFilter(@Autowired(required = false) AbstractAuthService authService) throws Exception {
+    public LoginFilter loginFilter(@Autowired(required = false) AbstractAuthService authService) {
         return new LoginFilter(authService);
     }
 
     @Bean
-//    @Order((Ordered.HIGHEST_PRECEDENCE + 1))
-    public FilterRegistrationBean loginFilterRegistrationBean() throws Exception {
+    public FilterRegistrationBean loginFilterRegistrationBean() {
         log.info("-----注册登录验证过滤器-------");
         FilterRegistrationBean frb = new FilterRegistrationBean();
         frb.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);

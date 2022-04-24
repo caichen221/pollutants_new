@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.*;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/28 21:02
  * @since jdk1.8
  */

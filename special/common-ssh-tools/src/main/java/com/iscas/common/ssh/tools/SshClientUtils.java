@@ -12,7 +12,7 @@ import java.io.*;
  * SSH窗口工具
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/9 17:02
  * @since jdk1.8
  */

@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  * IndicativeSentences 通过连接测试名称和封闭类生成完整的句子。
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/18 13:30
  * @since jdk1.8
  */

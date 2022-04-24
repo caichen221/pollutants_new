@@ -10,7 +10,7 @@ import java.io.IOException;
  * linux下word转PDF测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/22 18:07
  * @since jdk1.8
  */

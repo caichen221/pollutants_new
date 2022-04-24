@@ -15,10 +15,11 @@ import java.util.List;
  * elasticjob配置
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/16 11:17
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ElasticJobConfig {
     @Autowired
     private CoordinatorRegistryCenter regCenter;

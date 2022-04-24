@@ -6,16 +6,16 @@
     <userTask id="request" name="请求" flowable:candidateGroups="users" flowable:assignee="${requestUser}" flowable:formFieldValidation="true" />
     <exclusiveGateway id="gateway1" />
     <sequenceFlow id="requestFlow" sourceRef="start" targetRef="request" />
-    <serviceTask id="successService" name="成功服务" flowable:class="cn.ac.iscas.flowable.demo.delegate.ApprovalDemoRequestSuccessDelegate" />
-    <userTask id="approval1" name="审批1" flowable:candidateGroups="first" flowable:formFieldValidation="true" />
+    <serviceTask id="successService" name="成功服务" flowable:class="com.iscas.biz.flowable.test.ApprovalDemoRequestSuccessDelegate" />
+    <userTask id="approval1" name="审批1" flowable:candidateGroups="first" flowable:assignee="${user1}" flowable:formFieldValidation="true" />
     <sequenceFlow id="gateway1Flow" sourceRef="request" targetRef="gateway1" />
     <exclusiveGateway id="gateway2" />
-    <userTask id="approval2" name="审批2" flowable:candidateGroups="second" flowable:formFieldValidation="true" />
-    <serviceTask id="faileService" name="失败服务" flowable:class="cn.ac.iscas.flowable.demo.delegate.ApprovalDemoFailDelegate" />
+    <userTask id="approval2" name="审批2" flowable:candidateGroups="second" flowable:assignee="${user2}" flowable:formFieldValidation="true" />
+    <serviceTask id="faileService" name="失败服务" flowable:class="com.iscas.biz.flowable.test.ApprovalDemoFailDelegate" />
     <sequenceFlow id="approvalFlow1" sourceRef="successService" targetRef="approval1" />
     <exclusiveGateway id="gateway3" />
     <sequenceFlow id="gatewayFlow3" sourceRef="approval2" targetRef="gateway3" />
-    <userTask id="bossApproval" name="最终审批" flowable:candidateGroups="boss" flowable:formFieldValidation="true" />
+    <userTask id="bossApproval" name="最终审批" flowable:candidateGroups="boss" flowable:assignee="${user3}" flowable:formFieldValidation="true" />
     <endEvent id="faileEnd" name="失败结束" />
     <endEvent id="successEnd" name="成功结束" />
     <sequenceFlow id="faileEndFlow" sourceRef="faileService" targetRef="faileEnd" />

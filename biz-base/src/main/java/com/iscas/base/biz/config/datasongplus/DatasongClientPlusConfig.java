@@ -1,12 +1,10 @@
 package com.iscas.base.biz.config.datasongplus;
 
-import com.iscas.datasong.client.plus.config.DetBeanPostProcessor;
 import com.iscas.datasong.client.plus.config.MyBeanDefinitionRegistryPostProcessor;
 import com.iscas.datasong.client.plus.model.DetProps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,15 +17,14 @@ import org.springframework.core.env.Environment;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/12 14:58
  * @since jdk1.8
  */
+@SuppressWarnings({"AccessStaticViaInstance", "AliAccessStaticViaInstance", "AlibabaRemoveCommentedCode", "unused", "UnusedAssignment", "InstantiationOfUtilityClass", "CommentedOutCode"})
 @Slf4j
 @Lazy(value = false)
-//@Configuration
 @EnableConfigurationProperties(DatasongPlusProps.class)
-//@ConditionalOnClass(DatasongPlusProps.class)
 @ConditionalOnProperty(prefix = "datasong.client.plus",matchIfMissing = true,value = "enabled")
 public class DatasongClientPlusConfig implements EnvironmentAware {
     private Environment environment;
@@ -63,9 +60,10 @@ public class DatasongClientPlusConfig implements EnvironmentAware {
 //        return new DetBeanPostProcessor(detProps);
 //    }
 
-    //新的配置方式，将repository直接注册到spring
+
     @Bean
     public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(){
+        //新的配置方式，将repository直接注册到spring
         log.info("------------配置datasong-client-plus----------------");
 
         String dbName = environment.getProperty("datasong.client.plus.dbname");
@@ -82,13 +80,14 @@ public class DatasongClientPlusConfig implements EnvironmentAware {
         detProps.setIp(ip);
         detProps.setPort(port);
         detProps.setProxyType(DetProps.ProxyType.CGLIB);
+        assert packages != null;
         detProps.setRepositoryPackages(packages.split(","));
         log.info("------------配置datasong-client-plus结束----------------");
         return new MyBeanDefinitionRegistryPostProcessor(detProps);
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NotNull Environment environment) {
         this.environment = environment;
     }
 }

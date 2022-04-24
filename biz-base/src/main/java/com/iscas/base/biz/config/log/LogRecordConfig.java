@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Lazy;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/8/30 18:06
  * @since jdk1.8
  */

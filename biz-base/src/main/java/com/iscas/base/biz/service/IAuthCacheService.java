@@ -4,10 +4,11 @@ package com.iscas.base.biz.service;
  *
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/7 22:47
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface IAuthCacheService {
     void remove(String key, String cacheKey);
     void set(String key, Object value, String cacheKey, int ttl);
@@ -19,6 +20,7 @@ public interface IAuthCacheService {
 
     int llen(String key, String cacheKey);
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean listContains(String key, String value, String cacheKey);
 
     String createCodeAndPut(String secretKey);

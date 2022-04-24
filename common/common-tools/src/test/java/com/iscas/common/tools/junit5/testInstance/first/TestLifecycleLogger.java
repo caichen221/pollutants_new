@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  * //TODO
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/19 17:39
  * @since jdk1.8
  */

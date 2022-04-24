@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/1 21:14
  * @since jdk1.8
  */

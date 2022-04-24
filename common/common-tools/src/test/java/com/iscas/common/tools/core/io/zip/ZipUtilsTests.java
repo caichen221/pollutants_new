@@ -10,7 +10,7 @@ import java.io.File;
  * zip工具测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/4/30 13:59
  * @since jdk1.8
  */

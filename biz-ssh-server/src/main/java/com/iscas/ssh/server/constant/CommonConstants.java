@@ -4,7 +4,7 @@ package com.iscas.ssh.server.constant;
  *
  * 公用常量
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/27 14:05
  * @since jdk1.8
  */

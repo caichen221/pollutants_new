@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/26 14:45
  * @since jdk1.8
  */

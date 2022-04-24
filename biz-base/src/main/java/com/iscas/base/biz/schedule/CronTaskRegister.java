@@ -13,10 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * 定时任务注册类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/2/25 18:15
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Component
 public class CronTaskRegister implements DisposableBean {
 
@@ -33,8 +34,8 @@ public class CronTaskRegister implements DisposableBean {
     /**
      * 新增定时任务
      *
-     * @param task
-     * @param cronExpression
+     * @param task task
+     * @param cronExpression cronExpression
      */
     public void addCronTask(String taskId, Runnable task, String cronExpression) {
         addCronTask(taskId, new CronTask(task, cronExpression));
@@ -57,7 +58,7 @@ public class CronTaskRegister implements DisposableBean {
     /**
      * 移除定时任务
      *
-     * @param task
+     * @param task task
      */
     public void removeCronTask(Runnable task) {
         ScheduledTask scheduledTask = this.scheduledTasks.remove(task);

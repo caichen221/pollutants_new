@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * Integer 静态方法测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/3 20:48
  * @since jdk1.8
  */

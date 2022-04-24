@@ -17,7 +17,7 @@ import java.util.Map;
  * 测试将FTL模板转化为Word
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/22 15:55
  * @since jdk1.8
  */

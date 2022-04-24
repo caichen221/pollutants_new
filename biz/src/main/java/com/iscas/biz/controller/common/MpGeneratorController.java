@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * mybatis-generator controller
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/11 16:59
  * @since jdk1.8
  */

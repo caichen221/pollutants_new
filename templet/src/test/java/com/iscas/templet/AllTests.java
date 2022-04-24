@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/7 22:07
  * @since jdk1.8
  */

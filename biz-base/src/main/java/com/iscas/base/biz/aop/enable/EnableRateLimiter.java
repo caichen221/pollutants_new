@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * 开启限流注解
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/18 11:27
  * @since jdk1.8
  */

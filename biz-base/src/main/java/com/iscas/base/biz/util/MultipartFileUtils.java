@@ -1,7 +1,6 @@
 package com.iscas.base.biz.util;
 
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.LineHandler;
 import cn.hutool.core.io.StreamProgress;
 import cn.hutool.core.lang.Assert;
 import com.iscas.common.tools.constant.CharsetConstant;
@@ -16,27 +15,29 @@ import java.io.*;
  * MultipartFile相关操作工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/23 19:33
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Slf4j
 public class MultipartFileUtils {
     public static int DEFAULT_BUFFER_SIZE = 8192;
-    private MultipartFileUtils () {}
+
+    private MultipartFileUtils() {
+    }
 
 
     /**
      * 将MultipartFile拷贝入输出流
      * 使用NIO的方式，*注意输入流输出流已经自动关闭
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/23
-     * @param multipartFile
-     * @param os 输出流
-     * @throws
+     * @param multipartFile 文件
+     * @param os            输出流
      * @return long 拷贝的字节数
+     * @throws IOException IO异常
+     * @date 2019/3/23
+     * @since jdk1.8
      */
     public static long copy(MultipartFile multipartFile, OutputStream os) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
@@ -51,13 +52,12 @@ public class MultipartFileUtils {
      * 将MultipartFile拷贝入文件
      * 使用NIO的方式，*注意输入流输出流已经自动关闭
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/23
-     * @param multipartFile
-     * @param file 输出文件
-     * @throws
+     * @param multipartFile 文件
+     * @param file          输出文件
      * @return long 拷贝的字节数
+     * @throws IOException IO异常
+     * @date 2019/3/23
+     * @since jdk1.8
      */
     public static long copy(MultipartFile multipartFile, File file) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
@@ -71,13 +71,12 @@ public class MultipartFileUtils {
      * 将MultipartFile拷贝入文件
      * 使用NIO的方式，*注意输入流输出流已经自动关闭
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/23
-     * @param multipartFile
-     * @param path 输出文件位置
-     * @throws
+     * @param multipartFile 文件
+     * @param path          输出文件位置
      * @return long 拷贝的字节数
+     * @throws IOException IO异常
+     * @date 2019/3/23
+     * @since jdk1.8
      */
     public static long copy(MultipartFile multipartFile, String path) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
@@ -91,14 +90,13 @@ public class MultipartFileUtils {
      * 将MultipartFile拷贝入输出流，带进度
      * 使用NIO的方式，*注意输入流输出流已经自动关闭
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/23
-     * @param multipartFile
-     * @param os 输出流
+     * @param multipartFile  文件
+     * @param os             输出流
      * @param streamProgress 进度
-     * @throws
      * @return long 拷贝的字节数
+     * @throws IOException IO异常
+     * @date 2019/3/23
+     * @since jdk1.8
      */
     public static long copy(MultipartFile multipartFile, OutputStream os, StreamProgress streamProgress) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
@@ -114,14 +112,13 @@ public class MultipartFileUtils {
      * 将MultipartFile拷贝入文件，带进度条
      * 使用NIO的方式，*注意输入流输出流已经自动关闭
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/23
-     * @param multipartFile
-     * @param file 输出文件
+     * @param multipartFile  文件
+     * @param file           输出文件
      * @param streamProgress 进度
-     * @throws
      * @return long 拷贝的字节数
+     * @throws IOException io异常
+     * @date 2019/3/23
+     * @since jdk1.8
      */
     public static long copy(MultipartFile multipartFile, File file, StreamProgress streamProgress) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
@@ -135,14 +132,13 @@ public class MultipartFileUtils {
      * 将MultipartFile拷贝入文件，带进度
      * 使用NIO的方式，*注意输入流输出流已经自动关闭
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/23
-     * @param multipartFile
-     * @param path 输出文件位置
+     * @param multipartFile  文件
+     * @param path           输出文件位置
      * @param streamProgress 进度
-     * @throws
      * @return long 拷贝的字节数
+     * @throws IOException IO异常
+     * @date 2019/3/23
+     * @since jdk1.8
      */
     public static long copy(MultipartFile multipartFile, String path, StreamProgress streamProgress) throws IOException {
         Assert.notNull(multipartFile, "multipartFile不能为空");
@@ -154,13 +150,13 @@ public class MultipartFileUtils {
 
     /**
      * 将multipartfile 按字符读取出来
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/26
-     * @param multipartFile
-     * @param charset 编码格式
-     * @throws
+     *
+     * @param multipartFile 文件
+     * @param charset       编码格式
      * @return java.lang.String
+     * @throws IOException IO异常
+     * @date 2019/3/26
+     * @since jdk1.8
      */
     public static String getDataAsString(MultipartFile multipartFile, String charset) throws IOException {
         try (InputStream inputStream = multipartFile.getInputStream()) {
@@ -170,12 +166,12 @@ public class MultipartFileUtils {
 
     /**
      * 将multipartfile 按字符读取出来,默认编码格式
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2019/3/26
-     * @param multipartFile
-     * @throws
+     *
+     * @param multipartFile 文件
      * @return java.lang.String
+     * @throws IOException io异常
+     * @date 2019/3/26
+     * @since jdk1.8
      */
     public static String getDataAsString(MultipartFile multipartFile) throws IOException {
         return getDataAsString(multipartFile, CharsetConstant.UTF8);

@@ -21,7 +21,7 @@ package com.iscas.common.k8s.tools;//package com.iscas.common.k8s.tools;
 // * 參考 https://github.com/fabric8io/kubernetes-client
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2019/10/30 15:55
 // * @since jdk1.8
 // */

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * <p>socketIo服务器开关</>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/26 10:14
  * @since jdk1.8
  */

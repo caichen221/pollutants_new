@@ -11,7 +11,7 @@ import java.util.List;
  * 任务配置
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/16 11:13
  * @since jdk1.8
  */

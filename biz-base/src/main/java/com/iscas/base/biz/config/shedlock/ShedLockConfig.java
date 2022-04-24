@@ -4,20 +4,18 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 /**
  * ShedLock配置
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/5/20 19:50
  * @since jdk1.8
  */
-//@Configuration
+@SuppressWarnings({"unused", "DanglingJavadoc", "CommentedOutCode"})
 @Lazy(false)
-/**是否开启定时任务锁*/
 @EnableSchedulerLock(defaultLockAtMostFor = "PT30H")
 public class ShedLockConfig {
 

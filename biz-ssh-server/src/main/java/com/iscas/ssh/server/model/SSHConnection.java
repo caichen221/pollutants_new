@@ -10,7 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
  * SSH连接信息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/27 14:07
  * @since jdk1.8
  */

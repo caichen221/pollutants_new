@@ -11,7 +11,7 @@ import redis.clients.jedis.JedisPool;
  * 全文检索工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/4 10:18
  * @since jdk1.8
  */

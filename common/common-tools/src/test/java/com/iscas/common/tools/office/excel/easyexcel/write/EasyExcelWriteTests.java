@@ -17,7 +17,7 @@ import java.util.*;
  * 参考：https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/demo/write/WriteTest.java
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/24 12:08
  * @since jdk1.8
  */

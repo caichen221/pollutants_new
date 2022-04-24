@@ -9,7 +9,7 @@ import java.util.Map;
  * Map扩展工具测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/23 9:42
  * @since jdk1.8
  */

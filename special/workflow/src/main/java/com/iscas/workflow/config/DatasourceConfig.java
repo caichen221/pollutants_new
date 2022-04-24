@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/27 13:49
  * @since jdk1.8
  */

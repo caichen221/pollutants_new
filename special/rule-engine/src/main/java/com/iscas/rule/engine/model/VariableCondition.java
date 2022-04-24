@@ -6,7 +6,7 @@ import lombok.Data;
  * 单变量条件
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/1/19 14:45
  * @since jdk1.8
  */

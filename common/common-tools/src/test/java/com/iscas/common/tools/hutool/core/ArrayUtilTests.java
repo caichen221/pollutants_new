@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/22 15:42
  * @since jdk1.8
  */

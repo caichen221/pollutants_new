@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestControllerAdvice
 @Component
 @Slf4j
@@ -193,7 +194,7 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
         HttpServletRequest request = SpringUtils.getRequest();
         HttpServletResponse response = SpringUtils.getResponse();
         if (response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN) == null) {
-            String origin = null;
+            String origin;
             try {
                 origin = CorsUtils.checkOrigin(request, response, corsProps);
             } catch (IOException e) {
@@ -229,7 +230,7 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
                 return getMessage(cause);
             }
         }
-        return message;
+        return null;
     }
 
     /**
@@ -237,7 +238,7 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
      */
     private void setResponseInfo(ResponseEntity responseEntity) {
         HttpServletRequest request = SpringUtils.getRequest();
-        Long start = null;
+        Long start;
         try {
             start = StaticInfo.START_TIME_THREAD_LOCAL.get();
         } finally {
@@ -247,10 +248,9 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
             responseEntity.setTookInMillis(System.currentTimeMillis() - start);
         }
         if (request != null) {
-            String requestURI = request.getRequestURI();
-            responseEntity.setRequestURL(requestURI);
+            String requestUri = request.getRequestURI();
+            responseEntity.setRequestURL(requestUri);
         }
     }
-
 
 }

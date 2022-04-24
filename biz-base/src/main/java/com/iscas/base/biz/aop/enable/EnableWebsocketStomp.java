@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * 开启websoket支持
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/18 14:24
  * @since jdk1.8
  */

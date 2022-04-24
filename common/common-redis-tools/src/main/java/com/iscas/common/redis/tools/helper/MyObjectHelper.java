@@ -6,7 +6,7 @@ import java.io.*;
  * 对象序列化类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/11/5 14:59
  * @since jdk1.8
  */

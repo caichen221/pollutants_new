@@ -6,7 +6,7 @@ import lombok.Data;
  * 门限
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/1/19 14:54
  * @since jdk1.8
  */

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  * 异步调用测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/10/24 19:06
  * @since jdk1.8
  */

@@ -9,7 +9,6 @@ import com.github.scribejava.core.oauth.AccessTokenRequestParams;
 import com.github.scribejava.core.oauth.OAuth20Service;
 
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Base64.Encoder;
@@ -17,12 +16,12 @@ import java.util.Base64.Encoder;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/22 13:27
  * @since jdk1.8
  */
 public class CustomAuthService extends OAuth20Service {
-    private Encoder encoder = Base64.getEncoder();
+    private final Encoder encoder = Base64.getEncoder();
 
     public CustomAuthService(DefaultApi20 api, String apiKey, String apiSecret, String callback, String scope, String responseType, OutputStream debugStream,
                              String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {

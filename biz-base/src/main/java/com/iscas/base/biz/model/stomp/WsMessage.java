@@ -6,7 +6,7 @@ import lombok.Data;
  * websocket消息
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/21 11:16
  * @since jdk1.8
  */
@@ -17,9 +17,10 @@ public class WsMessage {
     private String sender;
     private String to;
 
+    @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
     public enum MessageType {
         BROADCAST,
-        P2P;
+        P2P
     }
 
 

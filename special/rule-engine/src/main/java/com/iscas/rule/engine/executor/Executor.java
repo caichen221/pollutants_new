@@ -18,7 +18,7 @@
 // * 规则引擎执行器
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2020/1/21 14:47
 // * @since jdk1.8
 // */

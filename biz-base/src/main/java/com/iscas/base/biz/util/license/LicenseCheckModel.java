@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * 自定义需要校验的License参数
  *
+ * @author zhuquanwen
  */
 public class LicenseCheckModel implements Serializable{
 

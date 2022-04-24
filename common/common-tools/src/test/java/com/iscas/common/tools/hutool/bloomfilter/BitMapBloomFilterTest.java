@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * 布隆过滤器测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 14:24
  * @since jdk1.8
  */

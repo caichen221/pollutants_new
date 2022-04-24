@@ -15,7 +15,7 @@ import java.io.PrintWriter;
  * 文件缓存测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 15:12
  * @since jdk1.8
  */

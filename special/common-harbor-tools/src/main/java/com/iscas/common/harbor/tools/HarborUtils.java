@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
  * <>可以通过以上两种方式丰富工具</>
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/12/8 18:39
  * @since jdk1.8
  */

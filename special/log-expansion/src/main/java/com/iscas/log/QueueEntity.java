@@ -5,7 +5,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/3/6 11:22
  * @since jdk1.8
  */

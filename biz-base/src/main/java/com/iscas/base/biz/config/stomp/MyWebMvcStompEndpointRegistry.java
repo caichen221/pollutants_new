@@ -1,6 +1,7 @@
 package com.iscas.base.biz.config.stomp;
 
 import cn.hutool.core.util.ReflectUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.HttpRequestHandler;
@@ -19,7 +20,7 @@ import java.util.Map;
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写WebMvcStompEndpointRegistry
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/25 13:44
  * @since jdk1.8
  */
@@ -28,14 +29,14 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
         super(webSocketHandler, transportRegistration, defaultSockJsTaskScheduler);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public AbstractHandlerMapping getHandlerMapping() {
+    public @NotNull AbstractHandlerMapping getHandlerMapping() {
         Map<String, Object> urlMap = new LinkedHashMap<>();
-        List<WebMvcStompWebSocketEndpointRegistration> registrations = null;
+        List<WebMvcStompWebSocketEndpointRegistration> registrations;
         try {
             registrations = (List<WebMvcStompWebSocketEndpointRegistration>) ReflectUtil.getFieldValue(this, "registrations");
         } catch (Exception e) {
-//            e.printStackTrace();
             throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性registrations出错", e);
         }
         for (WebMvcStompWebSocketEndpointRegistration registration : registrations) {
@@ -48,20 +49,18 @@ public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
         }
         MyWebSocketHandlerMapping hm = new MyWebSocketHandlerMapping();
         hm.setUrlMap(urlMap);
-        int order = 1;
+        int order;
         try {
             order = (int) ReflectUtil.getFieldValue(this, "order");
         } catch (Exception e) {
-//            e.printStackTrace();
             throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性order出错", e);
         }
         hm.setOrder(order);
 
-        UrlPathHelper urlPathHelper = null;
+        UrlPathHelper urlPathHelper;
         try {
             urlPathHelper = (UrlPathHelper) ReflectUtil.getFieldValue(this, "urlPathHelper");
         } catch (Exception e) {
-//            e.printStackTrace();
             throw new StompRegistryException("从WebMvcStompEndpointRegistry中反射获取属性urlPathHelper出错", e);
         }
         if (urlPathHelper != null) {

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 健康检测工具类测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/26 15:56
  * @since jdk1.8
  */

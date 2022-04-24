@@ -23,7 +23,7 @@ import java.security.Principal;
  * websocket消息控制器
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/26
  * @since jdk1.8
  */

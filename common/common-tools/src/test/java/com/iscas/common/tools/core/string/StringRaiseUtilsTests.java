@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/22 20:13
  * @since jdk1.8
  */

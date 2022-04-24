@@ -10,7 +10,7 @@ import java.util.List;
  * 测试用户属性
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/9 16:28
  * @since jdk1.8
  */

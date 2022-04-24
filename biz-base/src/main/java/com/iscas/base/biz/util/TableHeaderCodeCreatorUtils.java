@@ -1,7 +1,6 @@
 package com.iscas.base.biz.util;
 
 
-
 import com.iscas.common.tools.core.reflect.ReflectUtils;
 import lombok.Cleanup;
 import org.apache.commons.collections.CollectionUtils;
@@ -16,61 +15,59 @@ import java.util.List;
  * 代码生成器工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/25 17:11
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked", "ResultOfMethodCallIgnored"})
 public class TableHeaderCodeCreatorUtils {
-    private TableHeaderCodeCreatorUtils(){}
+    private TableHeaderCodeCreatorUtils() {
+    }
 
     /**
      * 生成表头信息到JSON文件
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/25
-     * @param clazzs 实体类集合
+     * @param clazzs    实体类集合
      * @param targetDir 目标路 最好写个径绝对路径
-     * @throws FileNotFoundException
-     * @return void
+     * @throws FileNotFoundException 文件未找到异常
+     * @date 2018/7/25
+     * @since jdk1.8
      */
-    public static  void create(List<Class> clazzs, String targetDir) throws FileNotFoundException {
+    public static void create(List<Class> clazzs, String targetDir) throws FileNotFoundException {
 
         for (Class clazz : clazzs) {
-            create(clazz,targetDir);
+            create(clazz, targetDir);
         }
     }
 
     /**
      * 生成表头信息到JSON文件
      *
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2018/7/25
-     * @param clazz 实体类
+     * @param clazz     实体类
      * @param targetDir 目标路 最好写个径绝对路径
-     * @throws FileNotFoundException
-     * @return void
+     * @throws FileNotFoundException 未找到文件异常
+     * @date 2018/7/25
+     * @since jdk1.8
      */
-    public static <T> void create(Class<T> clazz,  String targetDir) throws FileNotFoundException {
+    public static <T> void create(Class<T> clazz, String targetDir) throws FileNotFoundException {
 
         File parentFile = new File(targetDir);
-        if(!parentFile.exists()){
+        if (!parentFile.exists()) {
             parentFile.mkdirs();
         }
         //创建tableInfo
-        createTableInfo(clazz,  parentFile);
+        createTableInfo(clazz, parentFile);
     }
 
-    private static <T> void createTableInfo(Class<T> clazz,  File parentFile) throws FileNotFoundException {
+    private static <T> void createTableInfo(Class<T> clazz, File parentFile) throws FileNotFoundException {
         String changeLine = System.getProperty("line.separator");
         File file = new File(parentFile, "tableInfo");
-        if(!file.exists()){
+        if (!file.exists()) {
             file.mkdirs();
         }
 
         File reFile = new File(file, StringUtils.upperFist(clazz.getSimpleName()) + ".json");
-        if(reFile.exists()){
+        if (reFile.exists()) {
             throw new RuntimeException(reFile.getAbsolutePath() + "已经存在,无法创建");
         }
         StringBuilder sb = new StringBuilder();
@@ -87,10 +84,10 @@ public class TableHeaderCodeCreatorUtils {
         sb.append("\t").append("\"link\": ").append(false).append(",").append(changeLine);
         sb.append("\t").append("\"type\": ").append("\"text\"").append(changeLine);
         sb.append("\t").append("\t").append("}").append(",").append(changeLine);
-        if(!CollectionUtils.isEmpty(fields)){
+        if (!CollectionUtils.isEmpty(fields)) {
             int i = 0;
             for (String name : fields) {
-                if(i++ != 0){
+                if (i++ != 0) {
                     sb.append("\t").append(",").append(changeLine);
                 }
                 sb.append("\t").append("{").append(changeLine);
@@ -117,9 +114,7 @@ public class TableHeaderCodeCreatorUtils {
         sb.append("}");
 
         @Cleanup PrintWriter pw = new PrintWriter(new FileOutputStream(reFile, true));
-        pw.println(sb.toString());
-
+        pw.println(sb);
     }
-
 
 }

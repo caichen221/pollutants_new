@@ -6,7 +6,7 @@ import lombok.Data;
  * 正常值
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/1/19 15:02
  * @since jdk1.8
  */

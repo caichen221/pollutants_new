@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assumptions;
  * //Assumptions测试
  *
  * @author yuemingyang
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/19 16:52
  * @since jdk1.8
  */

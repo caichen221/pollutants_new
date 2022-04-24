@@ -8,7 +8,7 @@ import java.awt.geom.AffineTransform;
 /**
  * 测试线程亲和性调度
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/7/7 20:46
  * @since jdk1.8
  */

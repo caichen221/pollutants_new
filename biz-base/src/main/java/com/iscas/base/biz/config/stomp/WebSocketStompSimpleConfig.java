@@ -12,18 +12,18 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 /**
  * webscoket配置
  *
-* @auth zhuquanwen
- *
+ * @author zhuquanwen
  **/
 
-//@Configuration
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "unused"})
 @EnableWebSocketMessageBroker
-public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBrokerConfigurer*/ implements WebSocketMessageBrokerConfigurer {
+public class WebSocketStompSimpleConfig implements WebSocketMessageBrokerConfigurer {
     public static StompEndpointRegistry endpointRegistry;
     @Autowired
     private CorsProps corsProps;
     @Value("${ws.sockjs.enabled:true}")
     private boolean wsSockJsEnabled;
+
     /**
      * 注册stomp的端点
      */
@@ -77,9 +77,7 @@ public class WebSocketStompSimpleConfig /*extends AbstractWebSocketMessageBroker
     }
 
 
-
-     /*将客户端渠道拦截器加入spring ioc容器*/
-//    @Bean
+    /**将客户端渠道拦截器加入spring ioc容器*/
     public UserInterceptor createUserInterceptor() {
         return new UserInterceptor();
     }

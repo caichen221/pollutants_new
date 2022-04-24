@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * replaceFirst替换第一个
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/25 14:56
  * @since jdk1.8
  */

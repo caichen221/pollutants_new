@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * 使用Jdk模拟redis的操作，这里不需要依赖redis,适用不用Redis的环境，但可用Redis的接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/05/08
  * @since jdk1.8
  */

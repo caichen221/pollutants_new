@@ -20,7 +20,7 @@ import javax.validation.constraints.NotBlank;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/8/17 20:49
  * @since jdk1.8
  */

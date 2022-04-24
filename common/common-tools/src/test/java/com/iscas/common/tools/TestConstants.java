@@ -3,7 +3,7 @@ package com.iscas.common.tools;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/4/29 15:57
  * @since jdk1.8
  */

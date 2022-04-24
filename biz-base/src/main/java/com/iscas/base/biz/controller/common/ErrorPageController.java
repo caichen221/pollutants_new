@@ -16,44 +16,51 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @Api(tags = "全局异常处理")
 public class ErrorPageController {
     @Value("${spring.servlet.multipart.max-file-size:10485760000}")
     private String maxFileSize;
+
     @RequestMapping(value = "/401", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity to401(){
+    public ResponseEntity to401() {
         AuthContextHolder.removeContext();
         return new ResponseEntity(401, "未登录");
     }
 
     @RequestMapping(value = "/403", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity to403(){
+    public ResponseEntity to403() {
         AuthContextHolder.removeContext();
         return new ResponseEntity(403, "没有权限");
     }
 
     @RequestMapping(value = "/404", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity to404(){
+    public ResponseEntity to404() {
         AuthContextHolder.removeContext();
         return new ResponseEntity(404, "找不到资源");
     }
 
     @RequestMapping(value = "/502", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public ResponseEntity to502(){
+    public ResponseEntity to502() {
         AuthContextHolder.removeContext();
         return new ResponseEntity(502, "网关错误");
     }
+
     @RequestMapping(value = "/400", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity to400(){
+    public ResponseEntity to400() {
         AuthContextHolder.removeContext();
         return new ResponseEntity(400, "请求无效");
     }
+
     @RequestMapping(value = "/500", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500() throws Exception {
@@ -61,12 +68,12 @@ public class ErrorPageController {
         HttpServletRequest request = SpringUtils.getRequest();
         Object attribute = request.getAttribute("javax.servlet.error.exception");
         //如果是文件太大了异常 抛处错误给前台
-        if(attribute instanceof IllegalStateException){
+        if (attribute instanceof IllegalStateException) {
             IllegalStateException exception = (IllegalStateException) attribute;
             Throwable cause = exception.getCause();
             //TODO 这里耦合的Undertow的包，如果以后替为tomcat这段要删除或作其他处理
-            if(cause != null && cause instanceof MultiPartParserDefinition.FileTooLargeException){
-                throw new BaseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception)attribute).getMessage());
+            if (cause instanceof MultiPartParserDefinition.FileTooLargeException) {
+                throw new BaseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception) attribute).getMessage());
             }
         } else if (attribute instanceof AuthenticationRuntimeException) {
             throw (AuthenticationRuntimeException) attribute;

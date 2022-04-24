@@ -14,7 +14,7 @@ import java.util.List;
  * 测试动态开启一个流式定时任务,配置为流式拉取，会一直拉取，直到fetchData没有获取到数据或者发生了重新分片才会停止
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/17 13:16
  * @since jdk1.8
  */

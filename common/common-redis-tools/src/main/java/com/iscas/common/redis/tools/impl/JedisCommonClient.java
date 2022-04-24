@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * Jedis通用客户端接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/19 12:53
  * @since jdk1.8
  */

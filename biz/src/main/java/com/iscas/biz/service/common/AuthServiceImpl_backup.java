@@ -43,7 +43,7 @@
 // * 用户认证鉴权service
 // *
 // * @author zhuquanwen
-// * @vesion 1.0
+// * @version 1.0
 // * @date 2018/7/16 18:58
 // * @since jdk1.8
 // */

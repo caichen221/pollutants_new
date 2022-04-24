@@ -13,23 +13,23 @@ import java.util.regex.Pattern;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/17 15:16
  * @since jdk1.8
  */
 public class CorsUtils {
     private CorsUtils() {}
 
-    private static Pattern originErrorPattern = Pattern.compile("[&<>^$!]");
+    private static final Pattern ORIGIN_ERROR_PATTERN = Pattern.compile("[&<>^$!]");
 
+    @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static String checkOrigin(HttpServletRequest request, HttpServletResponse response, CorsProps corsProps) throws IOException {
         String origin = request.getHeader(HeaderKey.ORIGIN);
         if (origin == null || "null".equals(origin)) {
-//            origin = corsProps.getOrigin();
             origin = corsProps.getOriginPattern();
         }
         //为了不报安全漏洞，检测一下origin
-        Matcher matcher = originErrorPattern.matcher(origin);
+        Matcher matcher = ORIGIN_ERROR_PATTERN.matcher(origin);
         if (matcher.find()) {
             rejectRequest(response);
             return null;

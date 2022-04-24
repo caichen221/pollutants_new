@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+@SuppressWarnings("ALL")
 public class DataSongDriver implements Driver {
     public final static String DEFAULT_PREFIX = "jdbc:datasong:";
     public final static String DRIVER_PREFIX = "driver=";

@@ -10,7 +10,7 @@ import java.util.Map;
  * feign的请求拦截器
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/31 15:28
  * @since jdk1.8
  */

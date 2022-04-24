@@ -8,7 +8,7 @@ import org.jsoup.safety.Whitelist;
  * Jsoup工具尅
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/1/18 14:40
  * @since jdk1.8
  */
@@ -32,10 +32,5 @@ public class JsoupUtils {
     public static String clean(String content) {
         return Jsoup.clean(content, "", WHITELIST, OUTPUT_SETTINGS);
     }
-
-//    public static void main(String[] args) throws FileNotFoundException, IOException {
-//        String text = "<a href=\"http://www.baidu.com/a\" onclick=\"alert(1);\">sss</a><script>alert(0);</script>sss";
-//        System.out.println(clean(text));
-//    }
 
 }

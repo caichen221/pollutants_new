@@ -15,16 +15,15 @@ import com.github.scribejava.core.oauth2.clientauthentication.RequestBodyAuthent
 import java.io.OutputStream;
 
 /**
- *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/22 13:31
  * @since jdk1.8
  */
 public class OpenAuthApi extends DefaultApi20 {
-    private String accessTokenUri;
-    private String authorizationBaseUri;
-    private String revokeTokenUri;
+    private final String accessTokenUri;
+    private final String authorizationBaseUri;
+    private final String revokeTokenUri;
 
     public OpenAuthApi(String accessTokenUri, String authorizationBaseUri, String revokeTokenUri) {
         this.accessTokenUri = accessTokenUri;
@@ -39,7 +38,8 @@ public class OpenAuthApi extends DefaultApi20 {
 
     /**
      * 添加appId跟appKey采用在http的请求body中添加
-     * @return
+     *
+     * @return ClientAuthentication
      */
     @Override
     public ClientAuthentication getClientAuthentication() {
@@ -48,7 +48,8 @@ public class OpenAuthApi extends DefaultApi20 {
 
     /**
      * 授权的token在http请求的body中传递
-     * @return
+     *
+     * @return BearerSignature
      */
     @Override
     public BearerSignature getBearerSignature() {

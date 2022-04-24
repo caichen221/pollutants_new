@@ -2,22 +2,24 @@ package com.iscas.base.biz.autoconfigure.i18n;
 
 import cn.hutool.core.util.StrUtil;
 import com.iscas.common.tools.constant.HeaderKey;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/12/6 13:31
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
 public class I18nAutoConfiguration {
 
@@ -31,9 +33,9 @@ public class I18nAutoConfiguration {
      */
     static class I18nLocaleResolver implements LocaleResolver {
 
-        @NotNull
         @Override
-        public Locale resolveLocale(HttpServletRequest httpServletRequest) {
+        @NonNull
+        public Locale resolveLocale(@NonNull HttpServletRequest httpServletRequest) {
             String language = httpServletRequest.getHeader(HeaderKey.CONTENT_LANGUAGE);
             Locale locale = Locale.getDefault();
             if (StrUtil.isNotBlank(language)) {

@@ -8,7 +8,7 @@ import java.util.function.Consumer;
  * Jedis通用接口
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/20 19:38
  * @since jdk1.8
  */

@@ -7,7 +7,7 @@ import com.iscas.common.rpc.tools.sofa.SofaRpcOptions;
  * sofa-rpc客户端工具类
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/20 11:44
  * @since jdk1.8
  */

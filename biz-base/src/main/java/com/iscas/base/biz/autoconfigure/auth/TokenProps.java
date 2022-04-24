@@ -14,20 +14,21 @@ import java.time.temporal.ChronoUnit;
  * token配置表
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/17 8:31
  * @since jdk1.8
  */
 @Data
-//@Component
 @ConstructorBinding
 @ConfigurationProperties(prefix = "token")
 public class TokenProps {
 
     /**token过期时间(分钟)*/
+    @SuppressWarnings("UnusedAssignment")
     private Duration expire = Duration.ofMinutes(14440);
 
     /** token保存在cookie的时间(毫秒)*/
+    @SuppressWarnings("UnusedAssignment")
     private int cookieExpire = -1;
 
     /**是否将token存入cookie*/

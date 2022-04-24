@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
  * 硬件数据的实体
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2020/11/24 16:21
  * @since jdk1.8
  */

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/27 21:58
  * @since jdk1.8
  */

@@ -7,7 +7,7 @@ import org.zeromq.ZMQ;
  * zeromq推送数据端
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/16 10:24
  * @since jdk1.8
  */

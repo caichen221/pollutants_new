@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * 测试动态创建普通定时任务
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/9/16 15:49
  * @since jdk1.8
  */

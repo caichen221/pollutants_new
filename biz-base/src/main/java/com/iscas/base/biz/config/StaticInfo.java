@@ -4,7 +4,7 @@ package com.iscas.base.biz.config;
  * 一些静态变量
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/18 13:43
  * @since jdk1.8
  */
@@ -16,5 +16,6 @@ public class StaticInfo {
     public static boolean ENABLE_AUTH = false;
 
     /**访问开始时间ThreadLocal*/
+    @SuppressWarnings("AlibabaThreadLocalShouldRemove")
     public static ThreadLocal<Long> START_TIME_THREAD_LOCAL = new ThreadLocal<>();
 }

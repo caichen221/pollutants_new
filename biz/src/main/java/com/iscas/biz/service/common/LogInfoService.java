@@ -5,7 +5,7 @@ import com.iscas.biz.domain.common.LogInfo;
 
 /**
  * @author lirenshen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/2/20 18:26
  * @since jdk1.8
  */

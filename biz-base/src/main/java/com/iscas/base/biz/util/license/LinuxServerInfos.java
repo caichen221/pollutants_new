@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 
 /**
  * 用于获取客户Linux服务器的基本信息
+ * @author zhuquanwen
  */
+@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
 public class LinuxServerInfos extends AbstractServerInfos {
 
     @Override

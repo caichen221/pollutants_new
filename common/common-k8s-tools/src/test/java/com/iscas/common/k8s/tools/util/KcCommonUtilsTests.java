@@ -12,7 +12,7 @@ import org.junit.runners.JUnit4;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/12/2 14:24
  * @since jdk1.8
  */

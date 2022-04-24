@@ -9,10 +9,11 @@ import org.springframework.core.Ordered;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/8/7 13:51
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 public class RefererFilterConfig {
     @Value("#{'${referer-allow-domains}'.split(',')}")
     private String[] allowDomains;

@@ -8,7 +8,7 @@ import org.junit.Test;
  * Character工具类测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/25 13:55
  * @since jdk1.8
  */

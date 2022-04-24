@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/3 19:23
  * @since jdk1.8
  */

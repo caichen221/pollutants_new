@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  *拼音工具测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/9 17:23
  * @since jdk1.8
  */

@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.controller;
 
+import com.iscas.biz.mp.aop.enable.ConditionalOnQuartz;
 import com.iscas.biz.mp.model.QrtzJob;
 import com.iscas.biz.mp.service.common.impl.QrtzJobServiceImpl;
 import com.iscas.templet.common.BaseController;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/qrtz/jobs")
 @RequiredArgsConstructor
+@ConditionalOnQuartz
 public class QrtzJobController extends BaseController {
 
     private final QrtzJobServiceImpl jobService;

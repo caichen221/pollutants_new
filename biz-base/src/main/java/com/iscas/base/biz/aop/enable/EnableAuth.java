@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * 开启用户认证权限校验注解
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/18 13:37
  * @since jdk1.8
  */

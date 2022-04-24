@@ -15,7 +15,7 @@ import java.util.Base64;
  * 判断文件的类型
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/8/6 9:11
  * @since jdk1.8
  */

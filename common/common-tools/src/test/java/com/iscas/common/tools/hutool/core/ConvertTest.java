@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * 同时支持第二个参数defaultValue用于在转换失败时返回一个默认值。
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 15:57
  * @since jdk1.8
  */

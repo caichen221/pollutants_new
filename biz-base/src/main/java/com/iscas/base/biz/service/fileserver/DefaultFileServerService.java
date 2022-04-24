@@ -20,10 +20,11 @@ import java.util.Map;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/9/25 15:52
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @Service
 @Slf4j
 public class DefaultFileServerService implements FileServerService, TimeConstant {
@@ -40,6 +41,7 @@ public class DefaultFileServerService implements FileServerService, TimeConstant
         File path = getPath();
         for (MultipartFile multipartFile : files) {
             String key = multipartFile.getOriginalFilename();
+            assert key != null;
             File file = new File(path, key);
             FileUtils.touch(file);
             MultipartFileUtils.copy(multipartFile, file);

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 测试@PropertyResource
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/21 21:37
  * @since jdk1.8
  */

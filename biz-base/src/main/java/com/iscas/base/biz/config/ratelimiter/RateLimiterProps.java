@@ -10,20 +10,27 @@ import java.util.List;
 
 /**
  * 限流属性
- * */
+ *
+ * @author zhuquanwen
+ */
 @ConfigurationProperties(prefix = "rate.limiter")
 @Data
-//@Component
 public class RateLimiterProps {
 
-    /**每秒产生令牌数*/
+    /**
+     * 每秒产生令牌数
+     */
     private double permitsPerSecond = 20;
 
-    /**获取令牌最大等待时间毫秒数*/
+    /**
+     * 获取令牌最大等待时间毫秒数
+     */
     @DurationUnit(ChronoUnit.MILLIS)
     private Duration maxWait = Duration.ofMillis(500);
 
-    /**静态资源*/
+    /**
+     * 静态资源
+     */
     private List<String> staticUrl;
 
 }

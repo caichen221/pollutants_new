@@ -31,7 +31,7 @@ import java.util.Map;
  * 登陆控制器
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/16 22:38
  * @since jdk1.8
  */

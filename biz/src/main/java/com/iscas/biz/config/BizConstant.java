@@ -3,7 +3,7 @@ package com.iscas.biz.config;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/11/27 17:32
  * @since jdk1.8
  */

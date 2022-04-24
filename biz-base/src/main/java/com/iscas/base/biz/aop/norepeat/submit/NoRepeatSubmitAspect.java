@@ -5,8 +5,6 @@ import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitBean;
 import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.common.web.tools.cookie.CookieUtils;
-import com.iscas.templet.exception.BaseRuntimeException;
 import com.iscas.templet.exception.RepeatSubmitException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,17 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.text.MessageFormat;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2019/5/27 21:11
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Aspect
 @Component
 @Slf4j
@@ -104,6 +101,7 @@ public class NoRepeatSubmitAspect implements Constants {
                     applicationContext.getBean(INoRepeatSubmitRedisHandler.class).remove(key);
                     break;
                 }
+                default:
             }
         }
     }

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * 先进先出缓存测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/10/8 14:53
  * @since jdk1.8
  */

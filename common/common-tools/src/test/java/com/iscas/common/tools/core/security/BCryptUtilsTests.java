@@ -9,7 +9,7 @@ import java.security.SecureRandom;
  * BcryptUtils测试
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/3/14 13:03
  * @since jdk1.8
  */

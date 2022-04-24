@@ -6,6 +6,7 @@ import com.iscas.templet.common.ResponseEntity;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 输出工具类
@@ -13,13 +14,14 @@ import java.io.IOException;
  * 废弃 使用抛异常的方式
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2018/7/17 17:33
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @Deprecated
 public class OutputUtils {
-    private static Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
     private OutputUtils(){}
 
     public static void output(HttpServletResponse response, int status, String msg, String desc) throws IOException {
@@ -29,7 +31,7 @@ public class OutputUtils {
         ServletOutputStream pw = response.getOutputStream();
         ResponseEntity responseEntity = new ResponseEntity(status,msg);
         responseEntity.setDesc(desc);
-        pw.write(gson.toJson(responseEntity).getBytes("UTF-8"));
+        pw.write(GSON.toJson(responseEntity).getBytes(StandardCharsets.UTF_8));
         pw.flush();
 //        pw.close();
     }
@@ -39,7 +41,7 @@ public class OutputUtils {
         response.setCharacterEncoding("UTF-8");
         response.setStatus(status);
         ServletOutputStream pw = response.getOutputStream();
-        pw.write(gson.toJson(responseEntity).getBytes("UTF-8"));
+        pw.write(GSON.toJson(responseEntity).getBytes(StandardCharsets.UTF_8));
         pw.flush();
 //        pw.close();
     }

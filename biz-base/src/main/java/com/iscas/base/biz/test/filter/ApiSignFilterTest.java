@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/2/21 15:52
  * @since jdk1.8
  */

@@ -10,7 +10,7 @@ import org.luaj.vm2.LuaValue;
  * 测试Lua调用Java
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/1/2 18:26
  * @since jdk1.8
  */
