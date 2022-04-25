@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "rawtypes"})
 @Repository
 public interface UserMapper extends DynamicMapper<User> {
 
@@ -28,6 +32,7 @@ public interface UserMapper extends DynamicMapper<User> {
     @Select("select * from user_info t where t.user_name = #{username}")
     User selectByUserName(String username);
 
+    @SuppressWarnings("UnusedReturnValue")
     @Insert("insert into user_info (user_name, user_pwd) values (#{user.userName}, #{user.userPwd})")
     @Options(useGeneratedKeys=true, keyProperty= "user.userId")
     int insertUser(@Param("user") User user);

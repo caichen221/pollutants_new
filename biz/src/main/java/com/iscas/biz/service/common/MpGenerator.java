@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @date 2018/9/26 16:59
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Service
 @ConditionalOnMybatis
 public class MpGenerator {

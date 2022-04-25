@@ -1,12 +1,6 @@
 package com.iscas.biz.domain.common;
 
-/**
- * 文件上传的实体
- * @author zhuquanwen
- * @version 1.0
- * @date 2022/1/10 14:47
- * @since jdk1.8
- */
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,7 +9,14 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-
+/**
+ * 文件上传的实体
+ *
+ * @author zhuquanwen
+ * @version 1.0
+ * @date 2022/1/10 14:47
+ * @since jdk1.8
+ */
 @Data
 @Accessors(chain = true)
 @TableName(value = "file_info")

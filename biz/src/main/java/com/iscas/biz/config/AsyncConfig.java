@@ -15,12 +15,13 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2021/2/26 10:41
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer, BizConstant {
-    private static int ASYNC_KEEPALIVE_SECONDS = 60;
+    private static final int ASYNC_KEEPALIVE_SECONDS = 60;
 
-    private static int  ASYNC_QUEUE_CAPACITY = 20000;
+    private static final int  ASYNC_QUEUE_CAPACITY = 20000;
 
     @Bean("asyncExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {

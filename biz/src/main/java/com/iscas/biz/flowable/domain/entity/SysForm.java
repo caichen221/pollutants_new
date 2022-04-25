@@ -20,12 +20,10 @@ public class SysForm extends BaseEntity {
     /**
      * 表单名称
      */
-//    @Excel(name = "表单名称")
     private String formName;
 
     /**
      * 表单内容
      */
-//    @Excel(name = "表单内容")
     private String formContent;
 }

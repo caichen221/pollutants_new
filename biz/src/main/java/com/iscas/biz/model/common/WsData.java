@@ -22,6 +22,7 @@ public class WsData<T> {
     private String msgId;
 
     /**消息类型*/
+    @SuppressWarnings("UnusedAssignment")
     private MsgTypeEnum type = MsgTypeEnum.BUSINESS;
 
     /**用户标识*/
@@ -43,8 +44,10 @@ public class WsData<T> {
     private boolean ack;
 
     public enum MsgTypeEnum {
-        SYSTEM,//系统通知（显示在上方消息通知内）
-        BUSINESS; //业务消息
+        /**系统通知（显示在上方消息通知内）*/
+        SYSTEM,
+        /**业务消息*/
+        BUSINESS
     }
 
     public WsData(String msgId, MsgTypeEnum type, String userIdentity, boolean persistent, T data) {

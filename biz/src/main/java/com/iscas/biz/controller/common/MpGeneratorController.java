@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018/10/11 16:59
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @RequestMapping("/mp")
 @ConditionalOnMybatis

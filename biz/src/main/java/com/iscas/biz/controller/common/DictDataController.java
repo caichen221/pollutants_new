@@ -33,13 +33,14 @@ import java.util.Map;
  * @date 2021/2/25 16:15
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/dictData")
 @Api(tags = "字典管理")
 @ConditionalOnMybatis
 public class DictDataController extends BaseController {
 
-    private final static String tableIdentity = "dict_data";
+    private final static String TABLE_IDENTITY = "dict_data";
     @Autowired
     private TableDefinitionService tableDefinitionService;
     @Autowired
@@ -48,7 +49,7 @@ public class DictDataController extends BaseController {
     @ApiOperation(value = "获取表头", notes = "不带数据，带下拉列表")
     @GetMapping(value = "/getHeader", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
-        return tableDefinitionService.getHeaderWithOption(tableIdentity);
+        return tableDefinitionService.getHeaderWithOption(TABLE_IDENTITY);
     }
 
     @ApiOperation(value = "查询表格数据", notes = "不带表头")
@@ -60,7 +61,7 @@ public class DictDataController extends BaseController {
     @PostMapping(value = "/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
-        return tableDefinitionService.getData(tableIdentity, request, null);
+        return tableDefinitionService.getData(TABLE_IDENTITY, request, null);
     }
 
     @ApiOperation(value = "删除字典数据", notes = "根据主键删除数据")
@@ -88,7 +89,7 @@ public class DictDataController extends BaseController {
     @LogRecord(type = LogType.SYSTEM, desc = "新增字典数据", operateType = OperateType.add)
     public ResponseEntity saveData(@RequestBody Map<String, Object> data) throws ValidDataException {
         ImmutableMap<String, Object> forceItem = ImmutableMap.of("create_by", getUsername(), "create_time", DateSafeUtils.format(new Date()));
-        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
+        return tableDefinitionService.saveData(TABLE_IDENTITY, data, false, null, forceItem);
     }
 
     @ApiOperation(value = "修改字典数据", notes = "更新")
@@ -102,7 +103,7 @@ public class DictDataController extends BaseController {
     public ResponseEntity editData(@RequestBody Map<String, Object> data)
             throws ValidDataException {
         ImmutableMap<String, Object> forceItem = ImmutableMap.of("update_by", getUsername(), "update_time", DateSafeUtils.format(new Date()));
-        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
+        return tableDefinitionService.saveData(TABLE_IDENTITY, data, false, null, forceItem);
     }
 
     private String getUsername() {

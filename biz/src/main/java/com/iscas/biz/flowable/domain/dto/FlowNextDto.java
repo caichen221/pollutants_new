@@ -21,9 +21,7 @@ public class FlowNextDto implements Serializable {
 
     private String vars;
 
-    // todo
     private List<User> userList;
 
-    // todo
     private List<Role> roleList;
 }

@@ -15,16 +15,13 @@ import java.util.UUID;
  * @since jdk1.8
  */
 
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "rawtypes", "MismatchedQueryAndUpdateOfCollection", "unchecked"})
 public interface IEventHandler {
     void onConnect(SocketIOClient client);
     void onDisConnect(SocketIOClient client);
 
 
     default void connect(SocketIOClient client) {
-//        if (!client.getNamespace().getName().equals("/chat")) {
-////            client.disconnect();
-//            return;
-//        }
         String token = client.getHandshakeData().getSingleUrlParam("Authorization");
         if (token == null) {
             System.err.println("客户端" + client.getSessionId() + "建立websocket连接失败，Authorization不能为null");
@@ -32,32 +29,12 @@ public interface IEventHandler {
             return;
         }
 
-        Map header = new HashMap<>();
+        Map header = new HashMap<>(2);
         header.put("Authorization", token);
 
-        String username = null;
-//        try {
-//            Map<String, Claim> claimMap = JWTUtils.verifyToken(token);
-//            username = claimMap.get("username").asString();
-//            if (username == null) {
-//                throw new RuntimeException("websocket认证失败");
-//            }
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("websocket认证失败", e);
-//        } catch (ValidTokenException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("websocket认证失败", e);
-//        }
-        username = token;
-        if (username != null) {
-            System.out.println("客户端" + client.getSessionId() + "建立websocket连接成功");
-            //将用户名和clientId对应 方便推送时候使用
-            SocketIOStaticInfo.userClientIdMap.put(username, client.getSessionId());
-        } else {
-            System.err.println("客户端" + client.getSessionId() + "建立websocket连接失败");
-            client.disconnect();
-        }
+        System.out.println("客户端" + client.getSessionId() + "建立websocket连接成功");
+        //将用户名和clientId对应 方便推送时候使用
+        SocketIOStaticInfo.userClientIdMap.put(token, client.getSessionId());
 
     }
 

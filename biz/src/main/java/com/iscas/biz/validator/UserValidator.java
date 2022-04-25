@@ -14,6 +14,7 @@ import java.util.Map;
  * @date 2021/12/6 14:31
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public class UserValidator implements ConstraintValidator<UserConstraint, Map<String, Object>> {
     @Override
     public boolean isValid(Map<String, Object> user, ConstraintValidatorContext context) {
@@ -21,9 +22,6 @@ public class UserValidator implements ConstraintValidator<UserConstraint, Map<St
             return false;
         }
         String userName = (String) user.get("user_name");
-        if (StringUtils.isBlank(userName) || userName.length() < 2 || userName.length() > 20) {
-            return false;
-        }
-        return true;
+        return !StringUtils.isBlank(userName) && userName.length() >= 2 && userName.length() <= 20;
     }
 }

@@ -6,10 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrgRoleMapper extends DynamicMapper<OrgRoleKey> {
-
-//    int deleteByExample(OrgRoleExample example);
-
-
-//    int insert(OrgRoleKey record);
-
 }

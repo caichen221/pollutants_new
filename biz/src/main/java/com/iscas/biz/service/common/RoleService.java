@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  * @date 2021/2/21 19:50
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Service
 @ConditionalOnMybatis
 public class RoleService extends ServiceImpl<RoleMapper, Role> {
@@ -58,14 +59,10 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
     }
 
     public TreeResponseData getMenuTree(Integer roleId) {
-//        Role role = roleMapper.selectByPrimaryKey(roleId);
         Role role = this.getById(roleId);
         AssertObjUtils.assertNotNull(role, StringRaiseUtils.format("角色ID：{}不存在", roleId));
 
         TreeResponseData<Menu> tree = menuService.getTree();
-//        RoleMenuExample roleMenuExample = new RoleMenuExample();
-//        roleMenuExample.createCriteria().andRoleIdEqualTo(roleId);
-//        List<RoleMenuKey> roleMenuKeys = roleMenuMapper.selectByExample(roleMenuExample);
         List<RoleMenuKey> roleMenuKeys = roleMenuMapper.selectList(new QueryWrapper<RoleMenuKey>().lambda()
                 .eq(RoleMenuKey::getRoleId, roleId));
         if (CollectionUtils.isNotEmpty(roleMenuKeys)) {
@@ -77,26 +74,20 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
 
     @Transactional(rollbackOn = Exception.class)
     public void updateMenuTree(TreeResponseData treeResponseData, Integer roleId) {
-//        Role role = roleMapper.selectByPrimaryKey(roleId);
         Role role = this.getById(roleId);
         AssertObjUtils.assertNotNull(role, StringRaiseUtils.format("角色ID：{}不存在", roleId));
         //判断超级管理员角色
         AssertObjUtils.assertNotEquals(role.getRoleName(), Constants.SUPER_ROLE_KEY, "超级管理员角色不允许修改");
         List<Integer> menuIds = new ArrayList<>();
         getSelectedMenuIds(treeResponseData, menuIds);
-
-        //先删除表role_menu中所有role_id为传入的roleId的值，再插入新的
-//        RoleMenuExample roleMenuExample = new RoleMenuExample();
-//        roleMenuExample.createCriteria().andRoleIdEqualTo(roleId);
-//        roleMenuMapper.deleteByExample(roleMenuExample);
         roleMenuMapper.delete(new QueryWrapper<RoleMenuKey>().lambda().eq(RoleMenuKey::getRoleId, roleId));
         if (CollectionUtils.isNotEmpty(menuIds)) {
-//            roleMenuMapper.insertBatch(menuIds.stream().map(menuId -> new RoleMenuKey(roleId, menuId)).collect(Collectors.toList()));
             menuIds.stream().map(menuId -> new RoleMenuKey(roleId, menuId)).forEach(roleMenuMapper::insert);
 
         }
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     private void selectTree(TreeResponseData<Menu> tree, List<Integer> menuIds) {
         Object id = tree.getId();
         if (id != null && menuIds.contains(id)) {
@@ -126,7 +117,6 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
 
     @Transactional(rollbackOn = Exception.class)
     public void editOpration(List<Opration> oprations, Integer roleId) {
-//        Role role = roleMapper.selectByPrimaryKey(roleId);
         Role role = this.getById(roleId);
         AssertObjUtils.assertNotNull(role, StringRaiseUtils.format("角色ID：{}不存在", roleId));
         //判断超级管理员角色

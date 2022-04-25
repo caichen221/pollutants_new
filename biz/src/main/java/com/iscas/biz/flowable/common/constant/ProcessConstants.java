@@ -8,6 +8,7 @@ package com.iscas.biz.flowable.common.constant;
  * @date 2022/4/20 9:15
  * @since jdk11
  */
+@SuppressWarnings("unused")
 public class ProcessConstants {
 
     /**

@@ -24,13 +24,14 @@ import java.util.Map;
  * @date 2021/2/20 18:48
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @RequestMapping("/logInfo")
 @Api(tags = "访问日志")
 @ConditionalOnMybatis
 public class LogInfoController extends BaseController {
 
-    private final static String tableIdentity = "log_info";
+    private final static String TABLE_IDENTITY = "log_info";
     @Autowired
     private TableDefinitionService tableDefinitionService;
     @Autowired
@@ -39,7 +40,7 @@ public class LogInfoController extends BaseController {
     @ApiOperation(value = "获取表头", notes = "不带数据，带下拉列表")
     @GetMapping(value = "/getHeader", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
-        return tableDefinitionService.getHeaderWithOption(tableIdentity);
+        return tableDefinitionService.getHeaderWithOption(TABLE_IDENTITY);
     }
 
     @ApiOperation(value = "查询表格数据", notes = "不带表头")
@@ -51,7 +52,7 @@ public class LogInfoController extends BaseController {
     @PostMapping(value = "/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
-        return tableDefinitionService.getData(tableIdentity, request, null);
+        return tableDefinitionService.getData(TABLE_IDENTITY, request, null);
     }
 
 

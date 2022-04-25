@@ -34,13 +34,14 @@ import java.util.Map;
  * @date 2021/2/21 16:37
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Api(tags = "角色管理")
 @RestController
 @RequestMapping("/role")
 @Validated
 @ConditionalOnMybatis
 public class RoleController extends BaseController {
-    private String tableIdentity = "role";
+    private final String tableIdentity = "role";
     private final TableDefinitionService tableDefinitionService;
     private final RoleService roleService;
 
@@ -175,9 +176,6 @@ public class RoleController extends BaseController {
     })
     public ResponseEntity editData(@RequestBody @RoleConstraint Map<String,Object> data)
             throws ValidDataException {
-        //修改时间
-//        Map<String, Object> forceItem = new HashMap<>();
-//        forceItem.put("role_update_time", DateSafeUtils.format(new Date(), DateSafeUtils.PATTERN));
         return tableDefinitionService.saveData(tableIdentity, data, false, null, null);
     }
 }

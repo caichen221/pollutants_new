@@ -1,8 +1,6 @@
 package com.iscas.biz.controller.common.auth;
 
 import com.iscas.base.biz.aop.auth.SkipAuthentication;
-import com.iscas.base.biz.model.auth.AuthContext;
-import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -35,6 +33,7 @@ import java.util.Map;
  * @date 2021/2/22 11:15
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @Api(tags = "用户管理")
 @RestController
 @RequestMapping("/user")
@@ -42,7 +41,7 @@ import java.util.Map;
 @ConditionalOnMybatis
 public class MyUserController extends BaseController {
 
-    private String tableIdentity = "user";
+    private final String tableIdentity = "user";
     private final TableDefinitionService tableDefinitionService;
     private final UserService userService;
     private final UserMapper userMapper;
@@ -64,7 +63,7 @@ public class MyUserController extends BaseController {
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "request", value = "查询条件", required = true, dataType = "TableSearchRequest"),
-                    @ApiImplicitParam(name = "orgId", value = "组织机构ID, 带组织机构查询的时候传入", required = false, dataType = "Integer")
+                    @ApiImplicitParam(name = "orgId", value = "组织机构ID, 带组织机构查询的时候传入", dataType = "Integer")
             }
     )
     @PostMapping
@@ -111,7 +110,9 @@ public class MyUserController extends BaseController {
         Integer userId = (Integer) data.get("user_id");
         if (userId != null) {
             User user = userMapper.selectById(userId);
-            if (user != null) userService.deleteOneUserCache(user.getUserName());
+            if (user != null) {
+                userService.deleteOneUserCache(user.getUserName());
+            }
         }
         return userService.edit(data);
     }

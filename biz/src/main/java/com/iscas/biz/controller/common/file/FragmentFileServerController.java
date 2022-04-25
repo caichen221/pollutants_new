@@ -26,6 +26,7 @@ import java.util.List;
  * @date 2022/1/10 14:38
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @RestController
 @RequestMapping("/files")
 @RequiredArgsConstructor

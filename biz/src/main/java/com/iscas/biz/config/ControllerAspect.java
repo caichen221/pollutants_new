@@ -22,6 +22,7 @@ import java.util.Arrays;
  * @date 2018/10/9 13:56
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @Aspect
 @Component
 @Slf4j
@@ -60,7 +61,7 @@ public class ControllerAspect {
                 }
                 // 处理完请求，返回内容
                 if (result != null) {
-                    log.trace(new StringBuilder().append("Response:").append(result).toString());
+                    log.trace("Response:" + result);
                 }
             }
             return result;

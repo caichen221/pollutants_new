@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
  * @date 2021/2/20 18:10
  * @since jdk1.8
  */
+@SuppressWarnings({"FieldCanBeLocal", "unused", "rawtypes", "unchecked"})
 @Service
 @ConditionalOnMybatis
 public class OrgService extends ServiceImpl<OrgMapper, Org> {
@@ -50,7 +51,6 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
     }
 
     public TreeResponseData<Org> getTree() {
-//        List<Org> orgs = orgMapper.selectByExampleWithBLOBs(null);
         List<Org> orgs = this.list();
         TreeResponseData<Org> root = new TreeResponseData<Org>()
                 .setId("-1")
@@ -75,11 +75,10 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
     }
 
     private Map<Integer, List<TreeResponseData<Org>>> getChildOrgs(List<Org> orgs) {
-//        List<OrgRoleKey> orgRoleKeys = orgRoleMapper.selectByExample(null);
         List<OrgRoleKey> orgRoleKeys = orgRoleMapper.selectList(null);
         List<Role> roles = roleMapper.selectList(null);
-        Map<Integer, List<Role>> orgRoleMap = new HashMap<>();
-        Map<Integer, Role> roleMap = new HashMap<>();
+        Map<Integer, List<Role>> orgRoleMap = new HashMap<>(16);
+        Map<Integer, Role> roleMap = new HashMap<>(16);
         if (CollectionUtils.isNotEmpty(roles)) {
             roleMap = roles.stream().collect(Collectors.toMap(Role::getRoleId, role -> role));
         }
@@ -93,7 +92,7 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
             }
         }
 
-        Map<Integer, List<TreeResponseData<Org>>> childOrgs = new HashMap<>();
+        Map<Integer, List<TreeResponseData<Org>>> childOrgs = new HashMap<>(16);
         for (Org org : orgs) {
             Integer orgId = org.getOrgId();
             Integer orgPid = org.getOrgPid();
@@ -152,13 +151,9 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
         AssertObjUtils.assertNotNull(org.getOrgId(), "请求参数有误，orgId不能为空");
         Date date = new Date();
         org.setOrgUpdateTime(date);
-//        int result = orgMapper.updateByPrimaryKeyWithBLOBs(org);
         this.updateById(org);
         //配置角色
         List<Integer> roleIds = org.getRoleIds();
-//        OrgRoleExample orgRoleExample = new OrgRoleExample();
-//        orgRoleExample.createCriteria().andOrgIdEqualTo(org.getOrgId());
-//        orgRoleMapper.deleteByExample(orgRoleExample);
         orgRoleMapper.delete(new QueryWrapper<OrgRoleKey>().lambda().eq(OrgRoleKey::getOrgId, org.getOrgId()));
         if (CollectionUtils.isNotEmpty(roleIds)) {
             for (Integer roleId : roleIds) {
@@ -171,6 +166,7 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
         return 1;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public int deleteOrg(Integer orgId) {
         this.removeById(orgId);
         return 1;

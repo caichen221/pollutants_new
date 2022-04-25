@@ -12,6 +12,9 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+/**
+ * @author zhuquanwen
+ */
 @Component("ClearWsDataTask")
 @Lazy(value = false)
 @Slf4j
@@ -20,7 +23,7 @@ public class ClearWsDataTask {
 
     @DurationUnit(ChronoUnit.HOURS)
     @Value("${ws.persistent.timeout}")
-    private Duration wsTimeout = Duration.ofHours(10);
+    private final Duration wsTimeout = Duration.ofHours(10);
 
     private final WsDataMapper wsDataMapper;
 

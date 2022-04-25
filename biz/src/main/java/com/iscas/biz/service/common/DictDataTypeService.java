@@ -12,6 +12,7 @@ import java.util.Map;
  * @date 2021/3/1 15:37
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface DictDataTypeService extends IService<DictDataType> {
 
     boolean deleteByIds(List<Object> ids);

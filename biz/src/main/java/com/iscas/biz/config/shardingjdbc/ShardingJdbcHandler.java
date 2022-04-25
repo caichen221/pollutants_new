@@ -11,6 +11,7 @@ import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.strategy.InlineShardingStrategyConfiguration;
 import org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -36,6 +37,7 @@ import java.util.Properties;
  * @date 2021/5/28 22:00
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Slf4j
 @Component
 @ConditionalOnMybatis
@@ -45,18 +47,15 @@ public class ShardingJdbcHandler implements IShardingJdbcHandler, EnvironmentAwa
     /**
      * 配置shardingjdbc的datasource，支持配置多个shardingjdbc,返回为dbName为key,datasource为value
      * 这里默认配置了一个
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/5/28
-     * @param
-     * @throws
      * @return java.util.Map<java.lang.String,javax.sql.DataSource>
      */
     @Override
     public Map<String, DataSource> initShardingDatasource() {
-        Map<String, DataSource> result = new HashMap<>();
+        Map<String, DataSource> result = new HashMap<>(16);
         // 配置真实数据源
-        Map<String, DataSource> dataSourceMap = new HashMap<>();
+        Map<String, DataSource> dataSourceMap = new HashMap<>(16);
 
 
         DruidDataSource dataSource0 = DruidConfiguration.doInitOneDatasource("spring.datasource.druid.sharding.ds0.", "ds0", new DruidDataSource(), environment);
@@ -77,7 +76,7 @@ public class ShardingJdbcHandler implements IShardingJdbcHandler, EnvironmentAwa
         shardingRuleConfig.getTableRuleConfigs().add(orderTableRuleConfig);
 
         // 获取数据源对象
-        DataSource dataSource = null;
+        DataSource dataSource;
         try {
             dataSource = ShardingDataSourceFactory.createDataSource(dataSourceMap, shardingRuleConfig, new Properties());
             result.put("ds0_ds1", dataSource);
@@ -88,9 +87,11 @@ public class ShardingJdbcHandler implements IShardingJdbcHandler, EnvironmentAwa
 
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     @Override
     public void registShardingAspect(BeanDefinitionRegistry registry, MultiDatasourceAspectJExpressionPointcutAdvisor multiDatasourceAspectJExpressionPointcutAdvisor) {
         String shardingNames = environment.getProperty("spring.datasource.sharding.names");
+        assert shardingNames != null;
         String shardingPointcutNames = String.join(".", shardingNames.split(","));
         String key = "spring.datasource.sharding." + shardingPointcutNames + ".pointcut";
         String shardingDbName = String.join("_", shardingNames.split(","));
@@ -106,7 +107,7 @@ public class ShardingJdbcHandler implements IShardingJdbcHandler, EnvironmentAwa
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NotNull Environment environment) {
         this.environment = environment;
     }
 }

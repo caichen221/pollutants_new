@@ -28,6 +28,7 @@ import java.util.List;
  * @date 2021/2/22 8:22
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Api(tags = "菜单管理")
 @RestController
 @RequestMapping("/menu")
@@ -39,13 +40,13 @@ public class MenuController extends BaseController {
         this.menuService = menuService;
     }
 
-    @ApiOperation(value="[菜单管理]获取菜单树-2021-02-22", notes="create by:朱全文")
+    @ApiOperation(value = "[菜单管理]获取菜单树-2021-02-22", notes = "create by:朱全文")
     @GetMapping
     public TreeResponse get() throws BaseException {
         return getTreeResponse().setValue(menuService.getTree());
     }
 
-    @ApiOperation(value="[菜单管理]新增组织机构节点-2021-02-22", notes="create by:朱全文")
+    @ApiOperation(value = "[菜单管理]新增组织机构节点-2021-02-22", notes = "create by:朱全文")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "menu", value = "菜单数据", required = true, dataType = "Menu")
@@ -56,18 +57,18 @@ public class MenuController extends BaseController {
         return getResponse().setValue(menuService.addMenu(menu));
     }
 
-    @ApiOperation(value="[菜单管理]修改菜单节点-2021-02-22", notes="create by:朱全文")
+    @ApiOperation(value = "[菜单管理]修改菜单节点-2021-02-22", notes = "create by:朱全文")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "menu", value = "菜单数据", required = true, dataType = "Menu")
             }
     )
     @PutMapping("/node")
-    public ResponseEntity editNode(@Valid @RequestBody Menu menu) throws BaseException {
+    public ResponseEntity editNode(@Valid @RequestBody Menu menu) {
         return getResponse().setValue(menuService.editMenu(menu));
     }
 
-    @ApiOperation(value="[菜单管理]删除菜单节点-2021-02-22", notes="create by:朱全文")
+    @ApiOperation(value = "[菜单管理]删除菜单节点-2021-02-22", notes = "create by:朱全文")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "menuIds", value = "菜单Ids", required = true, dataType = "List")
@@ -75,7 +76,7 @@ public class MenuController extends BaseController {
     )
     @PostMapping("/node/del")
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
-    public ResponseEntity deleteNode(@RequestBody List<Integer> menuIds) throws BaseException {
+    public ResponseEntity deleteNode(@RequestBody List<Integer> menuIds) {
         AssertCollectionUtils.assertCollectionNotEmpty(menuIds, "menuIds不能未空");
         menuIds.forEach(menuService::deleteMenu);
         return getResponse();

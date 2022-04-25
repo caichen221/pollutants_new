@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
  * @date 2021/2/22 15:04
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Service
 @Slf4j
 @ConditionalOnMybatis
@@ -49,7 +50,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     @Value("${user_default_pwd:123456}")
     private String userDefaultPwd;
 
-    private String tableIdentity = "user";
+    private final String tableIdentity = "user";
     private final TableDefinitionService tableDefinitionService;
 
     private final UserRoleMapper userRoleMapper;
@@ -76,15 +77,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
     }
 
+    @SuppressWarnings("AlibabaMethodTooLong")
     public ResponseEntity search(TableSearchRequest request, Integer orgId) throws ValidDataException {
-        //生成一个附加sql条件
-//        List<Org> allOrgs = orgMapper.selectByExample(null);
         List<Org> allOrgs = orgMapper.selectList(null);
         String dynamicSql = null;
         if (orgId != null) {
             //找到组织机构的级联下级组织机构，组织机构主键定义有问题，暂时先这么处理
             Set<Integer> childOrgIds = new HashSet<>();
-            Map<Integer, List<Org>> childOrgMap = new HashMap<>();
+            Map<Integer, List<Org>> childOrgMap = new HashMap<>(16);
             if (CollectionUtils.isNotEmpty(allOrgs)) {
                 for (Org allOrg : allOrgs) {
                     Integer orgPid = allOrg.getOrgPid();
@@ -93,16 +93,14 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             }
             getAllChildOrgIds(orgId, childOrgMap, childOrgIds);
             if (CollectionUtils.isNotEmpty(childOrgIds)) {
-                StringBuilder dynamicSqlBuilder = new StringBuilder();
-                dynamicSqlBuilder.append(" user_id in (");
-                dynamicSqlBuilder.append("select distinct t1.user_id from user_info t1, org_user t2, org t3 where t1.user_id = t2.user_id and t2.org_id = t3.org_id and t3.org_id in ");
                 StringJoiner stringJoiner = new StringJoiner(",", "(", ")");
                 for (Integer childOrgId : childOrgIds) {
                     stringJoiner.add(childOrgId + "");
                 }
-                dynamicSqlBuilder.append(stringJoiner.toString());
-                dynamicSqlBuilder.append(") ");
-                dynamicSql = dynamicSqlBuilder.toString();
+                dynamicSql = " user_id in (" +
+                        "select distinct t1.user_id from user_info t1, org_user t2, org t3 where t1.user_id = t2.user_id and t2.org_id = t3.org_id and t3.org_id in " +
+                        stringJoiner +
+                        ") ";
             }
         }
 
@@ -112,7 +110,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (CollectionUtils.isNotEmpty(data)) {
             //获取这些用户的角色信息
             List<Map> userRoleMaps = userMapper.selectUserRole();
-            Map<Integer, List<Map>> userRoleMap = new HashMap<>();
+            Map<Integer, List<Map>> userRoleMap = new HashMap<>(16);
             if (CollectionUtils.isNotEmpty(userRoleMaps)) {
                 for (Map roleMap : userRoleMaps) {
                     Integer userId = (Integer) roleMap.get("user_id");
@@ -206,17 +204,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         ResponseEntity responseEntity = tableDefinitionService.saveData(tableIdentity, data, false, null, null);
         //删除原有的此user相关的 user_role中数据，插入新的
         int userId = (int) data.get("user_id");
-//        UserRoleExample userRoleExample = new UserRoleExample();
-//        userRoleExample.createCriteria().andUserIdEqualTo(userId);
-//        userRoleMapper.deleteByExample(userRoleExample);
         userRoleMapper.delete(new QueryWrapper<UserRoleKey>().lambda().eq(UserRoleKey::getUserId, userId));
-
         insertUserRole(roleIds, userId);
-
-        //删除原有的此user相关的 org_user中数据，插入新的
-//        OrgUserExample orgUserExample = new OrgUserExample();
-//        orgUserExample.createCriteria().andUserIdEqualTo(userId);
-//        orgUserMapper.deleteByExample(orgUserExample);
         orgUserMapper.delete(new QueryWrapper<OrgUserKey>().lambda().eq(OrgUserKey::getUserId, userId));
 
         insertOrgUser(orgIds, userId);
@@ -250,7 +239,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public void changePwd(Integer userId, Map<String, Object> data) throws NoSuchAlgorithmException, BaseException {
         String loginUsername = JWTUtils.getLoginUsername();
-        User user = null;
+        User user;
         if (loginUsername != null) {
             //判断登录的用户是否和当前的userId一致
             user = userMapper.selectByUserName(loginUsername);

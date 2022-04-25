@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
  * @date 2021/1/18 14:15
  * @since jdk1.8
  */
+@SuppressWarnings("rawtypes")
 @Component
 @Slf4j
 public class MonitorTask {

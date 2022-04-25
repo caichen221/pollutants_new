@@ -3,15 +3,12 @@ package com.iscas.biz.service.common;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.service.common.AuthCacheService;
-import com.iscas.base.biz.util.AuthCacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.HeaderKey;
 import com.iscas.common.tools.constant.MediaType;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.LoginException;
 import lombok.extern.slf4j.Slf4j;
-import oracle.jdbc.driver.Const;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -30,6 +27,7 @@ import java.io.IOException;
  * @date 2021/11/27 20:11
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Service
 @Slf4j
 public class VerificationCodeService implements HeaderKey, MediaType {
@@ -55,6 +53,7 @@ public class VerificationCodeService implements HeaderKey, MediaType {
 
         Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
         String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
+        assert loginRandomCacheTime != null;
         int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
         authCacheService.set(Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText, com.iscas.base.biz.config.Constants.LOGIN_CACHE, loginRandomCacheSenconds);
         BufferedImage bi = producer.createImage(capText);

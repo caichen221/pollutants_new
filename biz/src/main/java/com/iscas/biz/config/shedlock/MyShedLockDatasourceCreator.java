@@ -6,13 +6,13 @@ import com.iscas.base.biz.config.shedlock.ConditionalOnShedLock;
 import com.iscas.base.biz.config.shedlock.ShedLockDatasourceCreator;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -23,6 +23,7 @@ import java.util.Objects;
  * @date 2021/5/20 19:56
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Component
 @ConditionalOnShedLock
 @ConditionalOnMybatis
@@ -53,6 +54,7 @@ public class MyShedLockDatasourceCreator implements ShedLockDatasourceCreator, E
         dataSource.setUrl(url);
         dataSource.setDriverClassName(driverClassName);
 
+        //noinspection AlibabaUndefineMagicConstant
         if (Objects.equals("true", decrypt)) {
             //解密
             try {
@@ -66,7 +68,7 @@ public class MyShedLockDatasourceCreator implements ShedLockDatasourceCreator, E
     }
 
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NotNull Environment environment) {
         this.environment = environment;
     }
 }

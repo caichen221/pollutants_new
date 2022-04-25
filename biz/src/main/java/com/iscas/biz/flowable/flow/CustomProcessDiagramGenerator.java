@@ -17,6 +17,7 @@ import java.util.List;
 @SuppressWarnings(value = {"unused", "rawtypes"})
 public class CustomProcessDiagramGenerator extends DefaultProcessDiagramGenerator {
     private static final String EVENT = "Event_";
+    @SuppressWarnings("AlibabaMethodTooLong")
     @Override
     protected DefaultProcessDiagramCanvas generateProcessDiagram(BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows, String activityFontName, String labelFontName, String annotationFontName, ClassLoader customClassLoader, double scaleFactor, boolean drawSequenceFlowNameWithNoLabelDi) {
         this.prepareBpmnModel(bpmnModel);
@@ -102,6 +103,7 @@ public class CustomProcessDiagramGenerator extends DefaultProcessDiagramGenerato
         }
     }
 
+    @SuppressWarnings("AlibabaMethodTooLong")
     protected static DefaultProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel, String imageType, String activityFontName, String labelFontName, String annotationFontName, ClassLoader customClassLoader) {
         double minX = 1.7976931348623157E308D;
         double maxX = 0.0D;

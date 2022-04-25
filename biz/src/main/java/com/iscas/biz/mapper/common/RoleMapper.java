@@ -10,17 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"rawtypes", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 @Repository
 public interface RoleMapper extends DynamicMapper<Role> {
-
-
-
-//    int insert(Role record);
-
-
-//    List<Role> selectByExample(RoleExample example);
-
-//    Role selectByPrimaryKey(Integer roleId);
 
     @Select("SELECT DISTINCT\n" +
             "\tt1.role_id,\n" +

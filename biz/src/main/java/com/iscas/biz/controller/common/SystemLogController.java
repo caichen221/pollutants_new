@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * 系统日志控制器
@@ -28,6 +26,7 @@ import java.util.List;
  * @date 2021/2/25 14:30
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Api(tags = "系统日志")
 @RestController
 @RequestMapping("/system/log")
@@ -40,12 +39,12 @@ public class SystemLogController extends BaseController {
     }
 
     @GetMapping("/tree")
-    @ApiOperation(value="获取日志树-create by zqw 2021-02-25", notes="")
+    @ApiOperation(value="获取日志树-create by zqw 2021-02-25")
     public TreeResponse getTree() throws BaseException {
         return systemLogService.getTree();
     }
 
-    @ApiOperation(value="获取日志-create by zqw 2021-02-25", notes="")
+    @ApiOperation(value="获取日志-create by zqw 2021-02-25")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "filePath", value = "日志文件路径，在树上可以获取", required = true, dataType = "String"),

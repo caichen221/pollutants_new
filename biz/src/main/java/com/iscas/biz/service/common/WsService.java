@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * websocket消息
@@ -21,6 +22,7 @@ import java.util.List;
  * @date 2021/2/26 9:10
  * @since jdk1.8
  */
+@SuppressWarnings("rawtypes")
 @Service
 @Slf4j
 @ConditionalOnMybatis
@@ -39,7 +41,6 @@ public class WsService {
 
     public WsService(SimpMessagingTemplate messagingTemplate/*, WsDataMapper wsDataMapper*/) {
         this.messagingTemplate = messagingTemplate;
-//        this.wsDataMapper = wsDataMapper;
     }
 
     /**
@@ -64,27 +65,22 @@ public class WsService {
         messagingTemplate.convertAndSendToUser(wsData.getUserIdentity(), wsData.getDestination(), wsData);
     }
 
-//    @Async("asyncExecutor")
     public void storeToDb(WsData wsData) {
         com.iscas.biz.domain.common.WsData dbWsData = com.iscas.biz.domain.common.WsData.convert(wsData);
-        getWsDataMapper().insert(dbWsData);
+        Objects.requireNonNull(getWsDataMapper()).insert(dbWsData);
     }
 
     public void retry(Integer id) {
-        com.iscas.biz.domain.common.WsData wsData = getWsDataMapper().selectById(id);
+        com.iscas.biz.domain.common.WsData wsData = Objects.requireNonNull(getWsDataMapper()).selectById(id);
         WsData wsData1 = com.iscas.biz.domain.common.WsData.convert(wsData);
         p2p(wsData1);
     }
 
-    //todo 需要做用户权限判定
     @Async("asyncExecutor")
     public void ack(String msgId) {
         if (getWsDataMapper() == null) {
             return;
         }
-//        WsDataExample dataExample = new WsDataExample();
-//        dataExample.createCriteria().andMsgIdEqualTo(msgId);
-//        List<com.iscas.biz.domain.common.WsData> wsDatas = getWsDataMapper().selectByExample(dataExample);
         List<com.iscas.biz.domain.common.WsData> wsDatas = getWsDataMapper().selectList(new QueryWrapper<com.iscas.biz.domain.common.WsData>()
                 .lambda().eq(com.iscas.biz.domain.common.WsData::getMsgId, msgId));
         if (wsDatas != null) {

@@ -34,6 +34,7 @@ import java.util.Map;
  * @date 2021/2/26 14:37
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/param")
 @Api(tags = "参数管理")
@@ -41,7 +42,7 @@ import java.util.Map;
 public class ParamController extends BaseController {
 
 
-    private final static String tableIdentity = "param";
+    private final static String TABLE_IDENTITY = "param";
     @Autowired
     private TableDefinitionService tableDefinitionService;
     @Autowired
@@ -50,7 +51,7 @@ public class ParamController extends BaseController {
     @ApiOperation(value = "获取表头", notes = "不带数据，带下拉列表")
     @GetMapping(value = "/getHeader", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
-        return tableDefinitionService.getHeaderWithOption(tableIdentity);
+        return tableDefinitionService.getHeaderWithOption(TABLE_IDENTITY);
     }
 
     @ApiOperation(value = "查询表格数据", notes = "不带表头")
@@ -62,7 +63,7 @@ public class ParamController extends BaseController {
     @PostMapping(value = "/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
-        return tableDefinitionService.getData(tableIdentity, request, null);
+        return tableDefinitionService.getData(TABLE_IDENTITY, request, null);
     }
 
     @ApiOperation(value = "删除参数数据", notes = "根据主键删除数据")
@@ -90,7 +91,7 @@ public class ParamController extends BaseController {
     @LogRecord(type = LogType.SYSTEM, desc = "新增参数", operateType = OperateType.add)
     public ResponseEntity saveData(@RequestBody Map<String, Object> data) throws ValidDataException {
         ImmutableMap<String, Object> forceItem = ImmutableMap.of("create_by", getUsername(), "create_time", DateSafeUtils.format(new Date()));
-        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
+        return tableDefinitionService.saveData(TABLE_IDENTITY, data, false, null, forceItem);
     }
 
     @ApiOperation(value = "修改参数数据", notes = "更新")
@@ -105,7 +106,7 @@ public class ParamController extends BaseController {
     public ResponseEntity editData(@RequestBody Map<String, Object> data)
             throws ValidDataException {
         ImmutableMap<String, Object> forceItem = ImmutableMap.of("update_by", getUsername(), "update_time", DateSafeUtils.format(new Date()));
-        return tableDefinitionService.saveData(tableIdentity, data, false, null, forceItem);
+        return tableDefinitionService.saveData(TABLE_IDENTITY, data, false, null, forceItem);
     }
 
     @GetMapping("/getParamValue/{key}")

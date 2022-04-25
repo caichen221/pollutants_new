@@ -27,12 +27,13 @@ import java.security.Principal;
  * @date 2021/2/26
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @Api(tags = "消息管理")
 @RestController
 @RequestMapping("/wsData")
 @ConditionalOnMybatis
 public class WsDataController extends BaseController {
-    private String tableIdentity = "ws_data";
+    private final String tableIdentity = "ws_data";
     private final TableDefinitionService tableDefinitionService;
     private final WsService wsService;
 
@@ -74,7 +75,7 @@ public class WsDataController extends BaseController {
     /**
      * 接收消息回执
      * */
-    @ApiOperation(value="消息回执-websocket消息", notes="")
+    @ApiOperation(value="消息回执-websocket消息")
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "msgId", value = "消息ID", required = true, dataType = "String")

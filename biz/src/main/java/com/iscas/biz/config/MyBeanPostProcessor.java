@@ -1,5 +1,6 @@
 package com.iscas.biz.config;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -19,16 +20,17 @@ import java.util.Objects;
  * @date 2021/12/29
  * @since jdk11/
  */
+@SuppressWarnings("unused")
 @Component
 public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
 //        handleServerEndPoint(bean);
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
         return bean;
     }
 

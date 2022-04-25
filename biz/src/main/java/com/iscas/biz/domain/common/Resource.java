@@ -8,6 +8,9 @@ import lombok.experimental.Accessors;
 
 import java.util.Date;
 
+/**
+ * @author zhuquanwen
+ */
 @Data
 @Accessors(chain = true)
 @TableName("resources")

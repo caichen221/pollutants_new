@@ -5,16 +5,11 @@ import com.iscas.common.tools.core.io.file.FileUtils;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
 import com.iscas.templet.view.tree.TreeResponseData;
-import lombok.Cleanup;
-import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,6 +49,7 @@ public class SystemLogService {
     private void cascadeGetTree(TreeResponseData<LogTreeDataDTO> treeResponseData, File file) {
         File[] files = file.listFiles();
         if (ArrayUtils.isNotEmpty(files)) {
+            assert files != null;
             for (File file1 : files) {
                 String name = file1.getName();
                 String absolutePath = file1.getAbsolutePath();
@@ -85,7 +81,6 @@ public class SystemLogService {
         if (file.isDirectory()) {
             throw new BaseException(String.format("[%s]不是一个文件", filePath));
         }
-        List<String> logDatas = new ArrayList<>();
         return FileUtils.reverseReadLines(file, "utf-8", lines);
     }
 }

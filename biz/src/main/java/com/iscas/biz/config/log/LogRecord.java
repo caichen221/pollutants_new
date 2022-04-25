@@ -1,7 +1,5 @@
 package com.iscas.biz.config.log;
 
-import org.springframework.stereotype.Service;
-
 import java.lang.annotation.*;
 
 /**

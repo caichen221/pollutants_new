@@ -25,6 +25,7 @@ import java.io.OutputStream;
  * @date 2022/4/20 17:20
  * @since jdk11
  */
+@SuppressWarnings({"rawtypes", "unused"})
 @Slf4j
 @Api(tags = "工作流流程任务管理")
 @RestController
@@ -155,7 +156,7 @@ public class FlowTaskController {
                                   @PathVariable("processId") String processId) {
         InputStream inputStream = flowTaskService.diagram(processId);
         OutputStream os = null;
-        BufferedImage image = null;
+        BufferedImage image;
         try {
             image = ImageIO.read(inputStream);
             response.setContentType("image/png");

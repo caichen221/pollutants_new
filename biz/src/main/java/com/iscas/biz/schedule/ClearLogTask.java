@@ -18,6 +18,7 @@ import java.util.Date;
  * @since jdk1.8
  * 清理之前的log
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Component
 @Slf4j
 @ConditionalOnMybatis
@@ -34,25 +35,22 @@ public class ClearLogTask {
         logInfoMapper.delete(wrapper);
     }
 
+    @SuppressWarnings({"AlibabaUndefineMagicConstant", "StatementWithEmptyBody"})
     private String getClearDateByPeriod(String cleanPeriod) {
 
         String period = RegexUtils.getStartNumber(cleanPeriod);
         String unit = cleanPeriod.replace(period, "");
         long time = Long.parseLong(period);
 
-        if (unit.equalsIgnoreCase("s")) {
-            //
-        } else if (unit.equalsIgnoreCase("m")) {
+        if ("s".equalsIgnoreCase(unit)) {
+        } else if ("m".equalsIgnoreCase(unit)) {
             time = time * 60;
-        } else if (unit.equalsIgnoreCase("h")) {
+        } else if ("h".equalsIgnoreCase(unit)) {
             time = time * 60 * 60;
-        } else if (unit.equalsIgnoreCase("d")) {
+        } else if ("d".equalsIgnoreCase(unit)) {
             time = time * 60 * 60 * 24;
-        } else {
-
         }
-        String date = DateSafeUtils.format(new Date(new Date().getTime() - time));
-        return date;
+        return DateSafeUtils.format(new Date(System.currentTimeMillis() - time));
     }
 
 }

@@ -24,10 +24,11 @@ import javax.validation.constraints.NotBlank;
  * @date 2020/8/17 20:49
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @Api(tags = "验证码控制器")
 @Slf4j
-@ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled", matchIfMissing = false)
+@ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled")
 @Validated
 @RequestMapping("/verification/code")
 public class VerificationCodeController extends BaseController {
@@ -63,50 +64,4 @@ public class VerificationCodeController extends BaseController {
         return verificationCodeService.verify(code, key);
     }
 
-
-//    @GetMapping("/xcode")
-//    public Result getXCode1(HttpServletResponse resp, HttpServletRequest request) throws IOException {
-//
-//        // 随机选择背景图
-//        int num = new Random().nextInt(10) + 1;
-//        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("xcode/" + num + ".jpg");
-//        BufferedImage src= ImageIO.read(resourceAsStream);
-//        //移动图
-//        BufferedImage newSrc=new BufferedImage(src.getWidth(), src.getHeight(),BufferedImage.TYPE_4BYTE_ABGR);//新建一个类型支持透明的BufferedImage
-//        //对比图
-//        BufferedImage newSrc2=new BufferedImage(src.getWidth(), src.getHeight(),BufferedImage.TYPE_4BYTE_ABGR);//新建一个类型支持透明的BufferedImage
-//
-//        //抠块的大小
-//        int blockWidth=48;
-//        int blockHeight=48;
-//
-//        // 用于生成 移动图
-//        XCodeTdo code = new XCodeTdo();
-//        code.setNum(num);
-//
-//        Random rand1=new Random();
-//        int x=rand1.nextInt(src.getWidth()-blockWidth-20)+20;//10,width-200
-//        if (x > 210 - 58) {
-//            x = 210 - 58;
-//        }
-//
-//        Random rand2=new Random();
-//        int y=rand2.nextInt(src.getHeight()-blockHeight-20)+20;//
-//
-//        code.setX(x);
-//        code.setY(y);
-//
-//        int ca = new Random().nextInt(blockWidth-2*20)+(x+20);
-//        int cb = new Random().nextInt(blockHeight-2*20)+(y+20);
-//        code.setCa(ca);
-//        code.setCb(cb);
-//
-//        tt.cutByTemplate2(src,newSrc,newSrc2,x,y,blockWidth,blockHeight, ca, cb);//图片大小是固定，位置是随机
-//
-//        request.getSession().setAttribute("X_CODE", JSON.toJSONString(code));
-//
-//        //生成对比图
-//        ImageIO.write(newSrc2, "png", resp.getOutputStream());
-//        return null;
-//    }
 }

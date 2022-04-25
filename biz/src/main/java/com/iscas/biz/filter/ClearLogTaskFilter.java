@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
  * @date 2021/2/25 14:40
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @StartedFilterComponent(order = 4)
 @Slf4j
 @ConditionalOnMybatis

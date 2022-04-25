@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
  * @date 2021/12/22 13:50
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Controller
 @RequestMapping("/openauth")
 @Slf4j
@@ -74,64 +75,7 @@ public class OpenAuthController {
         OAuth2AccessToken accessToken = oAuth20Service.getAccessToken(code);
         request.getSession().setAttribute(SESSION_KEY_ACCESS_TOKEN, accessToken);
         request.getSession().setAttribute("isAuth", true);
-
-//        getProfile(model, accessToken);
-//        getMyOrder(model);
-//        getMyGoods(model);
-
         return "signsuccess";
     }
-
-//    /**
-//     * 应该从auth中取，但是目前auth的接口没有调整好
-//     */
-//    private void getProfile(Model model, OAuth2AccessToken accessToken) throws Exception {
-//        OAuthRequest apiRequest = new OAuthRequest(Verb.GET, userInfoUri);
-//        hiAuthApi.signRequest(accessToken, apiRequest);
-//
-//        Response resourceResponse = hiAuthApi.execute(apiRequest);
-//
-//        logger.info("code:{}", resourceResponse.getCode());
-//        logger.info("message:{}", resourceResponse.getMessage());
-//        logger.info("body:{}", resourceResponse.getBody());
-//
-//        JSONObject obj = new JSONObject(resourceResponse.getBody());
-//        logger.info("json:{}", obj.toString());
-//        JSONObject data = obj.getJSONObject("data");
-//        Long userId = data.getLong("userId");
-//        String name = data.getString("name");
-//        String username = data.getString("username");
-//        String tel = data.getString("tel");
-//        Long lastLoginTime = data.getLong("lastLoginTime");
-//
-//        model.addAttribute("userId", userId);
-//        model.addAttribute("name", name);
-//        model.addAttribute("username", username);
-//        model.addAttribute("tel", tel);
-//        model.addAttribute("lastLoginTime", lastLoginTime);
-//    }
-//
-//    /**
-//     * 连接order服务获取订单信息
-//     */
-//    private void getMyOrder(Model model) throws Exception {
-//        ApiResponse<Order> res =  orderApi.getInfo(1L);
-//        Order order = res.getData();
-//        model.addAttribute("orderId", order.getId());
-//        model.addAttribute("orderNo", order.getNo());
-//        model.addAttribute("orderTitle", order.getTitle());
-//        model.addAttribute("orderCreateTime", order.getCreateTime());
-//        model.addAttribute("orderTotalAmount", order.getTotalAmount());
-//    }
-//
-//    /**
-//     * 连接goods服务获取商品信息
-//     */
-//    private void getMyGoods(Model model) {
-//        ApiResponse<PageVo<Goods>> res = goodsApi.query(1,10);
-//        logger.info("res:{}", res);
-//        PageVo<Goods> page = res.getData();
-//        model.addAttribute("goodsList", page.getList());
-//    }
 
 }

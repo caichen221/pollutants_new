@@ -9,11 +9,9 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import com.iscas.base.biz.config.socketio.ConditionalSocketIo;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,15 +20,15 @@ import java.util.concurrent.TimeUnit;
  * @date 2018/7/22 18:32
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "AlibabaAvoidManuallyCreateThread", "unused"})
 @Component(value= "testMessageEventHandler")
-//@ConditionalOnBean(SocketIOServer.class)
 @ConditionalSocketIo
 @Slf4j
 public class TestMessageEventHandler implements IEventHandler {
     private final SocketIOServer socketIOServer;
     private static int testPushCount = 0;
 
-    private String namespace = "/test";
+    private final String namespace = "/test";
 
     public TestMessageEventHandler(SocketIOServer socketIOServer) {
         this.socketIOServer = socketIOServer;
@@ -65,10 +63,7 @@ public class TestMessageEventHandler implements IEventHandler {
         Runnable runnable = () -> {
             testPushCount++;
             int thisTestPushCount = testPushCount;
-            for (; ; ) {
-                if (thisTestPushCount < testPushCount) {
-                    break;
-                }
+            while (thisTestPushCount >= testPushCount) {
                 socketIOServer.getNamespace(namespace).getClient(sessionId).sendEvent("testPush", RandomStringUtils.randomStr(1024 * 200));
                 try {
                     TimeUnit.MILLISECONDS.sleep(900);

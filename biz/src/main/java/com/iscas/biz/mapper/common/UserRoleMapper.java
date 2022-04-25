@@ -4,12 +4,10 @@ import com.iscas.biz.domain.common.UserRoleKey;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import org.springframework.stereotype.Repository;
 
+/**
+ * @author zhuquanwen
+ */
 @Repository
 public interface UserRoleMapper extends DynamicMapper<UserRoleKey> {
-
-//    int deleteByExample(UserRoleExample example);
-
-
-//    int insert(UserRoleKey record);
 
 }

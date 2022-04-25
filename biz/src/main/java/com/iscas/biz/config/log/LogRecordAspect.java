@@ -26,6 +26,7 @@ import java.util.Date;
  * @date 2020/02/21
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Aspect
 @Component
 @Slf4j
@@ -45,7 +46,7 @@ public class LogRecordAspect implements Constants {
         IStoreLogService storeLog = SpringUtils.getApplicationContext().getBean(IStoreLogService.class);
         LogInfo logInfo = new LogInfo();
         //从token里取出userName
-        String username = "";
+        String username;
         try{
             username = JWTUtils.getLoginUsername();
         }catch (AuthenticationRuntimeException e){

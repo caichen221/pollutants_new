@@ -1,12 +1,10 @@
 package com.iscas.biz;
 
-import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
-import com.iscas.biz.mp.aop.enable.EnableAtomikos;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableQuartz;
@@ -28,9 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 启动类

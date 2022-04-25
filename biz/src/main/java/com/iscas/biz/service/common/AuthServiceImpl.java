@@ -1,13 +1,15 @@
 package com.iscas.biz.service.common;
 
-import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.autoconfigure.auth.TokenProps;
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.util.*;
+import com.iscas.base.biz.util.AuthUtils;
+import com.iscas.base.biz.util.CustomSession;
+import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.mapper.common.MenuMapper;
 import com.iscas.biz.mapper.common.ResourceMapper;
@@ -33,8 +35,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
  * @date 2018/7/16 18:58
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Service()
 @Slf4j
 @ConditionalOnMybatis
@@ -59,7 +60,6 @@ public class AuthServiceImpl extends AbstractAuthService {
     private final UserMapper userMapper;
     private final MenuService menuService;
     private final TokenProps tokenProps;
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
 
     public AuthServiceImpl(IAuthCacheService authCacheService, ResourceMapper resourceMapper,
@@ -73,8 +73,6 @@ public class AuthServiceImpl extends AbstractAuthService {
         this.tokenProps = tokenProps;
     }
 
-    //    @Autowired
-//    private UserService userService;
     @Cacheable(value = "auth", key = "'url_map'")
     @Override
     public Map<String, Url> getUrls() {
@@ -124,7 +122,7 @@ public class AuthServiceImpl extends AbstractAuthService {
         List<Map> menuRoles = menuMapper.selectMenuRole();
         List<Map> roleResources = roleMapper.selectRoleResource();
 
-        Map<Integer, List<Menu>> menuRoleMap = new HashMap<>();
+        Map<Integer, List<Menu>> menuRoleMap = new HashMap<>(16);
         if (CollectionUtils.isNotEmpty(menuRoles)) {
             for (Map menuRole : menuRoles) {
                 int roleId = (int) menuRole.get("role_id");
@@ -134,7 +132,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                         .add(new Menu().setKey(String.valueOf(menuId)).setName(menuName));
             }
         }
-        Map<Integer, List<Url>> urlRoleMap = new HashMap<>();
+        Map<Integer, List<Url>> urlRoleMap = new HashMap<>(16);
         if (CollectionUtils.isNotEmpty(roleResources)) {
             for (Map roleResource : roleResources) {
                 int roleId = (int) roleResource.get("role_id");
@@ -168,8 +166,8 @@ public class AuthServiceImpl extends AbstractAuthService {
         }
         authCacheService.remove(secKey, Constants.LOGIN_CACHE);
         try {
-            username = AesUtils.aesDecrypt(username, loginKey).trim();
-            pwd = AesUtils.aesDecrypt(pwd, loginKey).trim();
+            username = Objects.requireNonNull(AesUtils.aesDecrypt(username, loginKey)).trim();
+            pwd = Objects.requireNonNull(AesUtils.aesDecrypt(pwd, loginKey)).trim();
         } catch (Exception e) {
             throw new LoginException("非法登陆", e.getMessage());
         }
@@ -189,7 +187,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             throw new LoginException("用户不存在");
         } else {
             //加盐校验用户密码
-            boolean verify = false;
+            boolean verify;
             try {
                 verify = MD5Utils.saltVerify(pwd, dbUser.getUserPwd());
                 if (!verify) {
@@ -209,7 +207,8 @@ public class AuthServiceImpl extends AbstractAuthService {
     }
 
     public void createToken(HttpServletResponse response, Integer userId, String username, ResponseEntity responseEntity, int expire, int cookieExpire, String userLockedKey, String userLoginErrorCountKey) throws LoginException {
-        String token = null;
+        String token;
+        //noinspection AlibabaRemoveCommentedCode,CommentedOutCode
         try {
             String sessionId = UUID.randomUUID().toString();
 
@@ -224,7 +223,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             List<Role> roles = getRoles(username);
 
             Map map = new HashMap<>(2 << 2);
-            List<String> menus = new ArrayList<>();
+            List<String> menus;
             List<Menu> menuList = new ArrayList<>();
             for (Role role : roles) {
                 if (Objects.equals(role.getName(), Constants.SUPER_ROLE_KEY)) {
@@ -251,8 +250,6 @@ public class AuthServiceImpl extends AbstractAuthService {
                 map.put("menu", finalMenus);
             }
             map.put(Constants.TOKEN_KEY, token);
-//                map.put("role", role);
-//                map.put("roleId", map.get("orgId"));
             map.put("username", username);
 
             responseEntity.setValue(map);
@@ -290,12 +287,7 @@ public class AuthServiceImpl extends AbstractAuthService {
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
             throw new LoginException("登录时创建token异常", e);
-        }
-//            catch (AuthConfigException e) {
-//                e.printStackTrace();
-//                throw new LoginException("读取权限配置信息出错", e);
-//            }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new LoginException("登录异常", e);
         }
@@ -303,19 +295,18 @@ public class AuthServiceImpl extends AbstractAuthService {
 
     private TreeResponseData<com.iscas.biz.domain.common.Menu> getFinalMenus(TreeResponseData<com.iscas.biz.domain.common.Menu> tree, List<String> menus) {
 
-        Optional.ofNullable(tree).map(TreeResponseData::getData).ifPresent(t -> {
-            tree.setPath(tree.getData().getMenuPage());
-        });
+        Optional.ofNullable(tree).map(TreeResponseData::getData).ifPresent(t -> tree.setPath(tree.getData().getMenuPage()));
 
+        assert tree != null;
         List<TreeResponseData<com.iscas.biz.domain.common.Menu>> children = tree.getChildren();
         if (CollectionUtils.isEmpty(children)) {
             return null;
         }
         List<TreeResponseData<com.iscas.biz.domain.common.Menu>> copyChildren = new ArrayList<>();
-        children.stream().forEach(child -> copyChildren.add(child.clone()));
+        children.forEach(child -> copyChildren.add(child.clone()));
         tree.setChildren(copyChildren);
 
-        children.stream().forEach(child -> {
+        children.forEach(child -> {
             if (child == null) {
                 return;
             }
@@ -323,7 +314,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                 copyChildren.remove(child);
             }
         });
-        copyChildren.stream().forEach(child -> getFinalMenus(child, menus));
+        copyChildren.forEach(child -> getFinalMenus(child, menus));
         return tree;
     }
 

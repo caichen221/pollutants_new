@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2021/3/2 13:19
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/monitor")
 @Api(tags = "监控管理")

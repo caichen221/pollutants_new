@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @date 2022/4/20 9:20
  * @since jdk11
  */
+@SuppressWarnings("unused")
 @Data
 public class FlowFromFieldDto implements Serializable {
 }

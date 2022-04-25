@@ -1,6 +1,5 @@
 package com.iscas.biz.config;
 
-import cn.hutool.core.util.ReflectUtil;
 import com.iscas.biz.config.log.AccessLogInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.*;
  * @date 2020/8/28 21:02
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired

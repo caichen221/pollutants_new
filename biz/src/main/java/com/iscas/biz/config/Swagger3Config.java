@@ -1,31 +1,23 @@
 package com.iscas.biz.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.ApiOperation;
-import org.flowable.rest.service.api.RestResponseFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.*;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
-import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.schema.ModelRef;
-import springfox.documentation.service.*;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.HttpAuthenticationScheme;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
-import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * swagger配置
@@ -35,16 +27,15 @@ import java.util.stream.Collectors;
  * @date 2020/08/28
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Configuration
 @EnableOpenApi
 @EnableKnife4j
-//@Import(BeanValidatorPluginsConfiguration.class)
-//@ComponentScan(basePackages = "org.flowable.rest.service.api")
 public class Swagger3Config {
     @Value("${swagger.enable: true}")
     private boolean swaggerEnable;
 
-    private String version = "1.0";
+    private final String version = "1.0";
 
     @Bean
     public Docket defaultApi() {
@@ -63,39 +54,6 @@ public class Swagger3Config {
                 .build()/*.forCodeGeneration(true)*/;
 
     }
-
-
-    @Bean
-    public Docket flowableRestApi() {
-
-        return new Docket(DocumentationType.OAS_30)
-                .groupName("flowable-rest")
-                .apiInfo(new ApiInfoBuilder().title("flowable-API")
-                        .description("flowable-API")
-                        .version(version).build())
-                .enable(swaggerEnable)
-//                .securitySchemes(List.of(tokenScheme()))
-//                .securityContexts(List.of(tokenContext()))
-//                .globalOperationParameters(setHeaderToken())
-                .select()
-                // 自行修改为自己的包路径
-                .apis(RequestHandlerSelectors.basePackage("org.flowable.rest.service.api")
-                        .and(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)))
-                .paths(PathSelectors.any())
-                .build();
-//                .pathMapping("/process-api");
-    }
-
-
-    @Autowired
-    protected ObjectMapper objectMapper;
-
-    @Bean()
-    public RestResponseFactory restResponseFactory() {
-        RestResponseFactory restResponseFactory = new RestResponseFactory(objectMapper);
-        return restResponseFactory;
-    }
-
     @Bean
     public Docket authApi() {
 
@@ -127,8 +85,6 @@ public class Swagger3Config {
     }
 
     private HttpAuthenticationScheme tokenScheme() {
-//        return new HttpAuthenticationScheme("Authorization", "token验证", "http",
-//                "", null, null);
         return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("Authorization").build();
     }
 
@@ -141,18 +97,5 @@ public class Swagger3Config {
                 .operationSelector(o -> o.requestMappingPattern().matches("/.*"))
                 .build();
     }
-
-//    private List<Parameter> setHeaderToken() {
-//        ParameterBuilder parameterBuilder = new ParameterBuilder();
-//        List<Parameter> pars = new ArrayList<>();
-//        parameterBuilder.name("Authorization")
-//                .description("token")
-//                .modelRef(new ModelRef("string"))
-//                .parameterType("header")
-//                .required(false);
-//        pars.add(parameterBuilder.build());
-//        return pars;
-//    }
-
 
 }

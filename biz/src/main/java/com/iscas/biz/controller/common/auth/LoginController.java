@@ -35,6 +35,7 @@ import java.util.Map;
  * @date 2018/7/16 22:38
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @RestController
 @Api(tags = "登陆控制器")
 @SkipAuthentication

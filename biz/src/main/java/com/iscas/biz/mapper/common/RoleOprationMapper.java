@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 @Repository
 public interface RoleOprationMapper extends DynamicMapper<RoleOprationKey> {
     @Delete("delete from role_opration where role_id = #{roleId}")

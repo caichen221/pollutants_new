@@ -7,12 +7,14 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author zhuquanwen
+ */
 @Data
 @Accessors(chain = true)
 @ApiModel("组织结构")

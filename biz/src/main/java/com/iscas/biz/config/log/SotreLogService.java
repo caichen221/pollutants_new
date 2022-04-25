@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
  * @date 2020/2/21 18:16
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @Service
 @ConditionalOnMybatis
 public class SotreLogService implements IStoreLogService {

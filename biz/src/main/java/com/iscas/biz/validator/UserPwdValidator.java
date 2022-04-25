@@ -1,6 +1,5 @@
 package com.iscas.biz.validator;
 
-import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.biz.validator.anno.UserPwdConstraint;
 
 import javax.validation.ConstraintValidator;

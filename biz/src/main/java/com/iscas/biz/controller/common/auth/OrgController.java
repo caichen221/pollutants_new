@@ -31,6 +31,7 @@ import java.util.List;
  * @date 2021/2/20 18:07
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Api(tags = "组织机构管理")
 @RestController
 @RequestMapping("/org")
@@ -67,7 +68,7 @@ public class OrgController extends BaseController {
             }
     )
     @PutMapping("/node")
-    public ResponseEntity editNode(@Valid @RequestBody Org org) throws BaseException {
+    public ResponseEntity editNode(@Valid @RequestBody Org org) {
         return getResponse().setValue(orgService.editOrg(org));
     }
 
@@ -84,7 +85,7 @@ public class OrgController extends BaseController {
             @CacheEvict(value = "auth", key = "'role_map'")
     })
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
-    public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) throws BaseException {
+    public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) {
         AssertCollectionUtils.assertCollectionNotEmpty(orgIds, "orgIds不能未空");
         orgIds.forEach(orgService::deleteOrg);
         return getResponse();

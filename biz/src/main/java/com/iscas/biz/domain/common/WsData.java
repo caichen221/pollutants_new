@@ -6,6 +6,10 @@ import com.iscas.common.web.tools.json.JsonUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Data
 @Accessors(chain = true)
 public class WsData {

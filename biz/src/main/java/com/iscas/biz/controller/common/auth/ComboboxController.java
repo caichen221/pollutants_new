@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2021/2/21 19:48
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/combobox")
 @Api(tags = "下拉列表")
@@ -41,13 +42,13 @@ public class ComboboxController extends BaseController {
         return getResponse().setValue(roleService.combobox());
     }
 
-    @ApiOperation(value="获取组织机构树-2021-02-22 create by 朱全文", notes="")
+    @ApiOperation(value="获取组织机构树-2021-02-22 create by 朱全文")
     @GetMapping("/org/tree")
     public ResponseEntity orgTree() {
         return getResponse().setValue(orgService.getTree());
     }
 
-    @ApiOperation(value="获取操作下拉列表-2021-02-22 create by 朱全文", notes="")
+    @ApiOperation(value="获取操作下拉列表-2021-02-22 create by 朱全文")
     @GetMapping("/opration")
     public ResponseEntity opration() {
         return getResponse().setValue(oprationService.combobox());

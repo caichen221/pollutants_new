@@ -7,7 +7,7 @@
  * except in compliance with the License.  You may obtain a
  * copy of the License at the following location:
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -42,6 +42,7 @@ import java.util.Map;
  * 将{@link AuthenticationFilter}类的内容拷贝过来，
  * 做一些改动，因为使用了rest的接口，不进行重定向
  */
+@SuppressWarnings("unused")
 public class CustomCasAuthenticationFilter extends AbstractCasFilter {
     private boolean isRedirectAfterValidation;
 
@@ -72,7 +73,7 @@ public class CustomCasAuthenticationFilter extends AbstractCasFilter {
     private UrlPatternMatcherStrategy ignoreUrlPatternMatcherStrategyClass = null;
 
     private static final Map<String, Class<? extends UrlPatternMatcherStrategy>> PATTERN_MATCHER_TYPES =
-            new HashMap<String, Class<? extends UrlPatternMatcherStrategy>>();
+            new HashMap<>();
 
     static {
         PATTERN_MATCHER_TYPES.put("CONTAINS", ContainsPatternUrlPatternMatcherStrategy.class);

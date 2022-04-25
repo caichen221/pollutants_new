@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2021/7/3 17:41
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @RestController
 @RequestMapping("/cas")
 @ConditionalOnCustomCasClient

@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author zhuquanwen
+ */
+@SuppressWarnings({"MybatisXMapperMethodInspection", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "rawtypes"})
 @Repository
 public interface MenuMapper extends DynamicMapper<Menu> {
 

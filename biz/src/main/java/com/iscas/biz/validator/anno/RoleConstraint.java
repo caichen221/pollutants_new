@@ -13,6 +13,7 @@ import java.lang.annotation.*;
  * @date 2021/12/6 14:21
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD,ElementType.FIELD,ElementType.CONSTRUCTOR,

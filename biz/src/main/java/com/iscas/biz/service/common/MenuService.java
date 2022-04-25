@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
  * @date 2021/2/22 8:26
  * @since jdk1.8
  */
+@SuppressWarnings({"FieldCanBeLocal", "unused", "rawtypes"})
 @Service
 @ConditionalOnMybatis
 public class MenuService extends ServiceImpl<MenuMapper, Menu> {
@@ -64,6 +65,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         return root;
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     private void combineNode(Object pid, TreeResponseData<Menu> treeResponseData, Map<Integer, List<TreeResponseData<Menu>>> childOrgs) {
         List<TreeResponseData<Menu>> treeDataOrgs = childOrgs.get(pid);
         if (CollectionUtils.isNotEmpty(treeDataOrgs)) {
@@ -78,8 +80,8 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
     private Map<Integer, List<TreeResponseData<Menu>>> getChildMenus(List<Menu> menus) {
         List<RoleMenuKey> roleMenuKeys = roleMenuMapper.selectList(null);
         List<Role> allRoles = roleMapper.selectList(null);
-        Map<Integer, List<Role>> menuRoleMap = new HashMap<>();
-        Map<Integer, Role> roleMap = new HashMap<>();
+        Map<Integer, List<Role>> menuRoleMap = new HashMap<>(16);
+        Map<Integer, Role> roleMap = new HashMap<>(16);
         if (CollectionUtils.isNotEmpty(allRoles)) {
             roleMap = allRoles.stream().collect(Collectors.toMap(Role::getRoleId, role -> role));
         }
@@ -94,7 +96,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         }
 
         List<Map> menuOprationMaps = menuMapper.selectMenuOpration();
-        Map<Integer, List<Map>> menuOprationMap = new HashMap<>();
+        Map<Integer, List<Map>> menuOprationMap = new HashMap<>(16);
         if (CollectionUtils.isNotEmpty(menuOprationMaps)) {
             for (Map oprationMap : menuOprationMaps) {
                 Integer menuId = (Integer) oprationMap.get("menu_id");
@@ -102,7 +104,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
             }
         }
 
-        Map<Integer, List<TreeResponseData<Menu>>> childOrgs = new HashMap<>();
+        Map<Integer, List<TreeResponseData<Menu>>> childOrgs = new HashMap<>(16);
         for (Menu menu : menus) {
             Integer menuId = menu.getMenuId();
             Integer menuPid = menu.getMenuPid();
@@ -134,12 +136,6 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         }
         return childOrgs;
     }
-
-//    public static void main(String[] args) {
-//        Map<String, ArrayList> map = new HashMap<>();
-//        List list = map.computeIfAbsent(null, k -> new ArrayList());
-//        System.out.println(list);
-//    }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {
@@ -180,23 +176,18 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
 
         //配置角色
         List<Integer> roleIds = menu.getRoleIds();
-//        RoleMenuExample roleMenuExample = new RoleMenuExample();
-//        roleMenuExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
-//        roleMenuMapper.deleteByExample(roleMenuExample);
         roleMenuMapper.delete(new QueryWrapper<RoleMenuKey>().lambda().eq(RoleMenuKey::getMenuId, menu.getMenuId()));
         insertRoleIds(roleIds, menu);
 
         //配置权限标识
         List<Integer> opIds = menu.getOprationIds();
-//        MenuOprationExample menuOprationExample = new MenuOprationExample();
-//        menuOprationExample.createCriteria().andMenuIdEqualTo(menu.getMenuId());
-//        menuOprationMapper.deleteByExample(menuOprationExample);
         LambdaQueryWrapper<MenuOprationKey> queryWrapper = new QueryWrapper<MenuOprationKey>().lambda().eq(MenuOprationKey::getMenuId, menu.getMenuId());
         menuOprationMapper.delete(queryWrapper);
         insertOprations(opIds, menu);
 
         return 1;
     }
+
     private void insertRoleIds(List<Integer> roleIds, Menu menu) {
         if (CollectionUtils.isNotEmpty(roleIds)) {
             for (Integer roleId : roleIds) {
@@ -219,13 +210,13 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
     public int deleteMenu(Integer menuId) {
-//        return menuMapper.deleteByPrimaryKey(menuId);
         this.removeById(menuId);
         return 1;
     }

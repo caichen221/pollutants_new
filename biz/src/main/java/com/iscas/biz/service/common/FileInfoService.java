@@ -25,6 +25,7 @@ import java.util.List;
  * @date 2022/1/10 15:05
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Service
 @Slf4j
 public class FileInfoService extends ServiceImpl<FileInfoMapper, FileInfo> {

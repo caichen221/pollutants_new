@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018/7/22 21:26
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 public class SocketIOStaticInfo {
     private SocketIOStaticInfo(){}
     /**用户名和websocket clientId 对应关系*/

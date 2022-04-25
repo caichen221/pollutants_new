@@ -15,7 +15,8 @@ import org.springframework.context.ApplicationContext;
  * @date 2021/2/26 15:04
  * @since jdk1.8
  */
-@StartedFilterComponent(order = 0x7fffffff)
+@SuppressWarnings("unused")
+@StartedFilterComponent()
 @Slf4j
 @ConditionalOnMybatis
 public class ClearWsDataFilter extends AbstractStartedFilter {

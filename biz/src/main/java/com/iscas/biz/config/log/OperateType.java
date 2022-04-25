@@ -6,6 +6,7 @@ package com.iscas.biz.config.log;
  * @date 2021/2/20 18:13
  * @since jdk1.8
  */
+@SuppressWarnings({"AlibabaEnumConstantsMustHaveComment", "unused"})
 public enum OperateType {
     add("添加", 0),
     delete("删除", 1),
@@ -29,8 +30,9 @@ public enum OperateType {
 
     public static String getNameByIntVal(int intVal) {
         for (OperateType operateType : values()) {
-            if (operateType.intVal == intVal)
+            if (operateType.intVal == intVal) {
                 return operateType.name();
+            }
         }
         return other.name();
     }

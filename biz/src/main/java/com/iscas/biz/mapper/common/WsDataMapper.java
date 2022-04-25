@@ -7,27 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 
+/**
+ * @author zhuquanwen
+ */
 @Repository
 public interface WsDataMapper extends DynamicMapper<WsData> {
-
-//    int deleteByExample(WsDataExample example);
-
-
-//    int insert(WsData record);
-
-
-
-//    List<WsData> selectByExample(WsDataExample example);
-
-//    WsData selectByPrimaryKey(Integer id);
-
-
-
-
-
-
-//    int updateByPrimaryKey(WsData record);
-
+    @SuppressWarnings("UnusedReturnValue")
     @Delete("delete from ws_data where create_time < #{time,jdbcType=TIMESTAMP}")
     int deleteByTime(Date time);
 }

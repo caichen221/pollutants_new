@@ -8,6 +8,7 @@ package com.iscas.biz.config.log;
  * @date 2020/2/21 9:26
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public enum LogType {
     /**
      * 未知
@@ -18,8 +19,8 @@ public enum LogType {
     USER("用户", 3),
     AUTH("权限", 4),
     SYSTEM("系统", 5);
-    private String value;
-    private int intVal;
+    private final String value;
+    private final int intVal;
     LogType(String value, int intVal) {
 
         this.value = value;

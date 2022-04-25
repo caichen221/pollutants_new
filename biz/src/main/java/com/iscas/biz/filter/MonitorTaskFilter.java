@@ -14,11 +14,13 @@ import org.springframework.context.ApplicationContext;
  * @date 2021/3/2 13:57
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @StartedFilterComponent(order = 3)
 @Slf4j
 public class MonitorTaskFilter extends AbstractStartedFilter {
 
     private final CronTaskRegister cronTaskRegister;
+    @SuppressWarnings("FieldCanBeLocal")
     private final MonitorTask monitorTask;
 
 
@@ -35,7 +37,7 @@ public class MonitorTaskFilter extends AbstractStartedFilter {
     }
 
     private void startSysMonitorTask() {
-        SchedulingRunnable task = new SchedulingRunnable("monitorTask", "monitor", null);
+        SchedulingRunnable task = new SchedulingRunnable("monitorTask", "monitor", (Object) null);
         //每30S执行一次任务
         cronTaskRegister.addCronTask("monitor_task", task, "0/30 * * * * ?");
 

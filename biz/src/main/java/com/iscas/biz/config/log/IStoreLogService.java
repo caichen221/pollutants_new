@@ -11,5 +11,6 @@ import com.iscas.biz.domain.common.LogInfo;
  * @since jdk1.8
  */
 public interface IStoreLogService {
+    @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
     void store(LogInfo logInfo);
 }

@@ -14,12 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
  * @author zhuquanwen
  * @version 1.0
  * @date 2021/7/3 17:19
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @Configuration
 @EnableConfigurationProperties(CasProps.class)
 @ConditionalOnCustomCasClient
@@ -27,7 +27,7 @@ public class CasCustomConfig {
     @Autowired
     private CasProps casProps;
 
-    private static boolean casEnabled = true;
+    private static final boolean CAS_ENABLED = true;
 
     public CasCustomConfig() {
     }
@@ -35,8 +35,8 @@ public class CasCustomConfig {
 
     @Bean
     public ServletListenerRegistrationBean<SingleSignOutHttpSessionListener> singleSignOutHttpSessionListener() {
-        ServletListenerRegistrationBean<SingleSignOutHttpSessionListener> listener = new ServletListenerRegistrationBean<SingleSignOutHttpSessionListener>();
-        listener.setEnabled(casEnabled);
+        ServletListenerRegistrationBean<SingleSignOutHttpSessionListener> listener = new ServletListenerRegistrationBean<>();
+        listener.setEnabled(CAS_ENABLED);
         listener.setListener(new SingleSignOutHttpSessionListener());
         listener.setOrder(1);
         return listener;
@@ -45,13 +45,13 @@ public class CasCustomConfig {
     /**
      * 该过滤器用于实现单点登出功能，单点退出配置，一定要放在其他filter之前
      *
-     * @return
+     * @return FilterRegistrationBean
      */
     @Bean
     public FilterRegistrationBean singleSignOutFilter() {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new SingleSignOutFilter());
-        filterRegistration.setEnabled(casEnabled);
+        filterRegistration.setEnabled(CAS_ENABLED);
         if (casProps.getSignOutFilters().size() > 0) {
             filterRegistration.setUrlPatterns(casProps.getSignOutFilters());
         } else {
@@ -65,13 +65,13 @@ public class CasCustomConfig {
     /**
      * 该过滤器负责用户的认证工作
      *
-     * @return
+     * @return FilterRegistrationBean
      */
     @Bean
     public FilterRegistrationBean authenticationFilter() {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new CustomCasAuthenticationFilter(casProps.isRedirectAfterValidation()));
-        filterRegistration.setEnabled(casEnabled);
+        filterRegistration.setEnabled(CAS_ENABLED);
         if (casProps.getAuthFilters().size() > 0) {
             filterRegistration.setUrlPatterns(casProps.getAuthFilters());
         } else {
@@ -91,13 +91,13 @@ public class CasCustomConfig {
     /**
      * 该过滤器负责对Ticket的校验工作,使用CAS 3.0协议
      *
-     * @return
+     * @return FilterRegistrationBean
      */
     @Bean
     public FilterRegistrationBean cas30ProxyReceivingTicketValidationFilter() {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new Cas30ProxyReceivingTicketValidationFilter());
-        filterRegistration.setEnabled(casEnabled);
+        filterRegistration.setEnabled(CAS_ENABLED);
         if (casProps.getValidateFilters().size() > 0) {
             filterRegistration.setUrlPatterns(casProps.getValidateFilters());
         } else {
@@ -128,7 +128,7 @@ public class CasCustomConfig {
      * 比如AssertionHolder.getAssertion().getPrincipal().getName()。
      * 这个类把Assertion信息放在ThreadLocal变量中，这样应用程序不在web层也能够获取到当前登录信息
      *
-     * @return
+     * @return FilterRegistrationBean
      */
     @Bean
     public FilterRegistrationBean assertionThreadLocalFilter() {

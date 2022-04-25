@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
  * @date 2022/1/3 19:58
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 @Slf4j
 @Component
 @ConditionalOnMybatis

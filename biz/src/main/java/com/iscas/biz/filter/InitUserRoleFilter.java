@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
-import com.iscas.biz.domain.common.*;
+import com.iscas.biz.domain.common.Role;
+import com.iscas.biz.domain.common.User;
+import com.iscas.biz.domain.common.UserRoleKey;
 import com.iscas.biz.mapper.common.RoleMapper;
 import com.iscas.biz.mapper.common.UserMapper;
 import com.iscas.biz.mapper.common.UserRoleMapper;
@@ -13,13 +15,11 @@ import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.BaseRuntimeException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,6 +28,7 @@ import java.util.Optional;
  * @date 2020/4/21 13:50
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @StartedFilterComponent(order = 1)
 @Slf4j
 @ConditionalOnMybatis
@@ -63,8 +64,6 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
                     .setUserPwd(MD5Utils.saltMD5(superUserDefaultPwd));
             userMapper.insertUser(user);
         }
-//        RoleExample roleExample = new RoleExample();
-//        roleExample.createCriteria().andRoleNameEqualTo(Constants.SUPER_ROLE_KEY);
         Role role = Optional.ofNullable(roleMapper.selectList(new QueryWrapper<Role>().lambda().eq(Role::getRoleName, Constants.SUPER_ROLE_KEY)))
                 .map(superRoles -> superRoles.size() == 0 ? null : superRoles.get(0))
                 .orElseGet(() -> {
@@ -73,12 +72,6 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
                     roleMapper.insert(rolex);
                     return rolex;
                 });
-
-        //超级管理员和超级管理员角色关联
-//        UserRoleExample userRoleExample = new UserRoleExample();
-//        userRoleExample.createCriteria().andUserIdEqualTo(user.getUserId())
-//                .andRoleIdEqualTo(role.getRoleId());
-//        userRoleMapper.deleteByExample(userRoleExample);
         userRoleMapper.delete(new QueryWrapper<UserRoleKey>().lambda().eq(UserRoleKey::getUserId, user.getUserId()));
         UserRoleKey userRoleKey = new UserRoleKey();
         userRoleKey.setRoleId(role.getRoleId());

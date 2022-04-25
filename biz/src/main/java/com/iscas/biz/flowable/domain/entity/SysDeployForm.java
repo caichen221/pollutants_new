@@ -1,6 +1,7 @@
 package com.iscas.biz.flowable.domain.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 流程实例关联表单对象 sys_instance_form
@@ -10,15 +11,14 @@ import lombok.Data;
  * @since jdk11
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class SysDeployForm extends BaseEntity {
     /** 主键 */
     private Long id;
 
     /** 表单主键 */
-//    @Excel(name = "表单主键")
     private Long formId;
 
     /** 流程定义主键 */
-//    @Excel(name = "流程定义主键")
     private String deployId;
 }
