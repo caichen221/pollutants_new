@@ -1,7 +1,11 @@
 package com.iscas.biz.flowable.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.flowable.rest.service.api.RestResponseFactory;
 import org.flowable.spring.SpringProcessEngineConfiguration;
 import org.flowable.spring.boot.EngineConfigurationConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -18,5 +22,13 @@ public class FlowableConfiguration implements EngineConfigurationConfigurer<Spri
         engineConfiguration.setActivityFontName("宋体");
         engineConfiguration.setLabelFontName("宋体");
         engineConfiguration.setAnnotationFontName("宋体");
+    }
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Bean()
+    public RestResponseFactory restResponseFactory() {
+        return new RestResponseFactory(objectMapper);
     }
 }
