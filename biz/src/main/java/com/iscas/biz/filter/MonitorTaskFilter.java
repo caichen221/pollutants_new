@@ -37,7 +37,7 @@ public class MonitorTaskFilter extends AbstractStartedFilter {
     }
 
     private void startSysMonitorTask() {
-        SchedulingRunnable task = new SchedulingRunnable("monitorTask", "monitor", (Object) null);
+        SchedulingRunnable task = new SchedulingRunnable("monitorTask", "monitor");
         //每30S执行一次任务
         cronTaskRegister.addCronTask("monitor_task", task, "0/30 * * * * ?");
 
