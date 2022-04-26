@@ -41,8 +41,4 @@ findProject(':common:common-rocketmq-tools')?.name = 'common-rocketmq-tools'
 //findProject(':common:common-etcd-tools')?.name = 'common-etcd-tools'
 //include 'common:common-jgit-tools'
 //findProject(':common:common-jgit-tools')?.name = 'common-jgit-tools'
-//include 'special:workflow-webapp'
-//findProject(':special:workflow-webapp')?.name = 'workflow-webapp'
-//include 'special:workflow'
-//findProject(':special:workflow')?.name = 'workflow'
 

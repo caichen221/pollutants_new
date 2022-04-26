@@ -1,7 +1,0 @@
-dependencies {
-    api project(":biz-base")
-    api group: 'org.camunda.bpm.springboot', name: 'camunda-bpm-spring-boot-starter', version: "${camundaVersion}"
-    api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
-    api group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
-    api group: 'org.glassfish', name: 'javax.el', version: "${elVersion}"
-}

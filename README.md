@@ -9,6 +9,27 @@
 
 版本更新日志
 ===================================================
+- 2.1.0-20220426-1
+
+  - 1、优化登录和权限验证用到的缓存
+  - 2、SpringBoot版本升级至2.6.6
+  - 3、添加接口签名验证工具类
+  - 4、暂时关闭common-docker-tools、common-etcd-tools、common-jgit-tools、common-minio-tools
+    、biz-neo4j、common-lua-tools、common-zeromq-tools、log-expansion模块，如果还想使用在setting.xml中打开对应模块即可
+  - 5、删除workflow、webflow-app半成品模块
+  - 6、添加flowable工作流(目前不能与Atomikos共用)
+  - 7、规范了autoconfig配置类命名并在spring.factories中作配置
+  - 8、修改了java版本配置方式(1.11改为11)
+  - 9、跨域origin配置改为originPattern
+  - 10、修改Mybatis-Plus分页插件的问题
+  - 11、xxtable插件中插入数据自动返回主键ID
+  - 12、修复druid配置的若干BUG
+  - 13、添加quartz定时任务引擎
+  - 14、添加LocalDateTimeUtils工作
+  - 15、mybatis-plus中添加动态表名切换功能
+  - 16、优化多个模块的源码
+
+-----------------------------------------------
 - 2.0.2-20211206-1
 
     - 1、反射工具类中添加函数句柄
