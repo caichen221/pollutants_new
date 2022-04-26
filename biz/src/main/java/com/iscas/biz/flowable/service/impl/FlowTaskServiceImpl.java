@@ -8,6 +8,7 @@ import com.iscas.biz.domain.common.Role;
 import com.iscas.biz.domain.common.User;
 import com.iscas.biz.flowable.common.constant.ProcessConstants;
 import com.iscas.biz.flowable.common.enums.FlowComment;
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.dto.FlowCommentDto;
 import com.iscas.biz.flowable.domain.dto.FlowNextDto;
 import com.iscas.biz.flowable.domain.dto.FlowTaskDto;
@@ -65,6 +66,7 @@ import java.util.function.Predicate;
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode", "unused", "rawtypes", "unchecked", "CommentedOutCode"})
 @Service
+@ConditionalOnFlowable
 public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTaskService {
 
     @Resource

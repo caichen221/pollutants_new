@@ -3,10 +3,10 @@ package com.iscas.biz.flowable.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.iscas.base.biz.model.auth.AuthContext;
 import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.biz.flowable.common.constant.ProcessConstants;
 import com.iscas.biz.flowable.common.enums.FlowComment;
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.dto.FlowProcDefDto;
 import com.iscas.biz.flowable.domain.entity.SysForm;
 import com.iscas.biz.flowable.factory.FlowServiceFactory;
@@ -14,8 +14,6 @@ import com.iscas.biz.flowable.mapper.FlowDeployMapper;
 import com.iscas.biz.flowable.service.IFlowDefinitionService;
 import com.iscas.biz.flowable.service.ISysDeployFormService;
 import com.iscas.templet.common.ResponseEntity;
-import com.iscas.templet.exception.AuthenticationRuntimeException;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.BaseRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -32,7 +30,10 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 流程定义
@@ -45,6 +46,7 @@ import java.util.*;
 @SuppressWarnings({"unused", "unchecked", "rawtypes"})
 @Service
 @Slf4j
+@ConditionalOnFlowable
 public class FlowDefinitionServiceImpl extends FlowServiceFactory implements IFlowDefinitionService {
 
     @Resource

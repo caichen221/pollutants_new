@@ -1,5 +1,6 @@
 package com.iscas.biz.flowable.service.impl;
 
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.entity.SysTaskForm;
 import com.iscas.biz.flowable.mapper.SysTaskFormMapper;
 import com.iscas.biz.flowable.service.ISysTaskFormService;
@@ -15,6 +16,7 @@ import java.util.List;
  * @since jdk11
  */
 @Service
+@ConditionalOnFlowable
 @SuppressWarnings("unused")
 public class SysTaskFormServiceImpl implements ISysTaskFormService {
     @Autowired

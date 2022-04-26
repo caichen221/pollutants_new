@@ -1,7 +1,7 @@
 package com.iscas.biz.flowable.service.impl;
 
-import com.iscas.base.biz.model.auth.AuthContext;
 import com.iscas.base.biz.util.AuthContextHolder;
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.vo.FlowTaskVo;
 import com.iscas.biz.flowable.factory.FlowServiceFactory;
 import com.iscas.biz.flowable.service.IFlowInstanceService;
@@ -28,6 +28,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
+@ConditionalOnFlowable
 @SuppressWarnings(value = {"unused", "rawtypes"})
 public class FlowInstanceServiceImpl extends FlowServiceFactory implements IFlowInstanceService {
 

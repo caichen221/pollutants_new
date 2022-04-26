@@ -1,5 +1,6 @@
 package com.iscas.biz.flowable.service.impl;
 
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.entity.SysForm;
 import com.iscas.biz.flowable.mapper.SysFormMapper;
 import com.iscas.biz.flowable.service.ISysFormService;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Service
+@ConditionalOnFlowable
 public class SysFormServiceImpl implements ISysFormService {
     @Autowired
     private SysFormMapper sysFormMapper;

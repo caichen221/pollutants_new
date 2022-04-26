@@ -6,7 +6,7 @@ import org.flowable.spring.SpringProcessEngineConfiguration;
 import org.flowable.spring.boot.EngineConfigurationConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author zhuquanwen
@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
  * @date 2022/4/20 14:17
  * @since jdk11
  */
-@Configuration
 @SuppressWarnings(value = "unused")
+@ComponentScan("org.flowable.rest.service.api")
 public class FlowableConfiguration implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
     @Override
     public void configure(SpringProcessEngineConfiguration engineConfiguration) {

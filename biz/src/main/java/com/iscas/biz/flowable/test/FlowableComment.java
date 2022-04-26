@@ -1,7 +1,5 @@
 package com.iscas.biz.flowable.test;
 
-import org.springframework.web.bind.annotation.RestController;
-
 /**
  * 1、设计流程定义。编写bpmn20.xml格式的文件，可以通过流程设计器来设计(后面让前端来集成一下流程设计器)
  * 通过FlowDefinitionController类中接口/flowable/definition/import?name=xxx&category=xxx，导入一个流程(XML文件)
@@ -34,6 +32,5 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/4/21 11:08
  * @since jdk11
  */
-@RestController
-public class ApprovalDemoController {
+public class FlowableComment {
 }

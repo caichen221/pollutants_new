@@ -3,6 +3,7 @@ package com.iscas.biz.flowable.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.iscas.biz.domain.common.Role;
 import com.iscas.biz.domain.common.User;
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.dto.FlowProcDefDto;
 import com.iscas.biz.flowable.domain.vo.FlowSaveXmlVo;
 import com.iscas.biz.flowable.service.IFlowDefinitionService;
@@ -44,6 +45,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/flowable/definition")
 @RequiredArgsConstructor
+@ConditionalOnFlowable
 public class FlowDefinitionController {
 
     private final IFlowDefinitionService flowDefinitionService;

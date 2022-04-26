@@ -5,6 +5,7 @@ import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
+import com.iscas.biz.flowable.enable.EnableFlowable;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableQuartz;
@@ -41,7 +42,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class,
         MybatisPlusAutoConfiguration.class, DataSourceHealthContributorAutoConfiguration.class, XADataSourceAutoConfiguration.class})
 @ServletComponentScan //自动扫描servletBean
-@ComponentScan(basePackages = {"com.iscas", "org.flowable.rest.service.api"}
+@ComponentScan(basePackages = {"com.iscas"}
         , excludeFilters = {
             @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
             @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
@@ -73,6 +74,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableCheckReferer //是否校验referer，需配合配置文件内的域名白名单
 @RetrofitScan("com.iscas.biz.test.retrofit") //扫描retrofit的包
 @EnableQuartz //允许quartz
+@EnableFlowable // 允许flowable工作流引擎
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {

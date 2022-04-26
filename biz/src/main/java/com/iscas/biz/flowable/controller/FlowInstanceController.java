@@ -1,5 +1,6 @@
 package com.iscas.biz.flowable.controller;
 
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.vo.FlowTaskVo;
 import com.iscas.biz.flowable.service.IFlowInstanceService;
 import com.iscas.templet.common.ResponseEntity;
@@ -25,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/flowable/instance")
 @RequiredArgsConstructor
+@ConditionalOnFlowable
 public class FlowInstanceController {
     private final IFlowInstanceService flowInstanceService;
 

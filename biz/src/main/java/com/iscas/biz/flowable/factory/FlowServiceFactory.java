@@ -1,5 +1,6 @@
 package com.iscas.biz.flowable.factory;
 
+import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import lombok.Getter;
 import org.flowable.engine.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
  */
 @Component
 @Getter
+@ConditionalOnFlowable
 public class FlowServiceFactory {
 
     @Resource
