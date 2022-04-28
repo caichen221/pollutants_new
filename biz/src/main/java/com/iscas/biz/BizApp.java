@@ -79,7 +79,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(BizApp.class);
-//        springApplication.addListeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         springApplication.run(args);
         log.info("==========服务已启动=================");
     }
@@ -87,12 +86,11 @@ public class BizApp extends SpringBootServletInitializer {
     /**
      * 重写configure
      *
-     * @param builder
-     * @return
+     * @param builder builder
+     * @return SpringApplicationBuilder
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-//        builder.listeners(new MyApplicationBeforeStartListener(), new MyApplicationStartedListener());
         SpringApplicationBuilder sources = builder.sources(BizApp.class);
         log.info("==========服务已启动=================");
         return sources;

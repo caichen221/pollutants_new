@@ -2,6 +2,7 @@ package com.iscas.biz.mp.config.db;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
@@ -308,6 +309,15 @@ public class DruidConfiguration implements EnvironmentAware {
         value = environment.getProperty(path + "min-evictable-idle-time-millis");
         if (StringUtils.isNotBlank(value)) {
             datasource.setMinEvictableIdleTimeMillis(Long.parseLong(value));
+        }
+        value = environment.getProperty(path + "type");
+        if (StringUtils.isNotBlank(value)) {
+            try {
+                DbType dbType = DbType.valueOf(value);
+                datasource.setDbType(dbType);
+            } catch (Exception e) {
+                log.warn("不支持的数据库类型: [{}]", value);
+            }
         }
         return datasource;
     }
