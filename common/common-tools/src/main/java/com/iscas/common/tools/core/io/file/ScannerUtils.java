@@ -8,10 +8,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -91,16 +88,8 @@ public class ScannerUtils {
                                 if (name.endsWith(".class") && !entry.isDirectory() && !name.contains("$")) {
                                     // 去掉后面的".class" 获取真正的类名
                                     String className = name.substring(packageName1.length() + 1, name.length() - 6);
-                                    Class<?> aClass = null;
-                                    try {
-                                        // 添加到classes
-                                        aClass = Class.forName(packageName1 + '.' + className);
-                                    } catch (Exception e) {
-                                        log.warn("加载类出错", e);
-                                    }
-                                    if (aClass != null) {
-                                        classes.add(aClass);
-                                    }
+
+                                    addClasses(packageName1 + '.' + className, classes);
                                 }
                             }
                         }
@@ -139,15 +128,8 @@ public class ScannerUtils {
             } else {
                 // 如果是java类文件 去掉后面的.class 只留下类名
                 String className = file.getName().substring(0, file.getName().length() - 6);
-                try {
-                    // 添加到集合中去
-                    // classes.add(Class.forName(packageName + '.' +
-                    // className));
-                    // 经过回复同学的提醒，这里用forName有一些不好，会触发static方法，没有使用classLoader的load干净
-                    classes.add(Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+
+                addClasses(packageName + '.' + className, classes);
             }
         }
     }
@@ -155,6 +137,27 @@ public class ScannerUtils {
     public static String getPackageRealPath(String packageName) {
         String packageDirName = packageName.replace('.', '/');
         return Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(packageDirName)).getFile();
+    }
+
+    private static void addClasses(String fullName, Set<Class<?>> classes) {
+        // 添加到集合中去
+        // classes.add(Class.forName(packageName + '.' + className));
+        // 经过回复同学的提醒，这里用forName有一些不好，会触发static方法，没有使用classLoader的load干净
+        Class<?> aClass = null;
+        try {
+            // 添加到classes
+            aClass = Thread.currentThread().getContextClassLoader().loadClass(fullName);
+        } catch (Exception e) {
+            log.warn("加载类出错", e);
+        }
+        //添加当前类和内部类
+        if (aClass != null) {
+            Class<?>[] innerClasses = aClass.getClasses();
+            classes.add(aClass);
+            if (innerClasses != null) {
+                classes.addAll(Arrays.asList(innerClasses));
+            }
+        }
     }
 
 }
