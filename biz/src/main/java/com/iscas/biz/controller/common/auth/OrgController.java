@@ -14,9 +14,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,10 +81,9 @@ public class OrgController extends BaseController {
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) {
         AssertCollectionUtils.assertCollectionNotEmpty(orgIds, "orgIds不能未空");
-        orgIds.forEach(orgService::deleteOrg);
+        orgService.deleteNode(orgIds);
         return getResponse();
     }
 

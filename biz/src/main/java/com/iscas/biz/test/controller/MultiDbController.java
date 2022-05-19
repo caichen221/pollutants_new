@@ -5,7 +5,6 @@ import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.test.service.atomikos.AtomikosTestService;
 import com.iscas.templet.common.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +34,7 @@ public class MultiDbController {
     }
 
     @GetMapping("/t2")
-    @Transactional
+//    @Transactional
     public ResponseEntity t2() {
         final List select = dynamicMapper.selectBySql("select * from user");
         return new ResponseEntity();
@@ -48,7 +47,7 @@ public class MultiDbController {
     }
 
     @GetMapping("/t4")
-    @Transactional
+//    @Transactional
     public ResponseEntity t4() {
         atomikosTestService.test2();
         int a = 3 / 0;

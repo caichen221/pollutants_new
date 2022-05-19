@@ -220,4 +220,9 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         this.removeById(menuId);
         return 1;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    public void deleteNode(List<Integer> menuIds) {
+        menuIds.forEach(this::deleteMenu);
+    }
 }

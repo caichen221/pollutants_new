@@ -171,4 +171,9 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
         this.removeById(orgId);
         return 1;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
+    public void deleteNode(List<Integer> orgIds) {
+        orgIds.forEach(this::deleteOrg);
+    }
 }
