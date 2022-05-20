@@ -1,0 +1,10 @@
+com.iscas.base.biz.autoconfigure.cors.CorsAutoConfiguration
+com.iscas.base.biz.autoconfigure.auth.TokenAutoConfiguration
+com.iscas.base.biz.autoconfigure.common.ErrorPageAutoConfiguration
+com.iscas.base.biz.autoconfigure.https.HttpsAutoConfiguration
+com.iscas.base.biz.autoconfigure.i18n.I18nAutoConfiguration
+com.iscas.base.biz.autoconfigure.okhttp.OkHttpClientAutoConfiguration
+com.iscas.base.biz.autoconfigure.redis.cache.RedisCacheAutoConfiguration
+com.iscas.base.biz.autoconfigure.requestbody.replaced.RequestBodyReplacedAutoConfiguration
+com.iscas.base.biz.autoconfigure.valid.ValidatorAutoConfiguration
+com.iscas.base.biz.autoconfigure.verification.code.VerificationCodeAutoConfiguration

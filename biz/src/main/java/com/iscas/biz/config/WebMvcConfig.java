@@ -4,6 +4,7 @@ import com.iscas.biz.config.log.AccessLogInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.*;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.*;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration
+@AutoConfiguration
 public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     @Qualifier("asyncExecutor")

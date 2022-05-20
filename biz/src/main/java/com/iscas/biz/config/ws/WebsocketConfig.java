@@ -1,7 +1,7 @@
 package com.iscas.biz.config.ws;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration
+@AutoConfiguration
 public class WebsocketConfig {
     @Bean
     public ServerEndpointExporter serverEndpointExporter(){

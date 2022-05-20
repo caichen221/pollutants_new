@@ -1,7 +1,7 @@
 package com.iscas.base.biz.schedule;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -14,7 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration
+@AutoConfiguration
 public class SchedulingConfig {
     @Bean
     public TaskScheduler taskScheduler() {

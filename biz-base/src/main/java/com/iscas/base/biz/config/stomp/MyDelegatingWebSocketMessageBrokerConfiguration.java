@@ -2,9 +2,9 @@ package com.iscas.base.biz.config.stomp;
 
 import cn.hutool.core.util.ReflectUtil;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.socket.WebSocketHandler;
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration
+@AutoConfiguration
 @ConditionalOnProperty(name = "ws.stomp.register", havingValue = "true")
 public class MyDelegatingWebSocketMessageBrokerConfiguration extends DelegatingWebSocketMessageBrokerConfiguration {
 

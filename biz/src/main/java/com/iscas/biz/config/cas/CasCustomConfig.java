@@ -7,11 +7,11 @@ import org.jasig.cas.client.util.AssertionThreadLocalFilter;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author zhuquanwen
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
  * @since jdk1.8
  */
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(CasProps.class)
 @ConditionalOnCustomCasClient
 public class CasCustomConfig {

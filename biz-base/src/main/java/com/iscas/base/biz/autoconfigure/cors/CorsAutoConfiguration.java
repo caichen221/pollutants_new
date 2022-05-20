@@ -3,13 +3,13 @@ package com.iscas.base.biz.autoconfigure.cors;
 import com.iscas.base.biz.filter.CustomCorsFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
  * @author zhuquanwen
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode", "unused", "rawtypes"})
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(CorsProps.class)
 @ConditionalOnClass(CustomCorsFilter.class)
 @ConditionalOnProperty(prefix = "cors",matchIfMissing = true,value = "enabled", havingValue = "true")

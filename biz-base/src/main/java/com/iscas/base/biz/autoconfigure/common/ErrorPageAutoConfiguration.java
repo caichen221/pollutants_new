@@ -1,11 +1,11 @@
 package com.iscas.base.biz.autoconfigure.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
  * @date 2018/7/17 8:41
  * @since jdk1.8
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @Slf4j
 @ConditionalOnClass(ErrorPageRegistry.class)
 public class ErrorPageAutoConfiguration implements ErrorPageRegistrar {

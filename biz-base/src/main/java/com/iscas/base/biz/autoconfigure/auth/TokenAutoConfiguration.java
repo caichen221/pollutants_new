@@ -1,8 +1,8 @@
 package com.iscas.base.biz.autoconfigure.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  *
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(value = TokenProps.class)
 public class TokenAutoConfiguration {
     @Autowired

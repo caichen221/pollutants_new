@@ -5,9 +5,9 @@ import com.iscas.biz.mp.table.service.MysqlTableDefinitionSqlCreatorServiceImpl;
 import com.iscas.biz.mp.table.service.OracleTableDefinitionSqlCreatorServiceImpl;
 import com.iscas.biz.mp.table.service.OscarTableDefinitionSqlCreatorServiceImpl;
 import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorService;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 
@@ -23,7 +23,7 @@ import java.text.MessageFormat;
  */
 @SuppressWarnings("unused")
 @ConditionalOnMybatis
-@Configuration
+@AutoConfiguration
 public class TableDefinitionSqlCreatorConfig implements EnvironmentAware {
     private Environment environment;
 

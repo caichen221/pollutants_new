@@ -1,7 +1,7 @@
 package com.iscas.biz.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration
+@AutoConfiguration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer, BizConstant {
     private static final int ASYNC_KEEPALIVE_SECONDS = 60;

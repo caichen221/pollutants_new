@@ -1,8 +1,8 @@
 package com.iscas.base.biz.config.stomp;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author lirenshen
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @since jdk1.8
  */
 @SuppressWarnings("unused")
-@Configuration
+@AutoConfiguration
 public class UserAccessorConfiguration {
 
     @Bean
