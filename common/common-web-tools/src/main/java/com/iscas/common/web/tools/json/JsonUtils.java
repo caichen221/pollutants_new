@@ -16,6 +16,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -30,6 +31,8 @@ public class JsonUtils {
 
     public static TimeZone timeZone = null;
 
+    private static final ThreadLocal<ObjectMapper> OBJECT_MAPPER_THREAD_LOCAL = new ThreadLocal<>();
+
     private static volatile ObjectMapper mapper;
 
 
@@ -39,6 +42,10 @@ public class JsonUtils {
 
     public static void setTimeZone(TimeZone timeZone) {
         JsonUtils.timeZone = timeZone;
+    }
+
+    public static void setObjectMapper(ObjectMapper objectMapper) {
+        OBJECT_MAPPER_THREAD_LOCAL.set(objectMapper);
     }
 
     /**
@@ -115,6 +122,9 @@ public class JsonUtils {
 
     @SuppressWarnings("deprecation")
     private static ObjectMapper getMapper() {
+        if (!Objects.isNull(OBJECT_MAPPER_THREAD_LOCAL.get())) {
+            return OBJECT_MAPPER_THREAD_LOCAL.get();
+        }
 
         synchronized (JsonUtils.class) {
             if (mapper == null) {
