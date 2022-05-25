@@ -9,6 +9,21 @@
 
 版本更新日志
 ===================================================
+
+- 2.1.1-20220525-1
+
+  - 1、数据源配置时添加类型配置(例如：spring.datasource.druid.mysql2.type=mysql)
+  - 2、ScannerUtils扫描类工具中添加内部类的扫描
+  - 3、修改几个事务使用不当的BUG
+  - 4、Spring Boot版本升级至2.7.0
+  - 5、遵循spring boot 2.7.x的改动,将@Configuration修改为@AutoConfiguration,自动配置类从spring.factories移动到AutoConfiguration.imports文件中
+  - 6、优化OkHttp工具类代码
+  - 7、JsonUtils工具添加时区和时间格式化配置
+  - 8、Jsonutils工具通过ThreadLocal实现自定义ObjectMapper
+  - 9、fastjson版本升级至1.2.83,解决1.2.80以下版本的反序列化漏洞
+  - 10、优化TableResponse的泛型并修改使用处的代码
+-----------------------------------------------
+
 - 2.1.0-20220426-2
 
   - 1、springboot升级至2.6.7
