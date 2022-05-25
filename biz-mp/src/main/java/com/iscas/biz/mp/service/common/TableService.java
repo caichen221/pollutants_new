@@ -100,7 +100,7 @@ public class TableService extends BaseTableService {
 
     public TableResponse dynamicResponse(TableSearchRequest<Map<String, List>> request, String tableName, String extendSqlCondition) {
         TableResponse tableResponse = new TableResponse();
-        TableResponseData<List> tableResponseData = new TableResponseData<>();
+        TableResponseData<Map> tableResponseData = new TableResponseData<>();
         long count = dynamicDataCount(request, tableName, extendSqlCondition);
         List<Map> data = dynamicDataResult(request, tableName, extendSqlCondition);
         tableResponseData.setData(data);

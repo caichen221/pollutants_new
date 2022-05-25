@@ -32,8 +32,8 @@ public class BaseController {
      * @date 2018/7/16
      * @return com.iscas.templet.common.ResponseEntity
      */
-    public <T> ResponseEntity<T> getResponse() {
-        return new ResponseEntity<T>();
+    public ResponseEntity getResponse() {
+        return new ResponseEntity();
     }
 
 

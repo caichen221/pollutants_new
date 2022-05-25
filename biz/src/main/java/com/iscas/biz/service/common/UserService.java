@@ -104,7 +104,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             }
         }
 
-        TableResponse tableResponse = tableDefinitionService.getData(tableIdentity, request, null, dynamicSql);
+        TableResponse<Map> tableResponse = tableDefinitionService.getData(tableIdentity, request, null, dynamicSql);
         TableResponseData value = tableResponse.getValue();
         List<Map> data = (List<Map>) value.getData();
         if (CollectionUtils.isNotEmpty(data)) {

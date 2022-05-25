@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class TableResponse extends ResponseEntity<TableResponseData> implements Serializable{
+public class TableResponse<T> extends ResponseEntity<TableResponseData<T>> implements Serializable{
     public TableResponse(){}
     public TableResponse(Integer status, String message) {
         super(status, message);

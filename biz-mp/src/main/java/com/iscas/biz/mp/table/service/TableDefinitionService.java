@@ -264,7 +264,7 @@ public class TableDefinitionService {
     }
 
 
-    public TableResponse getData(String tableIdentity, TableSearchRequest request, Map<String, Object> dynamicParam,
+    public <T> TableResponse<T> getData(String tableIdentity, TableSearchRequest request, Map<String, Object> dynamicParam,
                                  String dynamicSql) throws ValidDataException {
         TableResponse tableResponse = new TableResponse();
         long start = System.currentTimeMillis();
@@ -536,7 +536,7 @@ public class TableDefinitionService {
     /**
      * 查询时驼峰转为下划线，返回结果时下划线转为驼峰
      */
-    public <T> TableResponse getData(Class clazz, TableSearchRequest request, Map<String, Object> dynamicParam,
+    public <T> TableResponse<T> getData(Class clazz, TableSearchRequest request, Map<String, Object> dynamicParam,
                                                                  String dynamicSql) throws ValidDataException {
         TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
         String tableIdentity = tableInfo.getTableName();
@@ -840,7 +840,7 @@ public class TableDefinitionService {
      * @param dynamicParam  通过session传入的动态条件
      * @return TableResponse
      */
-    public TableResponse getData(String tableIdentity, TableSearchRequest request, Map<String, Object> dynamicParam)
+    public <T> TableResponse<T> getData(String tableIdentity, TableSearchRequest request, Map<String, Object> dynamicParam)
             throws ValidDataException {
         return getData(tableIdentity, request, dynamicParam, null);
     }
@@ -1150,9 +1150,9 @@ public class TableDefinitionService {
         request.setOptionsFilter(null);
         TableResponse tableResponse = this.getData(tableIdentity, request, null);
         if (tableResponse != null) {
-            TableResponseData tableResponseData = tableResponse.getValue();
+            TableResponseData<Map> tableResponseData = (TableResponseData<Map>) tableResponse.getValue();
             if (tableResponseData != null) {
-                List<Map> maps = (List<Map>) tableResponseData.getData();
+                List<Map> maps = tableResponseData.getData();
                 if (CollectionUtils.isNotEmpty(maps)) {
                     List<ComboboxData> comboboxDatas = new ArrayList<>();
                     for (Map map : maps) {

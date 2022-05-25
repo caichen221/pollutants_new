@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author zhuquanwen
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TableResponseData<List> implements Serializable {
+public class TableResponseData<T> implements Serializable {
     /**
      * 返回总条目
      */
@@ -22,6 +23,6 @@ public class TableResponseData<List> implements Serializable {
     /**
      * 返回的具体数据，是个集合
      */
-    private List data;
+    private List<T> data;
 
 }

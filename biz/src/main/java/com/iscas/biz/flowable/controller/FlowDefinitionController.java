@@ -60,7 +60,7 @@ public class FlowDefinitionController {
                               @ApiParam(value = "每页条数", required = true) @RequestParam Integer pageSize,
                               @ApiParam(value = "流程名称") @RequestParam(required = false) String name) {
         Page<FlowProcDefDto> page = flowDefinitionService.list(name, pageNum, pageSize);
-        TableResponseData<List<FlowProcDefDto>> tableResponseData = new TableResponseData<>();
+        TableResponseData<FlowProcDefDto> tableResponseData = new TableResponseData<>();
         tableResponseData.setRows(page.getTotal());
         tableResponseData.setData(page.getRecords());
         TableResponse tableResponse = new TableResponse();

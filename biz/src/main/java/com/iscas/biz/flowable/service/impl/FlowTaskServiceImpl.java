@@ -457,7 +457,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
             flowList.add(flowTask);
         }
         page.setRecords(flowList);
-        TableResponseData<List<FlowTaskDto>> resData = new TableResponseData<>();
+        TableResponseData<FlowTaskDto> resData = new TableResponseData<>();
         resData.setRows(page.getTotal());
         resData.setData(page.getRecords());
         return new ResponseEntity().setValue(resData);

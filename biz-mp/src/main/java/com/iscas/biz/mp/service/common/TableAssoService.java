@@ -52,7 +52,7 @@ public class TableAssoService extends BaseTableService {
     public TableResponse getTableReponse(TableSearchRequest tableSearchRequest, String extendSqlCondition) {
 
         TableResponse tableResponse = new TableResponse();
-        TableResponseData<List> tableResponseData = new TableResponseData<>();
+        TableResponseData<Map> tableResponseData = new TableResponseData<>();
 
         List<Map> datas = getSearchData(tableSearchRequest, extendSqlCondition);
         tableResponseData.setData(datas);
