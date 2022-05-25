@@ -16,6 +16,8 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * JSON工具类
@@ -25,8 +27,26 @@ import java.util.Map;
  **/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
 public class JsonUtils {
+    public static String timePattern = "yyyy-MM-dd HH:mm:ss";
+
+    public static TimeZone timeZone = null;
+
+    private static final ThreadLocal<ObjectMapper> OBJECT_MAPPER_THREAD_LOCAL = new ThreadLocal<>();
+
     private static volatile ObjectMapper mapper;
 
+
+    public static void setTimePattern(String timePattern) {
+        JsonUtils.timePattern = timePattern;
+    }
+
+    public static void setTimeZone(TimeZone timeZone) {
+        JsonUtils.timeZone = timeZone;
+    }
+
+    public static void setObjectMapper(ObjectMapper objectMapper) {
+        OBJECT_MAPPER_THREAD_LOCAL.set(objectMapper);
+    }
 
     /**
      * 对象转json
@@ -102,6 +122,10 @@ public class JsonUtils {
 
     @SuppressWarnings("deprecation")
     private static ObjectMapper getMapper() {
+        if (!Objects.isNull(OBJECT_MAPPER_THREAD_LOCAL.get())) {
+            return OBJECT_MAPPER_THREAD_LOCAL.get();
+        }
+
         synchronized (JsonUtils.class) {
             if (mapper == null) {
                 synchronized (JsonUtils.class) {
@@ -118,8 +142,11 @@ public class JsonUtils {
                     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
                     //设置JSON时间格式
-                    SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat myDateFormat = new SimpleDateFormat(timePattern);
                     mapper.setDateFormat(myDateFormat);
+                    if (timeZone != null) {
+                        mapper.setTimeZone(timeZone);
+                    }
 
 //			mapper.configure(SerializationFeature.WRAP_ROOT_VALUE CLOSE_CLOSEABLE)
                 }
