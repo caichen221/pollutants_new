@@ -14,6 +14,17 @@ import com.iscas.templet.view.tree.TreeResponse;
  */
 @SuppressWarnings({"rawtypes", "unused"})
 public class BaseController {
+    private static final ResponseEntity<Void> EMPTY_RES = new ResponseEntity<>();
+
+    /**
+     * 获取空的返回
+     * @since jdk11
+     * @date 2022/5/24
+     * @return cn.ac.iscas.dmo.templet.common.ResponseEntity
+     */
+    public ResponseEntity<Void> emptyRes() {
+        return BaseController.EMPTY_RES;
+    }
 
     /**
      * 获取返回模板
