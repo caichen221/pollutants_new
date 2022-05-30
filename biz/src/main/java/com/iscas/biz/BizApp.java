@@ -1,5 +1,6 @@
 package com.iscas.biz;
 
+import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
@@ -9,14 +10,13 @@ import com.iscas.biz.flowable.enable.EnableFlowable;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableQuartz;
+import com.iscas.common.tools.core.runtime.RuntimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.jdbc.DataSourceHealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
@@ -30,6 +30,10 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 /**
  * 启动类
  *
@@ -38,8 +42,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @date 2018/10/10 17:45
  * @since jdk1.8
  */
+@SuppressWarnings("resource")
 @Configuration
-@SpringBootApplication
 //暂时抛除rabbitmq的自动注册，如果使用代理websocket推送需要去掉
 @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RabbitMetricsAutoConfiguration.class,
         RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class,
@@ -80,10 +84,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableFlowable // 允许flowable工作流引擎
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws FileNotFoundException {
         SpringApplication springApplication = new SpringApplication(BizApp.class);
         springApplication.run(args);
-        log.info("==========服务已启动=================");
+        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(), 8000);
+        FileOutputStream os = new FileOutputStream("newframe.pid");
+        IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
     }
 
     /**
@@ -95,7 +102,14 @@ public class BizApp extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         SpringApplicationBuilder sources = builder.sources(BizApp.class);
-        log.info("==========服务已启动=================");
+        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(), 8000);
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream("newframe.pid");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
         return sources;
     }
 
