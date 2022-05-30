@@ -6,6 +6,7 @@ import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
 import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.biz.flowable.enable.EnableFlowable;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
@@ -27,10 +28,10 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
@@ -51,10 +52,10 @@ import java.io.FileOutputStream;
 @ServletComponentScan //自动扫描servletBean
 @ComponentScan(basePackages = {"com.iscas"}
         , excludeFilters = {
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
-            @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
-        }
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
+}
 )
 @EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
 @EnableCaching //开启缓存
@@ -80,7 +81,7 @@ import java.io.FileOutputStream;
 //@EnableCustomCasClient //是否开启自定义的Cas客户端
 //@EnableCheckReferer //是否校验referer，需配合配置文件内的域名白名单
 @RetrofitScan("com.iscas.biz.test.retrofit") //扫描retrofit的包
-@EnableQuartz //允许quartz
+@EnableQuartz // 允许quartz
 @EnableFlowable // 允许flowable工作流引擎
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
@@ -88,7 +89,8 @@ public class BizApp extends SpringBootServletInitializer {
     public static void main(String[] args) throws FileNotFoundException {
         SpringApplication springApplication = new SpringApplication(BizApp.class);
         springApplication.run(args);
-        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(), 8000);
+        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(),
+                SpringUtils.getBean(Environment.class).getProperty("server.port"));
         FileOutputStream os = new FileOutputStream("newframe.pid");
         IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
     }
@@ -102,8 +104,9 @@ public class BizApp extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         SpringApplicationBuilder sources = builder.sources(BizApp.class);
-        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(), 8000);
-        FileOutputStream os = null;
+        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(),
+                SpringUtils.getBean(Environment.class).getProperty("server.port"));
+        FileOutputStream os;
         try {
             os = new FileOutputStream("newframe.pid");
         } catch (FileNotFoundException e) {
