@@ -10,6 +10,13 @@
 版本更新日志
 ===================================================
 
+- 2.1.1-20220530-1
+
+  - 1、添加启动后显示进程号、端口号日志功能，添加进程号保存至newframe.pid功能
+  - 2、修改MyExclusionFilter的名字为AutoConfigurationExclustionFilter
+  - 3、优化@EnableFlowable开关不生效的BUG
+-----------------------------------------------
+
 - 2.1.1-20220525-1
 
   - 1、数据源配置时添加类型配置(例如：spring.datasource.druid.mysql2.type=mysql)
