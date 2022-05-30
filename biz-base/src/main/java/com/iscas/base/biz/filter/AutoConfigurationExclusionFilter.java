@@ -27,7 +27,7 @@ import java.util.Objects;
  * @since jdk1.8
  */
 @SuppressWarnings("unchecked")
-public class MyExclusionFilter implements AutoConfigurationImportFilter, BeanFactoryAware, EnvironmentAware {
+public class AutoConfigurationExclusionFilter implements AutoConfigurationImportFilter, BeanFactoryAware, EnvironmentAware {
     private BeanFactory beanFactory;
     private Environment environment;
     @Override
