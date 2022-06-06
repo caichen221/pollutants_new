@@ -66,6 +66,11 @@ public class TreeResponseData<T> implements Serializable, Cloneable {
      */
     protected T data;
 
+    /**
+     * 树的层级
+     **/
+    protected Integer level;
+
     public static <T> TreeResponseData<T> newInstance(Class<T> tClass) {
         return newInstance(true, tClass);
     }
