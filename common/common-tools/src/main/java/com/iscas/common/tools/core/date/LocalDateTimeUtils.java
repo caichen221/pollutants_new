@@ -1,5 +1,6 @@
 package com.iscas.common.tools.core.date;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -53,4 +54,29 @@ public class LocalDateTimeUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return localDateTime.format(formatter);
     }
+
+    /**
+     * LocalDateTime 转时间戳
+     * @since jdk11
+     * @date 2022/6/9
+     * @param localDateTime 时间
+     * @param zoneOffset 时区偏移
+     * @return long
+     */
+    public static long toEpochMilli(LocalDateTime localDateTime, ZoneOffset zoneOffset) {
+        return localDateTime.toInstant(zoneOffset).toEpochMilli();
+    }
+
+    /**
+     * LocalDate 转时间戳
+     * @since jdk11
+     * @date 2022/6/9
+     * @param localDate 时间
+     * @param zoneOffset 时区偏移
+     * @return long
+     */
+    public static long toEpochMilli(LocalDate localDate, ZoneOffset zoneOffset) {
+        return localDate.atStartOfDay(zoneOffset).toInstant().toEpochMilli();
+    }
+
 }

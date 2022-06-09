@@ -38,9 +38,9 @@ public @interface TbField {
     /**搜索方式*/
     String searchWay() default "";
     /**如果是下拉列表,返回的下拉列表信息,当前类的静态属性的名称*/
-    String option();
+    String option() default "";
     /**如果是下拉列表,options为null,可以指定一个URL获取*/
-    String selectUrl();
+    String selectUrl() default "";
 
     /**
      * 校验规则
