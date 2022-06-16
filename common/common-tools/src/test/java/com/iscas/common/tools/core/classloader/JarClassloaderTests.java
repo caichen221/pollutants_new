@@ -48,7 +48,7 @@ public class JarClassloaderTests {
     public void test3() throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException, ClassNotFoundException {
         System.out.println("=========================开始测试，读取指定jar包=========================");
         JarLoader jarLoader = new JarLoader(new String[]{"H:/ideaProjects/integration-dev/ig-bootstrap/src/main/resources/" +
-                "component/mysqlreader.jar"}, true);
+                "component/mysqlreader.jar"});
         ClassLoaderSwapper classLoaderSwapper = ClassLoaderSwapper.newCurrentThreadClassLoaderSwapper();
         classLoaderSwapper.setCurrentThreadClassLoader(jarLoader);
         try {
