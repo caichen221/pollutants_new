@@ -1,6 +1,5 @@
 package com.iscas.templet.helper;
 
-import com.iscas.templet.exception.BaseRuntimeException;
 import com.iscas.templet.view.tree.TreeResponseData;
 
 import java.lang.reflect.Field;
@@ -40,15 +39,15 @@ public class TreeHelper {
         if (!Objects.isNull(data)) {
             Map<Object, List<TreeResponseData<T>>> treeResponseDataMap = new HashMap<>(16);
             for (T datum : data) {
-                Object id = getVal(datum, idKey, fieldCache);
-                Object labelObj = getVal(datum, labelKey, fieldCache);
+                Object id = CommonHelper.getVal(datum, idKey, fieldCache);
+                Object labelObj = CommonHelper.getVal(datum, labelKey, fieldCache);
                 String label = Objects.isNull(labelObj) ? null : String.valueOf(labelObj);
                 TreeResponseData<T> treeResponseData = new TreeResponseData<T>()
                         .setId(id)
                         .setValue(id)
                         .setData(datum)
                         .setLabel(label);
-                treeResponseDataMap.computeIfAbsent(getVal(datum, pidKey, fieldCache), key -> new ArrayList<>()).add(treeResponseData);
+                treeResponseDataMap.computeIfAbsent(CommonHelper.getVal(datum, pidKey, fieldCache), key -> new ArrayList<>()).add(treeResponseData);
             }
 
             // 生成树
@@ -69,25 +68,4 @@ public class TreeHelper {
         }
     }
 
-    private static Object getVal(Object t, String key, Map<String, Field> fieldCache) {
-        if (Objects.isNull(t)) {
-            return null;
-        } else if (t instanceof Map) {
-            return ((Map<?, ?>) t).get(key);
-        } else {
-            try {
-                return fieldCache.computeIfAbsent(key, k -> {
-                    try {
-                        Field declaredField = t.getClass().getDeclaredField(key);
-                        declaredField.setAccessible(true);
-                        return declaredField;
-                    } catch (NoSuchFieldException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).get(t);
-            } catch (IllegalAccessException e) {
-                throw new BaseRuntimeException("获取实体属性出错", e);
-            }
-        }
-    }
 }
