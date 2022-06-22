@@ -24,12 +24,13 @@ import java.util.Objects;
 
 /**
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写MyWebSocketHandlerMapping
- *
+ * <p>不需要此处理了，过期了，即将删除</>
  * @author zhuquanwen
  * @version 1.0
  * @date 2020/11/25 13:59
  * @since jdk1.8
  */
+@Deprecated
 public class MyWebSocketHandlerMapping extends SimpleUrlHandlerMapping implements SmartLifecycle {
 
     private volatile boolean running;

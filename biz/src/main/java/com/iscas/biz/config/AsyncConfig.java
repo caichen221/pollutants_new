@@ -32,6 +32,7 @@ public class AsyncConfig implements AsyncConfigurer, BizConstant {
         executor.setKeepAliveSeconds(ASYNC_KEEPALIVE_SECONDS);
         executor.setThreadNamePrefix(ASYNC_EXECUTOR_NAME_PREFIX);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
         return executor;
     }
 

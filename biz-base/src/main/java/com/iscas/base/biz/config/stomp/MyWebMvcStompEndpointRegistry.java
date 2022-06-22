@@ -18,12 +18,13 @@ import java.util.Map;
 
 /**
  * 升级springboot到2.4.0后websocket出现跨域问题处理，重写WebMvcStompEndpointRegistry
- *
+ * <p>不需要此处理了，过期了，即将删除</>
  * @author zhuquanwen
  * @version 1.0
  * @date 2020/11/25 13:44
  * @since jdk1.8
  */
+@Deprecated
 public class MyWebMvcStompEndpointRegistry extends WebMvcStompEndpointRegistry {
     public MyWebMvcStompEndpointRegistry(WebSocketHandler webSocketHandler, WebSocketTransportRegistration transportRegistration, TaskScheduler defaultSockJsTaskScheduler) {
         super(webSocketHandler, transportRegistration, defaultSockJsTaskScheduler);
