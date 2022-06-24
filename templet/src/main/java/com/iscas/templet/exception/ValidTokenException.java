@@ -22,6 +22,10 @@ public class ValidTokenException extends BaseException {
         super(message, msgDetail);
     }
 
+    public ValidTokenException(String message, String msgDetail, Throwable e) {
+        super(message, msgDetail, e);
+    }
+
     public ValidTokenException(String message, Throwable cause) {
         super(message, cause);
     }

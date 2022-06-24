@@ -12,6 +12,7 @@ import com.iscas.common.tools.core.date.DateRaiseUtils;
 import com.iscas.common.tools.core.io.file.ConfigUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.ValidTokenException;
+import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -120,6 +121,11 @@ public class JWTUtils {
             throw new ValidTokenException("登录凭证校验失败", "token:" + token + "校验失败");
         }
         return decodedJWT.getClaims();
+    }
+
+    public static DecodedJWT decodeHMAC256(String token, String secret) throws UnsupportedEncodingException {
+        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(secret)).build();
+        return jwtVerifier.verify(token);
     }
 
     /**

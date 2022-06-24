@@ -1,5 +1,6 @@
 package com.iscas.common.minio.service;
 
+
 import com.iscas.common.minio.exception.MinioServiceException;
 import com.iscas.common.minio.tools.MinioClientUtils;
 import io.minio.*;
@@ -8,6 +9,7 @@ import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
+import okhttp3.Response;
 
 import java.io.*;
 import java.security.InvalidKeyException;
@@ -19,10 +21,10 @@ import java.util.Optional;
 
 /**
  * @author zhuquanwen
- * @version 1.0
  * @date 2021/6/4 17:03
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "unchecked"})
 public class MinioService {
     private MinioClient minioClient = null;
 
@@ -35,8 +37,7 @@ public class MinioService {
      *
      * @param bucketName 存储桶名称
      * @return boolean
-     * @throws MinioServiceException
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/4
      * @since jdk1.8
      */
@@ -53,9 +54,7 @@ public class MinioService {
      * 创建存储桶
      *
      * @param bucketName 存储桶名称
-     * @return void
-     * @throws MinioServiceException
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/4
      * @since jdk1.8
      */
@@ -75,9 +74,7 @@ public class MinioService {
     /**
      * 列出所有存储桶
      *
-     * @return void
-     * @throws MinioServiceException
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -94,9 +91,7 @@ public class MinioService {
      * 删除存储桶
      *
      * @param bucketName 存储桶名称
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -120,8 +115,7 @@ public class MinioService {
      * @param prefix     前缀
      * @param recursive  是否递归
      * @return java.lang.Iterable<io.minio.Result < io.minio.messages.Item>>
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -140,8 +134,7 @@ public class MinioService {
      *
      * @param bucketName 存储桶名称
      * @return String
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -163,9 +156,7 @@ public class MinioService {
      *
      * @param bucketName 存储桶名称
      * @param policyJson 策略JSON
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -188,11 +179,11 @@ public class MinioService {
      * @param bucketName 存储桶名称
      * @param objectName 对象名称
      * @return io.minio.StatObjectResponse
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
+    @SuppressWarnings("UnusedReturnValue")
     public StatObjectResponse statObject(String bucketName, String objectName) throws MinioServiceException {
         check();
         try {
@@ -209,8 +200,7 @@ public class MinioService {
      * @param objectName 对象名称
      * @param offset     从下标开始下载，可以传0或null
      * @return InputStream 输入流
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -231,9 +221,7 @@ public class MinioService {
      * @param bucketName 存储桶名称
      * @param objectName 对象名称
      * @param os         输出
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -244,7 +232,6 @@ public class MinioService {
             try (GetObjectResponse is = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName)
                     .offset(0L).build())) {
                 transferIO(is, os);
-                os.close();
             }
         } catch (Exception e) {
             throwMinioException(e);
@@ -257,9 +244,8 @@ public class MinioService {
      * @param bucketName 存储桶名称
      * @param objectName 对象名称
      * @param file       本地文件
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
+     * @throws IOException           IO异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -275,9 +261,8 @@ public class MinioService {
      * @param bucketName 存储桶名称
      * @param objectName 对象名称
      * @param filePath   本地路径
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
+     * @throws IOException           IO异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -293,8 +278,7 @@ public class MinioService {
      * @param offset     从下标开始下载，可以传0或null
      * @param len        当次下载的长度
      * @return InputStream 输入流
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -309,6 +293,19 @@ public class MinioService {
         }
     }
 
+    /**
+     * 创建路径
+     *
+     * @param bucketName 存储桶名称
+     * @param objectName 对象名称
+     * @throws MinioServiceException 异常
+     * @date 2021/6/5
+     * @since jdk1.8
+     */
+    public void mkdirs(String bucketName, String objectName) throws MinioServiceException {
+        putObject(bucketName, objectName, new ByteArrayInputStream(new byte[0]), 0L, -1L, null);
+    }
+
 
     /**
      * 上传
@@ -321,9 +318,7 @@ public class MinioService {
      * @param contentType 获取对象时的content-type，如image/jpeg，application/octet-stream;charset=utf-8
      *                    在用minio管理界面看的时候有用，比如为图片格式，可以预览
      *                    如果传null，默认为application/octet-stream;charset=utf-8
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -351,9 +346,8 @@ public class MinioService {
      * @param contentType 获取对象时的content-type，如image/jpeg，application/octet-stream;charset=utf-8
      *                    在用minio管理界面看的时候有用，比如为图片格式，可以预览
      *                    如果传null，默认为application/octet-stream;charset=utf-8
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
+     * @throws IOException           IO异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -372,9 +366,8 @@ public class MinioService {
      * @param contentType 获取对象时的content-type，如image/jpeg，application/octet-stream;charset=utf-8
      *                    在用minio管理界面看的时候有用，比如为图片格式，可以预览
      *                    如果传null，默认为application/octet-stream;charset=utf-8
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
+     * @throws IOException           IO异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -389,9 +382,7 @@ public class MinioService {
      * @param objectName       对象名
      * @param sourceBucketName 原始存储桶名
      * @param sourceObjectName 原始对象名
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -400,7 +391,18 @@ public class MinioService {
         try {
             minioClient.copyObject(CopyObjectArgs.builder().bucket(bucketName).object(objectName)
                     .source(CopySource.builder().bucket(sourceBucketName).object(sourceObjectName).build()).build());
+        } catch (Exception e) {
+            throwMinioException(e);
+        }
+    }
 
+    public void composeObject(String bucketName, String objectName, List<ComposeSource> sourceObjects) throws MinioServiceException {
+        try {
+            minioClient.composeObject(ComposeObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .sources(sourceObjects)
+                    .build());
         } catch (Exception e) {
             throwMinioException(e);
         }
@@ -411,9 +413,7 @@ public class MinioService {
      *
      * @param bucketName 存储桶名
      * @param objectName 对象名
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -432,11 +432,9 @@ public class MinioService {
     /**
      * 删除多个对象
      *
-     * @param bucketName 存储桶名
+     * @param bucketName  存储桶名
      * @param objectNames 对象名
-     * @return void
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -463,11 +461,10 @@ public class MinioService {
      *
      * @param bucketName 存储桶名
      * @param objectName 对象名
-     * @param method http请求方式
-     * @param expires 过期时间（秒）
+     * @param method     http请求方式
+     * @param expires    过期时间（秒）
      * @return String url
-     * @throws
-     * @version 1.0
+     * @throws MinioServiceException 异常
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -485,14 +482,79 @@ public class MinioService {
         }
     }
 
+    /**
+     * 判断文件或文件夹是否存在
+     *
+     * @param bucketName 桶名称
+     * @param objectName 文件名
+     * @return boolean
+     * @date 2022/6/23
+     * @since jdk11
+     */
+    public boolean checkExist(String bucketName, String objectName) throws MinioServiceException {
+        return checkFileIsExist(bucketName, objectName) || checkFolderIsExist(bucketName, objectName);
+    }
+
+    /**
+     * 判断文件是否存在
+     *
+     * @param bucketName 桶名称
+     * @param objectName 文件名称, 如果要带文件夹请用 / 分割, 例如 /help/index.html
+     * @return true存在, 反之
+     */
+    public boolean checkFileIsExist(String bucketName, String objectName) throws MinioServiceException {
+        try {
+            minioClient.statObject(
+                    StatObjectArgs.builder().bucket(bucketName).object(objectName).build()
+            );
+        } catch (ErrorResponseException e) {
+            Response response = e.response();
+            if (response.code() == 404) {
+                return false;
+            }
+            throwMinioException(e);
+        } catch (Exception e) {
+            throwMinioException(e);
+        }
+        return true;
+    }
+
+    /**
+     * 判断文件夹是否存在
+     *
+     * @param bucketName 桶名称
+     * @param folderName 文件夹名称
+     * @return true存在, 反之
+     */
+    public boolean checkFolderIsExist(String bucketName, String folderName) throws MinioServiceException {
+        try {
+            if (folderName.endsWith("/")) {
+                folderName = folderName.substring(0, folderName.length() - 1);
+            }
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs
+                            .builder()
+                            .bucket(bucketName)
+                            .prefix(folderName)
+                            .recursive(false)
+                            .build());
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                if (item.isDir() && (folderName + "/").equals(item.objectName())) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            throwMinioException(e);
+        }
+        return false;
+    }
+
 
     /**
      * 获取Minio对象
      *
-     * @param
      * @return io.minio.MinioClient
-     * @throws
-     * @version 1.0
      * @date 2021/6/5
      * @since jdk1.8
      */
@@ -515,7 +577,7 @@ public class MinioService {
         os.flush();
     }
 
-    private Object throwMinioException(Exception e) throws MinioServiceException {
+    public Object throwMinioException(Exception e) throws MinioServiceException {
         if (e instanceof ErrorResponseException) {
             throw new MinioServiceException("执行请求失败", e);
         } else if (e instanceof InsufficientDataException) {
