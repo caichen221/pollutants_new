@@ -60,6 +60,9 @@ dependencies {
 
 //    annotationProcessor 'org.springframework:spring-context-indexer'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    implementation group: 'org.openjdk.jol', name: 'jol-core', version: '0.16'
+
+
     //devTools 默认不使用
 //    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
