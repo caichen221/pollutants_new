@@ -54,7 +54,7 @@ public class JolTest {
         User user = new User();
         System.out.println(ClassLayout.parseInstance(user).toPrintable());
 
-        System.out.println("--------------------------------------------------");
+        System.out.println("---------------------分割线-----------------------------");
 
         User[] users = new User[10];
         System.out.println(ClassLayout.parseInstance(users).toPrintable());
