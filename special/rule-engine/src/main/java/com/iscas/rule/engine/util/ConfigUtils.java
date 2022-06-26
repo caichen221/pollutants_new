@@ -15,10 +15,11 @@ import java.util.Properties;
  * @date 2020/10/20 14:30
  * @since jdk1.8
  */
+@SuppressWarnings("JavadocDeclaration")
 public class ConfigUtils {
     private ConfigUtils() {}
 
-    private static String DEFUALT_PROPERTIES_NAME = "config.properties";
+    private static final String DEFUALT_PROPERTIES_NAME = "config.properties";
 
     public static String readProp(String key) throws RuleException {
         return readProp(DEFUALT_PROPERTIES_NAME, key);

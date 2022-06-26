@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
+@SuppressWarnings("JavadocDeclaration")
 public class ComputeCondition {
 
     /**计算符号*/

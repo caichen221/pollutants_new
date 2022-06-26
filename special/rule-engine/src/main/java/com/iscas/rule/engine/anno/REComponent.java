@@ -10,6 +10,7 @@ import java.lang.annotation.*;
  * @date 2020/11/24 14:02
  * @since jdk1.8
  */
+@SuppressWarnings("JavadocDeclaration")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 执行表达式
@@ -26,11 +23,12 @@ import java.util.concurrent.TimeUnit;
  */
 @REComponent
 @Slf4j
+@SuppressWarnings({"JavadocDeclaration", "unchecked", "rawtypes", "unused"})
 public class ExpressionActionService {
     /**
      * 存储当前获取到的硬件的各个数值
      * */
-    private Map<BaseDataBean, DataBean> CURRENT_DATAS = new ConcurrentHashMap<>();
+    private final Map<BaseDataBean, DataBean> currentDatas = new ConcurrentHashMap<>();
 
     /**
      * 执行规则的线程池
@@ -42,16 +40,15 @@ public class ExpressionActionService {
     @REAutowired
     private MyExpressionService expressionService;
 
+    private final Map<String, Long> alarmTime0Map = new ConcurrentHashMap<>();
+    private final Map<String, Long> alarmTime1Map = new ConcurrentHashMap<>();
+    private final Map<String, Long> alarmTime2Map = new ConcurrentHashMap<>();
+    private final Map<String, Long> alarmTime3Map = new ConcurrentHashMap<>();
 
-    private Map<String, Long> alarmTime0Map = new ConcurrentHashMap<>();
-    private Map<String, Long> alarmTime1Map = new ConcurrentHashMap<>();
-    private Map<String, Long> alarmTime2Map = new ConcurrentHashMap<>();
-    private Map<String, Long> alarmTime3Map = new ConcurrentHashMap<>();
-
-    private Map<String, Integer> level0CountMap = new ConcurrentHashMap<>();
-    private Map<String, Integer> level1CountMap = new ConcurrentHashMap<>(  );
-    private Map<String, Integer> level2CountMap = new ConcurrentHashMap<>();
-    private Map<String, Integer> level3CountMap = new ConcurrentHashMap<>();
+    private final Map<String, Integer> level0CountMap = new ConcurrentHashMap<>();
+    private final Map<String, Integer> level1CountMap = new ConcurrentHashMap<>(  );
+    private final Map<String, Integer> level2CountMap = new ConcurrentHashMap<>();
+    private final Map<String, Integer> level3CountMap = new ConcurrentHashMap<>();
 
     public ExpressionActionService() {
 
@@ -63,19 +60,19 @@ public class ExpressionActionService {
     public boolean action(String expression, Map<String, Object> env) {
         com.googlecode.aviator.Expression compiledExp = AviatorEvaluator.compile(expression);
         // 执行表达式
-        Boolean result = (Boolean) compiledExp.execute(env);
-        return result;
+        return (boolean) compiledExp.execute(env);
     }
 
     /**
      * 从队列获取参数并执行
      * */
+    @SuppressWarnings("InfiniteLoopStatement")
     public void exec() throws RuleException {
         //初始化线程池
         threadPoolExecutor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors(), 0L,
                 TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(Integer.parseInt(ConfigUtils.readProp("thread.queue.size"))),
                 new ThreadPoolExecutor.DiscardOldestPolicy());
-        new Thread(() -> {
+        Executors.newSingleThreadExecutor().submit(() -> {
             while (true) {
                 DataBean dataBean = queueService.pull();
                 if (dataBean == null) {
@@ -87,12 +84,12 @@ public class ExpressionActionService {
                 } else {
                     //存入当前变量缓存
                     BaseDataBean baseDataBean = new BaseDataBean(dataBean.getName(), dataBean.getPname(), dataBean.getType());
-                    CURRENT_DATAS.put(baseDataBean, dataBean);
+                    currentDatas.put(baseDataBean, dataBean);
                     //执行这个变量
                     execOneData(dataBean);
                 }
             }
-        }).start();
+        });
     }
 
     /**
@@ -105,7 +102,7 @@ public class ExpressionActionService {
             if (CollectionUtils.isNotEmpty(expressions)) {
                 for (Expression expression : expressions) {
                     //构建变量参数
-                    Map<String, Object> env = new HashMap<>();
+                    Map<String, Object> env = new HashMap<>(16);
                     for (Map.Entry<String, String> entry : expression.getParams().entrySet()) {
                         String value = entry.getValue();
                         String key = entry.getKey();
@@ -113,8 +110,9 @@ public class ExpressionActionService {
                             env.put("time", dataBean.getTime());
                         }
                         BaseDataBean bdb = new BaseDataBean(value, dataBean.getPname(), dataBean.getType());
-                        DataBean dBean = CURRENT_DATAS.get(bdb);
+                        DataBean dBean = currentDatas.get(bdb);
                         Double aDouble = dBean.getData();
+                        //noinspection ConstantConditions
                         if (aDouble == null) {
                             //某个参数没有值，停止遍历
                             break;
@@ -128,6 +126,7 @@ public class ExpressionActionService {
         threadPoolExecutor.execute(runnable);
     }
 
+    @SuppressWarnings("AlibabaMethodTooLong")
     private void execExpression(Expression expression, Map<String, Object> env) {
         //状态型表达式
         String expressionLevel0 = expression.getExpressionLevel0();
@@ -168,14 +167,12 @@ public class ExpressionActionService {
             String satelliteTime = ((Date)env.get("time")).getTime() + "";
             //调用表达式
             Long alarmTime0 = alarmTime0Map.get(paramCode);
-            if (alarmTime0 == null || alarmTime0 == -1 || (System.currentTimeMillis() - alarmTime0) > checkInterval * 1000) {
+            long millis = 1000L;
+            if (alarmTime0 == null || alarmTime0 == -1 || (System.currentTimeMillis() - alarmTime0) > checkInterval * millis) {
                 if (null != expressionLevel0) {
                     boolean action = this.action(expressionLevel0, env);
                     LogUtils.debug(log, "状态型表达式:" + expressionLevel0 + "结果为:" + action);
-                    //log.info("状态型表达式:" + expressionLevel0 + "结果为:" + action);
                     if (action) {
-                        // int level0Count = level0CountMap.get(p0IndicatorId).getAndIncrement();
-                        //level0CountMap.put(p0IndicatorId, new AtomicInteger(level0CountMap.get(p0IndicatorId).getAndIncrement()));
                         synchronized(paramCode.intern()){
                             int count = level0CountMap.get(paramCode) == null ? 0 : level0CountMap.get(paramCode);
                             level0CountMap.put(paramCode, count + 1);
@@ -184,14 +181,12 @@ public class ExpressionActionService {
                         LogUtils.debug(log, "当前记录参数值为："+ paramCode +"----时间为："+satelliteTime +"---当前故障数据出现次数为："+level0CountMap.get(paramCode));
 
                         if (level0CountMap.get(paramCode) >= alarmCount) {
-                            //level0Count = 0;
-                            //level0CountMap.put(p0IndicatorId, new AtomicInteger(0));
                             synchronized(paramCode.intern()){
                                 level0CountMap.put(paramCode, 0);
                                 alarmTime0Map.put(paramCode, System.currentTimeMillis());
                             }
                             //报警
-                            Map map = new HashMap();
+                            Map map = new HashMap(16);
                             map.put("type", "level0");
                             map.put("code", paramCode);
                             map.put("value", p0Val);
@@ -204,42 +199,35 @@ public class ExpressionActionService {
                             List<NormalVal> normalRegualations = regulation.getNormalRegualations();
                             if (normalRegualations.size() > 0) {
                                 String reason = "";
-                                String express = "";
+                                StringBuilder express = new StringBuilder();
                                 for (NormalVal normalRegualation : normalRegualations) {
                                     String comparisonCode = normalRegualation.getComparisonCode();
                                     Double value = normalRegualation.getValue();
-                                    express += comparisonCode + value + "&&";
+                                    express.append(comparisonCode).append(value).append("&&");
                                 }
                                 if (express.length() > 1) {
-                                    express = express.substring(0, express.length() - 2);
+                                    express = new StringBuilder(express.substring(0, express.length() - 2));
                                 }
-                                map.put("threshold", express);
+                                map.put("threshold", express.toString());
                                 map.put("reason", String.format("数值[%f]超出正常值[%s]的范围", p0Val, express));
 
                             }
-//                            System.out.println(map);
                             send(map);
                         }
 
                     } else {
-                        //level0Count = 0;
-                        //level0CountMap.put(p0IndicatorId, new AtomicInteger(0));
                         synchronized(paramCode.intern()) {
                             level0CountMap.put(paramCode, 0);
                         }
                     }
                 }
             }
-            //log.info("time1:" + (System.currentTimeMillis() - alarmTime1));
-            //log.info("time2:" + checkInterval * 1000);
             Long alarmTime1 = alarmTime1Map.get(paramCode);
-            if (alarmTime1 == null || alarmTime1 == -1 || (System.currentTimeMillis() - alarmTime1) > checkInterval * 1000) {
+            if (alarmTime1 == null || alarmTime1 == -1 || (System.currentTimeMillis() - alarmTime1) > checkInterval * millis) {
                 if (null != expressionLevel1) {
                     boolean action = this.action(expressionLevel1, env);
                     LogUtils.debug(log, "表达式:" + expressionLevel1 + "结果为:" + action);
                     if (action) {
-                        //int level1Count = level1CountMap.get(p0IndicatorId) + 1;
-                        //level1CountMap.put(p0IndicatorId, new AtomicInteger(level1CountMap.get(p0IndicatorId).getAndIncrement()));
                         synchronized(paramCode.intern()) {
                             int count = level1CountMap.get(paramCode) == null ? 0 :  level1CountMap.get(paramCode);
                             level1CountMap.put(paramCode, count + 1);
@@ -248,14 +236,12 @@ public class ExpressionActionService {
                         LogUtils.debug(log, "当前记录参数值为："+ paramCode+"----时间为："+satelliteTime +"---当前故障数据出现次数为："+level1CountMap.get(paramCode));
 
                         if (level1CountMap.get(paramCode) >= alarmCount) {
-                            //level1Count = 0;
-                            //level1CountMap.put(p0IndicatorId, new AtomicInteger(0));
                             synchronized(paramCode.intern()) {
                                 level1CountMap.put(paramCode, 0);
                                 alarmTime1Map.put(paramCode, System.currentTimeMillis());
                             }
                             //报警
-                            Map map = new HashMap();
+                            Map map = new HashMap(16);
                             map.put("type", "level1");
                             map.put("code", paramCode);
                             map.put("value", p0Val);
@@ -265,12 +251,10 @@ public class ExpressionActionService {
                             map.put("paramName", paramName);
                             map.put("subsystem", subsystem);
                             map.put("sateId", sateId);
-//                            insertThresholdStr(map, regulation.getThresholds(), 1, p0Val, regulation.getEffective());
                             System.out.println(map);
                             send(map);
                         }
                     } else {
-                        //level1CountMap.put(p0IndicatorId, new AtomicInteger(0));
                         synchronized(paramCode.intern()) {
                             level1CountMap.put(paramCode, 0);
                         }
@@ -279,27 +263,23 @@ public class ExpressionActionService {
             }
 
             Long alarmTime2 = alarmTime2Map.get(paramCode);
-            if (alarmTime2 == null || alarmTime2 == -1 || (System.currentTimeMillis() - alarmTime2) > checkInterval * 1000) {
+            if (alarmTime2 == null || alarmTime2 == -1 || (System.currentTimeMillis() - alarmTime2) > checkInterval * millis) {
                 if (null != expressionLevel2) {
                     boolean action = this.action(expressionLevel2, env);
                     LogUtils.debug(log, "表达式:" + expressionLevel2 + "结果为:" + action);
                     if (action) {
-                        //int level2Count = level2CountMap.get(p0IndicatorId) + 1;
-                        //level2CountMap.put(p0IndicatorId, new AtomicInteger(level2CountMap.get(p0IndicatorId).getAndIncrement()));
                         synchronized(paramCode.intern()) {
                             int count = level2CountMap.get(paramCode) == null ? 0 : level2CountMap.get(paramCode);
                             level2CountMap.put(paramCode, count + 1);
                         }
                         LogUtils.debug(log, "当前记录参数值为："+ paramCode +"----时间为："+satelliteTime +"---当前故障数据出现次数为："+level2CountMap.get(paramCode));
                         if (level2CountMap.get(paramCode) >= alarmCount) {
-                            //level2Count = 0;
-                            //level2CountMap.put(p0IndicatorId, new AtomicInteger(0));
                             synchronized(paramCode.intern()) {
                                 level2CountMap.put(paramCode, 0);
                                 alarmTime2Map.put(paramCode, System.currentTimeMillis());
                             }
                             //报警
-                            Map map = new HashMap();
+                            Map map = new HashMap(16);
                             map.put("type", "level2");
                             map.put("code", paramCode);
                             map.put("value", p0Val);
@@ -309,12 +289,9 @@ public class ExpressionActionService {
                             map.put("paramName", paramName);
                             map.put("subsystem", subsystem);
                             map.put("sateId", sateId);
-//                            insertThresholdStr(map, regulation.getThresholds(), 2, p0Val, regulation.getEffective());
-//                            System.out.println(map);
                             send(map);
                         }
                     } else {
-                        //level2CountMap.put(p0IndicatorId, new AtomicInteger(0));
                         synchronized(paramCode.intern()) {
                             level2CountMap.put(paramCode, 0);
                         }
@@ -323,27 +300,23 @@ public class ExpressionActionService {
             }
 
             Long alarmTime3 = alarmTime3Map.get(paramCode);
-            if (alarmTime3 == null || alarmTime3 == -1 || (System.currentTimeMillis() - alarmTime3) > checkInterval * 1000) {
+            if (alarmTime3 == null || alarmTime3 == -1 || (System.currentTimeMillis() - alarmTime3) > checkInterval * millis) {
                 if (null != (expressionLevel3)) {
                     boolean action = this.action(expressionLevel3, env);
                     LogUtils.debug(log, "表达式:" + expressionLevel3 + "结果为:" + action);
                     if (action) {
-                        //int level3Count = level3CountMap.get(p0IndicatorId) + 1;
-                        //level3CountMap.put(p0IndicatorId, new AtomicInteger(level3CountMap.get(p0IndicatorId).getAndIncrement()));
                         synchronized(paramCode.intern()) {
                             int count = level3CountMap.get(paramCode) == null ? 0 : level3CountMap.get(paramCode);
                             level3CountMap.put(paramCode, count + 1);
                         }
                         LogUtils.debug(log, "当前记录参数值为："+ paramCode+"----时间为："+satelliteTime +"---当前故障数据出现次数为："+level3CountMap.get(paramCode));
                         if (level3CountMap.get(paramCode) >= alarmCount) {
-                            //level3Count = 0;
-                            //level3CountMap.put(p0IndicatorId, new AtomicInteger(0));
                             synchronized(paramCode.intern()) {
                                 level3CountMap.put(paramCode, 0);
                                 alarmTime3Map.put(paramCode, System.currentTimeMillis());
                             }
                             //报警
-                            Map map = new HashMap();
+                            Map map = new HashMap(16);
                             map.put("type", "level3");
                             map.put("code", paramCode);
                             map.put("value", p0Val);
@@ -353,8 +326,6 @@ public class ExpressionActionService {
                             map.put("paramName", paramName);
                             map.put("subsystem", subsystem);
                             map.put("sateId", sateId);
-//                            insertThresholdStr(map, regulation.getThresholds(), 3, p0Val, regulation.getEffective());
-//                            System.out.println(map);
 
                             send(map);
                         }
@@ -373,7 +344,7 @@ public class ExpressionActionService {
 
     }
 
-    //推送警告
+    /**推送警告*/
     private void send(Map map) {
         //TODO 推送警告
     }

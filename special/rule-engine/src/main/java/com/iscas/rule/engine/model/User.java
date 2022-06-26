@@ -24,7 +24,6 @@ public class User implements Serializable {
     /**
      * 主键ID(暂时用自增主键)
      */
-//    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

@@ -8,6 +8,7 @@ package com.iscas.rule.engine;
  * @date 2020/11/24 14:29
  * @since jdk1.8
  */
+@SuppressWarnings("JavadocDeclaration")
 public interface RuleEngineConstant {
     /**
      * 规则引擎业务类需要扫描的包

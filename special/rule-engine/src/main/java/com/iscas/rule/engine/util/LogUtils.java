@@ -10,6 +10,7 @@ import org.slf4j.Logger;
  * @date 2020/11/24 14:15
  * @since jdk1.8
  */
+@SuppressWarnings("JavadocDeclaration")
 public class LogUtils {
     private LogUtils() {}
 

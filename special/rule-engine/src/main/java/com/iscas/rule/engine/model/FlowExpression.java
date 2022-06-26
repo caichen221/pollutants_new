@@ -3,7 +3,6 @@ package com.iscas.rule.engine.model;
 import lombok.Data;
 
 /**
- * //TODO
  *
  * @author zhuquanwen
  * @version 1.0
@@ -11,6 +10,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
+@SuppressWarnings("JavadocDeclaration")
 public class FlowExpression {
 
     private String level;

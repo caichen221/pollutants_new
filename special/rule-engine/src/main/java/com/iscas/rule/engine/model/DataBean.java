@@ -21,6 +21,7 @@ import java.util.Date;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@SuppressWarnings("JavadocDeclaration")
 public class DataBean extends BaseDataBean {
 
     /**参数数据*/

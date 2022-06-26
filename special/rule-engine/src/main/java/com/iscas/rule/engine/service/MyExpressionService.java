@@ -4,7 +4,6 @@ import com.iscas.rule.engine.anno.REComponent;
 import com.iscas.rule.engine.model.Expression;
 import com.iscas.rule.engine.model.Regulation;
 import com.iscas.rule.engine.util.LogUtils;
-import com.iscas.rule.engine.util.RuleEngineJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedHashMap;
@@ -19,6 +18,7 @@ import java.util.LinkedHashMap;
  */
 @REComponent
 @Slf4j
+@SuppressWarnings({"JavadocDeclaration", "rawtypes", "unchecked"})
 public class MyExpressionService extends ExpressionService {
 
     @Override

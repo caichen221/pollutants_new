@@ -60,7 +60,7 @@ public class RuleEngineJsonUtils {
      */
     public static <T> T fromJson(String json, TypeReference typeReference) {
         try {
-            return getMapper().readValue(json, typeReference);
+            return (T) getMapper().readValue(json, typeReference);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

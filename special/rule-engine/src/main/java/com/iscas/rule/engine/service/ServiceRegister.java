@@ -29,6 +29,7 @@ import java.util.Set;
  * @since jdk1.8
  */
 @Slf4j
+@SuppressWarnings("JavadocDeclaration")
 public class ServiceRegister {
     private ServiceRegister () {}
 

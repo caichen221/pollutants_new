@@ -19,6 +19,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("JavadocDeclaration")
 public class BaseDataBean {
     /**参数的key*/
     private String name;

@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since jdk1.8
  */
 @Slf4j
+@SuppressWarnings("JavadocDeclaration")
 public class RuleEngine {
     public static String RULE_ENGINE_NO = null;
 
@@ -46,8 +47,7 @@ public class RuleEngine {
      * 生成规则引擎编号
      * */
     private String createRuleEngineNo() {
-        String no = RandomStringUtils.randomStr(8);
-        return no;
+        return RandomStringUtils.randomStr(8);
     }
 
     public static void main(String[] args) throws RuleException {

@@ -13,10 +13,10 @@ import java.util.List;
  * @since jdk1.8
  */
 @Data
+@SuppressWarnings("JavadocDeclaration")
 public class Regulation {
 
     /**id*/
-//    @TableId(type = IdType.AUTO)
     private String id;
 
     /**规则类型，0-连续参数，1-状态参数*/

@@ -11,6 +11,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
+@SuppressWarnings("JavadocDeclaration")
 public class VariableCondition {
     /**是否取绝对值*/
     private boolean isAbsolute;

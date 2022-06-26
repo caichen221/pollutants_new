@@ -8,6 +8,7 @@ package com.iscas.rule.engine.exception;
  * @date 2020/10/20 15:19
  * @since jdk1.8
  */
+@SuppressWarnings({"JavadocDeclaration", "unused"})
 public class RuleException extends Exception {
 
     public RuleException() {

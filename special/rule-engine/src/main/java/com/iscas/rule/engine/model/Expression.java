@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,6 +22,7 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 @ToString
+@SuppressWarnings({"JavadocDeclaration", "rawtypes"})
 public class Expression implements Comparable {
     /**
      * 规则
@@ -109,7 +111,7 @@ public class Expression implements Comparable {
 
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(@NotNull Object o) {
         Expression expression = (Expression) o;
         return this.toString().compareTo(expression.toString());
     }

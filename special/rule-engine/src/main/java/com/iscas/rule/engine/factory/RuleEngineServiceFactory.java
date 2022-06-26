@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020/11/24 13:55
  * @since jdk1.8
  */
+@SuppressWarnings({"JavadocDeclaration", "unchecked", "unused"})
 public class RuleEngineServiceFactory {
 
     /**

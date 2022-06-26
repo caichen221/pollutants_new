@@ -13,6 +13,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @Data
+@SuppressWarnings("JavadocDeclaration")
 public class SingleVariableRegion {
 
     /**参数代号*/

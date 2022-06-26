@@ -11,6 +11,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
+@SuppressWarnings("JavadocDeclaration")
 public class Threshold {
     /**下限*/
     private Double low;

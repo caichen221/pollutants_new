@@ -11,6 +11,7 @@ import lombok.Data;
  * @since jdk1.8
  */
 @Data
+@SuppressWarnings("JavadocDeclaration")
 public class NormalVal {
     /**条件比较符号*/
     private String comparisonCode;
