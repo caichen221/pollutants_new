@@ -18,7 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
 public class WsImportSelector implements ImportSelector {
 
     @Override
-    public String @NotNull [] selectImports(AnnotationMetadata importingClassMetadata) {
+    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EnableWebsocketStomp.class.getName(), false));
         assert attributes != null;
         WsPushType pushType = attributes.getEnum("pushType");
