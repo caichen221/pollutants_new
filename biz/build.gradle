@@ -59,32 +59,32 @@ task myClearLib(type: Delete) {
 // 拷贝lib
 task myCopyLib(type: Copy) {
     into "$buildDir/libs/lib"
-    from configurations.runtimeClasspath
+    from configurations.compileClasspath
 }
 
 // 打瘦包配置
-bootJar {
-    excludes = ["*.jar"]
-
-    // lib目录的清除和复制任务
-    dependsOn myClearLib
-    dependsOn myCopyLib
-
-    manifest {
-        attributes 'Start-Class': 'com.iscas.biz.BizApp',
-                'Manifest-Version': 1.0,
-                'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' ')
-    }
-
-}
+//bootJar {
+//    excludes = ["*.jar"]
+//
+//    // lib目录的清除和复制任务
+//    dependsOn myClearLib
+//    dependsOn myCopyLib
+//
+//    manifest {
+//        attributes 'Start-Class': 'com.iscas.biz.BizApp',
+//                'Manifest-Version': 1.0,
+//                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' ')
+//    }
+//
+//}
 
 // 打胖包配置
-//bootJar {
-//    manifest {
-//        attributes 'Start-Class': 'com.iscas.biz.BizApp'
-//    }
-////    launchScript()
-//}
+bootJar {
+    manifest {
+        attributes 'Start-Class': 'com.iscas.biz.BizApp'
+    }
+//    launchScript()
+}
 
 bootWar {
     manifest {

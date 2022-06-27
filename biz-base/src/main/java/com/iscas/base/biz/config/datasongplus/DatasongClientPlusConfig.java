@@ -80,6 +80,7 @@ public class DatasongClientPlusConfig implements EnvironmentAware {
         detProps.setIp(ip);
         detProps.setPort(port);
         detProps.setProxyType(DetProps.ProxyType.CGLIB);
+        System.out.println(packages);
         assert packages != null;
         detProps.setRepositoryPackages(packages.split(","));
         log.info("------------配置datasong-client-plus结束----------------");
