@@ -10,24 +10,6 @@ configurations {
 //    api.exclude group: 'ch.qos.logback', module: 'logback-core'
 }
 
-bootJar {
-    manifest {
-        attributes 'Start-Class': 'com.iscas.biz.BizApp'
-    }
-//    launchScript()
-}
-
-bootWar {
-    manifest {
-        attributes 'Start-Class': 'com.iscas.biz.BizApp'
-    }
-//    launchScript()
-}
-
-bootRun {
-    mainClass = 'com.iscas.biz.BizApp'
-}
-
 dependencies {
     api project(":biz-base")
 //    api project(":special:biz-flowable")
@@ -68,6 +50,53 @@ dependencies {
 
 
 }
+
+// 清除lib
+task myClearLib(type: Delete) {
+    delete "$buildDir/libs/lib"
+}
+
+// 拷贝lib
+task myCopyLib(type: Copy) {
+    into "$buildDir/libs/lib"
+    from configurations.runtimeClasspath
+}
+
+// 打瘦包配置
+bootJar {
+    excludes = ["*.jar"]
+
+    // lib目录的清除和复制任务
+    dependsOn myClearLib
+    dependsOn myCopyLib
+
+    manifest {
+        attributes 'Start-Class': 'com.iscas.biz.BizApp',
+                'Manifest-Version': 1.0,
+                'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' ')
+    }
+
+}
+
+// 打胖包配置
+//bootJar {
+//    manifest {
+//        attributes 'Start-Class': 'com.iscas.biz.BizApp'
+//    }
+////    launchScript()
+//}
+
+bootWar {
+    manifest {
+        attributes 'Start-Class': 'com.iscas.biz.BizApp'
+    }
+//    launchScript()
+}
+
+bootRun {
+    mainClass = 'com.iscas.biz.BizApp'
+}
+
 
 dockerCreateDockerfile {
     instruction 'RUN ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime && echo $TimeZone > /etc/timezone'
