@@ -1,5 +1,6 @@
 apply plugin: 'war'
 
+
 configurations {
     api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     api.exclude group: 'org.apache.tomcat'
@@ -51,16 +52,17 @@ dependencies {
 
 }
 
-// 清除lib
-task myClearLib(type: Delete) {
-    delete "$buildDir/libs/lib"
-}
-
-// 拷贝lib
-task myCopyLib(type: Copy) {
-    into "$buildDir/libs/lib"
-    from configurations.compileClasspath
-}
+//jar.dependsOn = [thinProperties]
+//// 清除lib
+//task myClearLib(type: Delete) {
+//    delete "$buildDir/libs/lib"
+//}
+//
+//// 拷贝lib
+//task myCopyLib(type: Copy) {
+//    into "$buildDir/libs/lib"
+//    from configurations.compileClasspath
+//}
 
 // 打瘦包配置
 //bootJar {
@@ -73,7 +75,8 @@ task myCopyLib(type: Copy) {
 //    manifest {
 //        attributes 'Start-Class': 'com.iscas.biz.BizApp',
 //                'Manifest-Version': 1.0,
-//                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' ')
+//                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' '),
+//                'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
 //    }
 //
 //}

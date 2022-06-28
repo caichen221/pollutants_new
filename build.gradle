@@ -53,6 +53,7 @@ buildscript {
         classpath("com.google.protobuf:protobuf-gradle-plugin:${gradleProtobufGenerateVersion}")
         classpath "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:${shadowJarVersion}"
         classpath "com.bmuschko:gradle-docker-plugin:${gradleDockerVersion}"
+
     }
 }
 
@@ -79,6 +80,7 @@ subprojects  {
     apply plugin: 'java-library'
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'com.bmuschko.docker-spring-boot-application'
+
 //    apply plugin: 'com.bmuschko.docker-java-application'
 
 //    group = 'cn.ac.iscas.newframe'
