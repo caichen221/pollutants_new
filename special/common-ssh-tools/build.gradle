@@ -1,7 +1,4 @@
-//apply plugin: 'java'
-
 dependencies {
-    // https://mvnrepository.com/artifact/com.jcraft/jsch
     api group: 'com.jcraft', name: 'jsch', version: "${jschVersion}"
     api project (":common:common-tools")
 }

@@ -1,6 +1,6 @@
 package com.iscas.common.tools.pinyin;
 
-import cn.hutool.core.util.PinyinUtil;
+import cn.hutool.extra.pinyin.PinyinUtil;
 import com.rnkrsoft.bopomofo4j.Bopomofo4j;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ public class PinyinUtilsTests {
     @Test
     public void test1() throws BadHanyuPinyinOutputFormatCombination {
         //Hutool实现
-        String sun = PinyinUtil.getPinYin("太阳");
+        String sun = PinyinUtil.getPinyin("太阳");
         System.out.println("太阳====" + sun);
 
         //Pinyin4J实现

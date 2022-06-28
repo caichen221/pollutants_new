@@ -25,13 +25,10 @@ protobuf {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/com.alipay.sofa/sofa-rpc-all
     api group: 'com.alipay.sofa', name: 'sofa-rpc-all', version: "${sofaVersion}"
 
-    // https://mvnrepository.com/artifact/io.grpc/grpc-all
     api group: 'io.grpc', name: 'grpc-all', version: "${grpcVersion}"
 
-    // https://mvnrepository.com/artifact/org.apache.thrift/libthrift
     api group: 'org.apache.thrift', name: 'libthrift', version: "${libthriftVersion}"
     api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
 

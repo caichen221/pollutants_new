@@ -7,8 +7,8 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-06-13T15:39:00+0800",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.8 (Oracle Corporation)"
+    date = "2022-06-28T17:26:10+0800",
+    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 11.0.8 (Oracle Corporation)"
 )
 public class TestUserConverterImpl implements TestUserConverter {
 
@@ -64,9 +64,7 @@ public class TestUserConverterImpl implements TestUserConverter {
         if ( user != null ) {
             testUserVO3.setRealName( user.getRealName() );
         }
-        if ( role != null ) {
-            testUserVO3.setRole( role );
-        }
+        testUserVO3.setRole( role );
 
         return testUserVO3;
     }
@@ -80,8 +78,6 @@ public class TestUserConverterImpl implements TestUserConverter {
         if ( user != null ) {
             testUserVO3.setRealName( user.getRealName() );
         }
-        if ( role != null ) {
-            testUserVO3.setRole( role );
-        }
+        testUserVO3.setRole( role );
     }
 }

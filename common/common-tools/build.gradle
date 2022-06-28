@@ -56,7 +56,7 @@ dependencies {
     api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
 
     api group: 'org.freemarker', name: 'freemarker', version: "${freemarkerVersion}"
-    
+
     // https://mvnrepository.com/artifact/com.yahoo.platform.yui/yuicompressor
     api group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: "${yuicompressorVersion}"
 
@@ -80,7 +80,7 @@ dependencies {
     // https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv
 //    api group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
 
-    api group: 'e-iceblue', name: 'spire.doc.free', version: "${spireDocFreeVersion}"
+//    api group: 'e-iceblue', name: 'spire.doc.free', version: "${spireDocFreeVersion}"
     // https://mvnrepository.com/artifact/e-iceblue/spire.doc
 //    api group: 'e-iceblue', name: 'spire.doc', version: '3.11.6'
 

@@ -48,11 +48,8 @@ dependencies {
 
     //devTools 默认不使用
 //    developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-
 }
 
-//jar.dependsOn = [thinProperties]
 //// 清除lib
 //task myClearLib(type: Delete) {
 //    delete "$buildDir/libs/lib"
