@@ -1,6 +1,5 @@
 package com.iscas.base.biz.util.echarts;
 
-import cn.hutool.core.util.ImageUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.abel533.echarts.Legend;
 import com.github.abel533.echarts.Option;
@@ -12,7 +11,6 @@ import com.github.abel533.echarts.json.GsonOption;
 import com.github.abel533.echarts.series.Pie;
 import com.iscas.common.tools.picture.ImageUtils;
 import freemarker.template.TemplateException;
-import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
