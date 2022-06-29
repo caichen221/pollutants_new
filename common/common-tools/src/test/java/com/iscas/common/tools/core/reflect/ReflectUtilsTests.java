@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,27 +59,27 @@ public class ReflectUtilsTests {
         a.setMap(map1);
     }
 
-    /**
-     * 通过反射获取某个对象的某个方法
-     * */
-    @Test
-    public void test1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        System.out.println("--------反射测试1 begin---------");
-        int hash = (int) ReflectUtils.invokeMethod(a, "getA1Hash");
-        System.out.println(hash);
-        System.out.println("--------反射测试1 end---------");
-    }
-
-    /**
-     * 通过反射获取某个对象的某个方法，并执行携带参数
-     * */
-    @Test
-    public void test2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        System.out.println("--------反射测试2 begin---------");
-        String result = (String) ReflectUtils.invokeMethodWithParam(a, "xxx","x",34,new float[]{3,5,6,5.6f,56.78f});
-        System.out.println(result);
-        System.out.println("--------反射测试2 end---------");
-    }
+//    /**
+//     * 通过反射获取某个对象的某个方法
+//     * */
+//    @Test
+//    public void test1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+//        System.out.println("--------反射测试1 begin---------");
+//        int hash = (int) ReflectUtils.invokeMethod(a, "getA1Hash");
+//        System.out.println(hash);
+//        System.out.println("--------反射测试1 end---------");
+//    }
+//
+//    /**
+//     * 通过反射获取某个对象的某个方法，并执行携带参数
+//     * */
+//    @Test
+//    public void test2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+//        System.out.println("--------反射测试2 begin---------");
+//        String result = (String) ReflectUtils.invokeMethodWithParam(a, "xxx","x",34,new float[]{3,5,6,5.6f,56.78f});
+//        System.out.println(result);
+//        System.out.println("--------反射测试2 end---------");
+//    }
 
     /**判断一个类是不是基本数据类型*/
     @Test
@@ -92,16 +93,16 @@ public class ReflectUtilsTests {
         System.out.println("--------反射测试3 end---------");
     }
 
-    /**
-     * 获取一个类和其父类的所有属性
-     * */
-    @Test
-    public void test4(){
-        System.out.println("--------反射测试4 begin---------");
-        List<Field> fields = ReflectUtils.findAllFieldsOfSelfAndSuperClass(A1111.class);
-        System.out.println(fields);
-        System.out.println("--------反射测试4 end---------");
-    }
+//    /**
+//     * 获取一个类和其父类的所有属性
+//     * */
+//    @Test
+//    public void test4(){
+//        System.out.println("--------反射测试4 begin---------");
+//        List<Field> fields = ReflectUtils.findAllFieldsOfSelfAndSuperClass(A1111.class);
+//        System.out.println(fields);
+//        System.out.println("--------反射测试4 end---------");
+//    }
 
     /**
      * 获取一个class的构造器
@@ -228,6 +229,26 @@ public class ReflectUtilsTests {
     @Test
     public void test15() {
         System.out.println(Arrays.toString(ReflectUtils.getMethods(TestM2.class, true)));
+    }
+
+    /**
+     * 获取method
+     * */
+    @Test
+    public void test16() {
+        Method method = ReflectUtils.getMethod(TestM2.class, "test");
+        System.out.println(method);
+    }
+
+
+    /**
+     * 调用method
+     * */
+    @Test
+    public void test17() throws InvocationTargetException, IllegalAccessException {
+        Method method = ReflectUtils.getMethod(TestM2.class, "test");
+        TestM2 testM2 = new TestM2();
+        ReflectUtils.invokeMethod(testM2, method);
     }
 
     @Data

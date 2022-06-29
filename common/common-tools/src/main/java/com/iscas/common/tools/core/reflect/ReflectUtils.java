@@ -1,6 +1,5 @@
 package com.iscas.common.tools.core.reflect;
 
-import cn.hutool.core.util.ModifierUtil;
 import com.iscas.common.tools.core.array.ArrayUtils;
 import com.iscas.common.tools.core.map.WeakConcurrentMap;
 import com.iscas.common.tools.core.string.StringUtils;
@@ -228,149 +227,185 @@ public class ReflectUtils {
 
     /**
      * 是否为外部类引用字段，非静态内部类对象中会有一个引用外部类的field
-     * */
+     */
     public static boolean isOuterClassField(Field field) {
         return "this$0".equals(field.getName());
     }
 
     /**
      * 判断某个类是否是抽象的
-     * */
+     */
     public static boolean isAbstract(Class clazz) {
         return Modifier.isAbstract(clazz.getModifiers());
     }
 
     /**
      * 判断某个方法是否是抽象的
-     * */
+     */
     public static boolean isAbstract(Method method) {
         return Modifier.isAbstract(method.getModifiers());
     }
 
     /**
      * 判断某个类是否是final
-     * */
+     */
     public static boolean isFinal(Class<?> clazz) {
         return Modifier.isFinal(clazz.getModifiers());
     }
 
     /**
      * 判断某个方法是否是final
-     * */
+     */
     public static boolean isFinal(Method method) {
         return Modifier.isFinal(method.getModifiers());
     }
 
     /**
      * 判断某个field是否是final
-     * */
+     */
     public static boolean isFinal(Field field) {
         return Modifier.isFinal(field.getModifiers());
     }
 
     /**
      * 判断某个field是否是public
-     * */
+     */
     public static boolean isPublic(Field field) {
         return Modifier.isPublic(field.getModifiers());
     }
 
     /**
      * 判断某个method是否是public
-     * */
+     */
     public static boolean isPublic(Method method) {
         return Modifier.isPublic(method.getModifiers());
     }
 
     /**
      * 判断某个class是否是public
-     * */
+     */
     public static boolean isPublic(Class clazz) {
         return Modifier.isPublic(clazz.getModifiers());
     }
 
     /**
      * 判断某个field是否是protected
-     * */
+     */
     public static boolean isProtected(Field field) {
         return Modifier.isProtected(field.getModifiers());
     }
 
     /**
      * 判断某个method是否是public
-     * */
+     */
     public static boolean isProtected(Method method) {
         return Modifier.isProtected(method.getModifiers());
     }
 
     /**
      * 判断某个class是否是Protected
-     * */
+     */
     public static boolean isProtected(Class clazz) {
         return Modifier.isProtected(clazz.getModifiers());
     }
 
     /**
      * 判断某个field是否是Private
-     * */
+     */
     public static boolean isPrivate(Field field) {
         return Modifier.isPrivate(field.getModifiers());
     }
 
     /**
      * 判断某个method是否是Private
-     * */
+     */
     public static boolean isPrivate(Method method) {
         return Modifier.isPrivate(method.getModifiers());
     }
 
     /**
      * 判断某个class是否是Private
-     * */
+     */
     public static boolean isPrivate(Class clazz) {
         return Modifier.isPrivate(clazz.getModifiers());
     }
 
     /**
+     * 判断某个method是否是default
+     */
+    public static boolean isDefault(Method method) {
+        return method.isDefault();
+    }
+
+    /**
      * 判断某个method是否是native
-     * */
+     */
     public static boolean isNative(Method method) {
         return Modifier.isNative(method.getModifiers());
     }
 
     /**
      * 判断某个method是否是synchronized
-     * */
+     */
     public static boolean isSynchronized(Method method) {
         return Modifier.isSynchronized(method.getModifiers());
     }
 
     /**
      * 判断某个method是否是static
-     * */
+     */
     public static boolean isStatic(Method method) {
         return Modifier.isStatic(method.getModifiers());
     }
 
     /**
      * 判断某个class是否是static
-     * */
+     */
     public static boolean isStatic(Class clazz) {
         return Modifier.isStatic(clazz.getModifiers());
     }
 
     /**
      * 判断某个field是否是static
-     * */
+     */
     public static boolean isStatic(Field field) {
         return Modifier.isStatic(field.getModifiers());
     }
 
     /**
      * 判断某个field是否是Transient
-     * */
+     */
     public static boolean isTransient(Field field) {
         return Modifier.isTransient(field.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是volatile
+     */
+    public static boolean isVolatile(Field field) {
+        return Modifier.isVolatile(field.getModifiers());
+    }
+
+    /**
+     * 判断是否是equals方法
+     */
+    public static boolean isEqualsMethod(Method method) {
+        return method != null && Objects.equals("equals", method.getName()) && method.getParameterCount() == 1 &&
+                method.getParameterTypes()[0] == Object.class;
+    }
+
+    /**
+     * 判断是否为hashcode方法
+     */
+    public static boolean isHashCodeMethod(Method method) {
+        return method != null && Objects.equals("hashCode", method.getName()) && method.getParameterCount() == 0;
+    }
+
+    /**
+     * 判断是否为toString方法
+     */
+    public static boolean isToStringMethod(Method method) {
+        return method != null && Objects.equals("toString", method.getName()) && method.getParameterCount() == 0;
     }
 
     /**
@@ -587,6 +622,20 @@ public class ReflectUtils {
                 .collect(Collectors.toMap(Field::getName, field -> field));
     }
 
+    /**
+     * 将一个实体的数据按照某些字段名取出放入一个map
+     *
+     * @param obj        待转换的对象
+     * @param needFields 需要转换的对象
+     * @return java.util.Map
+     * @date 2018/8/24
+     * @since jdk1.8
+     */
+    public static Map<String, Field> getNeedField2Map(Object obj, String... needFields) {
+        return Arrays.stream(getFields(obj.getClass())).filter(field -> ArrayUtils.contains(needFields, field.getName()))
+                .collect(Collectors.toMap(Field::getName, field -> field));
+    }
+
     private static Field[] getFieldsDirectly(Class<?> beanClass, String... ignoreFields) {
         Field[] fields = new Field[0];
         ignoreFields = ignoreFields == null ? new String[0] : ignoreFields;
@@ -694,7 +743,7 @@ public class ReflectUtils {
     /**
      * 获得一个类中所有函数，包括其父类中的函数，默认使用缓存
      *
-     * @param beanClass    类
+     * @param beanClass 类
      * @return 函数列表
      */
     public static Method[] getMethods(Class<?> beanClass) {
@@ -704,8 +753,8 @@ public class ReflectUtils {
     /**
      * 获得一个类中所有函数，包括其父类中的函数<br>
      *
-     * @param beanClass    类
-     * @param useCache     是否使用缓存
+     * @param beanClass 类
+     * @param useCache  是否使用缓存
      * @return 函数列表
      */
     public static Method[] getMethods(Class<?> beanClass, boolean useCache) {
@@ -719,9 +768,9 @@ public class ReflectUtils {
     /**
      * 获得一个类的函数,默认使用缓存
      *
-     * @param beanClass    类
-     * @param methodName     方法名
-     * @param paramTypes     方法参数
+     * @param beanClass  类
+     * @param methodName 方法名
+     * @param paramTypes 方法参数
      * @return 函数列表
      */
     public static Method getMethod(Class<?> beanClass, String methodName, Class<?>... paramTypes) {
@@ -731,10 +780,10 @@ public class ReflectUtils {
     /**
      * 获得一个类的函数
      *
-     * @param beanClass    类
-     * @param useCache     是否使用缓存
-     * @param methodName     方法名
-     * @param paramTypes     方法参数
+     * @param beanClass  类
+     * @param useCache   是否使用缓存
+     * @param methodName 方法名
+     * @param paramTypes 方法参数
      * @return 函数列表
      */
     public static Method getMethod(Class<?> beanClass, boolean useCache, String methodName, Class<?>... paramTypes) {
@@ -775,7 +824,7 @@ public class ReflectUtils {
         Set<String> set = new HashSet<>();
         List<Method> copyMethods = new ArrayList<>();
         String name;
-        for (Method method: methods) {
+        for (Method method : methods) {
             name = method.getName();
             Class<?>[] parameterTypes = method.getParameterTypes();
             if (ArrayUtils.isNotEmpty(parameterTypes)) {
@@ -793,135 +842,14 @@ public class ReflectUtils {
     /**
      * 反射执行一个对象的某个方法,不带参数
      *
-     * @param obj        {@link Object} 任意一个对象
-     * @param methodName 函数名称
+     * @param obj    {@link Object} 任意一个对象
+     * @param params 方法参数
      * @return java.lang.Object 方法返回的结果
-     * @throws NoSuchMethodException     noSuchMethodException
-     * @throws IllegalAccessException    illegalAccessException
-     * @throws InvocationTargetException invocationTargetException
      * @date 2018/7/13
      * @since jdk1.8
      */
-    public static Object invokeMethod(Object obj, String methodName) throws NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
-        assert StringUtils.isNotBlank(methodName);
-        assert obj != null;
-        Method m1 = obj.getClass().getDeclaredMethod(methodName);
-        return m1.invoke(obj);
-    }
-
-    /**
-     * 反射执行一个对象的某个方法,携带参数<br/>
-     * 这里比较难处理的是8中基本类型，<br/>
-     * 传入参数的类型取出来的class 变为了包装类.<br/>
-     * 处理方式是将8中基本数据类型与包装类分别作一个映射匹配，判断函数，然后执行。
-     *
-     * @param data       {@link Object} 任意一个对象
-     * @param methodName 函数名称
-     * @param args       参数
-     * @return java.lang.Object 方法返回的结果
-     * @throws IllegalAccessException    illegalAccessException
-     * @throws InvocationTargetException invocationTargetException
-     * @date 2018/7/13
-     * @since jdk1.8
-     */
-    public static Object invokeMethodWithParam(Object data, String methodName, Object... args) throws InvocationTargetException, IllegalAccessException {
-        assert StringUtils.isNotBlank(methodName);
-        assert data != null;
-        assert args != null;
-        Class[] c;
-        //存在
-        int len = args.length;
-        c = new Class[len];
-        for (int i = 0; i < len; ++i) {
-            c[i] = args[i].getClass();
-        }
-        Method[] methods = data.getClass().getDeclaredMethods();
-        for (Method method : methods) {
-            //判断方法名称匹配
-            if (StringUtils.equals(methodName, method.getName())) {
-                //判断方法参数匹配
-                Class<?>[] clazzs = method.getParameterTypes();
-                boolean flag = true;
-                label:
-                for (int i = 0; i < clazzs.length; i++) {
-                    Class clazz = clazzs[i];
-                    Class claxx = c[i];
-                    if (claxx != clazz) {
-                        switch (clazz.getName()) {
-                            case "int":
-                                if (!"Integer".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "byte":
-                                if (!"Byte".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "short":
-                                if (!"Short".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "long":
-                                if (!"Long".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "boolean":
-                                if (!"Boolean".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "char":
-                                if (!"Character".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "float":
-                                if (!"Float".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            case "double":
-                                if (!"Double".equals(claxx.getSimpleName())) {
-                                    break label;
-                                }
-                                break;
-                            default:
-                        }
-                    }
-
-                }
-                return method.invoke(data, args);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取一个类和其父类的所有属性
-     *
-     * @param clazz Class对象
-     * @return java.util.List<java.lang.reflect.Field>
-     * @date 2018/7/16
-     * @since jdk1.8
-     */
-    public static List<Field> findAllFieldsOfSelfAndSuperClass(Class clazz) {
-
-        Field[] fields;
-        List fieldList = new ArrayList();
-        while (true) {
-            if (clazz == null || clazz == Object.class) {
-                break;
-            } else {
-                fields = clazz.getDeclaredFields();
-                Collections.addAll(fieldList, fields);
-                clazz = clazz.getSuperclass();
-            }
-        }
-        return fieldList;
+    public static Object invokeMethod(Object obj, Method method, Object... params) throws InvocationTargetException, IllegalAccessException {
+        return method.invoke(obj, params);
     }
 
     /**
@@ -935,9 +863,9 @@ public class ReflectUtils {
     public static Map convertBean2Map(Object obj, String[] ignores) throws Exception {
         Map map = new HashMap(16);
         Class clazz = obj.getClass();
-        List<Field> fieldList = findAllFieldsOfSelfAndSuperClass(clazz);
+        Field[] fields = getFields(clazz);
         Field field;
-        for (Field item : fieldList) {
+        for (Field item : fields) {
             field = item;
             // 定义fieldName是否在拷贝忽略的范畴内
             boolean flag = false;
@@ -945,11 +873,10 @@ public class ReflectUtils {
                 flag = isExistOfIgnores(field.getName(), ignores);
             }
             if (!flag) {
-                Object value = getProperty(obj, field.getName());
+                Object value = getValue(obj, obj.getClass(), field.getName());
                 if (null != value
                         && !StringUtils.isEmpty(value.toString())) {
-                    map.put(field.getName(),
-                            getProperty(obj, field.getName()));
+                    map.put(field.getName(), value);
                 }
             }
         }
@@ -1041,142 +968,6 @@ public class ReflectUtils {
         // 构建一个属性描述器 把对应属性 propertyName 的 get 和 set 方法保存到属性描述器中
         pd = new PropertyDescriptor(propertyName, getMethod, setMethod);
         return pd;
-    }
-
-    /**
-     * 设置属性
-     *
-     * @param obj          对象
-     * @param propertyName 属性名
-     * @param value        要设置的值
-     * @throws Exception 异常
-     * @date 2018/7/16
-     * @since jdk1.8
-     */
-    @SuppressWarnings("RedundantArrayCreation")
-    public static void setProperty(Object obj, String propertyName,
-                                   Object value) throws Exception {
-        // 获取对象的类型
-        Class clazz = obj.getClass();
-        // 获取 clazz
-        PropertyDescriptor pd = getPropertyDescriptor(clazz, propertyName);
-        // 类型中的
-        // propertyName
-        // 的属性描述器
-        // 从属性描述器中获取 set 方法
-        Method setMethod = pd.getWriteMethod();
-        try {
-            // 调用 set 方法将传入的value值保存属性中去
-            setMethod.invoke(obj, new Object[]{value});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 调用get方法获取某个属性的值
-     *
-     * @param obj          对象
-     * @param propertyName 属性名
-     * @return java.lang.Object
-     * @throws Exception 异常
-     * @date 2018/7/16
-     * @since jdk1.8
-     */
-    @SuppressWarnings("RedundantArrayCreation")
-    public static Object getProperty(Object obj, String propertyName) throws Exception {
-        // 获取对象的类型
-        Class clazz = obj.getClass();
-        PropertyDescriptor pd;
-        // 获取 clazz
-        pd = getPropertyDescriptor(clazz, propertyName);
-        // 类型中的
-        // propertyName
-        // 的属性描述器
-        // 从属性描述器中获取 get 方法
-        Method getMethod = pd.getReadMethod();
-        Object value = null;
-        try {
-            // 调用方法获取方法的返回值
-            value = getMethod.invoke(obj, new Object[]{});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return value;
-    }
-
-    /**
-     * 获取本地和父类的所有属性名称
-     *
-     * @param clazz Class类型
-     * @return java.util.List<java.lang.String>
-     * @date 2018/7/25
-     * @since jdk1.8
-     */
-    public static List<String> getAllFieldNames(Class clazz) {
-
-        List<String> fields = new ArrayList<>();
-        getFieldNames(fields, clazz);
-        return fields;
-    }
-
-    private static void getFieldNames(List<String> fields, Class clazz) {
-        if (clazz != Object.class) {
-            Field[] declaredFields = clazz.getDeclaredFields();
-            for (Field field : declaredFields) {
-                String name = field.getName();
-                fields.add(name);
-            }
-            getFieldNames(fields, clazz.getSuperclass());
-        }
-    }
-
-
-    /**
-     * 获取子类和所有父类的所有Field
-     *
-     * @param clazz Class类型
-     * @return java.util.List<java.lang.reflect.Field>
-     * @date 2018/9/6
-     * @since jdk1.8
-     */
-    public static List<Field> getAllFields(Class clazz) {
-        List<Field> fields = new ArrayList<>();
-        getFields(fields, clazz);
-        return fields;
-    }
-
-    private static void getFields(List<Field> fields, Class clazz) {
-        if (clazz != Object.class) {
-            Field[] declaredFields = clazz.getDeclaredFields();
-            Collections.addAll(fields, declaredFields);
-            getFields(fields, clazz.getSuperclass());
-        }
-    }
-
-    /**
-     * 将一个实体的数据按照某些字段名取出放入一个map
-     *
-     * @param obj        待转换的对象
-     * @param needFields 需要转换的对象
-     * @return java.util.Map
-     * @throws IllegalAccessException 反射异常
-     * @date 2018/8/24
-     * @since jdk1.8
-     */
-    public static Map getNeedFields(Object obj, String... needFields) throws IllegalAccessException {
-
-
-        Map map = new HashMap(16);
-        if (obj == null) {
-            throw new RuntimeException("待转换对象不能为空");
-        }
-        if (needFields == null) {
-            throw new RuntimeException("需要的字段不能为空");
-        }
-        Class clazz = obj.getClass();
-        getNeedFields(map, obj, clazz, needFields);
-        return map;
     }
 
     /**
@@ -1290,25 +1081,6 @@ public class ReflectUtils {
         return result;
     }
 
-    private static void getNeedFields(Map map, Object obj, Class clazz, String... needFields) throws IllegalAccessException {
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            for (int i = needFields.length - 1; i >= 0; i--) {
-                if (field.getName().equals(needFields[i])) {
-                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-                    ReflectUtils.makeAccessible(field);
-
-                    Object o = field.get(obj);
-                    map.put(needFields[i], o);
-                }
-            }
-        }
-        Class superclass = clazz.getSuperclass();
-        if (superclass != Object.class) {
-            getNeedFields(map, obj, superclass, needFields);
-        }
-    }
-
     /**
      * 比较判断types1和types2两组类，如果types1中所有的类都与types2对应位置的类相同，或者是其父类或接口，则返回{@code true}
      *
@@ -1333,8 +1105,9 @@ public class ReflectUtils {
         for (int i = 0; i < types1.length; i++) {
             type1 = types1[i];
             type2 = types2[i];
-            if ((isWrapClass(type1) && isPrimitive(type2)) ||
-                    (isPrimitive(type1) && isWrapClass(type2))) {
+            boolean b = (isWrapClass(type1) && isPrimitive(type2)) ||
+                    (isPrimitive(type1) && isWrapClass(type2));
+            if (b) {
                 // 原始类型和包装类型存在不一致情况
                 return false;
             } else if (!type1.isAssignableFrom(type2)) {
