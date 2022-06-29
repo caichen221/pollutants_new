@@ -126,7 +126,7 @@ public class TableService extends BaseTableService {
             fields = Arrays.stream(declaredFields)
                     .collect(Collectors.toList());
         } else {
-            fields = ReflectUtils.getAllFields(saveData.getClass());
+            fields = Arrays.stream(ReflectUtils.getFields(saveData.getClass())).collect(Collectors.toList());
         }
         return fields;
     }

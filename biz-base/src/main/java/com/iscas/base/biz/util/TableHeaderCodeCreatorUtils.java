@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 代码生成器工具类
@@ -73,7 +76,7 @@ public class TableHeaderCodeCreatorUtils {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"cols\": ").append(changeLine);
         sb.append("[").append(changeLine);
-        List<String> fields = ReflectUtils.getAllFieldNames(clazz);
+        List<String> fields = Arrays.stream(ReflectUtils.getFields(clazz)).map(Field::getName).collect(Collectors.toList());
         sb.append("\t").append("{").append(changeLine);
         sb.append("\t").append("\"field\": \"").append("no").append("\"").append(",").append(changeLine);
         sb.append("\t").append("\"header\": \"").append("no").append("\"").append(",").append(changeLine);

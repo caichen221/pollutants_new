@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 对象操作工具类
@@ -367,7 +368,7 @@ public class ObjectUtils {
             }
 
             //其他的都认为是对象
-            List<Field> declaredFieldList = ReflectUtils.getAllFields(targetClass);
+            List<Field> declaredFieldList = Arrays.stream(ReflectUtils.getFields(targetClass)).collect(Collectors.toList());
             Field[] declaredFields = declaredFieldList.toArray(Field[]::new);
             if (ArrayUtils.isNotEmpty(declaredFields)) {
                 T targetObj = targetClass.getDeclaredConstructor().newInstance();
@@ -395,7 +396,7 @@ public class ObjectUtils {
                     Field oriField = null;
                     try {
                         //noinspection OptionalGetWithoutIsPresent
-                        oriField = ReflectUtils.getAllFields(oriClass).stream().filter(field -> field.getName().equals(name)).findFirst().get();
+                        oriField = Arrays.stream(ReflectUtils.getFields(oriClass)).filter(field -> field.getName().equals(name)).findFirst().get();
                     } catch (Exception ignored) {
                     }
                     if (oriField == null) {
