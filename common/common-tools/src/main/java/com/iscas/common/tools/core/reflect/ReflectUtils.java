@@ -524,7 +524,7 @@ public class ReflectUtils {
      * @param clazz     类
      * @param fieldName 成员变量名
      * @return java.lang.invoke.MethodHandle
-     * @throws NoSuchFieldException  noSuch
+     * @throws NoSuchFieldException   noSuch
      * @throws IllegalAccessException illegalAccessException
      * @date 2021/10/31
      * @since jdk1.8
@@ -541,7 +541,7 @@ public class ReflectUtils {
      * @param clazz     构造器的类
      * @param fieldName 成员变量名
      * @return java.lang.invoke.MethodHandle
-     * @throws NoSuchFieldException  noSuch
+     * @throws NoSuchFieldException   noSuch
      * @throws IllegalAccessException illegalAccessException
      * @date 2021/10/31
      * @since jdk1.8
@@ -566,17 +566,30 @@ public class ReflectUtils {
         return MethodHandles.lookup().unreflect(method);
     }
 
-    public static Object invokeGet(Object obj, String propertyName) throws Exception{
+    public static Object invokeGet(Object obj, String propertyName) throws Exception {
         assert obj != null;
         assert propertyName != null;
         Class clazz = obj.getClass();
         Object result;
-        PropertyDescriptor pd = new PropertyDescriptor(propertyName,clazz);
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, clazz);
         Method rM = pd.getReadMethod();
         result = rM.invoke(obj);
         return result;
     }
 
+    /**
+     * 使final的field可修改
+     *
+     * @param field field
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static void makeFinalModifiers(Field field) throws NoSuchFieldException, IllegalAccessException {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    }
 
     private static void getNeedFields(Map map, Object obj, Class clazz, String... needFields) throws IllegalAccessException {
         Field[] fields = clazz.getDeclaredFields();
@@ -596,4 +609,6 @@ public class ReflectUtils {
             getNeedFields(map, obj, superclass, needFields);
         }
     }
+
+
 }
