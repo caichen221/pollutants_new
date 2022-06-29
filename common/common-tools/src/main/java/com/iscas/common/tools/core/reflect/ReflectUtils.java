@@ -1,16 +1,17 @@
 package com.iscas.common.tools.core.reflect;
 
-import org.apache.commons.lang3.StringUtils;
+import cn.hutool.core.util.ModifierUtil;
+import com.iscas.common.tools.core.array.ArrayUtils;
+import com.iscas.common.tools.core.map.WeakConcurrentMap;
+import com.iscas.common.tools.core.string.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 反射增强工具类
@@ -28,7 +29,29 @@ public class ReflectUtils {
     private ReflectUtils() {
     }
 
+    /**
+     * 构造器的缓存
+     */
+    private static final Map<Class<?>, Constructor[]> CONSTRUCTORS_CACHE = new WeakConcurrentMap<>();
 
+    /**
+     * Field的缓存
+     */
+    private static final Map<Class<?>, Field[]> FIELDS_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * method的缓存
+     */
+    private static final Map<Class<?>, Method[]> METHODS_CACHE = new WeakConcurrentMap<>();
+
+
+    /**
+     * 更改field的权限，可为编辑状态
+     *
+     * @param field field
+     * @date 2022/6/29
+     * @since jdk11
+     */
     @SuppressWarnings({"AlibabaAvoidComplexCondition", "deprecation"})
     public static void makeAccessible(Field field) {
         if ((!Modifier.isPublic(field.getModifiers()) ||
@@ -38,6 +61,14 @@ public class ReflectUtils {
         }
     }
 
+    /**
+     * 更改field的权限，可为编辑状态
+     *
+     * @param field field
+     * @param obj   对象
+     * @date 2022/6/29
+     * @since jdk11
+     */
     public static void makeAccessible(Field field, Object obj) {
         if ((!Modifier.isPublic(field.getModifiers()) ||
                 !Modifier.isPublic(field.getDeclaringClass().getModifiers()) ||
@@ -47,9 +78,722 @@ public class ReflectUtils {
     }
 
     /**
+     * 使final的field可修改
+     *
+     * @param field field
+     * @date 2022/6/29
+     * @since jdk1.8
+     */
+    public static void makeFinalModifiers(Field field) throws NoSuchFieldException, IllegalAccessException {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    }
+
+    /**
+     * 更改constructor的权限，可为编辑状态
+     *
+     * @param constructor 构造器
+     * @date 2022/6/29
+     * @since jdk1.8
+     */
+    @SuppressWarnings({"AlibabaAvoidComplexCondition", "deprecation"})
+    public static <T> void makeAccessible(Constructor<T> constructor) {
+        if ((!Modifier.isPublic(constructor.getModifiers()) ||
+                !Modifier.isPublic(constructor.getDeclaringClass().getModifiers()) ||
+                Modifier.isFinal(constructor.getModifiers())) && !constructor.isAccessible()) {
+            constructor.setAccessible(true);
+        }
+    }
+
+    /**
+     * 使final的constructor可修改
+     *
+     * @param constructor 构造器
+     * @date 2022/6/29
+     * @since jdk1.8
+     */
+    public static <T> void makeFinalModifiers(Constructor<T> constructor) throws NoSuchFieldException, IllegalAccessException {
+        constructor.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(constructor, constructor.getModifiers() & ~Modifier.FINAL);
+    }
+
+    /**
+     * 更改Method的权限，可为编辑状态
+     *
+     * @param method 方法
+     * @date 2022/6/29
+     * @since jdk1.8
+     */
+    @SuppressWarnings({"AlibabaAvoidComplexCondition", "deprecation"})
+    public static void makeAccessible(Method method) {
+        if ((!Modifier.isPublic(method.getModifiers()) ||
+                !Modifier.isPublic(method.getDeclaringClass().getModifiers()) ||
+                Modifier.isFinal(method.getModifiers())) && !method.isAccessible()) {
+            method.setAccessible(true);
+        }
+    }
+
+    /**
+     * 更改Method的权限，可为编辑状态
+     *
+     * @param method 方法
+     * @param obj    对象
+     * @date 2022/6/29
+     * @since jdk1.8
+     */
+    @SuppressWarnings({"AlibabaAvoidComplexCondition"})
+    public static void makeAccessible(Method method, Object obj) {
+        if ((!Modifier.isPublic(method.getModifiers()) ||
+                !Modifier.isPublic(method.getDeclaringClass().getModifiers()) ||
+                Modifier.isFinal(method.getModifiers())) && !method.canAccess(obj)) {
+            method.setAccessible(true);
+        }
+    }
+
+    /**
+     * 使final的method可修改
+     *
+     * @param method 方法
+     * @date 2022/6/29
+     * @since jdk1.8
+     */
+    public static void makeFinalModifiers(Method method) throws NoSuchFieldException, IllegalAccessException {
+        method.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(method, method.getModifiers() & ~Modifier.FINAL);
+    }
+
+
+    /**
+     * 判断一个Class是否为包装类数据类型
+     *
+     * @param clz Class对象
+     * @return boolean
+     * @date 2018/7/16
+     * @since jdk1.8
+     */
+    public static boolean isWrapClass(Class clz) {
+        try {
+            return ((Class) clz.getField("TYPE").get(null)).isPrimitive();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断一个Class是否为基本数据类型
+     *
+     * @param clz Class对象
+     * @return boolean
+     * @date 2018/7/16
+     * @since jdk1.8
+     */
+    public static boolean isPrimitive(Class clz) {
+        try {
+            return clz.isPrimitive();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 是否为基本类型（包括包装类和原始类）
+     *
+     * @param clazz 类
+     * @return 是否为基本类型
+     */
+    public static boolean isBasicType(Class<?> clazz) {
+        if (null == clazz) {
+            return false;
+        }
+        return (clazz.isPrimitive() || isWrapClass(clazz));
+    }
+
+    /**
+     * 对象是否为数组对象
+     *
+     * @return 是否为数组对象，如果为{@code null} 返回false
+     */
+    public static boolean isArray(Class<?> clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        return clazz.isArray();
+    }
+
+    /**
+     * 是否为外部类引用字段，非静态内部类对象中会有一个引用外部类的field
+     * */
+    public static boolean isOuterClassField(Field field) {
+        return "this$0".equals(field.getName());
+    }
+
+    /**
+     * 判断某个类是否是抽象的
+     * */
+    public static boolean isAbstract(Class clazz) {
+        return Modifier.isAbstract(clazz.getModifiers());
+    }
+
+    /**
+     * 判断某个方法是否是抽象的
+     * */
+    public static boolean isAbstract(Method method) {
+        return Modifier.isAbstract(method.getModifiers());
+    }
+
+    /**
+     * 判断某个类是否是final
+     * */
+    public static boolean isFinal(Class<?> clazz) {
+        return Modifier.isFinal(clazz.getModifiers());
+    }
+
+    /**
+     * 判断某个方法是否是final
+     * */
+    public static boolean isFinal(Method method) {
+        return Modifier.isFinal(method.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是final
+     * */
+    public static boolean isFinal(Field field) {
+        return Modifier.isFinal(field.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是public
+     * */
+    public static boolean isPublic(Field field) {
+        return Modifier.isPublic(field.getModifiers());
+    }
+
+    /**
+     * 判断某个method是否是public
+     * */
+    public static boolean isPublic(Method method) {
+        return Modifier.isPublic(method.getModifiers());
+    }
+
+    /**
+     * 判断某个class是否是public
+     * */
+    public static boolean isPublic(Class clazz) {
+        return Modifier.isPublic(clazz.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是protected
+     * */
+    public static boolean isProtected(Field field) {
+        return Modifier.isProtected(field.getModifiers());
+    }
+
+    /**
+     * 判断某个method是否是public
+     * */
+    public static boolean isProtected(Method method) {
+        return Modifier.isProtected(method.getModifiers());
+    }
+
+    /**
+     * 判断某个class是否是Protected
+     * */
+    public static boolean isProtected(Class clazz) {
+        return Modifier.isProtected(clazz.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是Private
+     * */
+    public static boolean isPrivate(Field field) {
+        return Modifier.isPrivate(field.getModifiers());
+    }
+
+    /**
+     * 判断某个method是否是Private
+     * */
+    public static boolean isPrivate(Method method) {
+        return Modifier.isPrivate(method.getModifiers());
+    }
+
+    /**
+     * 判断某个class是否是Private
+     * */
+    public static boolean isPrivate(Class clazz) {
+        return Modifier.isPrivate(clazz.getModifiers());
+    }
+
+    /**
+     * 判断某个method是否是native
+     * */
+    public static boolean isNative(Method method) {
+        return Modifier.isNative(method.getModifiers());
+    }
+
+    /**
+     * 判断某个method是否是synchronized
+     * */
+    public static boolean isSynchronized(Method method) {
+        return Modifier.isSynchronized(method.getModifiers());
+    }
+
+    /**
+     * 判断某个method是否是static
+     * */
+    public static boolean isStatic(Method method) {
+        return Modifier.isStatic(method.getModifiers());
+    }
+
+    /**
+     * 判断某个class是否是static
+     * */
+    public static boolean isStatic(Class clazz) {
+        return Modifier.isStatic(clazz.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是static
+     * */
+    public static boolean isStatic(Field field) {
+        return Modifier.isStatic(field.getModifiers());
+    }
+
+    /**
+     * 判断某个field是否是Transient
+     * */
+    public static boolean isTransient(Field field) {
+        return Modifier.isTransient(field.getModifiers());
+    }
+
+    /**
+     * 通过一个class和构造参数获取构造器,默认使用缓存
+     *
+     * @param clazz        类
+     * @param paramClasses 构造参数
+     * @return java.lang.reflect.Constructor<T>
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... paramClasses) {
+        return getConstructor(clazz, true, paramClasses);
+    }
+
+    /**
+     * 通过一个class和构造参数获取构造器
+     *
+     * @param clazz        类
+     * @param useCache     是否使用缓存
+     * @param paramClasses 构造参数
+     * @return java.lang.reflect.Constructor<T>
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> Constructor<T> getConstructor(Class<T> clazz, boolean useCache, Class<?>... paramClasses) {
+        if (useCache) {
+            Constructor<T>[] constructors = getConstructors(clazz);
+            Class<?>[] parameterTypes;
+            for (Constructor<T> constructor : constructors) {
+                parameterTypes = constructor.getParameterTypes();
+                if (isAllAssignableFrom(parameterTypes, paramClasses)) {
+                    return constructor;
+                }
+            }
+            return null;
+        } else {
+            try {
+                return clazz.getDeclaredConstructor(paramClasses);
+            } catch (NoSuchMethodException ignored) {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * 获取一个class的所有构造器, 默尔使用缓存
+     *
+     * @param clazz 类
+     * @return java.lang.reflect.Constructor<T>
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> Constructor<T>[] getConstructors(Class<T> clazz) {
+        return getConstructors(clazz, true);
+    }
+
+    /**
+     * 获取一个class的所有构造器
+     *
+     * @param clazz    类
+     * @param useCache 是否使用缓存
+     * @return java.lang.reflect.Constructor<T>
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> Constructor<T>[] getConstructors(Class<T> clazz, boolean useCache) {
+        if (useCache) {
+            return CONSTRUCTORS_CACHE.computeIfAbsent(clazz, Class::getDeclaredConstructors);
+        } else {
+            return (Constructor<T>[]) clazz.getDeclaredConstructors();
+        }
+    }
+
+    /**
+     * 实例化一个对象
+     *
+     * @param constructor 构造器
+     * @param params      参数
+     * @return T
+     * @throws InvocationTargetException 异常
+     * @throws InstantiationException    异常
+     * @throws IllegalAccessException    异常
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> T newInstance(Constructor<T> constructor, Object... params) throws InvocationTargetException,
+            InstantiationException, IllegalAccessException {
+        return constructor.newInstance(params);
+    }
+
+    /**
+     * 实例化一个对象,使用缓存
+     *
+     * @param clazz    类
+     * @param paramMap 参数键值对，key是class, value是实例化时使用的值,可以为空
+     * @return T 实例化后的对象
+     * @throws InvocationTargetException 异常
+     * @throws InstantiationException    异常
+     * @throws IllegalAccessException    异常
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> T newInstance(Class<T> clazz, LinkedHashMap<Class<?>, Object> paramMap) throws InvocationTargetException,
+            InstantiationException, IllegalAccessException {
+        return newInstance(clazz, true, paramMap);
+    }
+
+    /**
+     * 实例化一个对象
+     *
+     * @param clazz    类
+     * @param useCache 是否使用缓存
+     * @param paramMap 参数键值对，key是class, value是实例化时使用的值,可以为空
+     * @return T 实例化后的对象
+     * @throws InvocationTargetException 异常
+     * @throws InstantiationException    异常
+     * @throws IllegalAccessException    异常
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> T newInstance(Class<T> clazz, boolean useCache, LinkedHashMap<Class<?>, Object> paramMap) throws InvocationTargetException,
+            InstantiationException, IllegalAccessException {
+        Constructor<T> constructor;
+        if (Objects.isNull(paramMap)) {
+            constructor = getConstructor(clazz, useCache);
+            if (constructor == null) {
+                throw new RuntimeException("未能获取到构造器");
+            }
+            return newInstance(constructor);
+        } else {
+            constructor = getConstructor(clazz, useCache, paramMap.keySet().toArray(Class[]::new));
+            if (constructor == null) {
+                throw new RuntimeException("未能获取到构造器");
+            }
+            return newInstance(constructor, paramMap.values().toArray());
+        }
+    }
+
+    /**
+     * 获得一个类中所有字段列表，包括其父类中的字段<br>
+     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     *
+     * @param beanClass    类
+     * @param ignoreFields 忽略的属性
+     * @return 字段列表
+     */
+    public static Field[] getFields(Class<?> beanClass, String... ignoreFields) {
+        return getFields(beanClass, true, ignoreFields);
+    }
+
+    /**
+     * 获得一个类中所有字段列表，包括其父类中的字段<br>
+     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     *
+     * @param beanClass    类
+     * @param useCache     是否使用缓存
+     * @param ignoreFields 忽略的属性
+     * @return 字段列表
+     */
+    public static Field[] getFields(Class<?> beanClass, boolean useCache, String... ignoreFields) {
+        if (useCache) {
+            return FIELDS_CACHE.computeIfAbsent(beanClass, k -> getFieldsDirectly(beanClass, ignoreFields));
+        } else {
+            return getFieldsDirectly(beanClass, ignoreFields);
+        }
+    }
+
+    /**
+     * 获取某个类的属性, 使用缓存
+     *
+     * @param beanClass 类
+     * @param fieldName field名称
+     * @return Field
+     */
+    public static Field getField(Class<?> beanClass, String fieldName) {
+        return getField(beanClass, fieldName, true);
+    }
+
+    /**
+     * 获取某个类的属性
+     *
+     * @param beanClass 类
+     * @param fieldName field名称
+     * @param useCache  是否使用缓存
+     * @return Field
+     */
+    public static Field getField(Class<?> beanClass, String fieldName, boolean useCache) {
+        Field[] fields = getFields(beanClass, useCache);
+        return Arrays.stream(fields).filter(field -> Objects.equals(field.getName(), fieldName)).findFirst().orElse(null);
+    }
+
+    /**
+     * 获取某个类的属性，返回Map，默认使用缓存
+     *
+     * @param beanClass    类
+     * @param ignoreFields 忽略的属性
+     * @return Map<String, Field>
+     */
+    public static Map<String, Field> getField2Map(Class<?> beanClass, String... ignoreFields) {
+        return getField2Map(beanClass, true, ignoreFields);
+    }
+
+    /**
+     * 获取某个类的属性，返回Map
+     *
+     * @param beanClass    类
+     * @param useCache     是否使用缓存
+     * @param ignoreFields 忽略的属性
+     * @return Map<String, Field>
+     */
+    public static Map<String, Field> getField2Map(Class<?> beanClass, boolean useCache, String... ignoreFields) {
+        return Arrays.stream(getFields(beanClass, useCache, ignoreFields))
+                .collect(Collectors.toMap(Field::getName, field -> field));
+    }
+
+    private static Field[] getFieldsDirectly(Class<?> beanClass, String... ignoreFields) {
+        Field[] fields = new Field[0];
+        ignoreFields = ignoreFields == null ? new String[0] : ignoreFields;
+        String[] finalIgnoreFields = ignoreFields;
+        while (beanClass != Object.class) {
+            Field[] declaredFields = beanClass.getDeclaredFields();
+            declaredFields = Arrays.stream(declaredFields).filter(field -> !ArrayUtils.contains(finalIgnoreFields, field)).toArray(Field[]::new);
+            if (ArrayUtils.isNotEmpty(declaredFields)) {
+                fields = ArrayUtils.addAll(fields, declaredFields);
+            }
+            beanClass = beanClass.getSuperclass();
+        }
+        return fields;
+    }
+
+    /**
+     * 通过field获取值,如果是静态的，obj传null
+     *
+     * @param field field
+     * @param obj   对象，如果是静态的传null
+     * @return Object
+     */
+    public static Object getValue(Field field, Object obj) throws IllegalAccessException {
+        if (obj == null) {
+            makeAccessible(field);
+        } else {
+            makeAccessible(field, obj);
+        }
+        return field.get(obj);
+    }
+
+    /**
+     * 通过field获取值,默认使用缓存
+     *
+     * @param obj       对象，如果获取静态属性，传空
+     * @param clazz     class
+     * @param fieldName 属性
+     * @return Object
+     */
+    public static Object getValue(Object obj, Class clazz, String fieldName) throws IllegalAccessException {
+        return getValue(obj, clazz, fieldName, true);
+    }
+
+    /**
+     * 通过field获取值
+     *
+     * @param obj       对象，如果获取静态属性，传空
+     * @param clazz     class
+     * @param fieldName 属性
+     * @param useCache  是否使用缓存
+     * @return Object
+     */
+    public static Object getValue(Object obj, Class clazz, String fieldName, boolean useCache) throws IllegalAccessException {
+        Field field = getField(clazz, fieldName, useCache);
+        if (field == null) {
+            throw new RuntimeException("无法获取field");
+        }
+        return getValue(field, obj);
+    }
+
+    /**
+     * 通过field设置值,如果是静态的，obj传null
+     *
+     * @param field field
+     * @param obj   对象，如果是静态的传null
+     */
+    public static void setValue(Field field, Object obj, Object value) throws IllegalAccessException {
+        if (obj == null) {
+            makeAccessible(field);
+        } else {
+            makeAccessible(field, obj);
+        }
+        field.set(obj, value);
+    }
+
+    /**
+     * 通过field获取值,默认使用缓存
+     *
+     * @param obj       对象，如果获取静态属性，传空
+     * @param clazz     class
+     * @param fieldName 属性
+     * @param value     属性值
+     */
+    public static void setValue(Object obj, Class clazz, String fieldName, Object value) throws IllegalAccessException {
+        setValue(obj, clazz, fieldName, value, true);
+    }
+
+    /**
+     * 通过field获取值
+     *
+     * @param obj       对象，如果获取静态属性，传空
+     * @param clazz     class
+     * @param fieldName 属性
+     * @param value     属性值
+     * @param useCache  是否使用缓存
+     */
+    public static void setValue(Object obj, Class clazz, String fieldName, Object value, boolean useCache) throws IllegalAccessException {
+        Field field = getField(clazz, fieldName, useCache);
+        if (field == null) {
+            throw new RuntimeException("无法获取field");
+        }
+        setValue(field, obj, value);
+    }
+
+    /**
+     * 获得一个类中所有函数，包括其父类中的函数，默认使用缓存
+     *
+     * @param beanClass    类
+     * @return 函数列表
+     */
+    public static Method[] getMethods(Class<?> beanClass) {
+        return getMethods(beanClass, true);
+    }
+
+    /**
+     * 获得一个类中所有函数，包括其父类中的函数<br>
+     *
+     * @param beanClass    类
+     * @param useCache     是否使用缓存
+     * @return 函数列表
+     */
+    public static Method[] getMethods(Class<?> beanClass, boolean useCache) {
+        if (useCache) {
+            return METHODS_CACHE.computeIfAbsent(beanClass, k -> getMethodsDirectly(beanClass));
+        } else {
+            return getMethodsDirectly(beanClass);
+        }
+    }
+
+    /**
+     * 获得一个类的函数,默认使用缓存
+     *
+     * @param beanClass    类
+     * @param methodName     方法名
+     * @param paramTypes     方法参数
+     * @return 函数列表
+     */
+    public static Method getMethod(Class<?> beanClass, String methodName, Class<?>... paramTypes) {
+        return getMethod(beanClass, true, methodName, paramTypes);
+    }
+
+    /**
+     * 获得一个类的函数
+     *
+     * @param beanClass    类
+     * @param useCache     是否使用缓存
+     * @param methodName     方法名
+     * @param paramTypes     方法参数
+     * @return 函数列表
+     */
+    public static Method getMethod(Class<?> beanClass, boolean useCache, String methodName, Class<?>... paramTypes) {
+        Method[] methods = getMethods(beanClass, useCache);
+        if (ArrayUtils.isNotEmpty(methods)) {
+            for (Method method : methods) {
+                String name = method.getName();
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (Objects.equals(name, methodName) && isAllAssignableFrom(parameterTypes, parameterTypes)) {
+                    return method;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Method[] getMethodsDirectly(Class<?> beanClass) {
+        if (beanClass.isInterface()) {
+            return beanClass.getMethods();
+        }
+        Method[] methods = new Method[0];
+        while (beanClass != Object.class) {
+            Method[] declaredMethods = beanClass.getDeclaredMethods();
+            if (ArrayUtils.isNotEmpty(declaredMethods)) {
+                methods = ArrayUtils.addAll(methods, declaredMethods);
+            }
+            // 获取接口中的方法
+            for (Class<?> ifc : beanClass.getInterfaces()) {
+                for (Method m : ifc.getMethods()) {
+                    if (!Modifier.isAbstract(m.getModifiers())) {
+                        methods = ArrayUtils.add(methods, m);
+                    }
+                }
+            }
+            beanClass = beanClass.getSuperclass();
+        }
+        // 去重
+        Set<String> set = new HashSet<>();
+        List<Method> copyMethods = new ArrayList<>();
+        String name;
+        for (Method method: methods) {
+            name = method.getName();
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (ArrayUtils.isNotEmpty(parameterTypes)) {
+                name += "%" + Arrays.stream(parameterTypes).map(Class::getName).collect(Collectors.joining("@"));
+            }
+            if (!set.contains(name)) {
+                copyMethods.add(method);
+            }
+            set.add(name);
+        }
+        return copyMethods.toArray(Method[]::new);
+    }
+
+
+    /**
      * 反射执行一个对象的某个方法,不带参数
      *
-     * @param data       {@link Object} 任意一个对象
+     * @param obj        {@link Object} 任意一个对象
      * @param methodName 函数名称
      * @return java.lang.Object 方法返回的结果
      * @throws NoSuchMethodException     noSuchMethodException
@@ -58,13 +802,12 @@ public class ReflectUtils {
      * @date 2018/7/13
      * @since jdk1.8
      */
-    public static Object doMethod(Object data, String methodName) throws NoSuchMethodException,
+    public static Object invokeMethod(Object obj, String methodName) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
-
         assert StringUtils.isNotBlank(methodName);
-        assert data != null;
-        Method m1 = data.getClass().getDeclaredMethod(methodName);
-        return m1.invoke(data);
+        assert obj != null;
+        Method m1 = obj.getClass().getDeclaredMethod(methodName);
+        return m1.invoke(obj);
     }
 
     /**
@@ -82,7 +825,7 @@ public class ReflectUtils {
      * @date 2018/7/13
      * @since jdk1.8
      */
-    public static Object doMethodWithParam(Object data, String methodName, Object... args) throws InvocationTargetException, IllegalAccessException {
+    public static Object invokeMethodWithParam(Object data, String methodName, Object... args) throws InvocationTargetException, IllegalAccessException {
         assert StringUtils.isNotBlank(methodName);
         assert data != null;
         assert args != null;
@@ -155,36 +898,6 @@ public class ReflectUtils {
             }
         }
         return null;
-    }
-
-    /**
-     * 判断一个Classs是否为基本数据类型
-     *
-     * @param clz Class对象
-     * @return boolean
-     * @date 2018/7/16
-     * @since jdk1.8
-     */
-    public static boolean isWrapClass(Class clz) {
-        try {
-            return ((Class) clz.getField("TYPE").get(null)).isPrimitive();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * 对象是否为数组对象
-     *
-     * @param obj 对象
-     * @return 是否为数组对象，如果为{@code null} 返回false
-     */
-    public static boolean isArray(Object obj) {
-        if (null == obj) {
-            return false;
-        }
-//        反射 获得类型
-        return obj.getClass().isArray();
     }
 
     /**
@@ -577,20 +1290,6 @@ public class ReflectUtils {
         return result;
     }
 
-    /**
-     * 使final的field可修改
-     *
-     * @param field field
-     * @date 2022/6/29
-     * @since jdk11
-     */
-    public static void makeFinalModifiers(Field field) throws NoSuchFieldException, IllegalAccessException {
-        field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    }
-
     private static void getNeedFields(Map map, Object obj, Class clazz, String... needFields) throws IllegalAccessException {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -610,5 +1309,39 @@ public class ReflectUtils {
         }
     }
 
+    /**
+     * 比较判断types1和types2两组类，如果types1中所有的类都与types2对应位置的类相同，或者是其父类或接口，则返回{@code true}
+     *
+     * @param types1 类组1
+     * @param types2 类组2
+     * @return 是否相同、父类或接口
+     */
+    private static boolean isAllAssignableFrom(Class<?>[] types1, Class<?>[] types2) {
+        if (ArrayUtils.isEmpty(types1) && ArrayUtils.isEmpty(types2)) {
+            return true;
+        }
+        if (null == types1 || null == types2) {
+            // 任何一个为null不相等（之前已判断两个都为null的情况）
+            return false;
+        }
+        if (types1.length != types2.length) {
+            return false;
+        }
+
+        Class<?> type1;
+        Class<?> type2;
+        for (int i = 0; i < types1.length; i++) {
+            type1 = types1[i];
+            type2 = types2[i];
+            if ((isWrapClass(type1) && isPrimitive(type2)) ||
+                    (isPrimitive(type1) && isWrapClass(type2))) {
+                // 原始类型和包装类型存在不一致情况
+                return false;
+            } else if (!type1.isAssignableFrom(type2)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

@@ -1,13 +1,18 @@
 package com.iscas.common.tools.core.reflect;
 
 import com.iscas.common.tools.core.reflect.reflectTest.*;
+import lombok.Data;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 
 /**
  * 增强反射工具类测试
@@ -59,7 +64,7 @@ public class ReflectUtilsTests {
     @Test
     public void test1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         System.out.println("--------反射测试1 begin---------");
-        int hash = (int) ReflectUtils.doMethod(a, "getA1Hash");
+        int hash = (int) ReflectUtils.invokeMethod(a, "getA1Hash");
         System.out.println(hash);
         System.out.println("--------反射测试1 end---------");
     }
@@ -70,7 +75,7 @@ public class ReflectUtilsTests {
     @Test
     public void test2() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         System.out.println("--------反射测试2 begin---------");
-        String result = (String) ReflectUtils.doMethodWithParam(a, "xxx","x",34,new float[]{3,5,6,5.6f,56.78f});
+        String result = (String) ReflectUtils.invokeMethodWithParam(a, "xxx","x",34,new float[]{3,5,6,5.6f,56.78f});
         System.out.println(result);
         System.out.println("--------反射测试2 end---------");
     }
@@ -96,6 +101,154 @@ public class ReflectUtilsTests {
         List<Field> fields = ReflectUtils.findAllFieldsOfSelfAndSuperClass(A1111.class);
         System.out.println(fields);
         System.out.println("--------反射测试4 end---------");
+    }
+
+    /**
+     * 获取一个class的构造器
+     * */
+    @Test
+    public void test5() throws NoSuchMethodException {
+        HashMap<Object, Object> map = new HashMap<>();
+        Constructor<? extends HashMap> construct = ReflectUtils.getConstructor(map.getClass(), int.class);
+        Assertions.assertNotNull(construct);
+        try {
+            Constructor<? extends HashMap> construct2 = ReflectUtils.getConstructor(map.getClass(), Integer.class);
+            System.out.println(construct2);
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+            // 基本数据类型不能用包装类
+        }
+    }
+
+    /**
+     * 获取一个class的所有构造器
+     * */
+    @Test
+    public void test6() {
+        HashMap<Object, Object> map = new HashMap<>();
+        Constructor<? extends HashMap>[] construct = ReflectUtils.getConstructors(map.getClass());
+        System.out.println(Arrays.toString(construct));
+    }
+
+    /**
+     * 获取一个class的构造器.不使用缓存
+     * */
+    @Test
+    public void test7() throws NoSuchMethodException {
+        HashMap<Object, Object> map = new HashMap<>();
+        Constructor<? extends HashMap> constructor = ReflectUtils.getConstructor(map.getClass(), false, Integer.class);
+        System.out.println(constructor);
+    }
+
+
+    /**
+     * 实例化一个对象
+     * */
+    @Test
+    public void test8() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        HashMap<Object, Object> map = new HashMap<>();
+        LinkedHashMap<Class<?>, Object> params = new LinkedHashMap<>();
+        params.put(int.class, 32);
+        HashMap hashMap = ReflectUtils.newInstance(map.getClass(), true, params);
+        System.out.println(hashMap);
+        HashMap hashMap2 = ReflectUtils.newInstance(map.getClass(), true, params);
+        System.out.println(hashMap2);
+
+        // 不使用缓存
+        HashMap hashMap3 = ReflectUtils.newInstance(map.getClass(), false, params);
+        System.out.println(hashMap3);
+
+        // 不存在此构造器
+        params.put(String.class, "xx");
+        try {
+            HashMap hashMap4 = ReflectUtils.newInstance(map.getClass(), false, params);
+            System.out.println(hashMap4);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取属性
+     * */
+    @Test
+    public void test9() {
+        Field[] fields = ReflectUtils.getFields(new HashMap<>().getClass());
+        System.out.println(Arrays.toString(fields));
+    }
+
+    /**
+     * 获取某一个属性
+     * */
+    @Test
+    public void test10() {
+        String s = "weweg";
+        System.out.println(ReflectUtils.getField(String.class, "hash"));
+    }
+
+    /**
+     * 获取属性
+     * */
+    @Test
+    public void test11() {
+        System.out.println(ReflectUtils.getField2Map(String.class));
+    }
+
+    /**
+     * 获取属性值
+     * */
+    @Test
+    public void test12() throws IllegalAccessException {
+        System.out.println(ReflectUtils.getValue(null, String.class, "serialPersistentFields"));
+    }
+
+    /**
+     * 设置属性值
+     * */
+    @Test
+    public void test13() throws IllegalAccessException {
+        TestM testM = new TestM();
+        testM.setId(1);
+        testM.setName("张三");
+        ReflectUtils.setValue(testM, TestM.class, "name", "李四");
+        System.out.println(ReflectUtils.getValue(testM, TestM.class, "name"));
+    }
+
+    /**
+     * 是否为父类引用字段
+     * */
+    @Test
+    public void test14() {
+        Assertions.assertTrue(Arrays.stream(ReflectUtils.getFields(TestM2.TestM3.class)).anyMatch(ReflectUtils::isOuterClassField));
+    }
+
+    /**
+     * 获取method
+     * */
+    @Test
+    public void test15() {
+        System.out.println(Arrays.toString(ReflectUtils.getMethods(TestM2.class, true)));
+    }
+
+    @Data
+    public static class TestM {
+        private Integer id;
+        private String name;
+        public void test() {
+            System.out.println(2222);
+        }
+    }
+
+    @Data
+    public static class TestM2 extends TestM {
+        @Override
+        public void test() {
+            System.out.println(3333);
+        }
+        @Data
+        public class TestM3 {
+            private String realName;
+        }
     }
 
 }
