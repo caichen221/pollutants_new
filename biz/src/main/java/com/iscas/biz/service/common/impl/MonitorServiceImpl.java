@@ -37,7 +37,7 @@ public class MonitorServiceImpl implements MonitorService {
                         data.forEach((clazz, object) -> {
                             String cacheName = clazz.getSimpleName();
                             ConcurrentHashMap<String, LinkedList<String>> dataCache = getCache(cacheName, ConcurrentHashMap::new);
-                            Field[] declaredFields = clazz.getDeclaredFields();
+                            Field[] declaredFields = ReflectUtils.getCurrentFields(clazz);
                             synchronized (cacheName) {
                                 Arrays.stream(declaredFields).forEach(declaredField -> {
                                     //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08

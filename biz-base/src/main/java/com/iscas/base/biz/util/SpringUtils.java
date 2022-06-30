@@ -3,14 +3,17 @@ package com.iscas.base.biz.util;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.HeaderKey;
+import org.bouncycastle.operator.MacCalculatorProvider;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -188,8 +191,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
      * 获取springmvc 的URI对应的method
      * */
     public static Map<RequestMappingInfo, HandlerMethod> getMvcUriMethods() {
-        RequestMappingHandlerMapping mapping = getBean(RequestMappingHandlerMapping.class);
-        return mapping.getHandlerMethods();
+        ObjectProvider<RequestMappingHandlerMapping> beanProvider = applicationContext.getBeanProvider(RequestMappingHandlerMapping.class);
+        return beanProvider.stream().filter(bp -> bp.getClass() == RequestMappingHandlerMapping.class).findFirst()
+                .map(AbstractHandlerMethodMapping::getHandlerMethods).orElse(null);
     }
 
 }

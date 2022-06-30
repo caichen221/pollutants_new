@@ -5,6 +5,7 @@ import com.iscas.common.tools.core.map.WeakConcurrentMap;
 import com.iscas.common.tools.core.string.StringUtils;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -39,9 +40,29 @@ public class ReflectUtils {
     private static final Map<Class<?>, Field[]> FIELDS_CACHE = new WeakConcurrentMap<>();
 
     /**
+     * Field的缓存
+     */
+    private static final Map<Class<?>, Field[]> CURRENT_FIELDS_CACHE = new WeakConcurrentMap<>();
+
+    /**
      * method的缓存
      */
     private static final Map<Class<?>, Method[]> METHODS_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * annotation-CLASS的缓存
+     */
+    private static final Map<Class<?>, Annotation[]> ANNOTATIONS_CLASS_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * annotation-METHOD的缓存
+     */
+    private static final Map<Method, Annotation[]> ANNOTATIONS_METHOD_CACHE = new WeakConcurrentMap<>();
+
+    /**
+     * annotation-FIELD的缓存
+     */
+    private static final Map<Field, Annotation[]> ANNOTATIONS_FIELD_CACHE = new WeakConcurrentMap<>();
 
 
     /**
@@ -78,6 +99,7 @@ public class ReflectUtils {
 
     /**
      * 使final的field可修改
+     * 注意的是基本数据类型和String不可修改，除非使用包装类或String初始值为new String
      *
      * @param field field
      * @date 2022/6/29
@@ -115,7 +137,7 @@ public class ReflectUtils {
      */
     public static <T> void makeFinalModifiers(Constructor<T> constructor) throws NoSuchFieldException, IllegalAccessException {
         constructor.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        Field modifiersField = Constructor.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);
         modifiersField.setInt(constructor, constructor.getModifiers() & ~Modifier.FINAL);
     }
@@ -162,7 +184,7 @@ public class ReflectUtils {
      */
     public static void makeFinalModifiers(Method method) throws NoSuchFieldException, IllegalAccessException {
         method.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        Field modifiersField = Method.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);
         modifiersField.setInt(method, method.getModifiers() & ~Modifier.FINAL);
     }
@@ -409,6 +431,270 @@ public class ReflectUtils {
     }
 
     /**
+     * 某个属性上是否有某个注解
+     *
+     * @param field           属性
+     * @param annotationClass 注解的class类型
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean isAnnotationPresent(Field field, Class<? extends Annotation> annotationClass) {
+        return field.isAnnotationPresent(annotationClass);
+    }
+
+    /**
+     * 某个方法上是否有某个注解
+     *
+     * @param method          方法
+     * @param annotationClass 注解的class类型
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean isAnnotationPresent(Method method, Class<? extends Annotation> annotationClass) {
+        return method.isAnnotationPresent(annotationClass);
+    }
+
+    /**
+     * 某个类上是否有某个注解
+     *
+     * @param clazz           类
+     * @param annotationClass 注解的class类型
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean isAnnotationPresentCurrent(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        return clazz.isAnnotationPresent(annotationClass);
+    }
+
+    /**
+     * 某个类上是否有某个注解,没有的话查询父类
+     *
+     * @param clazz           类
+     * @param annotationClass 注解的class类型
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean isAnnotationPresent(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        return getAnnotation(clazz, annotationClass) != null;
+    }
+
+    /**
+     * 获取注解
+     *
+     * @param field           属性
+     * @param annotationClass 注解的class类型
+     * @return T
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static <T extends Annotation> T getAnnotation(Field field, Class<? extends Annotation> annotationClass) {
+        if (isAnnotationPresent(field, annotationClass)) {
+            return (T) field.getAnnotation(annotationClass);
+        }
+        return null;
+    }
+
+    /**
+     * 某个方法上是否有某个注解
+     *
+     * @param method          方法
+     * @param annotationClass 注解的class类型
+     * @return T
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static <T extends Annotation> T getAnnotation(Method method, Class<? extends Annotation> annotationClass) {
+        if (isAnnotationPresent(method, annotationClass)) {
+            return (T) method.getAnnotation(annotationClass);
+        }
+        return null;
+    }
+
+    /**
+     * 某个类上是否有某个注解
+     *
+     * @param clazz           类
+     * @param annotationClass 注解的class类型
+     * @return T
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static <T extends Annotation> T getAnnotationCurrent(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        if (isAnnotationPresent(clazz, annotationClass)) {
+            return (T) clazz.getAnnotation(annotationClass);
+        }
+        return null;
+    }
+
+    /**
+     * 查询某个类上所有注解，包括其接口、父类
+     *
+     * @param clazz    类
+     * @param useCache 是否使用缓存
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation[] getAnnotations(Class<?> clazz, boolean useCache) {
+        if (useCache) {
+            return ANNOTATIONS_CLASS_CACHE.computeIfAbsent(clazz, k -> getClassAnnotationsDirectly(clazz));
+        } else {
+            return getClassAnnotationsDirectly(clazz);
+        }
+    }
+
+    /**
+     * 查询某个类上所有注解，包括其接口、父类，默认使用缓存
+     *
+     * @param clazz 类
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation[] getAnnotations(Class<?> clazz) {
+        return getAnnotations(clazz, true);
+    }
+
+    /**
+     * 查询某个类上是否有某种注解，如果没有查询其接口、父类
+     *
+     * @param clazz    类
+     * @param useCache 是否使用缓存
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation getAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass, boolean useCache) {
+        Annotation[] annotations = getAnnotations(clazz, useCache);
+        if (ArrayUtils.isNotEmpty(annotations)) {
+            return Arrays.stream(annotations)
+                    .filter(annotation -> annotationClass.isAssignableFrom(annotation.getClass()))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    /**
+     * 查询某个类上是否有某种注解，如果没有查询其接口、父类，默认使用缓存
+     *
+     * @param clazz 类
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation getAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        return getAnnotation(clazz, annotationClass, true);
+    }
+
+    /**
+     * 查询某个Method上所有注解，包括其接口、父类
+     *
+     * @param method 方法
+     * @param useCache 是否使用缓存
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation[] getAnnotations(Method method, boolean useCache) {
+        if (useCache) {
+            return ANNOTATIONS_METHOD_CACHE.computeIfAbsent(method, k -> getMethodAnnotationsDirectly(method));
+        } else {
+            return getMethodAnnotationsDirectly(method);
+        }
+    }
+
+    /**
+     * 查询某个类上所有注解，包括其接口、父类，默认使用缓存
+     *
+     * @param method 方法
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation[] getAnnotations(Method method) {
+        return getAnnotations(method, true);
+    }
+
+    /**
+     * 查询某个Field上所有注解，包括其接口、父类
+     *
+     * @param field 属性
+     * @param useCache 是否使用缓存
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation[] getAnnotations(Field field, boolean useCache) {
+        if (useCache) {
+            return ANNOTATIONS_FIELD_CACHE.computeIfAbsent(field, k -> getFieldAnnotationsDirectly(field));
+        } else {
+            return getFieldAnnotationsDirectly(field);
+        }
+    }
+
+    /**
+     * 查询某个类上所有注解，包括其接口、父类，默认使用缓存
+     *
+     * @param field 属性
+     * @return Annotation[]
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static Annotation[] getAnnotations(Field field) {
+        return getAnnotations(field, true);
+    }
+
+
+    private static Annotation[] getFieldAnnotationsDirectly(Field field) {
+        return field.getAnnotations();
+    }
+
+
+    private static Annotation[] getMethodAnnotationsDirectly(Method method) {
+        return method.getAnnotations();
+    }
+
+    private static Annotation[] getClassAnnotationsDirectly(Class<?> clazz) {
+        Annotation[] annotations = new Annotation[0];
+        Class<?> copyClass = clazz;
+        // 获取类上的注解
+        while (copyClass != null && copyClass != Object.class) {
+            Annotation[] currentAnnos = copyClass.getDeclaredAnnotations();
+            if (ArrayUtils.isNotEmpty(currentAnnos)) {
+                annotations = ArrayUtils.addAll(annotations, currentAnnos);
+            }
+            copyClass = copyClass.getSuperclass();
+        }
+        // 获取接口的注解
+        assert clazz != null;
+        getInterfaceAnnotations(clazz.getInterfaces(), annotations);
+        Set<Class> annoNames = new HashSet<>();
+        return Arrays.stream(annotations).filter(annotation -> {
+            boolean contains = annoNames.contains(annotation.getClass());
+            annoNames.add(annotation.getClass());
+            return !contains;
+        }).toArray(Annotation[]::new);
+    }
+
+    private static void getInterfaceAnnotations(Class<?>[] interfaces, Annotation[] annotations) {
+        if (ArrayUtils.isNotEmpty(interfaces)) {
+            for (Class<?> anInterface : interfaces) {
+                Annotation[] currentAnnos = anInterface.getDeclaredAnnotations();
+                if (ArrayUtils.isNotEmpty(currentAnnos)) {
+                    annotations = ArrayUtils.addAll(annotations, currentAnnos);
+                }
+                getInterfaceAnnotations(anInterface.getInterfaces(), annotations);
+            }
+        }
+    }
+
+
+    /**
      * 通过一个class和构造参数获取构造器,默认使用缓存
      *
      * @param clazz        类
@@ -547,7 +833,7 @@ public class ReflectUtils {
 
     /**
      * 获得一个类中所有字段列表，包括其父类中的字段<br>
-     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * 如果子类与父类中存在同名字段，只显示子类的字段
      *
      * @param beanClass    类
      * @param ignoreFields 忽略的属性
@@ -573,6 +859,130 @@ public class ReflectUtils {
             return getFieldsDirectly(beanClass, ignoreFields);
         }
     }
+
+    /**
+     * 获得一个类中所有字段列表，如果有重复的，只包含当前类的
+     *
+     * @param beanClass    类
+     * @param ignoreFields 忽略的属性
+     * @return 字段列表
+     */
+    public static List<Field> getDistinctFields(Class<?> beanClass, String... ignoreFields) {
+        Field[] fields = getFields(beanClass, ignoreFields);
+        Set<String> fieldNames = new HashSet<>();
+        return Arrays.stream(fields).filter(field -> {
+            boolean contains = fieldNames.contains(field.getName());
+            fieldNames.add(field.getName());
+            return !contains;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 只获取当前类的属性，默认使用缓存
+     *
+     * @param beanClass    类
+     * @param ignoreFields 忽略的属性
+     * @return 字段列表
+     */
+    public static Field[] getCurrentFields(Class<?> beanClass, String... ignoreFields) {
+        return getCurrentFields(beanClass, true, ignoreFields);
+    }
+
+    /**
+     * 只获取当前类的属性
+     *
+     * @param beanClass    类
+     * @param useCache     是否使用缓存
+     * @param ignoreFields 忽略的属性
+     * @return 字段列表
+     */
+    public static Field[] getCurrentFields(Class<?> beanClass, boolean useCache, String... ignoreFields) {
+        if (useCache) {
+            return CURRENT_FIELDS_CACHE.computeIfAbsent(beanClass, k -> getCurrentFieldsDirectly(beanClass, ignoreFields));
+        } else {
+            return getCurrentFieldsDirectly(beanClass, ignoreFields);
+        }
+    }
+
+    /**
+     * 是否包含某个属性
+     *
+     * @param beanClass class
+     * @param fieldName 属性名
+     * @param useCache  是否使用缓存
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean containsField(Class<?> beanClass, String fieldName, boolean useCache) {
+        return getField(beanClass, fieldName, useCache) != null;
+    }
+
+    /**
+     * 是否包含某个属性，默认使用缓存
+     *
+     * @param beanClass class
+     * @param fieldName 属性名
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean containsField(Class<?> beanClass, String fieldName) {
+        return containsField(beanClass, fieldName, true);
+    }
+
+
+    /**
+     * 是否包含某个属性,只查找当前类
+     *
+     * @param beanClass class
+     * @param fieldName 属性名
+     * @param useCache  是否使用缓存
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean containsCurrentField(Class<?> beanClass, String fieldName, boolean useCache) {
+        return getCurrentField(beanClass, fieldName, useCache) != null;
+    }
+
+    /**
+     * 是否包含某个属性，只查找当前类，默认使用缓存
+     *
+     * @param beanClass class
+     * @param fieldName 属性名
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean containsCurrentField(Class<?> beanClass, String fieldName) {
+        return containsCurrentField(beanClass, fieldName, true);
+    }
+
+    /**
+     * 获取当前某个类的属性,不包括父类的， 使用缓存
+     *
+     * @param beanClass 类
+     * @param fieldName field名称
+     * @return Field
+     */
+    public static Field getCurrentField(Class<?> beanClass, String fieldName) {
+        return getCurrentField(beanClass, fieldName, true);
+    }
+
+    /**
+     * 获取某个类的属性，不包括父类的
+     *
+     * @param beanClass 类
+     * @param fieldName field名称
+     * @param useCache  是否使用缓存
+     * @return Field
+     */
+    public static Field getCurrentField(Class<?> beanClass, String fieldName, boolean useCache) {
+        Field[] fields = getCurrentFields(beanClass, useCache);
+        return Arrays.stream(fields).filter(field -> Objects.equals(field.getName(), fieldName)).findFirst().orElse(null);
+    }
+
 
     /**
      * 获取某个类的属性, 使用缓存
@@ -648,7 +1058,20 @@ public class ReflectUtils {
             }
             beanClass = beanClass.getSuperclass();
         }
-        return fields;
+        // 如果有名字重复的，只保留子类的
+        Set<String> fieldNames = new HashSet<>();
+        return Arrays.stream(fields).filter(field -> {
+            boolean contains = fieldNames.contains(field.getName());
+            fieldNames.add(field.getName());
+            return !contains;
+        }).toArray(Field[]::new);
+    }
+
+    private static Field[] getCurrentFieldsDirectly(Class<?> beanClass, String... ignoreFields) {
+        ignoreFields = ignoreFields == null ? new String[0] : ignoreFields;
+        String[] finalIgnoreFields = ignoreFields;
+        Field[] declaredFields = beanClass.getDeclaredFields();
+        return Arrays.stream(declaredFields).filter(field -> !ArrayUtils.contains(finalIgnoreFields, field)).toArray(Field[]::new);
     }
 
     /**
@@ -853,6 +1276,36 @@ public class ReflectUtils {
     }
 
     /**
+     * 是否包含某个方法
+     *
+     * @param beanClass  class
+     * @param methodName 属性名
+     * @param useCache   是否使用缓存
+     * @param paramTypes 参数类型
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean containsMethod(Class<?> beanClass, String methodName, boolean useCache, Class<?>... paramTypes) {
+        return getMethod(beanClass, useCache, methodName, paramTypes) != null;
+    }
+
+    /**
+     * 是否包含某个方法,默认使用缓存
+     *
+     * @param beanClass  class
+     * @param methodName 属性名
+     * @param paramTypes 参数类型
+     * @return boolean
+     * @date 2022/6/30
+     * @since jdk11
+     */
+    public static boolean containsMethod(Class<?> beanClass, String methodName, Class<?>... paramTypes) {
+        return containsMethod(beanClass, methodName, true, paramTypes);
+    }
+
+
+    /**
      * 把一个Bean对象转换成Map对象
      *
      * @param obj     对象
@@ -910,6 +1363,32 @@ public class ReflectUtils {
     }
 
     /**
+     * 实例化一个数组，一维的
+     *
+     * @param clazz 类型
+     * @param len   长度
+     * @return T[]
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> Object newInstanceArray(Class<T> clazz, int len) {
+        return Array.newInstance(clazz, len);
+    }
+
+    /**
+     * 实例化一个数组，多维的
+     *
+     * @param clazz 类型
+     * @param len   长度
+     * @return Object
+     * @date 2022/6/29
+     * @since jdk11
+     */
+    public static <T> Object newInstanceArray(Class<T> clazz, int... len) {
+        return Array.newInstance(clazz, len);
+    }
+
+    /**
      * 判断fieldName是否是ignores中排除的
      *
      * @param fieldName fieldName
@@ -928,8 +1407,7 @@ public class ReflectUtils {
         return flag;
     }
 
-    public static PropertyDescriptor getPropertyDescriptor(Class clazz,
-                                                           String propertyName) throws Exception {
+    public static PropertyDescriptor getPropertyDescriptor(Class clazz, String propertyName) throws Exception {
         // 构建一个可变字符串用来构建方法名称
         StringBuilder sb = new StringBuilder();
         Method setMethod;
@@ -1070,6 +1548,15 @@ public class ReflectUtils {
         return MethodHandles.lookup().unreflect(method);
     }
 
+    /**
+     * 调用某个属性的get方法
+     *
+     * @param obj          对象
+     * @param propertyName 属性名称
+     * @return java.lang.Object
+     * @date 2022/6/30
+     * @since jdk11
+     */
     public static Object invokeGet(Object obj, String propertyName) throws Exception {
         assert obj != null;
         assert propertyName != null;

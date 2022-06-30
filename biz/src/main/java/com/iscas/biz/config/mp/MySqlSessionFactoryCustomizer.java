@@ -29,11 +29,9 @@ public class MySqlSessionFactoryCustomizer implements SqlSessionFactoryCustomize
         if (sessionFactory instanceof MybatisSqlSessionFactoryBean) {
             MybatisSqlSessionFactoryBean mssfb = (MybatisSqlSessionFactoryBean) sessionFactory;
             try {
-                Field globalConfigField = MybatisSqlSessionFactoryBean.class.getDeclaredField("globalConfig");
-                ReflectUtils.makeAccessible(globalConfigField);
-                GlobalConfig globalConfig = (GlobalConfig) globalConfigField.get(mssfb);
+                GlobalConfig globalConfig = (GlobalConfig) ReflectUtils.getValue(mssfb, MybatisSqlSessionFactoryBean.class, "globalConfig");
                 globalConfig.setMetaObjectHandler(new MyMetaObjectHandler());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 log.error("MySqlSessionFactoryCustomizer 出错", e);
             }
         }

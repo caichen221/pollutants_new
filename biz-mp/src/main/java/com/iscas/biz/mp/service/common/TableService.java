@@ -120,15 +120,7 @@ public class TableService extends BaseTableService {
         if (headerData == null) {
             throw new RuntimeException("表头不能为空");
         }
-        List<Field> fields;
-        if (!superClassProps) {
-            Field[] declaredFields = saveData.getClass().getDeclaredFields();
-            fields = Arrays.stream(declaredFields)
-                    .collect(Collectors.toList());
-        } else {
-            fields = Arrays.stream(ReflectUtils.getFields(saveData.getClass())).collect(Collectors.toList());
-        }
-        return fields;
+        return ReflectUtils.getDistinctFields(saveData.getClass());
     }
 
 
@@ -280,10 +272,7 @@ public class TableService extends BaseTableService {
         sb.append("INSERT INTO ");
         sb.append(tableName).append(" ( ");
         for (Field field : fields) {
-            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-            ReflectUtils.makeAccessible(field);
-
-            Object obj = field.get(saveData);
+            Object obj = ReflectUtils.getValue(field, saveData);
             if (obj != null) {
                 sb.append(field.getName()).append(" ,");
             }
@@ -292,10 +281,7 @@ public class TableService extends BaseTableService {
         sb.append(" ) ").append(" VALUES( ");
         //构建插入SQL
         for (Field field : fields) {
-            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-            ReflectUtils.makeAccessible(field);
-
-            Object obj = field.get(saveData);
+            Object obj = ReflectUtils.getValue(field, saveData);
             if (obj != null) {
                 sb.append("'");
                 sb.append(obj);
@@ -317,10 +303,7 @@ public class TableService extends BaseTableService {
         sb.append("UPDATE ");
         sb.append(tableName).append(" SET ");
         for (Field field : fields) {
-            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-            ReflectUtils.makeAccessible(field);
-
-            Object obj = field.get(saveData);
+            Object obj = ReflectUtils.getValue(field, saveData);
             if (obj != null) {
                 sb.append(field.getName()).append(" ,");
             }
@@ -329,10 +312,7 @@ public class TableService extends BaseTableService {
         sb.append(" ) ").append(" VALUES( ");
         //构建插入SQL
         for (Field field : fields) {
-            //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-            ReflectUtils.makeAccessible(field);
-
-            Object obj = field.get(saveData);
+            Object obj = ReflectUtils.getValue(field, saveData);
             if (obj != null) {
                 sb.append("'");
                 sb.append(obj);

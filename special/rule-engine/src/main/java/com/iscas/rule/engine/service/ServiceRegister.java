@@ -86,18 +86,13 @@ public class ServiceRegister {
                 final Object ox = o;
                 //将创建的对象放入二级缓存
                 RuleEngineServiceFactory.RULE_ENGINE_SERVICES_SECOND_CACHE.put(reClass, o);
-                Field[] declaredFields = o.getClass().getDeclaredFields();
+                Field[] declaredFields = ReflectUtils.getCurrentFields(o.getClass());
                 if (ArrayUtils.isNotEmpty(declaredFields)) {
                     Arrays.stream(declaredFields).filter(field -> field.getType().getAnnotation(REComponent.class) != null && field.getAnnotation(REAutowired.class) != null)
                             .forEach(field -> {
                                 try {
                                     Object fieldO = createNewInstance(field.getType(), true);
-//                                    field.setAccessible(true);
-                                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-                                    ReflectUtils.makeAccessible(field);
-
-                                    field.set(ox, fieldO);
-//                                    os[0] = null;
+                                    ReflectUtils.setValue(field, ox, fieldO);
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }

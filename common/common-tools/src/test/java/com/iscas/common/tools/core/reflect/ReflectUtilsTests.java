@@ -5,15 +5,14 @@ import lombok.Data;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.beans.JavaBean;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
 
 /**
  * 增强反射工具类测试
@@ -251,10 +250,83 @@ public class ReflectUtilsTests {
         ReflectUtils.invokeMethod(testM2, method);
     }
 
+    /**
+     * 是否包含某个属性
+     * */
+    @Test
+    public void test18() {
+        boolean flag = ReflectUtils.containsField(TestM2.class, "test");
+        Assertions.assertFalse(flag);
+    }
+
+    /**
+     * 是否包含某个方法
+     * */
+    @Test
+    public void test19() {
+        boolean flag = ReflectUtils.containsMethod(TestM.class, "test");
+        Assertions.assertTrue(flag);
+    }
+
+    /**
+     * 测试修改final属性
+     * */
+    @Test
+    public void test20() throws NoSuchFieldException, IllegalAccessException {
+        TestM testM = new TestM();
+        Field aaaField = ReflectUtils.getField(TestM.class, "aaa");
+        ReflectUtils.makeFinalModifiers(aaaField);
+        ReflectUtils.setValue(aaaField, testM, "yyy");
+        ReflectUtils.setValue(aaaField, testM, "zzz");
+        ReflectUtils.makeFinalModifiers(aaaField);
+        ReflectUtils.setValue(aaaField, testM, "aaa");
+        System.out.println(testM);
+
+        Field bbbField = ReflectUtils.getField(TestM.class, "bbb");
+        ReflectUtils.makeFinalModifiers(bbbField);
+        ReflectUtils.setValue(bbbField, testM, 2);
+        System.out.println(testM);
+    }
+
+    /**
+     *  实例化数组
+     * */
+    @Test
+    public void test21() {
+        TestM[] testMS = (TestM[]) ReflectUtils.newInstanceArray(TestM.class, 10);
+        System.out.println(Arrays.toString(testMS));
+        Class testMClass = TestM.class;
+        Object[] objects = (Object[]) ReflectUtils.newInstanceArray(testMClass, 20);
+        System.out.println(Arrays.toString(objects));
+
+        int[] integers = (int[]) ReflectUtils.newInstanceArray(int.class, 20);
+        System.out.println(Arrays.toString(integers));
+
+        String[][] strArray = (String[][]) ReflectUtils.newInstanceArray(String.class, 20, 20);
+        System.out.println(Arrays.toString(strArray));
+    }
+
+
+    /**
+     *  获取注解
+     * */
+    @Test
+    public void test22() {
+        boolean annotationPresentCurrent = ReflectUtils.isAnnotationPresentCurrent(TestM.class, JavaBean.class);
+        Assertions.assertTrue(annotationPresentCurrent);
+        Annotation annotation = ReflectUtils.getAnnotation(TestM.class, JavaBean.class);
+        System.out.println(annotation);
+        Annotation[] annotations = ReflectUtils.getAnnotations(TestM.class);
+        System.out.println(annotations[0]);
+    }
+
     @Data
+    @JavaBean
     public static class TestM {
         private Integer id;
         private String name;
+        public final String aaa = new String("xxx");
+        public final Integer bbb = 1;
         public void test() {
             System.out.println(2222);
         }

@@ -1,6 +1,7 @@
 package com.iscas.base.biz.config.elasticjob;
 
 import com.iscas.base.biz.aop.enable.EnableElasticJob;
+import com.iscas.common.tools.core.reflect.ReflectUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
@@ -30,7 +31,8 @@ public class OnElasticJobWithDatasource extends SpringBootCondition {
         boolean match = MapUtils.isNotEmpty(beansWithAnnotation);
         if (match) {
             for (Map.Entry<String, Object> objectEntry : beansWithAnnotation.entrySet()) {
-                EnableElasticJob annotation = objectEntry.getValue().getClass().getAnnotation(EnableElasticJob.class);
+                EnableElasticJob annotation = ReflectUtils.getAnnotationCurrent(objectEntry.getValue().getClass(), EnableElasticJob.class);
+                assert annotation != null;
                 return annotation.withDatasource() ? ConditionOutcome.match(message.foundExactly("EnableElaticJobDatasource"))
                         : ConditionOutcome.noMatch(message.because("not EnableElaticJobDatasource"));
             }

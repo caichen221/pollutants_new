@@ -429,8 +429,6 @@ public class DruidConfiguration implements EnvironmentAware {
     @NotNull
     private PaginationInnerInterceptor getPaginationInnerInterceptor() throws NoSuchFieldException, IllegalAccessException {
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
-        Field field = paginationInnerInterceptor.getClass().getDeclaredField("COUNT_SELECT_ITEM");
-        ReflectUtils.makeAccessible(field);
         Function function = new Function();
         function.setName("COUNT");
         List<Expression> expressions = new ArrayList<>();
@@ -440,13 +438,11 @@ public class DruidConfiguration implements EnvironmentAware {
         expressionList.setExpressions(expressions);
         function.setParameters(expressionList);
         SelectExpressionItem selectExpressionItem = new SelectExpressionItem(function).withAlias(new Alias("total"));
-        Field modifiers = Field.class.getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        //去掉final修饰符
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(null, Collections.singletonList(selectExpressionItem));
-        //再把final修饰符给加回来
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        // 反射修改值
+        Field field = ReflectUtils.getField(paginationInnerInterceptor.getClass(), "COUNT_SELECT_ITEM");
+        ReflectUtils.makeFinalModifiers(field);
+        ReflectUtils.setValue(field, null, Collections.singletonList(selectExpressionItem));
+
         return paginationInnerInterceptor;
     }
 

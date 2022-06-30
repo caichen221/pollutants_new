@@ -65,16 +65,13 @@ public class TableDefinitionService {
      * 表从mysql导入神州通用数据库后有些字段多了很多空格，trim处理一下
      */
     private void trimStrOfObj(Object obj) {
-        Arrays.stream(obj.getClass().getDeclaredFields())
+        ReflectUtils.getDistinctFields(obj.getClass()).stream()
                 .filter(field -> field.getType() == String.class)
                 .forEach(field -> {
-                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-                    ReflectUtils.makeAccessible(field);
-//                    field.setAccessible(true);
                     try {
-                        Object o = field.get(obj);
+                        Object o = ReflectUtils.getValue(field, obj);
                         if (o != null) {
-                            field.set(obj, o.toString().trim());
+                            ReflectUtils.setValue(field, obj, o.toString().trim());
                         }
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
@@ -144,7 +141,8 @@ public class TableDefinitionService {
         //构建buttonSetting
         String buttonSetting = tableDefinition.getButtonSetting();
         if (StringUtils.isNotEmpty(buttonSetting)) {
-            TypeReference<List<ButtonSetting>> typeReference = new TypeReference<>() {};
+            TypeReference<List<ButtonSetting>> typeReference = new TypeReference<>() {
+            };
             List<ButtonSetting> buttonSettings = JsonUtils.fromJson(buttonSetting, typeReference);
             tableSetting.setButtonSetting(buttonSettings);
         }
@@ -265,7 +263,7 @@ public class TableDefinitionService {
 
 
     public <T> TableResponse<T> getData(String tableIdentity, TableSearchRequest request, Map<String, Object> dynamicParam,
-                                 String dynamicSql) throws ValidDataException {
+                                        String dynamicSql) throws ValidDataException {
         TableResponse tableResponse = new TableResponse();
         long start = System.currentTimeMillis();
         try {
@@ -537,7 +535,7 @@ public class TableDefinitionService {
      * 查询时驼峰转为下划线，返回结果时下划线转为驼峰
      */
     public <T> TableResponse<T> getData(Class clazz, TableSearchRequest request, Map<String, Object> dynamicParam,
-                                                                 String dynamicSql) throws ValidDataException {
+                                        String dynamicSql) throws ValidDataException {
         TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
         String tableIdentity = tableInfo.getTableName();
 
@@ -893,7 +891,7 @@ public class TableDefinitionService {
      * 删除表格记录
      *
      * @param tableIdentity tableIdentity
-     * @param id id
+     * @param id            id
      * @return ResponseEntity
      */
     @Deprecated
@@ -947,7 +945,7 @@ public class TableDefinitionService {
         fieldList.forEach(tableFieldInfo -> {
             Field field = tableFieldInfo.getField();
             try {
-                Object v = field.get(item);
+                Object v = ReflectUtils.getValue(field, item);
                 if (v != null && StringUtils.isNotBlank(v.toString())) {
                     String column = tableFieldInfo.getColumn();
                     params.put(column, v);

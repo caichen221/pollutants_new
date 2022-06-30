@@ -180,13 +180,15 @@ public class ObjectUtils {
 
         } else {
             //其他的都认为是对象
-            Field[] declaredFields = targetClass.getDeclaredFields();
+            Field[] declaredFields = ReflectUtils.getCurrentFields(targetClass);
             if (ArrayUtils.isNotEmpty(declaredFields)) {
                 T targetObj = targetClass.getDeclaredConstructor().newInstance();
                 //获取待复制对象的class
                 Class<?> oriClass = oriObj.getClass();
                 label:
                 for (Field targetField : declaredFields) {
+                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
+                    ReflectUtils.makeAccessible(targetField);
                     String name = targetField.getName();
                     //跳过某些属性
                     if (ArrayUtils.isNotEmpty(skipFieldGlobal)) {
@@ -206,7 +208,7 @@ public class ObjectUtils {
 
                     Field oriField = null;
                     try {
-                        oriField = oriClass.getDeclaredField(name);
+                        oriField = ReflectUtils.getCurrentField(oriClass, name);
                     } catch (Exception ignored) {
                     }
                     if (oriField == null) {
@@ -217,15 +219,10 @@ public class ObjectUtils {
                             continue;
                         }
                     }
-                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-                    ReflectUtils.makeAccessible(oriField);
-
-                    Object oriData = oriField.get(oriObj);
+                    Object oriData = ReflectUtils.getValue(oriField, oriObj);
 
                     Class<?> type = targetField.getType();
                     Object o = deepCopy(oriData, type, ignoreNonExistField, skipFields);
-                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-                    ReflectUtils.makeAccessible(targetField);
 
                     //设置属性
                     targetField.set(targetObj, o);
@@ -407,10 +404,7 @@ public class ObjectUtils {
                             continue;
                         }
                     }
-                    //防止被漏洞软件扫描出漏洞，更改授权方式 add by zqw 2021-12-08
-                    ReflectUtils.makeAccessible(oriField);
-
-                    Object oriData = oriField.get(oriObj);
+                    Object oriData = ReflectUtils.getValue(oriField, oriObj);
 
                     if (oriData != null) {
                         //目标类型
