@@ -18,6 +18,7 @@ import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.common.web.tools.json.JsonUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.*;
 import com.iscas.templet.view.validator.Rule;
@@ -92,14 +93,14 @@ public class TableDefinitionService {
         long start = System.currentTimeMillis();
         try {
             if (ObjectUtils.isEmpty(tableIdentity)) {
-                throw new BaseException("传入表格标识参数为空", "parameter is empty or null");
+                throw Exceptions.baseException("传入表格标识参数为空", "parameter is empty or null");
             }
 
             List<ColumnDefinition> columnDefinitions =
                     tableDefinitionMapper.getHeaderByIdentify(tableDefinitionConfig.getHeaderDefinitionTableName(), tableIdentity);
             trimColumnDefinitions(columnDefinitions);
             if (columnDefinitions == null || columnDefinitions.size() == 0) {
-                throw new BaseException(String.format("[%s]的表头定义不存在！", tableIdentity), String.format("column definition not exist for [%s]", tableIdentity));
+                throw Exceptions.baseException(String.format("[%s]的表头定义不存在！", tableIdentity), String.format("column definition not exist for [%s]", tableIdentity));
             }
 
             //添加表格定义
@@ -121,7 +122,7 @@ public class TableDefinitionService {
             tableHeaderResponseData.setSetting(tableSetting);
             tableHeaderResponse.setValue(tableHeaderResponseData);
         } catch (Exception e) {
-            throw new BaseException("获取表头失败", e);
+            throw Exceptions.baseException("获取表头失败", e);
         } finally {
             tableHeaderResponse.setTookInMillis(System.currentTimeMillis() - start);
         }
@@ -515,7 +516,7 @@ public class TableDefinitionService {
                                 .replace("@end@", String.valueOf(e));
                         break;
                     default:
-                        throw new UnsupportedOperationException("不支持的数据源类型:[" + TableDefinitionSqlCreatorConfig.mode + "]");
+                        throw Exceptions.unsupportedOperationException("不支持的数据源类型:[" + TableDefinitionSqlCreatorConfig.mode + "]");
                 }
                 log.debug("get data sql : " + sql);
                 List<Map<String, Object>> datas = tableDefinitionMapper.getDataBySql(dataSql, paramMap);
@@ -804,7 +805,7 @@ public class TableDefinitionService {
                                 .replace("@end@", String.valueOf(e));
                         break;
                     default:
-                        throw new UnsupportedOperationException("不支持的数据源类型:[" + TableDefinitionSqlCreatorConfig.mode + "]");
+                        throw Exceptions.unsupportedOperationException("不支持的数据源类型:[" + TableDefinitionSqlCreatorConfig.mode + "]");
                 }
                 log.debug("get data sql : " + sql);
                 List<Map<String, Object>> datas = tableDefinitionMapper.getDataBySql(dataSql, paramMap);
@@ -1099,7 +1100,7 @@ public class TableDefinitionService {
                     String selectSQL = tableDefinition.getSql();
                     int count = tableDefinitionMapper.getCountByField(selectSQL, field, value);
                     if (count > 0) {
-                        throw new ValidDataException(String.format("[%s]的表格列[%s]数据[%s]在数据库中已经存在，不能重复", tableIdentity, field, value));
+                        throw Exceptions.formatValidDataException("[{}]的表格列[{}]数据[{}]在数据库中已经存在，不能重复", tableIdentity, field, value);
                     }
                 }
 

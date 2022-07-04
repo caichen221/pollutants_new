@@ -25,6 +25,7 @@ import com.iscas.common.k8s.tools.model.volume.KcVolume;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
 import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.*;
@@ -952,11 +953,11 @@ public class KcDeploymentUtils {
         if (nonNamespaceOperation != null) {
             Resource<HorizontalPodAutoscaler> horizontalPodAutoscalerResource = nonNamespaceOperation.withName(name);
             if (horizontalPodAutoscalerResource == null) {
-                throw new BaseException("不存在的扩容信息");
+                throw Exceptions.baseException("不存在的扩容信息");
             }
             horizontalPodAutoscalerResource.delete();
         } else {
-            throw new BaseException("不存在的扩容信息");
+            throw Exceptions.baseException("不存在的扩容信息");
         }
     }
 

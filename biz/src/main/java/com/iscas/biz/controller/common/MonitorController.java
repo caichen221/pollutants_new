@@ -4,6 +4,7 @@ import com.iscas.biz.service.common.MonitorService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class MonitorController extends BaseController {
             response.setValue(result);
 
         } catch (Exception e) {
-            throw new BaseException("获取监控数据出错", e);
+            throw Exceptions.baseException("获取监控数据出错", e);
         }
         return response;
     }
@@ -50,7 +51,7 @@ public class MonitorController extends BaseController {
             response.setValue(result);
 
         } catch (Exception e) {
-            throw new BaseException("获取监控数据出错", e);
+            throw Exceptions.baseException("获取监控数据出错", e);
         }
         return response;
     }

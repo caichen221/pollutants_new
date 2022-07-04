@@ -7,6 +7,7 @@ import com.iscas.base.biz.config.stomp.UserAccessor;
 import com.iscas.base.biz.model.auth.User;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidTokenException;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -52,11 +53,11 @@ public class TokenVerifyUserAccessor implements UserAccessor {
                         Map<String, Claim> claimMap = JWTUtils.verifyToken(token, tokenProps.getCreatorMode());
                         username = claimMap.get("username").asString();
                         if (username == null) {
-                            throw new RuntimeException("websocket认证失败");
+                            throw Exceptions.runtimeException("websocket认证失败");
                         }
                     } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
                         e.printStackTrace();
-                        throw new RuntimeException("websocket认证失败", e);
+                        throw Exceptions.runtimeException("websocket认证失败", e);
                     }
                     User user = new User();
                     user.setUsername(username);

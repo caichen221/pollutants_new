@@ -3,6 +3,7 @@ package com.iscas.base.biz.util;
 import com.auth0.jwt.interfaces.Claim;
 import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +28,7 @@ public class CustomSession {
             sessionId = claim.asString();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseRuntimeException("校验token信息出错");
+            throw Exceptions.baseRuntimeException("校验token信息出错");
         }
         return sessionId;
     }

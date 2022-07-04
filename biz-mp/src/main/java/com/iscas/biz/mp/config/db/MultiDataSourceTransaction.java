@@ -1,5 +1,6 @@
 package com.iscas.biz.mp.config.db;
 
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
@@ -40,7 +41,7 @@ public class MultiDataSourceTransaction implements Transaction {
 
     public MultiDataSourceTransaction(DataSource dataSource) {
         if (dataSource == null) {
-            throw new RuntimeException("No DataSource specified");
+            throw Exceptions.runtimeException("No DataSource specified");
         }
         this.dataSource = dataSource;
         otherConnectionMap = new ConcurrentHashMap<>();
@@ -64,7 +65,7 @@ public class MultiDataSourceTransaction implements Transaction {
                     Connection conn = dataSource.getConnection();
                     otherConnectionMap.put(databaseIdentification, conn);
                 } catch (SQLException ex) {
-                    throw new RuntimeException("Could not get JDBC Connection", ex);
+                    throw Exceptions.runtimeException("Could not get JDBC Connection", ex);
                 }
             }
             return otherConnectionMap.get(databaseIdentification);

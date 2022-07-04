@@ -1,5 +1,7 @@
 package com.iscas.biz.test.aba;
 
+import com.iscas.templet.exception.Exceptions;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicStampedReference;
 
@@ -19,7 +21,7 @@ public class AbaTest {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                throw Exceptions.runtimeException(e);
             }
             atomicStampedReference.compareAndSet(10, 11, atomicStampedReference.getStamp(), atomicStampedReference.getStamp() + 1);
             atomicStampedReference.compareAndSet(11, 10, atomicStampedReference.getStamp(), atomicStampedReference.getStamp() + 1);
@@ -29,7 +31,7 @@ public class AbaTest {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                throw Exceptions.runtimeException(e);
             }
             while (!atomicStampedReference.compareAndSet(10, 11, atomicStampedReference.getStamp(), atomicStampedReference.getStamp() + 1)) {
                 System.out.println("修改失败");

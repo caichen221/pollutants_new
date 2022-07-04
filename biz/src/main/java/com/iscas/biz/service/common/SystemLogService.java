@@ -3,6 +3,7 @@ package com.iscas.biz.service.common;
 import com.iscas.biz.model.common.LogTreeDataDTO;
 import com.iscas.common.tools.core.io.file.FileUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.tree.TreeResponse;
 import com.iscas.templet.view.tree.TreeResponseData;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,7 +30,7 @@ public class SystemLogService {
             file = new File(new File(System.getProperty("user.dir")), "logs");
         }
         if (!file.exists()) {
-            throw new BaseException("日志目录不存在");
+            throw Exceptions.baseException("日志目录不存在");
         }
         TreeResponse treeResponse = new TreeResponse();
         TreeResponseData<LogTreeDataDTO> root = new TreeResponseData<>();
@@ -76,10 +77,10 @@ public class SystemLogService {
     public List<String> viewLog(String filePath, int lines) throws BaseException, IOException {
         File file = new File(filePath);
         if (!file.exists()) {
-            throw new BaseException(String.format("日志文件:[%s]不存在", filePath));
+            throw Exceptions.baseException("日志文件:[{}]不存在", filePath);
         }
         if (file.isDirectory()) {
-            throw new BaseException(String.format("[%s]不是一个文件", filePath));
+            throw Exceptions.baseException("[{}]不是一个文件", filePath);
         }
         return FileUtils.reverseReadLines(file, "utf-8", lines);
     }

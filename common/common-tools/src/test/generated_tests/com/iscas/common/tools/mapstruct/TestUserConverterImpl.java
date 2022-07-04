@@ -7,7 +7,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-06-29T13:16:48+0800",
+    date = "2022-07-04T18:40:48+0800",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 11.0.8 (Oracle Corporation)"
 )
 public class TestUserConverterImpl implements TestUserConverter {

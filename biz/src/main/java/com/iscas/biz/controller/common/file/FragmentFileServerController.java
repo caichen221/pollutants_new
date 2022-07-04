@@ -5,6 +5,7 @@ import com.iscas.biz.service.common.FileInfoService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -53,7 +54,7 @@ public class FragmentFileServerController extends BaseController {
         try {
             fileInfoService.upload(file, suffix, shardIndex, shardSize, shardTotal, size, key, name);
         } catch (IOException | InterruptedException e) {
-            throw new BaseException("文件上传出错", e);
+            throw Exceptions.baseException("文件上传出错", e);
         }
         return getResponse();
     }

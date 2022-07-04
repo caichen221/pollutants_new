@@ -28,6 +28,7 @@ import com.iscas.biz.mp.interfaces.IShardingJdbcHandler;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.StrConstantEnum;
 import com.iscas.common.tools.core.reflect.ReflectUtils;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -407,7 +408,7 @@ public class DruidConfiguration implements EnvironmentAware {
                         try {
                             return new PathMatchingResourcePatternResolver().getResources(location);
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            throw Exceptions.runtimeException(e);
                         }
                     }).flatMap(Arrays::stream).toArray(Resource[]::new);
             factory.setMapperLocations(resources);

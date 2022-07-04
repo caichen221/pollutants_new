@@ -7,6 +7,7 @@ import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.HeaderKey;
 import com.iscas.common.tools.constant.MediaType;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.LoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +41,7 @@ public class VerificationCodeService implements HeaderKey, MediaType {
         HttpServletResponse response = SpringUtils.getResponse();
         String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
         if (loginKey == null) {
-            throw new LoginException("未获得加密码，拒绝生成验证码");
+            throw Exceptions.loginException("未获得加密码，拒绝生成验证码");
         }
         response.setDateHeader(EXPIRES, 0);
         response.setHeader(CACHE_CONTROL, "no-store, no-cache, must-revalidate");
@@ -66,7 +67,7 @@ public class VerificationCodeService implements HeaderKey, MediaType {
     public ResponseEntity verify(String code, String key) throws LoginException {
         String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
         if (loginKey == null) {
-            throw new LoginException("未获得加密码，拒绝校验验证码");
+            throw Exceptions.loginException("未获得加密码，拒绝校验验证码");
         }
         String cacheKey = Constants.KAPTCHA_SESSION_KEY + ":" + loginKey;
         ResponseEntity response = new ResponseEntity();

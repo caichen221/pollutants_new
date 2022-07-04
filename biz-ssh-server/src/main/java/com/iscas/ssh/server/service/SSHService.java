@@ -8,6 +8,7 @@ import com.iscas.ssh.server.model.SftpFile;
 import com.iscas.ssh.server.model.UploadProgress;
 import com.iscas.ssh.server.model.WebSSHData;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.jcraft.jsch.*;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
@@ -331,7 +332,7 @@ public class SSHService {
             try {
                 sftp.connect(channelTimeout * 1000);
                 if (isFile(sftp, dir)) {
-                    throw new BaseException(String.format("%s是一个文件，不是目录", dir));
+                    throw Exceptions.formatBaseException("{}是一个文件，不是目录", dir);
                 }
                 Vector ls = sftp.ls(dir);
                 Iterator iterator = ls.iterator();
@@ -388,7 +389,7 @@ public class SSHService {
             try {
                 sftp.connect(channelTimeout * 1000);
                 if (!isFile(sftp, path)) {
-                   throw new BaseException(String.format("%s是一个目录，不支持目录下载", path));
+                   throw Exceptions.formatBaseException("{}是一个目录，不支持目录下载", path);
                 }
                 String filename = StringUtils.substringAfterLast(path, "/");
                 @Cleanup InputStream is = sftp.get(path);
@@ -402,7 +403,7 @@ public class SSHService {
                 }
             }
         } else {
-            throw new BaseException("SSH连接不存在");
+            throw Exceptions.baseException("SSH连接不存在");
         }
     }
 
@@ -414,7 +415,7 @@ public class SSHService {
         if (sshConnection != null) {
             String user = connectionUserMap.get(sshConnection.getConnectionId());
             if (user == null) {
-                throw new BaseException("websocket连接不存在，无法上传");
+                throw Exceptions.baseException("websocket连接不存在，无法上传");
             }
             Session session = sshConnection.getSession();
             ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
@@ -430,7 +431,7 @@ public class SSHService {
                 }
             }
         } else {
-            throw new BaseException("ssh连接不存在");
+            throw Exceptions.baseException("ssh连接不存在");
         }
     }
 
@@ -439,7 +440,7 @@ public class SSHService {
         try {
             sftp.cd(dest);
         } catch (SftpException e) {
-            throw new BaseException(String.format("进入目录服务目录：%s错误", dest), e);
+            throw Exceptions.formatBaseException(e, "进入目录服务目录：{}错误", dest);
         }
         for (MultipartFile file : files) {
             @Cleanup InputStream is = file.getInputStream();
@@ -477,12 +478,12 @@ public class SSHService {
             try {
                 sftp.connect(channelTimeout * 1000);
                 if (isFile(sftp, path)) {
-                    throw new BaseException(String.format("%s是一个文件", path));
+                    throw Exceptions.formatBaseException("{}是一个文件", path);
                 }
                 try {
                     sftp.cd(path);
                 } catch (SftpException e) {
-                    throw new BaseException(String.format("进入目录:%s失败", path));
+                    throw Exceptions.formatBaseException("进入目录:{}失败", path);
                 }
                 Vector ls = sftp.ls(path);
                 Iterator iterator = ls.iterator();
@@ -490,7 +491,7 @@ public class SSHService {
                     ChannelSftp.LsEntry next = (ChannelSftp.LsEntry) iterator.next();
                     String filename = next.getFilename();
                     if (Objects.equals(filename, dirName)) {
-                        throw new BaseException(String.format("目录:%s已存在", dirName));
+                        throw Exceptions.formatBaseException("目录:{}已存在", dirName);
                     }
                 }
                 sftp.cd(path);
@@ -501,7 +502,7 @@ public class SSHService {
                 }
             }
         } else {
-            throw new BaseException("连接不存在");
+            throw Exceptions.baseException("连接不存在");
         }
     }
 
@@ -519,7 +520,7 @@ public class SSHService {
                 }
             }
         } else {
-            throw new BaseException("连接不存在");
+            throw Exceptions.baseException("连接不存在");
         }
     }
 
@@ -550,7 +551,7 @@ public class SSHService {
             channel.setPtySize(sshData.getSize().getCols(), sshData.getSize().getRows(),
                     sshData.getSize().getWidth(), sshData.getSize().getHeight());
         } else {
-            throw new BaseException("连接不存在");
+            throw Exceptions.baseException("连接不存在");
         }
     }
 }

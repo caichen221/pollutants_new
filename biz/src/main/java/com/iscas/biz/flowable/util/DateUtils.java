@@ -1,5 +1,6 @@
 package com.iscas.biz.flowable.util;
 
+import com.iscas.templet.exception.Exceptions;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.lang.management.ManagementFactory;
@@ -83,7 +84,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         }
         catch (ParseException e)
         {
-            throw new RuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
     }
 

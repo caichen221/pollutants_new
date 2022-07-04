@@ -14,6 +14,7 @@ import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableResponse;
 import com.iscas.templet.view.table.TableResponseData;
@@ -244,20 +245,20 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             //判断登录的用户是否和当前的userId一致
             user = userMapper.selectByUserName(loginUsername);
             if (user == null) {
-                throw new BaseException(MessageFormat.format("未找到当前登录用户:[{0}]信息", loginUsername));
+                throw Exceptions.formatBaseException("未找到当前登录用户:[{0}]信息", loginUsername);
             }
             if (!Objects.equals(user.getUserId(), userId)) {
-                throw new BaseException(MessageFormat.format("userId:[{0}]与登录的用户[{1}]不一致", userId, user.getUserName()));
+                throw Exceptions.formatBaseException("userId:[{0}]与登录的用户[{1}]不一致", userId, user.getUserName());
             }
         } else {
-            throw new BaseException("未找到当前登录信息，可能为未携带token或token有误");
+            throw Exceptions.baseException("未找到当前登录信息，可能为未携带token或token有误");
         }
         AssertObjUtils.assertNotNull(user, "此用户不存在");
         String oldPwd = (String) data.get("oldPwd");
         String newPwd = (String) data.get("newPwd");
         boolean b = MD5Utils.saltVerify(oldPwd, user.getUserPwd());
         if (!b) {
-            throw new BaseException("旧密码验证失败");
+            throw Exceptions.baseException("旧密码验证失败");
         }
         user.setUserPwd(MD5Utils.saltMD5(newPwd));
         userMapper.updatePwd(user);

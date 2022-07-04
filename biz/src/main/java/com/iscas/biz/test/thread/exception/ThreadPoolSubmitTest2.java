@@ -1,5 +1,6 @@
 package com.iscas.biz.test.thread.exception;
 
+import com.iscas.templet.exception.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class ThreadPoolSubmitTest2 {
         try {
             TimeUnit.SECONDS.sleep(15);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
         System.out.println("线程外部：" + threadAtomicReference.get().getState());
 

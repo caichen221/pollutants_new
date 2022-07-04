@@ -7,6 +7,7 @@ import com.iscas.biz.flowable.factory.FlowServiceFactory;
 import com.iscas.biz.flowable.service.IFlowInstanceService;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.common.engine.api.FlowableObjectNotFoundException;
 import org.flowable.engine.history.HistoricProcessInstance;
@@ -122,7 +123,7 @@ public class FlowInstanceServiceImpl extends FlowServiceFactory implements IFlow
             runtimeService.startProcessInstanceById(procDefId, variables);
             return new ResponseEntity("流程启动成功");
         } catch (Exception e) {
-            throw new BaseRuntimeException("流程启动错误");
+            throw Exceptions.baseRuntimeException("流程启动错误");
         }
     }
 }

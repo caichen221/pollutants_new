@@ -14,6 +14,7 @@ import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +40,7 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
         try {
             initUserRole(applicationContext);
         } catch (Exception e) {
-            throw new BaseRuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
         super.doFilterInternal(applicationContext);
     }
@@ -56,7 +57,7 @@ public class InitUserRoleFilter extends AbstractStartedFilter {
         Environment environment = applicationContext.getBean(Environment.class);
         String superUserDefaultPwd = environment.getProperty("super_user_default_pwd");
         if (StringUtils.isEmpty(superUserDefaultPwd)) {
-            throw new BaseException("超级管理员密码未配置");
+            throw Exceptions.baseException("超级管理员密码未配置");
         }
         User user = userMapper.selectByUserName(Constants.SUPER_USER_KEY);
         if (user == null) {

@@ -4,6 +4,7 @@ import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.mapper.TableMapMapper;
 import com.iscas.biz.mp.model.DynamicSql;
 import com.iscas.common.tools.core.reflect.ReflectUtils;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.*;
 import com.iscas.templet.view.validator.Rule;
@@ -115,10 +116,10 @@ public class TableService extends BaseTableService {
 
     public List<Field> getSaveFields(Object saveData, String tableName, TableHeaderResponseData headerData, boolean superClassProps) {
         if (saveData == null) {
-            throw new RuntimeException("保存的数据不能为空");
+            throw Exceptions.runtimeException("保存的数据不能为空");
         }
         if (headerData == null) {
-            throw new RuntimeException("表头不能为空");
+            throw Exceptions.runtimeException("表头不能为空");
         }
         return ReflectUtils.getDistinctFields(saveData.getClass());
     }
@@ -203,10 +204,10 @@ public class TableService extends BaseTableService {
             , RuleCallback ruleCallback) throws Exception {
 
         if (saveData == null) {
-            throw new RuntimeException("保存的数据不能为空");
+            throw Exceptions.runtimeException("保存的数据不能为空");
         }
         if (headerData == null) {
-            throw new RuntimeException("表头不能为空");
+            throw Exceptions.runtimeException("表头不能为空");
         }
         List<TableField> tableFields = headerData.getCols();
         List<Map<String, Object>> serverValidateList = new ArrayList<>();
@@ -224,22 +225,22 @@ public class TableService extends BaseTableService {
 
                     if (rule.isRequired() && ObjectUtils.isEmpty(value)) {
                         //必须有值
-                        throw new ValidDataException(tableField.getHeader() + "不能为空");
+                        throw Exceptions.validDataException(tableField.getHeader() + "不能为空");
                     }
                     if (rule.getReg() != null && !ObjectUtils.isEmpty(value)
                             && !String.valueOf(value).matches(rule.getReg())) {
                         //正则表达式校验
-                        throw new ValidDataException(tableField.getHeader() + "格式校验未通过");
+                        throw Exceptions.validDataException(tableField.getHeader() + "格式校验未通过");
                     }
                     if (rule.getLength() != null && !ObjectUtils.isEmpty(value)) {
                         //长度校验
                         Map<String, Integer> lengthMap = rule.getLength();
                         if (lengthMap.containsKey("min")) {
                             if (String.valueOf(value).length() < lengthMap.get("min")) {
-                                throw new ValidDataException(tableField.getHeader() + "长度不得小于" + lengthMap.get("min"));
+                                throw Exceptions.validDataException(tableField.getHeader() + "长度不得小于" + lengthMap.get("min"));
                             }
                             if (String.valueOf(value).length() > lengthMap.get("max")) {
-                                throw new ValidDataException(tableField.getHeader() + "长度不得大于" + lengthMap.get("min"));
+                                throw Exceptions.validDataException(tableField.getHeader() + "长度不得大于" + lengthMap.get("min"));
                             }
                         }
                     }

@@ -3,6 +3,7 @@ package com.iscas.base.biz.util;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.common.tools.office.excel.ExcelUtils;
 import com.iscas.common.tools.core.reflect.ReflectUtils;
+import com.iscas.templet.exception.Exceptions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -66,7 +67,7 @@ public class Excel2BeanUtils {
         }
 
         if(!(new HashSet<>(headerList).equals(new HashSet<>(templeteHeaderList)))){
-            throw new BaseException("指南Excel模板错误，请重新下载模板！");
+            throw Exceptions.baseException("指南Excel模板错误，请重新下载模板！");
         }
 
 

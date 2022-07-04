@@ -1,6 +1,7 @@
 package com.iscas.templet.helper;
 
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class CommonHelper {
                     }
                 }).get(t);
             } catch (IllegalAccessException e) {
-                throw new BaseRuntimeException("获取实体属性出错", e);
+                throw Exceptions.baseRuntimeException("获取实体属性出错", e);
             }
         }
     }

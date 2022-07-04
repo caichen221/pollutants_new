@@ -11,6 +11,7 @@ import com.iscas.biz.service.common.RoleService;
 import com.iscas.biz.service.common.UserService;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.table.TableResponse;
 import com.iscas.templet.view.table.TableResponseData;
 import io.swagger.annotations.Api;
@@ -78,7 +79,7 @@ public class FlowDefinitionController {
             flowDefinitionService.importFile(name, category, in);
             return new ResponseEntity("导入成功");
         } catch (Exception e) {
-            throw new BaseRuntimeException("导入失败", e);
+            throw Exceptions.baseRuntimeException("导入失败", e);
         }
     }
 
@@ -88,7 +89,7 @@ public class FlowDefinitionController {
         try {
             return flowDefinitionService.readXml(deployId);
         } catch (Exception e) {
-            throw new BaseRuntimeException("加载xml文件异常", e);
+            throw Exceptions.baseRuntimeException("加载xml文件异常", e);
         }
 
     }
@@ -107,7 +108,7 @@ public class FlowDefinitionController {
             }
             os.flush();
         } catch (Exception e) {
-            throw new BaseRuntimeException(e);
+            throw Exceptions.baseRuntimeException(e);
         }
     }
 
@@ -119,7 +120,7 @@ public class FlowDefinitionController {
             flowDefinitionService.importFile(vo.getName(), vo.getCategory(), in);
             return new ResponseEntity("导入成功");
         } catch (Exception e) {
-            throw new BaseRuntimeException("导入失败", e);
+            throw Exceptions.baseRuntimeException("导入失败", e);
         }
     }
 

@@ -5,6 +5,7 @@ import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.swagger.annotations.Api;
 import io.undertow.server.handlers.form.MultiPartParserDefinition;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +74,7 @@ public class ErrorPageController {
             Throwable cause = exception.getCause();
             //TODO 这里耦合的Undertow的包，如果以后替为tomcat这段要删除或作其他处理
             if (cause instanceof MultiPartParserDefinition.FileTooLargeException) {
-                throw new BaseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception) attribute).getMessage());
+                throw Exceptions.baseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception) attribute).getMessage());
             }
         } else if (attribute instanceof AuthenticationRuntimeException) {
             throw (AuthenticationRuntimeException) attribute;

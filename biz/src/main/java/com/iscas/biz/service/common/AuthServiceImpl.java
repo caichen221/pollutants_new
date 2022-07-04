@@ -21,6 +21,7 @@ import com.iscas.common.tools.core.security.MD5Utils;
 import com.iscas.common.tools.exception.lambda.Lambdas;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.view.tree.TreeResponseData;
 import lombok.extern.slf4j.Slf4j;
@@ -162,29 +163,29 @@ public class AuthServiceImpl extends AbstractAuthService {
         String secKey = user.get("key");
         String loginKey = (String) authCacheService.get(secKey, Constants.LOGIN_CACHE);
         if (loginKey == null) {
-            throw new LoginException("未获得加密码，拒绝登录");
+            throw Exceptions.loginException("未获得加密码，拒绝登录");
         }
         authCacheService.remove(secKey, Constants.LOGIN_CACHE);
         try {
             username = Objects.requireNonNull(AesUtils.aesDecrypt(username, loginKey)).trim();
             pwd = Objects.requireNonNull(AesUtils.aesDecrypt(pwd, loginKey)).trim();
         } catch (Exception e) {
-            throw new LoginException("非法登陆", e.getMessage());
+            throw Exceptions.loginException("非法登陆", e);
         }
         String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
         String userLoginErrorCountKey = CACHE_KEY_LOGIN_ERROR_COUNT + "_" + username;
         if (authCacheService.get(userLockedKey, Constants.AUTH_CACHE) != null) {
-            throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
+            throw Exceptions.loginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
         Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
         if (errCount != null && errCount >= MAX_LOGIN_ERROR_COUNT) {
             authCacheService.set(userLockedKey, "locked", Constants.AUTH_CACHE, 120);
-            throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
+            throw  new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
 
         User dbUser = userMapper.selectByUserName(username);
         if (dbUser == null) {
-            throw new LoginException("用户不存在");
+            throw Exceptions.loginException("用户不存在");
         } else {
             //加盐校验用户密码
             boolean verify;
@@ -194,12 +195,12 @@ public class AuthServiceImpl extends AbstractAuthService {
                     Integer count = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
                     int errorCount = count == null ? 1 : count + 1;
                     authCacheService.set(userLoginErrorCountKey, errorCount, Constants.AUTH_CACHE, (int) tokenProps.getExpire().getSeconds());
-                    throw new LoginException("密码错误");
+                    throw Exceptions.loginException("密码错误");
                 }
             } catch (LoginException e) {
                 throw e;
             } catch (Exception e) {
-                throw new LoginException("校验密码出错");
+                throw Exceptions.loginException("校验密码出错");
             }
             //生成token
             createToken(response, dbUser.getUserId(), username, responseEntity, expire, cookieExpire, userLockedKey, userLoginErrorCountKey);
@@ -286,10 +287,10 @@ public class AuthServiceImpl extends AbstractAuthService {
 
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
-            throw new LoginException("登录时创建token异常", e);
+            throw Exceptions.loginException("登录时创建token异常", e);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new LoginException("登录异常", e);
+            throw  new LoginException("登录异常", e);
         }
     }
 

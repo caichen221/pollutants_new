@@ -12,6 +12,7 @@ import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableQuartz;
 import com.iscas.common.tools.core.runtime.RuntimeUtils;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -111,7 +112,7 @@ public class BizApp extends SpringBootServletInitializer {
         try {
             os = new FileOutputStream("newframe.pid");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
         IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
         return sources;

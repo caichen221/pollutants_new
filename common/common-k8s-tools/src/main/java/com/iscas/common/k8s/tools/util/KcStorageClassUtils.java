@@ -4,6 +4,7 @@ import com.iscas.common.k8s.tools.K8sClient;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import com.iscas.common.k8s.tools.model.storageclass.KcStorageClass;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.storage.StorageClass;
 import io.fabric8.kubernetes.api.model.storage.StorageClassList;
@@ -117,7 +118,7 @@ public class KcStorageClassUtils {
                 Map<String, String> annotations = storageClass.getMetadata().getAnnotations();
                 if (MapUtils.isNotEmpty(annotations)) {
                     if (Objects.equals(annotations.get("storageclass.kubernetes.io/is-default-class"), "true")) {
-                        throw new BaseException("默认的存储资源不允许删除");
+                        throw Exceptions.baseException("默认的存储资源不允许删除");
                     }
                 }
                 storageClassResource.delete();

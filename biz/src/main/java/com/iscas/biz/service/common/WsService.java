@@ -6,6 +6,7 @@ import com.iscas.biz.mapper.common.WsDataMapper;
 import com.iscas.biz.model.common.WsData;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -49,7 +50,7 @@ public class WsService {
     public void broadCast(String destination, WsData data) throws BaseException {
         boolean persistent = data.isPersistent();
         if (persistent) {
-            throw new BaseException("广播消息暂不支持持久化");
+            throw Exceptions.baseException("广播消息暂不支持持久化");
         }
         messagingTemplate.convertAndSend(destination, data);
     }

@@ -25,6 +25,7 @@ import com.iscas.biz.service.common.RoleService;
 import com.iscas.biz.service.common.UserService;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.table.TableResponseData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -91,7 +92,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     public ResponseEntity complete(FlowTaskVo taskVo) {
         Task task = taskService.createTaskQuery().taskId(taskVo.getTaskId()).singleResult();
         if (Objects.isNull(task)) {
-            throw new BaseRuntimeException("任务不存在");
+            throw Exceptions.baseRuntimeException("任务不存在");
         }
         if (DelegationState.PENDING.equals(task.getDelegationState())) {
             taskService.addComment(taskVo.getTaskId(), taskVo.getInstanceId(), FlowComment.DELEGATE.getType(), taskVo.getComment());
@@ -112,7 +113,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     @Override
     public void taskReject(FlowTaskVo flowTaskVo) {
         if (taskService.createTaskQuery().taskId(flowTaskVo.getTaskId()).singleResult().isSuspended()) {
-            throw new BaseRuntimeException("任务处于挂起状态");
+            throw Exceptions.baseRuntimeException("任务处于挂起状态");
         }
         // 当前任务 task
         Task task = taskService.createTaskQuery().taskId(flowTaskVo.getTaskId()).singleResult();
@@ -139,7 +140,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
         // 深度优先算法思想：延边迭代深入
         List<UserTask> parentUserTaskList = FlowableUtils.iteratorFindParentUserTasks(source, null, null);
         if (parentUserTaskList == null || parentUserTaskList.size() == 0) {
-            throw new BaseRuntimeException("当前节点为初始任务节点，不能驳回");
+            throw Exceptions.baseRuntimeException("当前节点为初始任务节点，不能驳回");
         }
         // 获取活动 ID 即节点 Key
         List<String> parentUserTaskKeyList = new ArrayList<>();
@@ -193,7 +194,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
 
         // 规定：并行网关之前节点必须需存在唯一用户任务节点，如果出现多个任务节点，则并行网关节点默认为结束节点，原因为不考虑多对多情况
         if (targetIds.size() > 1 && currentIds.size() > 1) {
-            throw new BaseRuntimeException("任务出现多对多情况，无法撤回");
+            throw Exceptions.baseRuntimeException("任务出现多对多情况，无法撤回");
         }
 
         // 循环获取那些需要被撤回的节点的ID，用来设置驳回原因
@@ -222,9 +223,9 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                         .moveActivityIdsToSingleActivityId(currentIds, targetIds.get(0)).changeState();
             }
         } catch (FlowableObjectNotFoundException e) {
-            throw new BaseRuntimeException("未找到流程实例，流程可能已发生变化");
+            throw Exceptions.baseRuntimeException("未找到流程实例，流程可能已发生变化");
         } catch (FlowableException e) {
-            throw new BaseRuntimeException("无法取消或开始活动");
+            throw Exceptions.baseRuntimeException("无法取消或开始活动");
         }
 
     }
@@ -238,7 +239,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     @Override
     public void taskReturn(FlowTaskVo flowTaskVo) {
         if (taskService.createTaskQuery().taskId(flowTaskVo.getTaskId()).singleResult().isSuspended()) {
-            throw new BaseRuntimeException("任务处于挂起状态");
+            throw Exceptions.baseRuntimeException("任务处于挂起状态");
         }
         // 当前任务 task
         Task task = taskService.createTaskQuery().taskId(flowTaskVo.getTaskId()).singleResult();
@@ -270,7 +271,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
         // 否则目标节点相对于当前节点，属于串行
         Boolean isSequential = FlowableUtils.iteratorCheckSequentialReferTarget(source, flowTaskVo.getTargetKey(), null, null);
         if (!isSequential) {
-            throw new BaseRuntimeException("当前节点相对于目标节点，不属于串行关系，无法回退");
+            throw Exceptions.baseRuntimeException("当前节点相对于目标节点，不属于串行关系，无法回退");
         }
 
 
@@ -302,9 +303,9 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                     .processInstanceId(task.getProcessInstanceId())
                     .moveActivityIdsToSingleActivityId(currentIds, flowTaskVo.getTargetKey()).changeState();
         } catch (FlowableObjectNotFoundException e) {
-            throw new BaseRuntimeException("未找到流程实例，流程可能已发生变化");
+            throw Exceptions.baseRuntimeException("未找到流程实例，流程可能已发生变化");
         } catch (FlowableException e) {
-            throw new BaseRuntimeException("无法取消或开始活动");
+            throw Exceptions.baseRuntimeException("无法取消或开始活动");
         }
     }
 
@@ -473,7 +474,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     public ResponseEntity stopProcess(FlowTaskVo flowTaskVo) {
         List<Task> task = taskService.createTaskQuery().processInstanceId(flowTaskVo.getInstanceId()).list();
         if (CollectionUtils.isEmpty(task)) {
-            throw new BaseRuntimeException("流程未启动或已执行完成，取消申请失败");
+            throw Exceptions.baseRuntimeException("流程未启动或已执行完成，取消申请失败");
         }
         ProcessInstance processInstance =
                 runtimeService.createProcessInstanceQuery().processInstanceId(flowTaskVo.getInstanceId()).singleResult();
@@ -507,7 +508,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     public ResponseEntity revokeProcess(FlowTaskVo flowTaskVo) {
         Task task = taskService.createTaskQuery().processInstanceId(flowTaskVo.getInstanceId()).singleResult();
         if (task == null) {
-            throw new BaseRuntimeException("流程未启动或已执行完成，无法撤回");
+            throw Exceptions.baseRuntimeException("流程未启动或已执行完成，无法撤回");
         }
 
         List<HistoricTaskInstance> htiList = historyService.createHistoricTaskInstanceQuery()
@@ -525,7 +526,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
             }
         }
         if (null == myTaskId) {
-            throw new BaseRuntimeException("该任务非当前用户提交，无法撤回");
+            throw Exceptions.baseRuntimeException("该任务非当前用户提交，无法撤回");
         }
 
         String processDefinitionId = myTask.getProcessDefinitionId();
@@ -750,7 +751,7 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
         if (StringUtils.isNotBlank(deployId)) {
             SysForm sysForm = sysInstanceFormService.selectSysDeployFormByDeployId(deployId);
             if (Objects.isNull(sysForm)) {
-                throw new BaseRuntimeException("请先配置流程表单");
+                throw Exceptions.baseRuntimeException("请先配置流程表单");
             }
             map.put("formData", JSONObject.parseObject(sysForm.getFormContent()));
         }

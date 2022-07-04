@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import com.iscas.base.biz.util.ResponseUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.Cleanup;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class ImageController {
             ResponseUtils.returnStream(fileInputStream, SpringUtils.getResponse());
 
         } catch (Exception e) {
-            throw new BaseException("出错了", e);
+            throw Exceptions.baseException("出错了", e);
         }
     }
 
@@ -50,7 +51,7 @@ public class ImageController {
             base64Str = new StringBuilder("data:image/jpeg;base64,").append(base64Str).toString();
             return base64Str;
         } catch (Exception e) {
-            throw new BaseException("出错了", e);
+            throw Exceptions.baseException("出错了", e);
         }
     }
 }

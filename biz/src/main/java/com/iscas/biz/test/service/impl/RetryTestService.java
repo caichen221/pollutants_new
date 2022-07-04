@@ -2,6 +2,7 @@ package com.iscas.biz.test.service.impl;
 
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.RecoveryCallback;
 import org.springframework.retry.RetryCallback;
@@ -43,7 +44,7 @@ public class RetryTestService {
     public String server() throws BaseException {
         log.debug("===开始测试Retry===");
         if (new Random().nextBoolean()) {
-            throw new BaseException("出错啦");
+            throw Exceptions.baseException("出错啦");
         }
         log.debug("===测试Retry结束===");
         return RandomStringUtils.randomStr(5);
@@ -74,7 +75,7 @@ public class RetryTestService {
             //设置context一些属性,给RecoveryCallback传递一些属性
             context.setAttribute("key1", "value1");
             System.out.println(context.getRetryCount());
-            throw new Exception("exception");
+            throw Exceptions.exception("exception");
             //                return null;
         };
 

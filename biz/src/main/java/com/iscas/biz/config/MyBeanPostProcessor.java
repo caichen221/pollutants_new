@@ -1,6 +1,7 @@
 package com.iscas.biz.config;
 
 import com.iscas.common.tools.core.reflect.ReflectUtils;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
@@ -90,7 +91,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
                 ReflectUtils.makeFinalModifiers(inheritedField);
                 inheritedField.set(o, true);
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException("修改@ServerEndPoint注解失败");
+                throw Exceptions.runtimeException("修改@ServerEndPoint注解失败");
             }
         }
     }

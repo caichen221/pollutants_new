@@ -4,6 +4,7 @@ import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
 import com.iscas.biz.test.service.db1.Db1TestService;
 import com.iscas.biz.test.service.db2.Db2TestService;
+import com.iscas.templet.exception.Exceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -32,7 +33,7 @@ public class AtomikosTestService {
         db1TestService.test();
         int a = 4/0;
         db2TestService.test();
-        throw new RuntimeException("出错啦");
+        throw Exceptions.runtimeException("出错啦");
     }
 
     public void test2() {
@@ -40,7 +41,7 @@ public class AtomikosTestService {
         System.out.println(b);
         db2TestService.test2();
         dynamicMapper.insertBySql("insert into ws_data(type) values('BUSINESS')");
-        throw new RuntimeException("出错啦");
+        throw Exceptions.runtimeException("出错啦");
     }
 
 }

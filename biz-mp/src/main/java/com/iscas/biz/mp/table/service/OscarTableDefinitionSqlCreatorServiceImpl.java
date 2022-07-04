@@ -2,6 +2,7 @@ package com.iscas.biz.mp.table.service;
 
 
 import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorService;
+import com.iscas.templet.exception.Exceptions;
 
 /**
  * 神州通用 xxtable的sql拼接实现
@@ -32,7 +33,7 @@ public class OscarTableDefinitionSqlCreatorServiceImpl implements ITableDefiniti
 
     @Override
     public String getTableColumnsSql() {
-        throw new UnsupportedOperationException("神州通用数据库暂不支持getTableColumns操作");
+        throw Exceptions.unsupportedOperationException("神州通用数据库暂不支持getTableColumns操作");
     }
 
     @Override

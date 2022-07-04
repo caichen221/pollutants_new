@@ -6,6 +6,7 @@ import com.iscas.common.tools.office.excel.ExcelUtils;
 import com.iscas.common.tools.office.excel.FlowExcelDataProducer;
 import com.iscas.common.web.tools.file.FileDownloadUtils;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -108,7 +109,7 @@ public class SpringFileDownloadUtils {
      */
     public static void createAndDownloadExcel(String fileName, List<String> sheetNames, FlowExcelDataProducer flowExcelDataProducer) throws Throwable {
         if (!fileName.endsWith(FileConstant.FILENAME_SUFFIX_XLSX)) {
-            throw new BaseRuntimeException("仅支持xlsx格式的文件");
+            throw Exceptions.baseRuntimeException("仅支持xlsx格式的文件");
         }
         HttpServletRequest request = SpringUtils.getRequest();
         HttpServletResponse response = SpringUtils.getResponse();

@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import com.iscas.common.tools.core.io.file.FileTypeEnum;
 import com.iscas.common.tools.core.io.file.FileTypeUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import org.springframework.http.MediaType;
 
 import javax.servlet.ServletOutputStream;
@@ -62,7 +63,7 @@ public class ResponseUtils {
                 break;
             }
             default: {
-                throw new BaseException(String.format("不支持的文件类型:%s", fileType));
+                throw Exceptions.formatBaseException("不支持的文件类型:{}", fileType);
             }
         }
         //现将读到的前几个字符传出去

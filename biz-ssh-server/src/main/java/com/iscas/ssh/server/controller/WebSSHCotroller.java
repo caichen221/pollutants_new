@@ -6,6 +6,7 @@ import com.iscas.ssh.server.service.SSHService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.jcraft.jsch.JSchException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -87,7 +88,7 @@ public class WebSSHCotroller extends BaseController {
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException("获取远程服务器的文件列表出错", e);
+            throw Exceptions.baseException("获取远程服务器的文件列表出错", e);
         }
     }
 
@@ -104,7 +105,7 @@ public class WebSSHCotroller extends BaseController {
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException("文件下载出错", e);
+            throw Exceptions.baseException("文件下载出错", e);
         }
     }
 
@@ -123,7 +124,7 @@ public class WebSSHCotroller extends BaseController {
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException("文件传输出错", e);
+            throw Exceptions.baseException("文件传输出错", e);
         }
     }
 
@@ -142,7 +143,7 @@ public class WebSSHCotroller extends BaseController {
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException("创建文件夹出错", e);
+            throw Exceptions.baseException("创建文件夹出错", e);
         }
     }
 
@@ -160,7 +161,7 @@ public class WebSSHCotroller extends BaseController {
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException("删除出错", e);
+            throw Exceptions.baseException("删除出错", e);
         }
     }
 

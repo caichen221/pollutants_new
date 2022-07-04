@@ -7,6 +7,7 @@ import com.iscas.common.tools.core.io.file.FileUtils;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.common.web.tools.file.FileDownloadUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,12 +58,12 @@ public class DefaultFileServerService implements FileServerService, TimeConstant
     public void download(String path) throws BaseException {
         File file = new File(path);
         if (!file.exists()) {
-            throw new BaseException("下载的文件不存在或已删除");
+            throw Exceptions.baseException("下载的文件不存在或已删除");
         }
         try {
             FileDownloadUtils.downFile(SpringUtils.getRequest(), SpringUtils.getResponse(), path, file.getName());
         } catch (Exception e) {
-            throw new BaseException("文件下载出错", e);
+            throw Exceptions.baseException("文件下载出错", e);
         }
     }
 

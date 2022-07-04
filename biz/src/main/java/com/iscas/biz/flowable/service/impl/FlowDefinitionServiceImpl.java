@@ -15,6 +15,7 @@ import com.iscas.biz.flowable.service.IFlowDefinitionService;
 import com.iscas.biz.flowable.service.ISysDeployFormService;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.flowable.bpmn.model.BpmnModel;
@@ -160,7 +161,7 @@ public class FlowDefinitionServiceImpl extends FlowServiceFactory implements IFl
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefId)
                     .latestVersion().singleResult();
             if (Objects.nonNull(processDefinition) && processDefinition.isSuspended()) {
-                throw new BaseRuntimeException("流程已被挂起,请先激活流程");
+                throw Exceptions.baseRuntimeException("流程已被挂起,请先激活流程");
             }
             // 设置流程发起人Id到流程中
             identityService.setAuthenticatedUserId(AuthContextHolder.getUserId().toString());
@@ -177,7 +178,7 @@ public class FlowDefinitionServiceImpl extends FlowServiceFactory implements IFl
             if (e instanceof BaseRuntimeException) {
                 throw e;
             }
-            throw new BaseRuntimeException("流程启动错误", e);
+            throw Exceptions.baseRuntimeException("流程启动错误", e);
         }
     }
 

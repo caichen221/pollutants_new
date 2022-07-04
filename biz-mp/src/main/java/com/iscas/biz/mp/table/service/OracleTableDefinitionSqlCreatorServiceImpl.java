@@ -2,6 +2,7 @@ package com.iscas.biz.mp.table.service;
 
 
 import com.iscas.biz.mp.table.service.interfaces.ITableDefinitionSqlCreatorService;
+import com.iscas.templet.exception.Exceptions;
 
 /**
  * oracle xxtable的sql拼接实现
@@ -32,7 +33,7 @@ public class OracleTableDefinitionSqlCreatorServiceImpl implements ITableDefinit
 
     @Override
     public String getTableColumnsSql() {
-        throw new UnsupportedOperationException("oracle数据库暂不支持getTableColumns操作");
+        throw Exceptions.unsupportedOperationException("oracle数据库暂不支持getTableColumns操作");
     }
 
     @Override

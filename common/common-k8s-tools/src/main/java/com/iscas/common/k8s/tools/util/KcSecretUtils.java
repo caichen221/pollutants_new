@@ -7,6 +7,7 @@ import com.iscas.common.k8s.tools.cfg.K8sConstants;
 import com.iscas.common.k8s.tools.model.secret.*;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.SecretList;
@@ -94,7 +95,7 @@ public class KcSecretUtils {
                         String key = entry.getKey();
                         String value = entry.getValue();
                         if (key == null || value == null) {
-                            throw new BaseException("key或value不能为空");
+                            throw Exceptions.baseException("key或value不能为空");
                         }
                         data.put(key, Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8)));
                     }
@@ -108,10 +109,10 @@ public class KcSecretUtils {
             }
             case "serviceAccount ":
             case "bootstrap": {
-                throw new BaseException("此类型secret不允许新增");
+                throw Exceptions.baseException("此类型secret不允许新增");
             }
             default: {
-                throw new BaseException("暂不支持的secret类型");
+                throw Exceptions.baseException("暂不支持的secret类型");
             }
         }
     }
@@ -297,7 +298,7 @@ public class KcSecretUtils {
         secret.setMetadata(objectMeta);
         Resource<Secret> secretResource = kc.secrets().inNamespace(namespace).withName(kcSecret.getName());
         if (secretResource == null || secretResource.get() == null) {
-            throw new BaseException("此secret不存在");
+            throw Exceptions.baseException("此secret不存在");
         }
         secretResource.edit(n -> secret);
     }
@@ -306,7 +307,7 @@ public class KcSecretUtils {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         Resource<Secret> secretResource = kc.secrets().inNamespace(namespace).withName(secretName);
         if (secretResource == null || secretResource.get() == null) {
-            throw new BaseException("此secret不存在");
+            throw Exceptions.baseException("此secret不存在");
         }
         secretResource.delete();
     }

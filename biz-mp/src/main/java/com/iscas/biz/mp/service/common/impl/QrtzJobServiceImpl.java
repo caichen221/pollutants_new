@@ -10,6 +10,7 @@ import com.iscas.biz.mp.service.common.IQrtzJobService;
 import com.iscas.biz.mp.service.common.QuartzHandler;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.table.TableResponseData;
 import com.iscas.templet.view.table.TableSearchRequest;
 import lombok.RequiredArgsConstructor;
@@ -50,9 +51,9 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
             job.setStatus("执行中");
             this.updateById(job);
         } catch (SchedulerException e) {
-            throw new BaseException(String.format("启动定时任务:[%s]失败", job.getJobName()), e);
+            throw Exceptions.formatBaseException(e, "启动定时任务:[{}]失败", job.getJobName());
         } catch (ClassNotFoundException e) {
-            throw new BaseException(String.format("任务对应的类:[%s]不存在", job.getBeanClass()), e);
+            throw Exceptions.formatBaseException(e, "任务对应的类:[{}]不存在", job.getBeanClass());
         }
     }
 
@@ -75,11 +76,11 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             status = quartzHandler.getStatus(queryJob);
         } catch (SchedulerException e) {
-            throw new BaseException("获取定时任务状态出错");
+            throw Exceptions.baseException("获取定时任务状态出错");
         }
         if (!((Trigger.TriggerState.NORMAL.toString()).equals(status) || (Trigger.TriggerState.PAUSED.toString()).equals(status)
                 || (Trigger.TriggerState.BLOCKED.toString()).equals(status))) {
-            throw new BaseException(String.format("当前定时任务:[%s]不可暂停", queryJob.getJobName()));
+            throw Exceptions.baseException("当前定时任务:[{}]不可暂停", queryJob.getJobName());
         }
         //noinspection StatementWithEmptyBody
         if ((Trigger.TriggerState.PAUSED.toString()).equals(status)) {
@@ -87,7 +88,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
             try {
                 quartzHandler.pasue(queryJob);
             } catch (SchedulerException e) {
-                throw new BaseException(String.format("暂停定时任务:[%s]出错", e));
+                throw Exceptions.formatBaseException(e, "暂停定时任务:[{}]出错", queryJob.getJobName());
             }
         }
         queryJob.setStatus("暂停");
@@ -138,13 +139,13 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             status = quartzHandler.getStatus(job);
         } catch (SchedulerException e) {
-            throw new BaseException(String.format("获取任务:[%s]状态失败", job.getJobName()));
+            throw Exceptions.formatBaseException(e, "获取任务:[{}]状态失败", job.getJobName());
         }
         if (!(Trigger.TriggerState.NONE.toString()).equals(status)) {
             try {
                 quartzHandler.updateCronExpression(job);
             } catch (SchedulerException e) {
-                throw new BaseException(String.format("修改任务:[%s]表达式失败", job.getJobName()));
+                throw Exceptions.formatBaseException(e, "修改任务:[{}]表达式失败", job.getJobName());
             }
         }
     }
@@ -166,13 +167,13 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             status = quartzHandler.getStatus(job);
         } catch (SchedulerException e) {
-            throw new BaseException(String.format("获取任务:[%s]状态失败", job.getJobName()));
+            throw Exceptions.formatBaseException(e, "获取任务:[{}]状态失败", job.getJobName());
         }
         if (!(Trigger.TriggerState.NONE.toString()).equals(status)) {
             try {
                 quartzHandler.delete(job);
             } catch (SchedulerException e) {
-                throw new BaseException(String.format("删除任务:[%s]出错", e));
+                throw Exceptions.formatBaseException(e, "删除任务:[{}]出错", job.getJobName());
             }
         }
 
@@ -198,17 +199,17 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             status = quartzHandler.getStatus(queryJob);
         } catch (SchedulerException e) {
-            throw new BaseException(String.format("获取任务:[%s]状态失败", queryJob.getJobName()));
+            throw Exceptions.formatBaseException(e, "获取任务:[{}]状态失败", queryJob.getJobName());
         }
         if (!((Trigger.TriggerState.NORMAL.toString()).equals(status) || (Trigger.TriggerState.PAUSED.toString()).equals(status)
                 || (Trigger.TriggerState.COMPLETE.toString()).equals(status))) {
-            throw new BaseException(String.format("当前任务:[%s]不可立即执行", queryJob.getJobName()));
+            throw Exceptions.formatBaseException("当前任务:[{}]不可立即执行", queryJob.getJobName());
         }
 
         try {
             quartzHandler.trigger(queryJob);
         } catch (SchedulerException e) {
-            throw new BaseException(String.format("触发任务:[%s]执行出错", e));
+            Exceptions.baseException("触发任务:[{}]执行出错", e);
         }
     }
 
@@ -225,7 +226,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             return quartzHandler.isInStandbyMode();
         } catch (SchedulerException e) {
-            throw new BaseException("判断调度器是否为待机状态出错", e);
+            throw Exceptions.baseException("判断调度器是否为待机状态出错", e);
         }
     }
 
@@ -241,7 +242,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             quartzHandler.startScheduler();
         } catch (SchedulerException e) {
-            throw new BaseException("启动定时器出错", e);
+            throw Exceptions.baseException("启动定时器出错", e);
         }
     }
 
@@ -257,7 +258,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             quartzHandler.startScheduler();
         } catch (SchedulerException e) {
-            throw new BaseException("待机定时器出错", e);
+            throw Exceptions.baseException("待机定时器出错", e);
         }
     }
 
@@ -266,7 +267,7 @@ public class QrtzJobServiceImpl extends ServiceImpl<QrtzJobMapper, QrtzJob> impl
         try {
             return quartzHandler.getNextFireTime(cronExpression);
         } catch (ParseException e) {
-            throw new BaseException("获取定时任务执行时间出错", e);
+            throw Exceptions.baseException("获取定时任务执行时间出错", e);
         }
     }
 }

@@ -1,13 +1,13 @@
 package com.iscas.biz.mp.util;
 
 import com.iscas.biz.mp.enhancer.mapper.DynamicMapper;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidDataException;
 
 import java.util.Map;
 import java.util.Objects;
 
 /**
- *
  * @author zhuquanwen
  * @version 1.0
  * @date 2021/2/20 22:28
@@ -15,7 +15,8 @@ import java.util.Objects;
  */
 @SuppressWarnings("rawtypes")
 public class ValidatePropDistinctUtils {
-    private ValidatePropDistinctUtils() {}
+    private ValidatePropDistinctUtils() {
+    }
 
     public static Map validate(DynamicMapper dynamicMapper, String tableName, String colName, Object val) {
         String sql = "select count(*) as c from %s where %s = '%s'";
@@ -27,7 +28,7 @@ public class ValidatePropDistinctUtils {
         Map map = validate(dynamicMapper, tableName, colName, val);
         //noinspection AlibabaUndefineMagicConstant
         if (!Objects.equals(map.get("c"), 0L)) {
-            throw new ValidDataException(String.format("表[%s]的列[%s]的值：[%s]不能重复", tableName, colName, val));
+            Exceptions.formatValidDataException("表[{}]的列[{}]的值：[{}]不能重复", tableName, colName, val);
         }
     }
 }

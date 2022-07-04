@@ -4,6 +4,7 @@ import com.iscas.biz.service.common.SystemLogService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.tree.TreeResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -56,7 +57,7 @@ public class SystemLogController extends BaseController {
         try {
             return getResponse().setValue(systemLogService.viewLog(filePath, lines));
         } catch (IOException e) {
-            throw new BaseException("读取日志数据出错", e);
+            throw Exceptions.baseException("读取日志数据出错", e);
         }
     }
 

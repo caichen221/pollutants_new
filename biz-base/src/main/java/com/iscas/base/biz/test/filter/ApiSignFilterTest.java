@@ -4,6 +4,7 @@ import com.iscas.base.biz.filter.RequestWrapper;
 import com.iscas.base.biz.test.controller.ApiSignControllerTest;
 import com.iscas.base.biz.util.ApiSignUtils;
 import com.iscas.templet.exception.BaseRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class ApiSignFilterTest extends OncePerRequestFilter {
         String url = StringUtils.substringAfter(requestURI, request.getContextPath());
         if (StringUtils.equalsAny(url, "/api/sign/t1", "/api/sign/t2")) {
             if (!ApiSignUtils.checkSignature(request, ApiSignUtils.DEFAULT_SECRET_KEY)) {
-                throw new BaseRuntimeException("验证接口签名失败");
+                throw Exceptions.baseRuntimeException("验证接口签名失败");
             }
         }
         chain.doFilter(request, response);

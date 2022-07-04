@@ -4,6 +4,7 @@ import com.iscas.base.biz.service.fileserver.FileServerService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,14 +44,14 @@ public class FileServerController extends BaseController {
     public ResponseEntity upload(@RequestParam("file") MultipartFile[] files) throws BaseException {
         ResponseEntity response = getResponse();
         if (ArrayUtils.isEmpty(files)) {
-            throw new BaseException("上传的数据为空");
+            throw Exceptions.baseException("上传的数据为空");
         }
         try {
             Map<String, String> result = fileServerService.upload(files);
             response.setValue(result);
             return response;
         } catch (IOException e) {
-            throw new BaseException("文件上传出错", e);
+            throw Exceptions.baseException("文件上传出错", e);
         }
     }
 
@@ -63,7 +64,7 @@ public class FileServerController extends BaseController {
     @GetMapping("/download")
     public void download(@RequestParam("path") String path) throws BaseException {
         if (StringUtils.isEmpty(path)) {
-            throw new BaseException("文件路径为空");
+            throw Exceptions.baseException("文件路径为空");
         }
         fileServerService.download(path);
     }

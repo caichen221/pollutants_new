@@ -1,6 +1,7 @@
 package com.iscas.base.biz.test.controller;
 
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.Exceptions;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +30,7 @@ public class TestException {
                 file.createNewFile();
             }
         }catch (Exception e){
-            throw new BaseException("出错啦啦啦啦", e);
+            throw Exceptions.baseException("出错啦啦啦啦", e);
         }
         return "1111";
     }
