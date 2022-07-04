@@ -10,6 +10,19 @@
 版本更新日志
 ===================================================
 
+- 2.1.2-20220704-1
+
+  - 1、添加TreeHelper、ComboboxHelper工具类
+  - 2、修复Websocket不可用的BUG
+  - 3、修改MinioService的实现
+  - 4、JWTUtils中添加解析HMAC256生成的token的函数
+  - 5、升级了部分第三方依赖的版本
+  - 6、spring boot版本升级至2.7.1
+  - 7、修复刷新gradle时卡在build model很久的问题
+  - 8、重新实现ReflectUtils工具类
+  - 9、去除ice-blue的maven依赖，spire.doc修改为直接jar包引入方式
+-----------------------------------------------
+
 - 2.1.1-20220530-1
 
   - 1、添加启动后显示进程号、端口号日志功能，添加进程号保存至newframe.pid功能
