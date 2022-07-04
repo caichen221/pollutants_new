@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class MyBeanPostProcessor implements BeanPostProcessor {
-//    @Autowired
-//    private DefaultListableBeanFactory defaultListableBeanFactory;
+    @Autowired
+    private DefaultListableBeanFactory defaultListableBeanFactory;
 
     @Override
     public Object postProcessBeforeInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
@@ -55,7 +55,8 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
     @Deprecated
     private void handleWebMvcRequestHandlerProvider(String beanName, Object bean) {
         // 处理swagger 在spring boot2.6以上不可用的问题
-        boolean modify = (bean instanceof WebMvcRequestHandlerProvider || bean instanceof WebFluxRequestHandlerProvider);
+        boolean modify = (bean instanceof WebMvcRequestHandlerProvider || bean instanceof WebFluxRequestHandlerProvider) &&
+                defaultListableBeanFactory.containsBean(beanName);
         if (modify) {
             // 修改属性
             try {

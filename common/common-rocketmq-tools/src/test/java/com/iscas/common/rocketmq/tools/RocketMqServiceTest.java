@@ -23,7 +23,9 @@ public class RocketMqServiceTest {
     private RocketMqService rocketMqService;
     @BeforeEach
     public void init() {
-        rocketMqService = new RocketMqService("172.16.10.169:9876;172.16.10.168:9876",
+//        rocketMqService = new RocketMqService("172.16.10.169:9876;172.16.10.168:9876",
+//                "test-topic-3", "test-tag", 5000);
+        rocketMqService = new RocketMqService("172.16.10.191:9876",
                 "test-topic-3", "test-tag", 5000);
     }
 
@@ -39,7 +41,7 @@ public class RocketMqServiceTest {
         rocketMqService.pull("test-consumer", new RocketMqService.HeaderInterface() {
             @Override
             public void execute(MessageExt message) throws IOException {
-                System.out.println(message);
+                System.out.println(Thread.currentThread().getName() + "--" + new String(message.getBody()));
             }
         });
         TimeUnit.SECONDS.sleep(10);
@@ -63,9 +65,9 @@ public class RocketMqServiceTest {
         rocketMqService.pull("test-consumer", new RocketMqService.HeaderInterface() {
             @Override
             public void execute(MessageExt message) throws IOException {
-                System.out.println(message);
+                System.out.println(Thread.currentThread().getName() + "--" + new String(message.getBody()));
             }
-        });
+        }, false, true);
         TimeUnit.SECONDS.sleep(5);
     }
 

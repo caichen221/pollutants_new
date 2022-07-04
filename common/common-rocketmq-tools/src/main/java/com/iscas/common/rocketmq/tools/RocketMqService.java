@@ -244,7 +244,7 @@ public class RocketMqService {
         try {
             if (isOrder){
                 //顺序消费
-                consumer.registerMessageListener(this.setOrderlyConsumeMessage(headerInterface));
+                consumer.registerMessageListener(this. setOrderlyConsumeMessage(headerInterface));
             }else {
                 //普通消费
                 consumer.registerMessageListener(this.setConcurrentlyConsumeMessage(headerInterface));
