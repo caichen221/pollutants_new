@@ -2,6 +2,7 @@ package com.iscas.base.biz.filter;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.iscas.base.biz.config.ratelimiter.RateLimiterProps;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +55,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         if (!rateLimiter.tryAcquire(rateLimiterProps.getMaxWait().toMillis(), TimeUnit.MILLISECONDS)) {
             //获取令牌失败，并且超过超时时间
             log.warn(request.getRemoteAddr() + "访问" + request.getRequestURI() + "获取令牌失败");
-            throw new RequestTimeoutRuntimeException("服务器繁忙,请求超时");
+            throw Exceptions.requestTimeoutRuntimeException("服务器繁忙,请求超时");
         }
         filterChain.doFilter(request, response);
     }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.iscas.common.web.tools.json.JsonUtils;
+import com.iscas.templet.exception.Exceptions;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class CustomDeserialize extends JsonDeserializer<String> implements Conte
                 return null;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
     }
 

@@ -11,6 +11,7 @@ import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.common.tools.core.date.DateRaiseUtils;
 import com.iscas.common.tools.core.io.file.ConfigUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.AllArgsConstructor;
 import lombok.Cleanup;
@@ -100,7 +101,7 @@ public class JWTUtils {
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
         Object obj = authCacheService.get(token, Constants.AUTH_CACHE);
         if (obj == null) {
-            throw new ValidTokenException("登录凭证校验失败", "token:" + token + "不存在或已经被注销");
+            throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "不存在或已经被注销");
         }
         Algorithm algorithm = getVerifyAlgorithm(type);
         JWTVerifier jwtVerifier;

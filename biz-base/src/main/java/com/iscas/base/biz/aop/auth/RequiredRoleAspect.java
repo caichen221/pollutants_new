@@ -8,6 +8,8 @@ import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.exception.AuthorizationException;
+import com.iscas.templet.exception.Exceptions;
+import kotlin.io.ExceptionsKt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -52,7 +54,7 @@ public class RequiredRoleAspect implements Constants {
         if (token == null) {
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
-            throw new AuthorizationException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+            throw Exceptions.authorizationException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
         //如果token不为null,校验token
         String username = authService.verifyToken(token).split(";")[1];
@@ -60,7 +62,7 @@ public class RequiredRoleAspect implements Constants {
         if (CollectionUtils.isNotEmpty(roles)) {
             log.error(request.getRemoteAddr() + "访问" + request.getRequestURI() +
                     " :token中携带的用户或其角色信息不存在");
-            throw new AuthorizationException("获取角色信息出错", "token中携带的用户或其角色信息不存在");
+            throw Exceptions.authorizationException("获取角色信息出错", "token中携带的用户或其角色信息不存在");
         }
         return joinPoint.proceed();
     }

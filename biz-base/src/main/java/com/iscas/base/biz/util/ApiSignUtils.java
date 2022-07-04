@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.iscas.common.tools.core.random.RandomStringUtils;
+import com.iscas.templet.exception.Exceptions;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
@@ -45,7 +46,7 @@ public class ApiSignUtils {
         try {
             params = jsonToMap(JSONObject.toJSONString(param));
         } catch (Exception e) {
-            throw new RuntimeException("生成签名：转换json失败");
+            throw Exceptions.runtimeException("生成签名：转换json失败");
         }
 
         if (params.get(TIME_STAMP_KEY) == null) {

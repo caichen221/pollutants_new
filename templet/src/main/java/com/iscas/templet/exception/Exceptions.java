@@ -16,6 +16,62 @@ public class Exceptions {
 
     private Exceptions() {}
 
+    public static IllegalArgumentException illegalArgumentException(String msg) {
+        return new IllegalArgumentException(msg);
+    }
+
+    public static ValidTokenException validTokenException(String message) {
+        return new ValidTokenException(message);
+    }
+
+    public static ValidTokenException validTokenException(String message, String msgDetail) {
+        return new ValidTokenException(message, msgDetail);
+    }
+
+    public static ValidTokenException validTokenException(String message, String msgDetail, Throwable e) {
+        return new ValidTokenException(message, msgDetail,e);
+    }
+
+    public static AuthenticationRuntimeException authenticationRuntimeException(String message, Throwable e) {
+        return new AuthenticationRuntimeException(message, e);
+    }
+
+    public static AuthenticationRuntimeException authenticationRuntimeException(String message, String msgDetail) {
+        return new AuthenticationRuntimeException(message, msgDetail);
+    }
+
+    public static AuthenticationRuntimeException authenticationRuntimeException(String message) {
+        return new AuthenticationRuntimeException(message);
+    }
+
+    public static RequestTimeoutRuntimeException requestTimeoutRuntimeException(String message) {
+        return new RequestTimeoutRuntimeException(message);
+    }
+
+    public static RepeatSubmitException repeatSubmitException(String message, String msgDetail) {
+        return new RepeatSubmitException(message, msgDetail);
+    }
+
+    public static RepeatSubmitException repeatSubmitException(String message) {
+        return new RepeatSubmitException(message);
+    }
+
+    public static AuthorizationException authorizationException(String message, String msgDetail) {
+        return new AuthorizationException(message, msgDetail);
+    }
+
+    public static AuthorizationException authorizationException(String message) {
+        return new AuthorizationException(message);
+    }
+
+    public static AuthorizationRuntimeException authorizationRuntimeException(String message, String msgDetail) {
+        return new AuthorizationRuntimeException(message, msgDetail);
+    }
+
+    public static AuthorizationRuntimeException authorizationRuntimeException(String message) {
+        return new AuthorizationRuntimeException(message);
+    }
+
     public static LoginException loginException(String message) {
         return new LoginException(message);
     }
@@ -100,6 +156,11 @@ public class Exceptions {
     public static RuntimeException formatRuntimeException(String formatter, Object... formatVals) {
         String message = replaceFormat(formatter, formatVals);
         return new RuntimeException(message);
+    }
+
+    public static RepeatSubmitException formatRepeatSubmitException(String formatter, Object... formatVals) {
+        String message = replaceFormat(formatter, formatVals);
+        return new RepeatSubmitException(message);
     }
 
     public static Exception exception(Throwable e) {

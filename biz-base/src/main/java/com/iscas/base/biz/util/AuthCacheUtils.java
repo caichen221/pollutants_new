@@ -3,6 +3,7 @@ package com.iscas.base.biz.util;
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.date.DateUnit;
+import com.iscas.templet.exception.Exceptions;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.cache.RedisCacheManager;
 
@@ -26,7 +27,7 @@ public class AuthCacheUtils {
         if (cacheManager instanceof RedisCacheManager) {
             org.springframework.cache.Cache loginCache = cacheManager.getCache(cacheKey);
             if (loginCache == null) {
-                throw new RuntimeException(MessageFormat.format("找不到：{0}", cacheKey));
+                throw Exceptions.formatRuntimeException("找不到：{}", cacheKey);
             }
             loginCache.put(key, value);
         } else {

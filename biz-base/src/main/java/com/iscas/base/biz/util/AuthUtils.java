@@ -6,6 +6,7 @@ import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidTokenException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,7 +38,7 @@ public class AuthUtils {
     public static String getLoginUsername() {
         String token = getToken();
         if (token == null) {
-            throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+            throw Exceptions.authenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
 
         //如果token不为null,校验token
@@ -46,10 +47,10 @@ public class AuthUtils {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
             if (username == null) {
-                throw new ValidTokenException("token 校验失败");
+                throw Exceptions.validTokenException("token 校验失败");
             }
         } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
+            throw Exceptions.authenticationRuntimeException("未获取到当前登录的用户信息", e);
         }
         return username;
     }

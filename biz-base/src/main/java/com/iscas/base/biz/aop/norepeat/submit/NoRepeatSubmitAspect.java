@@ -5,6 +5,7 @@ import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitBean;
 import com.iscas.base.biz.util.AuthUtils;
 import com.iscas.base.biz.util.CaffCacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.RepeatSubmitException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -58,7 +59,7 @@ public class NoRepeatSubmitAspect implements Constants {
                 case JVM: {
                     synchronized (key.intern()) {
                         if (CaffCacheUtils.get(key) != null) {
-                            throw new RepeatSubmitException("重复提交的请求", String.format("请求：[%s]，重复提交", request.getRequestURI()));
+                            throw Exceptions.repeatSubmitException("重复提交的请求", String.format("请求：[%s]，重复提交", request.getRequestURI()));
                         }
                         CaffCacheUtils.set(key, new Object());
                     }
@@ -67,11 +68,11 @@ public class NoRepeatSubmitAspect implements Constants {
                 case REDIS: {
                     INoRepeatSubmitRedisHandler redisHandler = applicationContext.getBean(INoRepeatSubmitRedisHandler.class);
                     if (!redisHandler.check(key)) {
-                        throw new RepeatSubmitException("重复提交的请求", String.format("请求：[%s]，重复提交", request.getRequestURI()));
+                        throw Exceptions.repeatSubmitException("重复提交的请求", String.format("请求：[%s]，重复提交", request.getRequestURI()));
                     }
                     break;
                 }
-                default: throw new RepeatSubmitException(MessageFormat.format("不支持的类型:[{0}]", noRepeatSubmitBean.getLockType()));
+                default: throw Exceptions.formatRepeatSubmitException("不支持的类型:[{}]", noRepeatSubmitBean.getLockType());
             }
         }
 

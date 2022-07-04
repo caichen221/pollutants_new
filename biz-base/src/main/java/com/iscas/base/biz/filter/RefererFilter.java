@@ -1,6 +1,7 @@
 package com.iscas.base.biz.filter;
 
 import com.iscas.templet.exception.AuthorizationRuntimeException;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.table.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -39,14 +40,14 @@ public class RefererFilter extends OncePerRequestFilter{
         // 验证非get请求
         if (!HttpMethod.GET.toString().equals(request.getMethod())) {
             if (referer == null) {
-                throw new AuthorizationRuntimeException("referer校验失败，不允许的请求", "请求头未携带referer");
+                throw Exceptions.authorizationRuntimeException("referer校验失败，不允许的请求", "请求头未携带referer");
             }
             java.net.URL url;
             try {
                 url = new java.net.URL(referer);
             } catch (MalformedURLException e) {
                 // URL解析异常
-                throw new AuthorizationRuntimeException("referer校验失败，不允许的请求", "请求头中referer无法解析");
+                throw Exceptions.authorizationRuntimeException("referer校验失败，不允许的请求", "请求头中referer无法解析");
             }
             // 首先判断请求域名和referer域名是否相同,如果相同不用作判断了
             if (!host.equals(url.getHost())) {
@@ -56,7 +57,7 @@ public class RefererFilter extends OncePerRequestFilter{
                     flag = Arrays.stream(allowDomains).anyMatch(domain -> Objects.equals(domain, url.getHost()));
                 }
                 if (!flag) {
-                    throw new AuthorizationRuntimeException("referer校验失败，不允许跨站请求", "referer不在白名单内");
+                    throw Exceptions.authorizationRuntimeException("referer校验失败，不允许跨站请求", "referer不在白名单内");
                 }
             }
         }

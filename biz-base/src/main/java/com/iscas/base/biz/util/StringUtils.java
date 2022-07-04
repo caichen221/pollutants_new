@@ -1,5 +1,7 @@
 package com.iscas.base.biz.util;
 
+import com.iscas.templet.exception.Exceptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +20,14 @@ public class StringUtils {
     }
     public static String upperFist(String str){
         if(str == null){
-            throw new RuntimeException("str can not be null");
+            throw Exceptions.runtimeException("str can not be null");
         }
         return str.substring(0,1).toUpperCase() + str.substring(1);
     }
     public static String lowerFist(String str){
 
         if(str == null){
-            throw new RuntimeException("str can not be null");
+            throw Exceptions.runtimeException("str can not be null");
         }
         return str.substring(0,1).toLowerCase() + str.substring(1);
     }

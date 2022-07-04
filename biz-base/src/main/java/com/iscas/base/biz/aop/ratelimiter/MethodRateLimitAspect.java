@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.CommonConstant;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -56,7 +57,7 @@ public class MethodRateLimitAspect {
         if (!rateLimiter.tryAcquire(methodRateLimit.maxWait(), TimeUnit.MILLISECONDS)) {
             //获取令牌失败，并且超过超时时间
             logger.warn(remoteAddr + "访问方法:" + key + ",短期无法获取令牌");
-            throw new RequestTimeoutRuntimeException("服务器繁忙,请求超时");
+            throw Exceptions.requestTimeoutRuntimeException("服务器繁忙,请求超时");
         }
         logger.debug(remoteAddr + "访问方法:" + key + ",获取令牌成功");
         return joinPoint.proceed();

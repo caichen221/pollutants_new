@@ -8,6 +8,7 @@ import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.util.*;
 import com.iscas.templet.common.ResponseEntity;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.LoginException;
 import com.iscas.templet.exception.ValidTokenException;
 
@@ -46,13 +47,13 @@ public abstract class AbstractAuthService implements Constants {
             String username = clainMap.get("username").asString();
             Integer userId = clainMap.get("userId").asInt();
             if (username == null) {
-                throw new ValidTokenException("token 校验失败");
+                throw Exceptions.validTokenException("token 校验失败");
             }
             return userId + ";" + username;
         } catch (ValidTokenException e) {
-            throw new ValidTokenException(e.getMessage(), e.getMsgDetail());
+            throw Exceptions.validTokenException(e.getMessage(), e.getMsgDetail());
         } catch (Exception e) {
-            throw new ValidTokenException("token 校验失败", e.getMessage());
+            throw Exceptions.validTokenException("token 校验失败", e.getMessage(), e);
         }
 
     }

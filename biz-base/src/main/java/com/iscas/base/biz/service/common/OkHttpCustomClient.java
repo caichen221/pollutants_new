@@ -2,6 +2,7 @@ package com.iscas.base.biz.service.common;
 
 
 import com.iscas.base.biz.autoconfigure.okhttp.OkHttpProps;
+import com.iscas.templet.exception.Exceptions;
 import okhttp3.*;
 import okio.BufferedSink;
 
@@ -54,7 +55,7 @@ public class OkHttpCustomClient {
                                     try {
                                         return Class.forName(className).getConstructor().newInstance();
                                     } catch (Exception e) {
-                                        throw new RuntimeException(e);
+                                        throw Exceptions.runtimeException(e);
                                     }
                                 }).forEach(interceptor -> builder.addInterceptor((Interceptor) interceptor));
                     }
@@ -880,7 +881,7 @@ public class OkHttpCustomClient {
                     builder.addFormDataPart(formKey, fileName, requestBody);
 
                 } else {
-                    throw new IllegalArgumentException("the key of fileMap must be String、File、InputStream or byte[]!");
+                    throw Exceptions.illegalArgumentException("the key of fileMap must be String、File、InputStream or byte[]!");
                 }
             }
         }
