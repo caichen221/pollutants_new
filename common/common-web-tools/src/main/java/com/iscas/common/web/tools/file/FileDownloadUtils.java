@@ -63,7 +63,7 @@ public class FileDownloadUtils {
         return val;
     }
 
-    public static void setResponseHeader(HttpServletRequest request, HttpServletResponse response, String name) throws Exception {
+    public static void setResponseHeader(HttpServletRequest request, HttpServletResponse response, String name) throws UnsupportedEncodingException {
         response.reset();
         // 改成文件下载
         response.setContentType("application/octet-stream");
@@ -79,12 +79,12 @@ public class FileDownloadUtils {
      * @param response {@link HttpServletResponse}响应
      * @param path     要下载的文件路径
      * @param name     文件名称
-     * @throws Exception e
+     * @throws IOException e
      * @date 2018/7/14
      * @since jdk1.8
      */
     public static void downFile(HttpServletRequest request, HttpServletResponse response, String path,
-                                String name) throws Exception {
+                                String name) throws IOException {
         File file = new File(path);
         downFile(request, response, file, name);
     }
@@ -96,12 +96,12 @@ public class FileDownloadUtils {
      * @param response {@link HttpServletResponse}响应
      * @param file     要下载的文件
      * @param name     文件名称
-     * @throws Exception e
+     * @throws IOException e
      * @date 2018/7/14
      * @since jdk11
      */
     public static void downFile(HttpServletRequest request, HttpServletResponse response, File file,
-                                String name) throws Exception {
+                                String name) throws IOException {
 
         // 文件的长度
         Long fileLength = file.length();
@@ -128,12 +128,12 @@ public class FileDownloadUtils {
      * @param path     文件位置
      * @param name     文件名称
      * @param maxRate  最大下载速率 kb/s
-     * @throws Exception e
+     * @throws IOException e
      * @date 2018/7/16
      * @since jdk11
      */
     public static void downFileWithLimiter(HttpServletRequest request, HttpServletResponse response, String path,
-                                           String name, int maxRate) throws Exception {
+                                           String name, int maxRate) throws IOException {
         // 文件的长度
         Long fileLength = new File(path).length();
         if (fileLength != 0) {
@@ -175,13 +175,13 @@ public class FileDownloadUtils {
      * @param response {@link HttpServletResponse} 响应
      * @param path     文件位置
      * @param name     文件名称
-     * @throws Exception e
+     * @throws IOException e
      * @date 2018/7/13
      * @see #setMaxRate(int)
      * @since jdk11
      */
     public static void downFileWithLimiter(HttpServletRequest request, HttpServletResponse response, String path,
-                                           String name) throws Exception {
+                                           String name) throws IOException {
 
         int onlineNumber = onlineDownloadNumber.incrementAndGet();
         int maxRate = BandWidthLimiter.maxBandWith / onlineNumber;
@@ -215,12 +215,12 @@ public class FileDownloadUtils {
      * @param response    {@link HttpServletResponse} 响应
      * @param inputStream {@link InputStream} 输入流
      * @param name        文件名称
-     * @throws Exception e
+     * @throws IOException e
      * @date 2018/7/13
      * @since jdk11
      */
     public static void downByStream(HttpServletRequest request, HttpServletResponse response, InputStream inputStream,
-                                    String name) throws Exception {
+                                    String name) throws IOException {
 //        name = transFileName(name, request);
         setResponseHeader(request, response, name);
         try (
