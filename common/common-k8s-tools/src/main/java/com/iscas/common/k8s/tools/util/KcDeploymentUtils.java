@@ -481,7 +481,7 @@ public class KcDeploymentUtils {
                         }
                     }
                 } catch (K8sClientException e) {
-                    throw new RuntimeException(e);
+                    throw Exceptions.runtimeException(e);
                 }
                 return volume;
             }).collect(Collectors.toList());

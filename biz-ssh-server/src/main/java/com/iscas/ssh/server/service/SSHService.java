@@ -178,7 +178,7 @@ public class SSHService {
     public void sendMessage(String connectionId, byte[] buffer) throws IOException {
         String username = connectionUserMap.get(connectionId);
         if (username == null) {
-            throw new RuntimeException(String.format("未找到connectionId:[%s]对应的websocket连接用户", connectionId));
+            throw Exceptions.formatRuntimeException("未找到connectionId:[{}]对应的websocket连接用户", connectionId);
         }
         messagingTemplate.convertAndSendToUser(username, "/queue/".concat(connectionId), new String(buffer, "utf-8"));
     }
@@ -186,7 +186,7 @@ public class SSHService {
     public void sendMessage(String connectionId, String data) throws IOException {
         String username = connectionUserMap.get(connectionId);
         if (username == null) {
-            throw new RuntimeException(String.format("未找到connectionId:[%s]对应的websocket连接用户", connectionId));
+            throw Exceptions.formatRuntimeException("未找到connectionId:[{}]对应的websocket连接用户", connectionId);
         }
         messagingTemplate.convertAndSendToUser(username, "/queue/".concat(connectionId), data);
     }

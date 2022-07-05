@@ -29,7 +29,7 @@ public class CommonHelper {
                         declaredField.setAccessible(true);
                         return declaredField;
                     } catch (NoSuchFieldException e) {
-                        throw new RuntimeException(e);
+                        throw Exceptions.runtimeException(e);
                     }
                 }).get(t);
             } catch (IllegalAccessException e) {

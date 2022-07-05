@@ -1,11 +1,13 @@
 package com.iscas.templet.exception;
 
+import java.sql.SQLFeatureNotSupportedException;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * 异常创建工具
+ *
  * @author zhuquanwen
  * @version 1.0
  * @date 2022/7/4 15:53
@@ -14,7 +16,34 @@ import java.util.regex.Pattern;
 public class Exceptions {
     private static final Pattern PATTERN = Pattern.compile("\\{\\}");
 
-    private Exceptions() {}
+    private Exceptions() {
+    }
+
+    public static HeaderException formatHeaderException(Throwable e, String formatter, Object vals) {
+        String message = replaceFormat(formatter, vals);
+        return new HeaderException(message, e);
+    }
+
+    public static HeaderException formatHeaderException(String formatter, Object vals) {
+        String message = replaceFormat(formatter, vals);
+        return new HeaderException(message);
+    }
+
+    public static SQLFeatureNotSupportedException sqlFeatureNotSupportedException() {
+        return new SQLFeatureNotSupportedException();
+    }
+
+    public static ExceptionInInitializerError exceptionInInitializerError(Throwable e) {
+        return new ExceptionInInitializerError(e);
+    }
+
+    public static IllegalStateException illegalStateException(String msg) {
+        return new IllegalStateException(msg);
+    }
+
+    public static IllegalStateException illegalStateException(Throwable e) {
+        return new IllegalStateException(e);
+    }
 
     public static IllegalArgumentException illegalArgumentException(String msg) {
         return new IllegalArgumentException(msg);
@@ -29,7 +58,7 @@ public class Exceptions {
     }
 
     public static ValidTokenException validTokenException(String message, String msgDetail, Throwable e) {
-        return new ValidTokenException(message, msgDetail,e);
+        return new ValidTokenException(message, msgDetail, e);
     }
 
     public static AuthenticationRuntimeException authenticationRuntimeException(String message, Throwable e) {
@@ -195,13 +224,18 @@ public class Exceptions {
         return new ValidDataException(message);
     }
 
+    public static UnsupportedOperationException formatUnsupportedOperationException(String formatter, Object... formatVals) {
+        String message = replaceFormat(formatter, formatVals);
+        return new UnsupportedOperationException(message);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T extends Throwable> T formatException(Class<? extends Throwable> clazz, String formatter, Object... formatVals) {
         String message = replaceFormat(formatter, formatVals);
         try {
             return (T) clazz.getDeclaredConstructor(String.class).newInstance(message);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
     }
 
@@ -211,7 +245,7 @@ public class Exceptions {
         try {
             return (T) clazz.getDeclaredConstructor(String.class, Throwable.class).newInstance(message, e);
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw Exceptions.runtimeException(ex);
         }
     }
 

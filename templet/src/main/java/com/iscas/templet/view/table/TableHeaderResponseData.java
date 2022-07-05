@@ -1,5 +1,6 @@
 package com.iscas.templet.view.table;
 
+import com.iscas.templet.exception.Exceptions;
 import lombok.*;
 
 import java.io.*;
@@ -44,9 +45,9 @@ public class TableHeaderResponseData implements Serializable {
             objIn = new ObjectInputStream(byteIn);
             return (TableHeaderResponseData) objIn.readObject();
         } catch (IOException e) {
-            throw new RuntimeException("Clone Object failed in IO.", e);
+            throw Exceptions.runtimeException("Clone Object failed in IO.", e);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Class not found.", e);
+            throw Exceptions.runtimeException("Class not found.", e);
         } finally {
             try {
                 if (objOut != null) {

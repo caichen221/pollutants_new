@@ -1,5 +1,6 @@
 package com.iscas.templet.view.tree;
 
+import com.iscas.templet.exception.Exceptions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -99,9 +100,9 @@ public class TreeResponseData<T> implements Serializable, Cloneable {
             objIn = new ObjectInputStream(byteIn);
             return (TreeResponseData) objIn.readObject();
         } catch (IOException e) {
-            throw new RuntimeException("Clone Object failed in IO.", e);
+            throw Exceptions.runtimeException("Clone Object failed in IO.", e);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Class not found.", e);
+            throw Exceptions.runtimeException("Class not found.", e);
         } finally {
             try {
                 if (objOut != null) {

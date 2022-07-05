@@ -1,5 +1,7 @@
 package com.iscas.datasong.client.jdbc;
 
+import com.iscas.templet.exception.Exceptions;
+
 import java.sql.*;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -22,7 +24,7 @@ public class DataSongDriver implements Driver {
         try {
             register();
         } catch (SQLException e) {
-            throw new ExceptionInInitializerError(e);
+            throw Exceptions.exceptionInInitializerError(e);
         }
     }
 
@@ -32,7 +34,7 @@ public class DataSongDriver implements Driver {
 
     public static void register() throws SQLException {
         if (isRegistered()) {
-            throw new IllegalStateException(
+            throw Exceptions.illegalStateException(
                     "Driver is already registered. It can only be registered once.");
         }
         DataSongDriver registeredDriver = new DataSongDriver();
@@ -42,8 +44,7 @@ public class DataSongDriver implements Driver {
 
     public static void deregister() throws SQLException {
         if (!isRegistered()) {
-            throw new IllegalStateException(
-                    "Driver is not registered (or it has not been registered using Driver.register() method)");
+            throw Exceptions.illegalStateException("Driver is not registered (or it has not been registered using Driver.register() method)");
         }
         DriverManager.deregisterDriver(registeredDriver);
         registeredDriver = null;
@@ -135,6 +136,6 @@ public class DataSongDriver implements Driver {
 
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        throw new SQLFeatureNotSupportedException();
+        throw Exceptions.sqlFeatureNotSupportedException();
     }
 }

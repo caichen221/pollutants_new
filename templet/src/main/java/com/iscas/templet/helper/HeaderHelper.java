@@ -3,6 +3,7 @@ package com.iscas.templet.helper;
 import com.iscas.templet.annotation.table.TbField;
 import com.iscas.templet.annotation.table.TbFieldRule;
 import com.iscas.templet.annotation.table.TbSetting;
+import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.HeaderException;
 import com.iscas.templet.view.table.*;
 import com.iscas.templet.view.validator.Rule;
@@ -105,7 +106,7 @@ public class HeaderHelper {
     private static void tableSettingHandle(Class clazz, TableHeaderResponseData headerData) throws HeaderException {
         TbSetting tbs = (TbSetting) clazz.getAnnotation(TbSetting.class);
         if (tbs == null) {
-            throw new HeaderException(String.format("生成表头失败,类：[%s]缺少@TbField注解", clazz.getSimpleName()));
+            throw Exceptions.formatHeaderException("生成表头失败,类：[{}]缺少@TbField注解", clazz.getSimpleName());
         }
         TableSetting tableSetting = new TableSetting();
         tableSetting.setTitle(Objects.equals("", tbs.title()) ? null : tbs.title())
@@ -126,8 +127,7 @@ public class HeaderHelper {
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException |
                  NoSuchMethodException e) {
-            throw new HeaderException(String.format("生成表头失败,获取类:[%s]的无参构造器失败", clazz.getSimpleName()), e);
+            throw Exceptions.formatHeaderException(e, "生成表头失败,获取类:[{}]的无参构造器失败", clazz.getSimpleName());
         }
     }
-
 }

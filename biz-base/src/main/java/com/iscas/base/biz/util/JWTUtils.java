@@ -112,14 +112,14 @@ public class JWTUtils {
             case RSA:
                 jwtVerifier = JWT.require(algorithm).withIssuer(ISS).build();
                 break;
-            default: throw new UnsupportedOperationException(MessageFormat.format("不支持的加密算法类型:[{0}]", type));
+            default: throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
         }
 
         DecodedJWT decodedJWT;
         try {
             decodedJWT = jwtVerifier.verify(token);
         } catch (Exception e) {
-            throw new ValidTokenException("登录凭证校验失败", "token:" + token + "校验失败");
+            throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "校验失败");
         }
         return decodedJWT.getClaims();
     }
@@ -135,7 +135,7 @@ public class JWTUtils {
     public static String getLoginUsername() {
         String token = AuthUtils.getToken();
         if (token == null) {
-            throw new AuthenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
+            throw Exceptions.authenticationRuntimeException("未携带身份认证信息", "header中未携带 Authorization 或未携带cookie或cookie中无Authorization");
         }
         //如果token不为null,校验token
         String username;
@@ -143,16 +143,16 @@ public class JWTUtils {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
             if (username == null) {
-                throw new ValidTokenException("token 校验失败");
+                throw Exceptions.validTokenException("token 校验失败");
             }
         } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new AuthenticationRuntimeException("未获取到当前登录的用户信息");
+            throw Exceptions.authenticationRuntimeException("未获取到当前登录的用户信息");
         }
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
 
         //修改为支持用户多会话模式
         if (!authCacheService.listContains(Constants.KEY_USER_TOKEN + username, token, Constants.LOGIN_CACHE)) {
-            throw new AuthenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
+            throw Exceptions.authenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }
 
         return username;
@@ -219,7 +219,7 @@ public class JWTUtils {
                         .withIssuedAt(iatDate)
                         .sign(createRsaAlgorithm(true));
             default:
-                throw new UnsupportedOperationException(MessageFormat.format("不支持的加密算法类型:[{0}]", type));
+                throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
         }
     }
 
@@ -230,7 +230,7 @@ public class JWTUtils {
             case RSA:
                 return createRsaAlgorithm(false);
             default:
-                throw new UnsupportedOperationException(MessageFormat.format("不支持的加密算法类型:[{0}]", type));
+                throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
         }
     }
 

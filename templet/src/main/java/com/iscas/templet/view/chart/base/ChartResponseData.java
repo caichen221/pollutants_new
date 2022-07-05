@@ -1,5 +1,6 @@
 package com.iscas.templet.view.chart.base;
 
+import com.iscas.templet.exception.Exceptions;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,9 +39,9 @@ public class ChartResponseData implements Serializable,Cloneable {
             objIn = new ObjectInputStream(byteIn);
             return (ChartResponseData) objIn.readObject();
         } catch (IOException e) {
-            throw new RuntimeException("Clone Object failed in IO.",e);
+            throw Exceptions.runtimeException("Clone Object failed in IO.",e);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Class not found.",e);
+            throw Exceptions.runtimeException("Class not found.",e);
         } finally {
             try {
                 if (objOut != null) {

@@ -3,6 +3,7 @@ package com.iscas.base.biz.util.echarts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.iscas.common.tools.constant.CharsetConstant;
+import com.iscas.templet.exception.Exceptions;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class EchartsUtils {
         } else {
             // 未正常返回
             String string = responseJson.getString("msg");
-            throw new RuntimeException(string);
+            throw Exceptions.runtimeException(string);
         }
         return base64;
     }

@@ -1,6 +1,8 @@
 package com.iscas.base.biz.util.license;
 
 
+import com.iscas.templet.exception.Exceptions;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -85,7 +87,7 @@ public abstract class AbstractServerInfos {
         try {
             mac = NetworkInterface.getByInetAddress(inetAddr).getHardwareAddress();
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.runtimeException(e);
         }
         StringBuilder stringBuffer = new StringBuilder();
 

@@ -2,6 +2,7 @@ package com.iscas.base.biz.util;
 
 
 import com.iscas.common.tools.core.reflect.ReflectUtils;
+import com.iscas.templet.exception.Exceptions;
 import lombok.Cleanup;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -71,7 +72,7 @@ public class TableHeaderCodeCreatorUtils {
 
         File reFile = new File(file, StringUtils.upperFist(clazz.getSimpleName()) + ".json");
         if (reFile.exists()) {
-            throw new RuntimeException(reFile.getAbsolutePath() + "已经存在,无法创建");
+            throw Exceptions.runtimeException(reFile.getAbsolutePath() + "已经存在,无法创建");
         }
         StringBuilder sb = new StringBuilder();
         sb.append("{\"cols\": ").append(changeLine);
