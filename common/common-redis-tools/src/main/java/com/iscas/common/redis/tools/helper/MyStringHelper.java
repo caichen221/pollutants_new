@@ -1,6 +1,5 @@
 package com.iscas.common.redis.tools.helper;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -31,8 +30,8 @@ public class MyStringHelper {
 
     /**
      * 转换为字节数组
-     * @param bytes
-     * @return
+     * @param bytes 字节数组
+     * @return String
      */
     public static String toString(byte[] bytes){
         return new String(bytes, StandardCharsets.UTF_8);
@@ -40,8 +39,8 @@ public class MyStringHelper {
 
     /**
      * 转换为字节数组
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return byte[] 字节数组
      */
     public static byte[] getBytes(String str){
         if (str != null){

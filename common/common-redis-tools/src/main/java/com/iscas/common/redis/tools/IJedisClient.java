@@ -26,7 +26,8 @@ public interface IJedisClient extends IJedisCommonClient, IJedisListClient, IJed
      * 删除缓存
      *
      * @param key 键
-     * @return
+     * @return long
+     * @throws IOException io异常
      */
     long del(String key) throws IOException;
 
@@ -34,12 +35,15 @@ public interface IJedisClient extends IJedisCommonClient, IJedisListClient, IJed
      * 缓存是否存在
      *
      * @param key 键
-     * @return
+     * @return boolean
+     * @throws IOException IO异常
      */
     boolean exists(String key) throws IOException;
 
     /**
      * 按照key表达式规则删除
+     * @param pattern 表达式
+     * @throws UnsupportedEncodingException 不支持的编码格式异常
      */
     void deleteByPattern(String pattern) throws UnsupportedEncodingException;
 
@@ -48,38 +52,9 @@ public interface IJedisClient extends IJedisCommonClient, IJedisListClient, IJed
      *
      * @param key 缓存的key
      * @param millisecond 过期时间毫秒
-     * @return
-     * @throws
-     * @version 1.0
+     * @throws IOException IO异常
      * @date 2020/11/2
      * @since jdk1.8
      */
     void expire(String key, long millisecond) throws IOException;
-
-
-
-//    /**
-//     * redis实现延时队列，并放入任务
-//     * @param task 放入的任务
-//     * @param timeout 延时时间
-//     * @param timeUnit 延时时间单位
-//     * @param consumer 消费者,这里定义延时时间到后的处理, 建议执行处理采用异步的方式
-//     * */
-//    void putDelayQueue(String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer);
-//
-//    /**
-//     * redis实现延时队列，并放入任务
-//     * @param key 放入的key
-//     * @param task 放入的任务
-//     * @param timeout 延时时间
-//     * @param timeUnit 延时时间单位
-//     * @param consumer 消费者,这里定义延时时间到后的处理，建议执行处理采用异步的方式
-//     * */
-//    void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer);
-
-
-
-
-    //https://blog.csdn.net/lbl123xx/article/details/89213943
-
 }

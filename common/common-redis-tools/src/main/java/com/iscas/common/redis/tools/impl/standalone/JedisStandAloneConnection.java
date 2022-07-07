@@ -20,7 +20,7 @@ import java.util.List;
 public class JedisStandAloneConnection implements JedisConnection {
     private volatile JedisPool jedisPool = null;
     private ConfigInfo configInfo;
-    private JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+    private final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 
 
     @Override

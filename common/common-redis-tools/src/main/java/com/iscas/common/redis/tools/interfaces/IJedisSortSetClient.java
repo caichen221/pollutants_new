@@ -17,14 +17,13 @@ import java.util.Set;
 public interface IJedisSortSetClient {
     /**
      * 向集合中增加一条记录,如果这个值已存在，这个值对应的权重将被置为新的权重
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/16
      * @param key 缓存的key
      * @param score 权重
      * @param member 缓存的成员
-     * @throws
-     * @return
+     * @throws IOException io异常
+     * @return long
      */
     long zadd(String key, double score, Object member) throws IOException;
 
@@ -34,30 +33,36 @@ public interface IJedisSortSetClient {
      * @param key           键
      * @param valueScoreMap (value和score)
      * @param cacheSeconds  超时时间，0为不超时
-     * @return
+     * @throws IOException io异常
+     * @return long
      */
-    long zadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) throws IOException;
+    long zadd(String key, Map<?, Double> valueScoreMap, int cacheSeconds) throws IOException;
 
     /**
      * 向ZSet缓存中添加值
      *
      * @param key           键
      * @param valueScoreMap (value和score)
-     * @return
+     * @return long
+     * @throws IOException io异常
      */
-    long zadd(String key, Map<? extends Object, Double> valueScoreMap) throws IOException;
+    long zadd(String key, Map<?, Double> valueScoreMap) throws IOException;
 
     /**
      * 获取zset中元素的个数
      * @param key 键
-     * @return
+     * @return long
+     * @throws IOException IO异常
      */
     long zcard(String key) throws IOException;
 
     /**
      * 获取zset中指定权重区间内元素的数量
      * @param key 键
-     * @return
+     * @param min 最小值
+     * @param max 最大值
+     * @return long
+     * @throws IOException IO异常
      */
     long zcount(String key, double min, double max) throws IOException;
 
@@ -68,6 +73,7 @@ public interface IJedisSortSetClient {
      * @param score  要增的权重
      * @param member 元素
      * @return double 增后的权重
+     * @throws IOException io异常
      */
     double zincrby(String key, double score, Object member) throws IOException;
 
@@ -78,7 +84,9 @@ public interface IJedisSortSetClient {
      * @param key    键
      * @param start  开始位置(包含)
      * @param end 结束位置(包含)
-     * @return
+     * @return Set
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      **/
     <T> Set<T> zrange(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException;
 
@@ -90,6 +98,8 @@ public interface IJedisSortSetClient {
      * @param start  开始位置(包含)
      * @param end 结束位置(包含)
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     <T> Map<T, Double> zrangeWithScoresToMap(Class<T> tClass, String key, long start, long end) throws IOException, ClassNotFoundException;
 
@@ -99,6 +109,7 @@ public interface IJedisSortSetClient {
      * @param start  开始位置(包含)
      * @param end 结束位置(包含)
      * @return 值
+     * @throws IOException io异常
      */
     Set<Tuple> zrangeWithScores(String key, long start, long end) throws IOException;
 
@@ -110,6 +121,8 @@ public interface IJedisSortSetClient {
      * @param min  权重最小值
      * @param max  权重最大值
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     <T> Set<T> zrangeByScore(Class<T> tClass, String key, double min, double max) throws IOException, ClassNotFoundException;
 
@@ -120,7 +133,11 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param min  权重最小值
      * @param max  权重最大值
+     * @param offset  偏移量
+     * @param count  数量
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     <T> Set<T> zrangeByScore(Class<T> tClass, String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException;
 
@@ -131,6 +148,8 @@ public interface IJedisSortSetClient {
      * @param min  开始位置(包含)
      * @param max 结束位置(包含)
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     Set<Tuple> zrangeByScoreWithScores(String key, double min, double max) throws IOException, ClassNotFoundException;
 
@@ -141,6 +160,8 @@ public interface IJedisSortSetClient {
      * @param min  开始位置(包含)
      * @param max 结束位置(包含)
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max) throws IOException, ClassNotFoundException;
 
@@ -150,7 +171,11 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param min  开始位置(包含)
      * @param max 结束位置(包含)
+     * @param offset 偏移量
+     * @param count 数量
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     Set<Tuple> zrangeByScoreWithScores(String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException;
 
@@ -160,7 +185,11 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param min  开始位置(包含)
      * @param max 结束位置(包含)
+     * @param offset 偏移量
+     * @param count 数量
      * @return 值
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     <T> Map<T, Double> zrangeByScoreWithScoresToMap(Class<T> tClass, String key, double min, double max, int offset, int count) throws IOException, ClassNotFoundException;
 
@@ -170,6 +199,7 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param member  成员
      * @return 值
+     * @throws IOException io异常
      */
     long zrank(String key, Object member) throws IOException;
 
@@ -179,6 +209,7 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param member  成员
      * @return 值
+     * @throws IOException io异常
      */
     long zrevrank(String key, Object member) throws IOException;
 
@@ -188,6 +219,7 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param members 成员
      * @return 值
+     * @throws IOException io异常
      */
     long zrem(String key, Object... members) throws IOException;
 
@@ -198,6 +230,7 @@ public interface IJedisSortSetClient {
      * @param start 开始位置(包含)
      * @param end   结束位置(包含)
      * @return 值
+     * @throws IOException io异常
      */
     long zremrangeByRank(String key, int start, int end) throws IOException;
 
@@ -208,6 +241,7 @@ public interface IJedisSortSetClient {
      * @param min 最小权重(包含)
      * @param max 最大权重(包含)
      * @return 删除的数量
+     * @throws IOException io异常
      */
     long zremrangeByScore(String key, double min, double max) throws IOException;
 
@@ -217,6 +251,7 @@ public interface IJedisSortSetClient {
      * @param key 键
      * @param memeber 元素
      * @return 权重，没找到返回null
+     * @throws IOException io异常
      */
     Double zscore(String key, Object memeber) throws IOException;
 
@@ -236,6 +271,7 @@ public interface IJedisSortSetClient {
      * @param dstKey 目标zset的key
      * @param keys 取交集的zset的key
      * @return long 交集后的数目
+     * @throws IOException io异常
      */
     long zinterstore(String dstKey, String... keys) throws IOException;
 
@@ -245,6 +281,7 @@ public interface IJedisSortSetClient {
      * @param dstKey 目标zset的key
      * @param keys 取交集的zset的key
      * @return long 交集后的数目
+     * @throws IOException io异常
      */
     long zunionstore(String dstKey, String... keys) throws IOException;
 

@@ -1,17 +1,18 @@
 package com.iscas.common.redis.tools.impl;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.iscas.common.redis.tools.IJedisClient;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
-import redis.clients.jedis.*;
+import redis.clients.jedis.ListPosition;
+import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * JdkClient
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
  * @date 2021/05/08
  * @since jdk1.8
  */
+@SuppressWarnings({"unused", "rawtypes"})
 public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJedisClient {
 
     public JdkNoneRedisClient(JedisConnection jedisConnection) {
@@ -37,7 +39,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * 删除缓存
      *
      * @param key 键
-     * @return
+     * @return long
      */
     @Override
     public long del(String key) {
@@ -48,7 +50,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * 缓存是否存在
      *
      * @param key 键
-     * @return
+     * @return boolean
      */
     @Override
     public boolean exists(String key) throws IOException {
@@ -87,32 +89,6 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
         doDeleteByPattern(pattern);
     }
 
-//    @Override
-//    public void putDelayQueue(String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) throws IOException, ClassNotFoundException {
-//        //使用默认key
-//        String hostAddress = null;
-//        try {
-//            InetAddress localHost = InetAddress.getLocalHost();
-//            hostAddress = localHost.getHostAddress();
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
-//        putDelayQueue(DELAY_QUEUE_DEFUALT_KEY.concat(hostAddress), task, timeout, timeUnit, consumer);
-//    }
-//
-//    @Override
-//    public void putDelayQueue(String key, String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) throws IOException, ClassNotFoundException {
-//        long l = System.currentTimeMillis();
-//        long x = timeUnit.toMillis(timeout);
-//        long targetScore = l + x;
-//        Map<String, Double> map = new HashMap();
-//        map.put(task, Double.valueOf(String.valueOf(targetScore)));
-//        zadd(key, map);
-//        MAP_DELAY.put(task, consumer);
-//        delayTaskHandler(key);
-//    }
-
-
     @Override
     public void expire(String key, long milliseconds) throws IOException {
         doExpire(key, milliseconds);
@@ -127,7 +103,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * @param key          键
      * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
-     * @return
+     * @return long
      */
     @Override
     public long sadd(String key, Set value, int cacheSeconds) throws IOException {
@@ -139,7 +115,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      *
      * @param key   键
      * @param value 值
-     * @return
+     * @return long
      */
     @Override
     public long sadd(String key, Object... value) throws IOException {
@@ -209,18 +185,19 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     /*========================================set end  ========================================================*/
 
     /*===========================sort set begin========================================*/
+
     @Override
     public long zadd(String key, double score, Object member) throws IOException {
         return doZadd(key, score, member);
     }
 
     @Override
-    public long zadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) throws IOException {
+    public long zadd(String key, Map<?, Double> valueScoreMap, int cacheSeconds) throws IOException {
         return doZadd(key, valueScoreMap, cacheSeconds);
     }
 
     @Override
-    public long zadd(String key, Map<? extends Object, Double> valueScoreMap) throws IOException {
+    public long zadd(String key, Map<?, Double> valueScoreMap) throws IOException {
         return doZadd(key, valueScoreMap);
     }
 
@@ -335,7 +312,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public <K extends Object, V extends Object> Map<K, V> hgetAll(Class<K> keyClass, Class<V> valClass, String key) throws IOException, ClassNotFoundException {
+    public <K, V> Map<K, V> hgetAll(Class<K> keyClass, Class<V> valClass, String key) throws IOException, ClassNotFoundException {
         return doHgetAll(keyClass, valClass, key);
     }
 
@@ -370,12 +347,12 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public long hincrby(String key, String field, long value) throws IOException {
+    public long hincrby(String key, String field, long value) {
         return doHincrby(key, field, value);
     }
 
     @Override
-    public Double hincrby(String key, String field, double value) throws IOException {
+    public Double hincrby(String key, String field, double value) {
         return doHincrby(key, field, value);
     }
 
@@ -404,7 +381,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
      * @param key          键
      * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
-     * @return
+     * @return boolean
      */
     @Override
     public boolean set(String key, Object value, int cacheSeconds) throws IOException {
@@ -422,7 +399,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public long setrange(String key, long offset, Object value) throws IOException {
+    public long setrange(String key, long offset, Object value) {
         throw new UnsupportedOperationException("不支持此setrange操作");
     }
 
@@ -433,12 +410,12 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     }
 
     @Override
-    public long decrBy(String key, long number) throws IOException {
+    public long decrBy(String key, long number) {
         throw new UnsupportedOperationException("不支持此decrBy操作");
     }
 
     @Override
-    public long incrBy(String key, long number) throws IOException {
+    public long incrBy(String key, long number) {
         throw new UnsupportedOperationException("不支持此incrBy操作");
     }
 
@@ -528,6 +505,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
     /*===========================list end============================================*/
 
 
+    @SuppressWarnings({"unchecked", "DuplicatedCode"})
     private void delayTaskHandler(String key) throws IOException, ClassNotFoundException {
         if (MAP_DELAY_EXECUTE.get(key) == null) {
             synchronized (key.intern()) {
@@ -535,7 +513,7 @@ public class JdkNoneRedisClient extends JdkNoneRedisCommonClient implements IJed
                     MAP_DELAY_EXECUTE.put(key, true);
                     while (true) {
                         Map<String, Double> zSet = zrangeWithScoresToMap(String.class, key, 0, -1);
-                        if (zSet == null || zSet.size() == 0) {
+                        if (CollectionUtil.isEmpty(zSet)) {
                             break;
                         }
                         for (Map.Entry<String, Double> entry : zSet.entrySet()) {

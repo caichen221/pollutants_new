@@ -11,13 +11,14 @@ import java.util.List;
  * @date 2018/11/5 16:15
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class ConfigInfo {
     private int maxTotal = 50;
     private int maxIdle = 5;
     private long maxWait = 20000;
     private List<RedisInfo> redisInfos = new ArrayList<>();
 
-    //集群用的
+    /**集群用的*/
     private int clusterTimeout = 5000;
     private int clusterSoTimeout = 5000;
     private int clusterMaxAttempts = 50;

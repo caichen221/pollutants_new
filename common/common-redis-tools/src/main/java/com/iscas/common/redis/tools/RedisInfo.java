@@ -46,6 +46,7 @@ public class RedisInfo {
         this.pwd = pwd;
     }
 
+    @SuppressWarnings("unused")
     public RedisInfo(String host, int port, int timeout, String pwd) {
         this.host = host;
         this.port = port;

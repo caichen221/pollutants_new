@@ -13,12 +13,12 @@ import java.io.*;
 public class MyObjectHelper {
     /**
      * 序列化对象
-     * @param object
-     * @return
+     * @param object object
+     * @return byte[] 字节数组
      */
     public static byte[] serialize(Object object) throws IOException {
-        ObjectOutputStream oos = null;
-        ByteArrayOutputStream baos = null;
+        ObjectOutputStream oos;
+        ByteArrayOutputStream baos;
         if (object != null) {
             baos = new ByteArrayOutputStream();
             oos = new ObjectOutputStream(baos);
@@ -30,11 +30,11 @@ public class MyObjectHelper {
 
     /**
      * 反序列化对象
-     * @param bytes
-     * @return
+     * @param bytes 字节数组
+     * @return Object
      */
     public static Object unserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = null;
+        ByteArrayInputStream bais;
         if (bytes != null && bytes.length > 0) {
             bais = new ByteArrayInputStream(bytes);
             ObjectInputStream ois = new ObjectInputStream(bais);

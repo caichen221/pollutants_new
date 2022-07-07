@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * @date 2018/11/7 8:37
  * @since jdk1.8
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class JedisClusterConnection implements JedisConnection {
     private ConfigInfo configInfo;
     private volatile JedisCluster jedisCluster = null;
@@ -47,6 +48,7 @@ public class JedisClusterConnection implements JedisConnection {
         return jedisCluster;
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public RedisClusterClient getLettuceClusterClient() {
         if(lettuceClusterClient == null){
             synchronized (JedisClusterConnection.class){

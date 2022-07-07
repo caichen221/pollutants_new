@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  * @date 2020/11/19 12:53
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "deprecation", "unchecked"})
 public class JedisCommonClient  {
     protected Object jedisPool;
     protected JedisConnection jedisConnection;
@@ -31,21 +32,23 @@ public class JedisCommonClient  {
     protected static Map<String, Boolean> MAP_DELAY_EXECUTE = new ConcurrentHashMap<>();
     /**
      * 获取资源
-     * @return
-     * @throws JedisException
+     * @param tClass class
+     * @return T
      */
     public <T> T getResource(Class<T> tClass) throws JedisException {
         Object jedis = null;
+        //noinspection CaughtExceptionImmediatelyRethrown
         try {
             if (jedisPool instanceof Pool) {
                 jedis = ((Pool)jedisPool).getResource();
             } else if (jedisPool instanceof JedisCluster){
                 jedis = jedisPool;
-            } else if (jedisPool instanceof ShardedJedisPool) {
+            } else //noinspection ConstantConditions
+                if (jedisPool instanceof ShardedJedisPool) {
                 jedis = ((ShardedJedisPool) jedisPool).getResource();
             }
         } catch (JedisException e) {
-            returnBrokenResource(jedis);
+//            returnBrokenResource(null);
             throw e;
         }
         return (T) jedis;
@@ -53,10 +56,10 @@ public class JedisCommonClient  {
 
     /**
      * 归还资源
-     * @param jedis
-     * @param jedis
+     * @param jedis jedis
      */
-    public  void returnBrokenResource(Object jedis) {
+    @SuppressWarnings("DuplicatedCode")
+    public void returnBrokenResource(Object jedis) {
         if (jedis != null) {
             if (jedis instanceof Jedis) {
                 Jedis jedis1 = (Jedis) jedis;
@@ -75,8 +78,9 @@ public class JedisCommonClient  {
 
     /**
      * 释放资源
-     * @param jedis
+     * @param jedis jedis
      */
+    @SuppressWarnings("DuplicatedCode")
     public void returnResource(Object jedis) {
         if (jedis != null ) {
             if (jedis instanceof  Jedis) {
@@ -96,8 +100,8 @@ public class JedisCommonClient  {
 
     /**
      * 获取byte[]类型Key
-     * @param object
-     * @return
+     * @param object object
+     * @return byte[]
      */
     public static byte[] getBytesKey(Object object) throws IOException {
         if(object instanceof String){
@@ -109,8 +113,8 @@ public class JedisCommonClient  {
 
     /**
      * Object转换byte[]类型
-     * @param object
-     * @return
+     * @param object object
+     * @return byte[]
      */
     public static byte[] toBytes(Object object) throws IOException {
         return MyObjectHelper.serialize(object);
@@ -118,8 +122,8 @@ public class JedisCommonClient  {
 
     /**
      * byte[]型转换Object
-     * @param bytes
-     * @return
+     * @param bytes bytes
+     * @return Object
      */
     public static Object toObject(byte[] bytes) throws IOException, ClassNotFoundException {
         return MyObjectHelper.unserialize(bytes);
@@ -127,14 +131,13 @@ public class JedisCommonClient  {
 
     /**
      * 获取分布式锁 返回Null表示获取锁失败
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/11/6
      * @param lockName 锁名称
      * @param lockTimeoutInMS 锁超时时间
-     * @throws
      * @return java.lang.String 锁标识
      */
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public String acquireLock(String lockName, long lockTimeoutInMS) {
         Object jc = null;
         try {
@@ -156,7 +159,7 @@ public class JedisCommonClient  {
                 JedisCluster jedis = (JedisCluster) jc;
                 result = jedis.set(lockKey, identifier, setParams);
             }
-            if ("OK".equals(result)) {
+            if (RESULT_OK.equals(result)) {
                 retIdentifier = identifier;
             }
             return retIdentifier;
@@ -167,14 +170,13 @@ public class JedisCommonClient  {
 
     /**
      * 释放锁
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/11/6
      * @param lockName 锁key
      * @param identifier 锁标识
-     * @throws
      * @return boolean
      */
+    @SuppressWarnings("UnusedReturnValue")
     public boolean releaseLock(String lockName, String identifier) {
         Object conn = null;
         String lockKey = "lock:" + lockName;
@@ -198,13 +200,11 @@ public class JedisCommonClient  {
 
     /**
      *  IP 限流
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/11/6
      * @param ip ip
      * @param timeout 规定时间 （秒）
      * @param limit 限制次数
-     * @throws
      * @return 是否可以访问
      */
     public boolean accessLimit(String ip, int timeout, int limit) {
@@ -220,7 +220,7 @@ public class JedisCommonClient  {
                     "else \n" +
                     "\treturn 1\n" +
                     "end\n";
-            Object result = jedisCommandsBytesLuaEvalSha(conn, lua, Arrays.asList(ip), Arrays.asList(String.valueOf(timeout),
+            Object result = jedisCommandsBytesLuaEvalSha(conn, lua, Collections.singletonList(ip), Arrays.asList(String.valueOf(timeout),
                     String.valueOf(limit)));
             return "1".equals(result == null ? null : result.toString());
         }  finally {

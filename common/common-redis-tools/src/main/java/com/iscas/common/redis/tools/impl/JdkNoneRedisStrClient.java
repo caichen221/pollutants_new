@@ -5,13 +5,15 @@ import com.iscas.common.redis.tools.IJedisStrClient;
 import com.iscas.common.redis.tools.JedisConnection;
 import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
-import redis.clients.jedis.*;
+import redis.clients.jedis.ListPosition;
+import redis.clients.jedis.Tuple;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -25,6 +27,7 @@ import java.util.function.Consumer;
  * @date 2021/05/08
  * @since jdk1.8
  */
+@SuppressWarnings({"unchecked", "rawtypes", "ConfusingArgumentToVarargsMethod"})
 public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements IJedisStrClient {
 
 
@@ -46,7 +49,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      * 删除缓存
      *
      * @param key 键
-     * @return
+     * @return long
      */
     @Override
     public long del(String key) {
@@ -57,7 +60,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      * 缓存是否存在
      *
      * @param key 键
-     * @return
+     * @return boolean
      */
     @Override
     public boolean exists(String key) {
@@ -77,6 +80,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
         doExpire(key, milliseconds);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void putDelayQueue(String task, long timeout, TimeUnit timeUnit, Consumer<String> consumer) {
         //使用默认key
@@ -87,6 +91,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        assert hostAddress != null;
         putDelayQueue(DELAY_QUEUE_DEFUALT_KEY.concat(hostAddress), task, timeout, timeUnit, consumer);
     }
 
@@ -102,6 +107,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
         delayTaskHandler(key);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private void delayTaskHandler(String key) {
         if (MAP_DELAY_EXECUTE.get(key) == null) {
             synchronized (key.intern()) {
@@ -139,6 +145,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
 
 
     /*=============================set begin===============================================*/
+    @SuppressWarnings("ConfusingArgumentToVarargsMethod")
     @Override
     public long sadd(String key, String... value) {
         return doSadd(key, value);
@@ -418,7 +425,7 @@ public class JdkNoneRedisStrClient extends JdkNoneRedisCommonClient implements I
      * @param key          键
      * @param value        值
      * @param cacheSeconds 超时时间，0为不超时
-     * @return
+     * @return boolean
      */
     @Override
     public boolean set(String key, String value, int cacheSeconds) {

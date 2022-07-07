@@ -11,7 +11,6 @@ import com.iscas.common.redis.tools.impl.jdk.JdkNoneRedisConnection;
 import com.iscas.common.redis.tools.impl.jdk.ZsortDto;
 import redis.clients.jedis.ListPosition;
 import redis.clients.jedis.PipelineBase;
-import redis.clients.jedis.Tuple;
 
 import java.io.IOException;
 import java.util.*;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
  * @date 2021/05/08 12:53
  * @since jdk1.8
  */
+@SuppressWarnings({"rawtypes", "unused", "unchecked"})
 public class JdkNoneRedisCommonClient {
     protected JedisConnection jedisConnection;
     protected JdkNoneRedisConnection jdkNoneRedisConnection;
@@ -38,8 +38,8 @@ public class JdkNoneRedisCommonClient {
 
     /**
      * 获取byte[]类型Key
-     * @param object
-     * @return
+     * @param object object
+     * @return byte[]
      */
     public static byte[] getBytesKey(Object object) throws IOException {
         if(object instanceof String){
@@ -51,8 +51,8 @@ public class JdkNoneRedisCommonClient {
 
     /**
      * Object转换byte[]类型
-     * @param object
-     * @return
+     * @param object object
+     * @return byte[]
      */
     public static byte[] toBytes(Object object) throws IOException {
         return MyObjectHelper.serialize(object);
@@ -60,8 +60,8 @@ public class JdkNoneRedisCommonClient {
 
     /**
      * byte[]型转换Object
-     * @param bytes
-     * @return
+     * @param bytes bytes
+     * @return Object
      */
     public static Object toObject(byte[] bytes) throws IOException, ClassNotFoundException {
         return MyObjectHelper.unserialize(bytes);
@@ -69,12 +69,10 @@ public class JdkNoneRedisCommonClient {
 
     /**
      * 获取分布式锁 返回Null表示获取锁失败
-     * @version 1.0
      * @since jdk1.8
      * @date 2021/05/08
      * @param lockName 锁名称
      * @param lockTimeoutInMS 锁超时时间
-     * @throws
      * @return java.lang.String 锁标识
      */
     public String acquireLock(String lockName, long lockTimeoutInMS) {
@@ -83,13 +81,13 @@ public class JdkNoneRedisCommonClient {
 
         //TimeCache中已经使用了Lock，这里使用锁为了保证读取和存入缓存是一个原子操作
         synchronized (lockKey.intern()) {
-            String lock = jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.get(lockKey, false);
+            String lock = jdkNoneRedisConnection.acquireLockCache.get(lockKey, false);
             if (lock != null) {
                 //锁存在
                 return null;
             } else {
                 //锁不存在
-                jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.put(lockKey, identifier, lockTimeoutInMS);
+                jdkNoneRedisConnection.acquireLockCache.put(lockKey, identifier, lockTimeoutInMS);
             }
         }
         return identifier;
@@ -97,29 +95,27 @@ public class JdkNoneRedisCommonClient {
 
     /**
      * 释放锁
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/11/6
      * @param lockName 锁key
      * @param identifier 锁标识
-     * @throws
      * @return boolean
      */
     public boolean releaseLock(String lockName, String identifier) {
         String lockKey = "lock:" + lockName;
         boolean result;
         if (identifier == null) {
-            result = true;
+            return true;
         }
         //TimeCache中已经使用了Lock，这里使用锁为了保证读取和删除缓存是一个原子操作
         synchronized (lockKey.intern()) {
-            String identifier2 = jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.get(lockKey, false);
+            String identifier2 = jdkNoneRedisConnection.acquireLockCache.get(lockKey, false);
             if (null != identifier2 && !Objects.equals(identifier, identifier2)) {
                 //只有加锁的人才能释放锁，如果获取的值跟传入的
                 //identifier不一致，说明这不是自己加的锁，拒绝释放
                 result = false;
             } else {
-                jdkNoneRedisConnection.ACQUIRE_LOCK_CACHE.remove(lockKey);
+                jdkNoneRedisConnection.acquireLockCache.remove(lockKey);
                 result = true;
             }
         }
@@ -128,13 +124,11 @@ public class JdkNoneRedisCommonClient {
 
     /**
      *  IP 限流
-     * @version 1.0
      * @since jdk1.8
      * @date 2018/11/6
      * @param ip ip
      * @param timeout 规定时间 （秒）
      * @param limit 限制次数
-     * @throws
      * @return 是否可以访问
      */
     public boolean accessLimit(String ip, int timeout, int limit) {
@@ -155,8 +149,8 @@ public class JdkNoneRedisCommonClient {
 
     protected long doDel(String key) {
         synchronized (key.intern()) {
-            if (jdkNoneRedisConnection.OBJECT_CACHE.containsKey(key)) {
-                jdkNoneRedisConnection.OBJECT_CACHE.remove(key);
+            if (jdkNoneRedisConnection.objectCache.containsKey(key)) {
+                jdkNoneRedisConnection.objectCache.remove(key);
                 return 1;
             } else {
                 return 0;
@@ -165,14 +159,14 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected boolean doExists(String key) {
-        return jdkNoneRedisConnection.OBJECT_CACHE.containsKey(key);
+        return jdkNoneRedisConnection.objectCache.containsKey(key);
     }
 
     protected void doDeleteByPattern(String pattern) {
         //转换为正则表达式
         pattern = pattern.replace("*", ".*");
         pattern = pattern.replace("?", ".");
-        Map cacheMap = (Map) ReflectUtil.getFieldValue(jdkNoneRedisConnection.OBJECT_CACHE, "cacheMap");
+        Map cacheMap = (Map) ReflectUtil.getFieldValue(jdkNoneRedisConnection.objectCache, "cacheMap");
         Set<String> set = cacheMap.keySet();
         if (CollectionUtil.isNotEmpty(set)) {
             Pattern pa = Pattern.compile(pattern);
@@ -180,16 +174,16 @@ public class JdkNoneRedisCommonClient {
             List<String> keys = set.stream().filter(key -> pa.matcher(key).matches())
                     .collect(Collectors.toList());
             if (CollectionUtil.isNotEmpty(keys)) {
-                keys.forEach(jdkNoneRedisConnection.OBJECT_CACHE::remove);
+                keys.forEach(jdkNoneRedisConnection.objectCache::remove);
             }
         }
     }
 
     protected void doExpire(String key, long milliseconds) {
         synchronized (key.intern()) {
-            Object value = jdkNoneRedisConnection.OBJECT_CACHE.get(key);
+            Object value = jdkNoneRedisConnection.objectCache.get(key);
             if (value != null) {
-                jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, milliseconds);
+                jdkNoneRedisConnection.objectCache.put(key, value, milliseconds);
             }
         }
     }
@@ -197,16 +191,16 @@ public class JdkNoneRedisCommonClient {
     protected boolean doSet(String key, Object value, long seconds) {
         synchronized (key.intern()) {
             if (seconds == 0) {
-                jdkNoneRedisConnection.OBJECT_CACHE.put(key, value);
+                jdkNoneRedisConnection.objectCache.put(key, value);
             } else {
-                jdkNoneRedisConnection.OBJECT_CACHE.put(key, value, seconds * 1000);
+                jdkNoneRedisConnection.objectCache.put(key, value, seconds * 1000);
             }
             return true;
         }
     }
 
     protected <T> T doGet(Class<T> tClass, String key) {
-        return (T) jdkNoneRedisConnection.OBJECT_CACHE.get(key);
+        return (T) jdkNoneRedisConnection.objectCache.get(key);
     }
 
     protected long doSetnx(String key, Object value) {
@@ -404,7 +398,7 @@ public class JdkNoneRedisCommonClient {
         synchronized (key.intern()) {
             Map map = doGet(Map.class, key);
             if (map == null) {
-                map = new HashMap();
+                map = new HashMap(16);
                 doSet(key, map, 0);
             }
             return map;
@@ -416,16 +410,15 @@ public class JdkNoneRedisCommonClient {
             Map storeMap = getMap(key);
             storeMap.putAll(map);
             if (cacheSeconds != 0) {
-                doExpire(key, cacheSeconds * 1000);
+                doExpire(key, cacheSeconds * 1000L);
             }
             return true;
         }
     }
 
 
-    protected  <K extends Object, V extends Object> Map<K, V> doHgetAll(Class<K> keyClass, Class<V> valClass, String key) {
-        Map<K, V> map = doGet(Map.class, key);
-        return map;
+    protected  <K, V> Map<K, V> doHgetAll(Class<K> keyClass, Class<V> valClass, String key) {
+        return doGet(Map.class, key);
     }
 
     protected long doHdel(String key, Object... fields) {
@@ -509,20 +502,20 @@ public class JdkNoneRedisCommonClient {
                 data += value;
                 if (o instanceof String) {
                     doHset(key, field, String.valueOf(data));
-                } else if (o instanceof Integer || o.getClass() == int.class) {
+                } else if (o instanceof Integer) {
                     doHset(key, field, (int) data);
-                } else if (o instanceof Short || o.getClass() == short.class) {
+                } else if (o instanceof Short) {
                     doHset(key, field, (int) data);
-                } else if (o instanceof Byte || o.getClass() == byte.class) {
+                } else if (o instanceof Byte) {
                     doHset(key, field, (int) data);
-                } else if (o instanceof Long || o.getClass() == long.class) {
+                } else if (o instanceof Long) {
                     doHset(key, field, data);
                 } else {
                     throw new RuntimeException(String.format("不支持的数据类型:%s", o.getClass()));
                 }
                 return data;
             } catch (Exception e) {
-                throw new RuntimeException(String.format("值:%s不能转化为整数", o.toString()));
+                throw new RuntimeException(String.format("值:%s不能转化为整数", o));
             }
         }
     }
@@ -542,16 +535,16 @@ public class JdkNoneRedisCommonClient {
                 data += value;
                 if (o instanceof String) {
                     doHset(key, field, String.valueOf(data));
-                } else if (o instanceof Float || o.getClass() == float.class) {
+                } else if (o instanceof Float) {
                     doHset(key, field, (int) data);
-                } else if (o instanceof Double || o.getClass() == double.class) {
+                } else if (o instanceof Double) {
                     doHset(key, field, (int) data);
                 } else {
                     throw new RuntimeException(String.format("不支持的数据类型:%s", o.getClass()));
                 }
                 return data;
             } catch (Exception e) {
-                throw new RuntimeException(String.format("值:%s不能转化为浮点数", o.toString()));
+                throw new RuntimeException(String.format("值:%s不能转化为浮点数", o));
             }
         }
     }
@@ -559,7 +552,7 @@ public class JdkNoneRedisCommonClient {
     protected <T> Set<T> doHkeys(Class<T> tClass, String key) {
         synchronized (key.intern()) {
             return Optional.ofNullable(doGet(Map.class, key))
-                    .map(map -> map.keySet())
+                    .map(Map::keySet)
                     .orElse(null);
         }
     }
@@ -599,7 +592,7 @@ public class JdkNoneRedisCommonClient {
             Set set = getSet(key);
             set.addAll(value);
             if (cacheSeconds != 0) {
-                doExpire(key, cacheSeconds * 1000);
+                doExpire(key, cacheSeconds * 1000L);
             }
             return value.size();
         }
@@ -608,7 +601,7 @@ public class JdkNoneRedisCommonClient {
     protected long doSadd(String key, Object... value) {
         synchronized (key.intern()) {
             Set set = getSet(key);
-            Arrays.stream(value).forEach(set::add);
+            set.addAll(Arrays.asList(value));
             return value.length;
         }
     }
@@ -686,7 +679,7 @@ public class JdkNoneRedisCommonClient {
 
     protected <T> Set<T> doSmembers(Class<T> tClass, String key) {
         synchronized (key.intern()) {
-            return Optional.ofNullable(doGet(Set.class, key)).orElse(null);
+            return doGet(Set.class, key);
         }
     }
 
@@ -773,17 +766,17 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
-    protected long doZadd(String key, Map<? extends Object, Double> valueScoreMap, int cacheSeconds) {
+    protected long doZadd(String key, Map<?, Double> valueScoreMap, int cacheSeconds) {
         synchronized (key.intern()) {
             long l = doZadd(key, valueScoreMap);
             if (cacheSeconds != 0) {
-                doExpire(key, cacheSeconds * 1000);
+                doExpire(key, cacheSeconds * 1000L);
             }
             return l;
         }
     }
 
-    protected long doZadd(String key, Map<? extends Object, Double> valueScoreMap) {
+    protected long doZadd(String key, Map<?, Double> valueScoreMap) {
         synchronized (key.intern()) {
             TreeSet<ZsortDto> zset = getZset(key);
             for (Map.Entry<?, Double> entry : valueScoreMap.entrySet()) {
@@ -836,6 +829,7 @@ public class JdkNoneRedisCommonClient {
         }
     }
 
+    @SuppressWarnings("SortedCollectionWithNonComparableKeys")
     protected <T> Set<T> doZrange(Class<T> tClass, String key, long start, long end) {
         synchronized (key.intern()) {
             TreeSet<ZsortDto> zset = doGet(TreeSet.class, key);
@@ -1075,19 +1069,13 @@ public class JdkNoneRedisCommonClient {
         if (treeSet0 == null) {
             return 0L;
         }
-        Set<ZsortDto> resultSet = new TreeSet<ZsortDto>(treeSet0);
+        Set<ZsortDto> resultSet = new TreeSet<>(treeSet0);
         for (int i = 1; i < keys.length; i++) {
             TreeSet<ZsortDto> treeSet = doGet(TreeSet.class, keys[i]);
             if (treeSet == null) {
                 return 0L;
             }
-            Iterator<ZsortDto> iterator = resultSet.iterator();
-            while (iterator.hasNext()) {
-                ZsortDto next = iterator.next();
-                if (!treeSet.contains(next)) {
-                    iterator.remove();
-                }
-            }
+            resultSet.removeIf(next -> !treeSet.contains(next));
         }
         for (ZsortDto zsortDto : resultSet) {
             doZadd(dstKey, zsortDto.getScore(), zsortDto.getMember());
@@ -1101,7 +1089,7 @@ public class JdkNoneRedisCommonClient {
         if (treeSet0 == null) {
             return 0L;
         }
-        Set<ZsortDto> resultSet = new TreeSet<ZsortDto>(treeSet0);
+        Set<ZsortDto> resultSet = new TreeSet<>(treeSet0);
         for (int i = 1; i < keys.length; i++) {
             TreeSet<ZsortDto> treeSet = doGet(TreeSet.class, keys[i]);
             if (treeSet == null) {

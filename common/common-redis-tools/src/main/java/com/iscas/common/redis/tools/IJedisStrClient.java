@@ -3,10 +3,6 @@ package com.iscas.common.redis.tools;
 import com.iscas.common.redis.tools.interfaces.*;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -26,11 +22,9 @@ public interface IJedisStrClient extends IJedisCommonClient, IJedisSetStrClient,
 
     /**
      * redis-cluser 使用pipeline,使用lettuce实现
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/20
-     * @throws
-     * @return
+     * @param consumer 消费者
      */
     void pipelineClusterBatch(Consumer<RedisAdvancedClusterCommands<String, String>> consumer);
 
@@ -38,7 +32,7 @@ public interface IJedisStrClient extends IJedisCommonClient, IJedisSetStrClient,
      * 删除缓存
      *
      * @param key 键
-     * @return
+     * @return long
      */
     long del(String key);
 
@@ -46,12 +40,13 @@ public interface IJedisStrClient extends IJedisCommonClient, IJedisSetStrClient,
      * 缓存是否存在
      *
      * @param key 键
-     * @return
+     * @return long
      */
     boolean exists(String key);
 
     /**
      * 按照key表达式规则删除
+     * @param pattern 表达式
      */
     void deleteByPattern(String pattern);
 
@@ -60,9 +55,6 @@ public interface IJedisStrClient extends IJedisCommonClient, IJedisSetStrClient,
      *
      * @param key 缓存的key
      * @param millisecond 过期时间毫秒
-     * @return
-     * @throws
-     * @version 1.0
      * @date 2020/11/2
      * @since jdk1.8
      */

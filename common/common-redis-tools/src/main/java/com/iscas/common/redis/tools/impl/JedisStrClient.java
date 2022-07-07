@@ -11,11 +11,9 @@ import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import redis.clients.jedis.*;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -30,6 +28,7 @@ import java.util.function.Consumer;
  * @date 2020/11/15
  * @since jdk1.8
  */
+@SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
 public class JedisStrClient extends JedisCommonClient implements IJedisStrClient {
 
     public JedisStrClient(JedisConnection jedisConnection, ConfigInfo configInfo) {
@@ -53,8 +52,9 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     /**
      * 删除缓存
      * @param key 键
-     * @return
+     * @return long
      */
+    @SuppressWarnings("deprecation")
     @Override
     public long del(String key) {
         Object jc = null;
@@ -79,8 +79,9 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     /**
      * 缓存是否存在
      * @param key 键
-     * @return
+     * @return boolean
      */
+    @SuppressWarnings("deprecation")
     @Override
     public boolean exists(String key) {
         Object jc = null;
@@ -102,23 +103,17 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings({"deprecation", "DuplicatedCode"})
     @Override
     public void deleteByPattern(String pattern) {
         Object jedis = null;
         try {
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
-                Jedis jd = (Jedis) jedis;
-                Set<String> keys = jd.keys(pattern);
-                if(keys != null && !keys.isEmpty()) {
-                    String[] keyArr = new String[keys.size()];
-                    jd.del(keys.toArray(keyArr));
-                }
+                BaseOperate.del(pattern, (Jedis) jedis);
             } else if (jedis instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jedis;
                 throw new RuntimeException("ShardedJedis 暂不支持pattern删除");
             } else if (jedis instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jedis;
                 throw new RuntimeException("JedisCluster 暂不支持pattern删除");
             }
         } finally {
@@ -126,8 +121,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
-
-
+    @SuppressWarnings("deprecation")
     @Override
     public void expire(String key, long milliseconds) {
         Object jedis = null;
@@ -161,6 +155,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        assert hostAddress != null;
         putDelayQueue(DELAY_QUEUE_DEFUALT_KEY.concat(hostAddress), task, timeout, timeUnit, consumer);
     }
 
@@ -169,7 +164,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         long l = System.currentTimeMillis();
         long x = timeUnit.toMillis(timeout);
         long targetScore = l + x;
-        Map<String, Double> map = new HashMap();
+        Map<String, Double> map = new HashMap(2);
         map.put(task, Double.valueOf(String.valueOf(targetScore)));
         zadd(key, map);
         MAP_DELAY.put(task, consumer);
@@ -220,21 +215,16 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
 
 
     /*=============================set begin===============================================*/
+
     @Override
     public long sadd(String key, String... value) {
         long result = 0;
         Object jc = null;
         try {
             jc = getResource(Object.class);
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sadd(key, value);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis jedis = (ShardedJedis) jc;
-                return jedis.sadd(key, value);
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedis = (JedisCluster) jc;
-                return jedis.sadd(key, value);
+            Long jedis = BaseOperate.sadd(key, jc, value);
+            if (jedis != null) {
+                return jedis;
             }
         } finally {
             returnResource(jc);
@@ -242,6 +232,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         return result;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long scard(String key) {
         Object jc = null;
@@ -263,6 +254,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Set<String> sdiff(String... keys) {
         Object jc = null;
@@ -272,7 +264,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.sdiff(keys);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new RuntimeException("ShardedJedis 暂不支持sdiff");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -284,6 +275,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long sdiffStore(String newkey, String... keys) {
         Object jc = null;
@@ -293,7 +285,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.sdiffstore(newkey, keys);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new RuntimeException("ShardedJedis 暂不支持sdiff");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -305,6 +296,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Set<String> sinter(String... keys) {
         Object jc = null;
@@ -314,7 +306,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.sinter(keys);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new RuntimeException("ShardedJedis 暂不支持sinter");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -326,6 +317,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long sinterStore(String newKey, String... keys) {
         Object jc = null;
@@ -335,7 +327,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.sinterstore(newKey, keys);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new RuntimeException("ShardedJedis 暂不支持sinter");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -352,15 +343,9 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         Object jc = null;
         try {
             jc = getResource(Object.class);
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.sismember(key, member);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis jedis = (ShardedJedis) jc;
-                return jedis.sismember(key, member);
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedis = (JedisCluster) jc;
-                return jedis.sismember(key, member);
+            Boolean jedis = BaseOperate.sismember(key, member, jc);
+            if (jedis != null) {
+                return jedis;
             }
             return false;
         } finally {
@@ -368,6 +353,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Set<String> smembers(String key) {
         Object jc = null;
@@ -389,6 +375,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long smove(String srckey, String dstkey, String member) {
         Object jc = null;
@@ -398,7 +385,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.smove(srckey, dstkey, member);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new RuntimeException("ShardedJedis 暂不支持smove");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -410,6 +396,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String spop(String key) {
         Object jc = null;
@@ -431,6 +418,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Set<String> spop(String key, long count) {
         Object jc = null;
@@ -457,22 +445,13 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         Object jc = null;
         try {
             jc = getResource(Object.class);
-            if (jc instanceof Jedis) {
-                Jedis jedis = (Jedis) jc;
-                return jedis.srem(key, member);
-            } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
-                return shardedJedis.srem(key, member);
-            } else if (jc instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jc;
-                return jedisCluster.srem(key, member);
-            }
-            return 0;
+            return BaseOperate.srem(key, jc, member);
         } finally {
             returnResource(jc);
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Set<String> sunion(String... keys) {
         Object jc = null;
@@ -482,7 +461,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.sunion(keys);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new RuntimeException("ShardedJedis 暂不支持sunion");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -497,6 +475,8 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     /*=============================set end  ===============================================*/
 
     /*==============================sort set begin=====================================================*/
+
+    @SuppressWarnings("deprecation")
     @Override
     public long zadd(String key, double score, String member) {
         Object jc = null;
@@ -518,6 +498,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long zadd(String key, Map<String, Double> valueScoreMap, int cacheSeconds) {
         long result = 0;
@@ -1006,7 +987,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jd = (Jedis) jedis;
                 return jd.zinterstore(dstKey, keys);
             } else if (jedis instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jedis;
                 throw new RuntimeException("ShardedJedis 暂不支持zinterstore");
             } else if (jedis instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jedis;
@@ -1027,7 +1007,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jd = (Jedis) jedis;
                 return jd.zunionstore(dstKey, keys);
             } else if (jedis instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jedis;
                 throw new RuntimeException("ShardedJedis 暂不支持zinterstore");
             } else if (jedis instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jedis;
@@ -1043,6 +1022,8 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
 
 
     /*==============================hash begin  =====================================================*/
+
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean hmset(String key, Map<String, String> map, int cacheSenconds) {
         Object jedis = null;
@@ -1061,7 +1042,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
             }
             if ("ok".equalsIgnoreCase(result)) {
                 if (!Objects.equals(0, cacheSenconds)) {
-                    expire(key, cacheSenconds * 1000);
+                    expire(key, cacheSenconds * 1000L);
                 }
                 return true;
             }
@@ -1092,6 +1073,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long hdel(String key, String... fields) {
         Object jedis = null;
@@ -1155,6 +1137,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long hset(String key, String field, String value) {
         Object jedis = null;
@@ -1176,6 +1159,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long hsetnx(String key, String field, String value) {
         Object jedis = null;
@@ -1251,7 +1235,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 ShardedJedis shardedJedis = (ShardedJedis) jedis;
                 return shardedJedis.hincrByFloat(key, field, value);
             } else if (jedis instanceof JedisCluster) {
-                JedisCluster jedisCluster = (JedisCluster) jedis;
                 throw new UnsupportedOperationException("jedisCluster暂不支持此操作");
             }
             return 0.0;
@@ -1281,6 +1264,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long hlen(String key) {
         Object jedis = null;
@@ -1332,7 +1316,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
      * @param key 键
      * @param value 值
      * @param cacheSeconds 超时时间，0为不超时
-     * @return
+     * @return boolean
      */
     @Override
     public boolean set(String key, String value, int cacheSeconds) {
@@ -1393,7 +1377,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     public long setnx(String key, String value) {
         Object jedis = null;
         try {
-            String result = null;
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
@@ -1415,7 +1398,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     public long setrange(String key, long offset, String value) {
         Object jedis = null;
         try {
-            String result = null;
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
@@ -1437,7 +1419,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     public long append(String key, String value) {
         Object jedis = null;
         try {
-            String result = null;
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
@@ -1459,7 +1440,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     public long decrBy(String key, long number) {
         Object jedis = null;
         try {
-            String result = null;
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
@@ -1481,7 +1461,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     public long incrBy(String key, long number) {
         Object jedis = null;
         try {
-            String result = null;
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
@@ -1503,7 +1482,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
     public String getrange(String key, long startOffset, long endOffset) {
         Object jedis = null;
         try {
-            String result = null;
             jedis = getResource(Object.class);
             if (jedis instanceof Jedis) {
                 Jedis jd = (Jedis) jedis;
@@ -1551,7 +1529,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return jedis.mget(keys);
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new UnsupportedOperationException("sharedJedis不支持mget操作");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -1572,7 +1549,6 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 Jedis jedis = (Jedis) jc;
                 return "OK".equalsIgnoreCase(jedis.mset(keysvalues));
             } else if (jc instanceof ShardedJedis) {
-                ShardedJedis shardedJedis = (ShardedJedis) jc;
                 throw new UnsupportedOperationException("sharedJedis不支持mset操作");
             } else if (jc instanceof JedisCluster) {
                 JedisCluster jedisCluster = (JedisCluster) jc;
@@ -1608,6 +1584,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
 
 
     /*==============================list begin=====================================================*/
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long rpush(String key, String... value) {
         Object jedis = null;
@@ -1629,6 +1606,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long lpush(String key, String... value) {
         Object jedis = null;
@@ -1650,6 +1628,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public long llen(String key) {
         Object jedis = null;
@@ -1818,6 +1797,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public boolean ltrim(String key, long start, long end) {
         Object jedis = null;

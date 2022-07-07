@@ -36,17 +36,4 @@ public class JredisearchUtils {
         }
         return client;
     }
-
-//    /**
-//     * 创建索引
-//     */
-//    public void createIndex(String title, String body, String numericField, Client.IndexOptions indexOptions){
-//        Schema sc = new Schema()
-//                .addTextField(title, 5.0)
-//                .addTextField(body, 1.0)
-//                .addNumericField(numericField);
-//        client.createIndex(sc, indexOptions);
-//    }
-
-
 }
