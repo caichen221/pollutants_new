@@ -90,10 +90,10 @@ public class KcExecUtilsTests {
         System.out.println(logs);
     }
 
-    @Test
-    public void download() throws IOException {
-        KcExecUtils.downloadFile("cm", "nginx-test2-7d6c7c89cf-rl5hn", "nginx-test2-instance0", "/root/xxx", new File("d:/we.txt"));
-    }
+//    @Test
+//    public void download() throws IOException {
+//        KcExecUtils.downloadFile("cm", "nginx-test2-7d6c7c89cf-rl5hn", "nginx-test2-instance0", "/root/xxx", new File("d:/we.txt"));
+//    }
 
 
 
