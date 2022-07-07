@@ -100,7 +100,6 @@ public class KcNodeBaseInfo {
     /**
      * InternalIP
      * */
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     private String internalIP;
 
     /**

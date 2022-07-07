@@ -38,307 +38,11 @@ import java.util.*;
  * @date 2020/12/31 17:52
  * @since jdk1.8
  */
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings("unused")
 public class KcPodUtils {
     private KcPodUtils() {}
 
-    /**
-     * 获取pod
-     * */
-    public static List<KcPod> getPods(String namespace, boolean metrics) throws ParseException {
-        List<KcPod> kcPods = null;
-        @Cleanup KubernetesClient kc = K8sClient.getInstance();
-        NonNamespaceOperation<Pod, PodList, PodResource<Pod>> podsInNamespace = kc.pods().inNamespace(namespace);
-        if (podsInNamespace != null) {
-            PodList podList = podsInNamespace.list();
-            if (podList != null) {
-                List<Pod> items = podList.getItems();
-                if (CollectionUtils.isNotEmpty(items)) {
-                    //获取metrics
-//                    JSONObject podMetrics = null;
-                    PodMetricsList podMetrics = null;
-                    if (metrics) {
-//                        podMetrics = getPodsMetrics(namespace);
-                        try {
-                            podMetrics = kc.top().pods().metrics();
-                        } catch (Exception e) {
-                            System.err.println("获取pod metrics出错");
-                            e.printStackTrace();
-                        }
-                    }
-
-                    kcPods = new ArrayList<>();
-                    for (Pod pod : items) {
-                        KcPod kcPod = getOnePod(pod, podMetrics);
-                        kcPods.add(kcPod);
-                    }
-                }
-            }
-        }
-        return kcPods;
-    }
-
-    private static JSONObject getPodsMetrics(String namespace) throws IOException {
-        String url = K8sClient.getConfig().getApiServerPath() + ApiPaths.API_PATH_METRICS_PODS;
-        url = url.replaceAll("//+", "/")
-                .replace("{namespace}", namespace);
-        String s = K8sCustomUtils.doGet(url);
-        if (StringUtils.isEmpty(s)) {
-            return null;
-        }
-        try {
-            return JSONUtil.parseObj(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private static KcPod getOnePod(Pod pod, PodMetricsList podMetricsList) throws ParseException {
-        KcPod kcPod = new KcPod();
-        setBaseInfo(kcPod, pod, podMetricsList);
-        setContainers(kcPod, pod, podMetricsList);
-        setInitContainers(kcPod, pod, podMetricsList);
-        setConditions(kcPod, pod);
-//        System.out.println(pod);
-        return kcPod;
-    }
-
-    private static void setConditions(KcPod kcPod, Pod pod) throws ParseException {
-        List<KcPodCondition> kcPodConditions = new ArrayList<>();
-        List<PodCondition> conditions = pod.getStatus().getConditions();
-        if (CollectionUtils.isNotEmpty(conditions)) {
-            for (PodCondition condition : conditions) {
-                KcPodCondition kcPodCondition = new KcPodCondition();
-                kcPodCondition.setMessage(condition.getMessage())
-                        .setReason(condition.getReason())
-                        .setStatus(condition.getStatus())
-                        .setType(condition.getType());
-                String lastProbeTime = condition.getLastProbeTime();
-                if (lastProbeTime != null) {
-                    Date lastTime = DateSafeUtils.parse(lastProbeTime, K8sConstants.TIME_PATTERN);
-                    kcPodCondition.setLastProbTime(CommonUtils.timeOffset(lastTime));
-                }
-
-                String lastTransitionTime = condition.getLastTransitionTime();
-                if (lastTransitionTime != null) {
-                    Date lastTransTime = DateSafeUtils.parse(lastTransitionTime, K8sConstants.TIME_PATTERN);
-                    kcPodCondition.setLastTransitionTime(CommonUtils.timeOffset(lastTransTime));
-                }
-                kcPodConditions.add(kcPodCondition);
-            }
-        }
-        kcPod.setKcPodConditions(kcPodConditions);
-    }
-
-    private static void setInitContainers(KcPod kcPod, Pod pod, PodMetricsList podMetrics) throws ParseException {
-        List<KcPodContainer> kcPodContainers = new ArrayList<>();
-        PodStatus status = pod.getStatus();
-        List<ContainerStatus> containerStatuses = status.getInitContainerStatuses();
-        List<Container> containers = pod.getSpec().getInitContainers();
-        if (CollectionUtils.isNotEmpty(containerStatuses)) {
-            for (ContainerStatus containerStatus : containerStatuses) {
-                for (Container container : containers) {
-                    if (Objects.equals(containerStatus.getName(), container.getName())) {
-                        KcPodContainer kcPodContainer = getContainer(container, containerStatus, kcPod, podMetrics);
-                        kcPodContainers.add(kcPodContainer);
-                        break;
-                    }
-                }
-            }
-        }
-        kcPod.setInitContainers(kcPodContainers);
-    }
-
-    private static void setContainers(KcPod kcPod, Pod pod, PodMetricsList podMetrics) throws ParseException {
-        List<KcPodContainer> kcPodContainers = new ArrayList<>();
-        PodStatus status = pod.getStatus();
-        List<ContainerStatus> containerStatuses = status.getContainerStatuses();
-        List<Container> containers = pod.getSpec().getContainers();
-        if (CollectionUtils.isNotEmpty(containerStatuses)) {
-            for (ContainerStatus containerStatus : containerStatuses) {
-                for (Container container : containers) {
-                    if (Objects.equals(containerStatus.getName(), container.getName())) {
-                        KcPodContainer kcPodContainer = getContainer(container, containerStatus, kcPod, podMetrics);
-                        kcPodContainers.add(kcPodContainer);
-                        break;
-                    }
-                }
-            }
-        }
-        kcPod.setContainers(kcPodContainers);
-
-    }
-
-    private static void setHealthParam(KcHealthParam healthParam, Probe probe) {
-        healthParam.setHealthThreshold(probe.getSuccessThreshold())
-                .setUnHealthThreshold(probe.getFailureThreshold())
-                .setInitialDelaySeconds(probe.getInitialDelaySeconds())
-                .setPeriodSeconds(probe.getPeriodSeconds())
-                .setTimeout(probe.getTimeoutSeconds());
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public static <T> T getHealth(Class<T> tClass, Probe probe) {
-        if (probe != null) {
-            KcProbe kcProbe;
-            if (tClass == KcLivenessProbe.class) {
-                kcProbe = new KcLivenessProbe();
-            } else {
-                kcProbe = new KcReadinessProbe();
-            }
-            TCPSocketAction tcpSocket = probe.getTcpSocket();
-            ExecAction exec = probe.getExec();
-            HTTPGetAction httpGet = probe.getHttpGet();
-            if (exec != null) {
-                kcProbe.setType("COMMAND");
-                KcHealthCommandParam healthParam = new KcHealthCommandParam();
-                healthParam.setCommands(exec.getCommand());
-                setHealthParam(healthParam, probe);
-                kcProbe.setHealthCommandParam(healthParam);
-            } else if (httpGet != null) {
-                kcProbe.setType("HTTP");
-                KcHealthHttpParam healthParam = new KcHealthHttpParam();
-                List<HTTPHeader> httpHeaders = httpGet.getHttpHeaders();
-                if (httpHeaders != null) {
-                    Map<String, String> header = new HashMap<>(16);
-                    for (HTTPHeader httpHeader : httpHeaders) {
-                        header.put(httpHeader.getName(), httpHeader.getValue());
-                    }
-                    healthParam.setHeaders(header);
-                }
-                healthParam.setPath(httpGet.getPath())
-                        .setPort(httpGet.getPort() == null ? null : httpGet.getPort().getIntVal())
-                        .setHost(httpGet.getHost());
-                setHealthParam(healthParam, probe);
-                healthParam.setProtocol(httpGet.getScheme());
-                kcProbe.setHealthHttpParam(healthParam);
-            } else if (tcpSocket != null) {
-                kcProbe.setType("TCP");
-                KcHealthTcpParam healthParam = new KcHealthTcpParam();
-                healthParam.setPort(tcpSocket.getPort() == null ? null : tcpSocket.getPort().getIntVal());
-                setHealthParam(healthParam, probe);
-                kcProbe.setHealthTcpParam(healthParam);
-            }
-            return (T) kcProbe;
-        }
-        return null;
-    }
-
-    public static String  handleImage(String image) {
-        //todo 处理image的问题，暂时这么处理，如果没有版本好，使用latest
-        if (!image.contains(":")) {
-            image += ":latest";
-        } else if (image.endsWith(":null")) {
-            image = image.replace(":null", ":latest");
-        } else if (!image.endsWith(":latest")){
-            String rightImage = StringUtils.substringAfter(image, ":");
-            if (!rightImage.contains(":")) {
-                image += ":latest";
-            }
-        }
-        return image;
-    }
-
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private static KcPodContainer getContainer(Container container, ContainerStatus containerStatus, KcPod kcPod, PodMetricsList podMetrics) throws ParseException {
-        KcPodContainer podContainer = new KcPodContainer();
-        String image = container.getImage();
-        image = handleImage(image);
-
-        podContainer.setImage(image)
-                .setImagePullPolicy(container.getImagePullPolicy());
-
-        Probe livenessProbe = container.getLivenessProbe();
-        KcLivenessProbe kcLivenessProbe = getHealth(KcLivenessProbe.class, livenessProbe);
-
-        Probe readinessProbe = container.getReadinessProbe();
-        KcReadinessProbe kcReadinessProbe = getHealth(KcReadinessProbe.class, readinessProbe);
-
-        podContainer.setLivenessProbe(kcLivenessProbe)
-                .setReadinessProbe(kcReadinessProbe)
-                .setName(container.getName());
-
-        List<ContainerPort> ports = container.getPorts();
-        if (CollectionUtils.isNotEmpty(ports)) {
-            List<KcPodContainerPort> kcPodContainerPorts = new ArrayList<>();
-            for (ContainerPort port : ports) {
-                KcPodContainerPort kcPodContainerPort = new KcPodContainerPort();
-                kcPodContainerPort.setContainerPort(port.getContainerPort())
-                        .setHostIp(port.getHostIP())
-                        .setHostPort(port.getHostPort() == null ? null : port.getHostPort().toString())
-                        .setProtocol(port.getProtocol());
-                kcPodContainerPorts.add(kcPodContainerPort);
-            }
-        }
-
-        podContainer.setTerminationMessagePath(container.getTerminationMessagePath())
-                .setTerminationMessagePolicy(container.getTerminationMessagePolicy());
-        podContainer.setContainerId(containerStatus.getContainerID())
-                .setImageId(podContainer.getImageId()).setReady(containerStatus.getReady())
-                .setRestartCount(containerStatus.getRestartCount());
-        podContainer.setLastStateRunning(getRunning(containerStatus.getLastState().getRunning()))
-                .setStateRunning(getRunning(containerStatus.getState().getRunning()))
-                .setLastStateTerminated(getTerminated(containerStatus.getLastState().getTerminated()))
-                .setStateTerminated(getTerminated(containerStatus.getState().getTerminated()))
-                .setLastStateWaiting(getWaiting(containerStatus.getLastState().getWaiting()))
-                .setStateWaiting(getWaiting(containerStatus.getState().getWaiting()));
-
-        //resource
-        podContainer.setResource(setResource(container));
-
-        //环境变量
-        podContainer.setEnvs(setEnvs(container));
-
-        //环境变量新
-        podContainer.setEnvVar(setEnvVar(container));
-
-        //挂载点
-        podContainer.setVolumeMounts(setVolumeMounts(container));
-
-        if (podMetrics != null) {
-            List<PodMetrics> items = podMetrics.getItems();
-            if (items != null) {
-                for (PodMetrics item : items) {
-                    if (item != null) {
-                        ObjectMeta metadata = item.getMetadata();
-                        String name1 = metadata.getName();
-                        if (Objects.equals(name1, kcPod.getBaseInfo().getName())) {
-                            long usedMemory = 0L;
-                            double usedCpu = 0.0;
-                            double usedStorage = 0;
-                            List<ContainerMetrics> containers = item.getContainers();
-                            if (containers != null) {
-                                for (ContainerMetrics cm : containers) {
-                                    if (cm != null) {
-                                        Map<String, Quantity> usage = cm.getUsage();
-                                        String connStr = cm.getName();
-                                        if (usage != null && Objects.equals(connStr, podContainer.getName())) {
-                                            Quantity memoryStr = usage.get("memory");
-                                            Quantity cpuStr = usage.get("cpu");
-                                            if (memoryStr != null) {
-                                                usedMemory += Quantity.getAmountInBytes(memoryStr).longValue() / 1024;
-                                            }
-                                            if (cpuStr != null) {
-                                                usedCpu += Quantity.getAmountInBytes(cpuStr).doubleValue();
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            podContainer.setUsedCpu(usedCpu)
-                                    .setUsedMemory(usedMemory);
-                        }
-                    }
-                }
-            }
-        }
-
-        return podContainer;
-    }
-
-    //获取挂载点
+    /**获取挂载点*/
     public static List<KcPodContainerVoMount> setVolumeMounts(Container container) {
         List<KcPodContainerVoMount> podContainerVoMounts = new ArrayList<>();
         List<VolumeMount> volumeMounts = container.getVolumeMounts();
@@ -462,6 +166,297 @@ public class KcPodUtils {
         return kcResource;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T getHealth(Class<T> tClass, Probe probe) {
+        if (probe != null) {
+            KcProbe kcProbe;
+            if (tClass == KcLivenessProbe.class) {
+                kcProbe = new KcLivenessProbe();
+            } else {
+                kcProbe = new KcReadinessProbe();
+            }
+            TCPSocketAction tcpSocket = probe.getTcpSocket();
+            ExecAction exec = probe.getExec();
+            HTTPGetAction httpGet = probe.getHttpGet();
+            if (exec != null) {
+                kcProbe.setType("COMMAND");
+                KcHealthCommandParam healthParam = new KcHealthCommandParam();
+                healthParam.setCommands(exec.getCommand());
+                setHealthParam(healthParam, probe);
+                kcProbe.setHealthCommandParam(healthParam);
+            } else if (httpGet != null) {
+                kcProbe.setType("HTTP");
+                KcHealthHttpParam healthParam = new KcHealthHttpParam();
+                List<HTTPHeader> httpHeaders = httpGet.getHttpHeaders();
+                if (httpHeaders != null) {
+                    Map<String, String> header = new HashMap<>(8);
+                    for (HTTPHeader httpHeader : httpHeaders) {
+                        header.put(httpHeader.getName(), httpHeader.getValue());
+                    }
+                    healthParam.setHeaders(header);
+                }
+                healthParam.setPath(httpGet.getPath())
+                        .setPort(httpGet.getPort() == null ? null : httpGet.getPort().getIntVal())
+                        .setHost(httpGet.getHost());
+                setHealthParam(healthParam, probe);
+                healthParam.setProtocol(httpGet.getScheme());
+                kcProbe.setHealthHttpParam(healthParam);
+            } else if (tcpSocket != null) {
+                kcProbe.setType("TCP");
+                KcHealthTcpParam healthParam = new KcHealthTcpParam();
+                //noinspection ConstantConditions
+                healthParam.setPort(tcpSocket.getPort() == null ? null : tcpSocket.getPort().getIntVal());
+                setHealthParam(healthParam, probe);
+                kcProbe.setHealthTcpParam(healthParam);
+            }
+            return (T) kcProbe;
+        }
+        return null;
+    }
+
+    public static String  handleImage(String image) {
+        //todo 处理image的问题，暂时这么处理，如果没有版本好，使用latest
+        if (!image.contains(":")) {
+            image += ":latest";
+        } else if (image.endsWith(":null")) {
+            image = image.replace(":null", ":latest");
+        } else if (!image.endsWith(":latest")){
+            String rightImage = StringUtils.substringAfter(image, ":");
+            if (!rightImage.contains(":")) {
+                image += ":latest";
+            }
+        }
+        return image;
+    }
+
+    /**
+     * 获取pod
+     * */
+    public static List<KcPod> getPods(String namespace, boolean metrics) throws ParseException {
+        List<KcPod> kcPods = null;
+        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+        NonNamespaceOperation<Pod, PodList, PodResource<Pod>> podsInNamespace = kc.pods().inNamespace(namespace);
+        if (podsInNamespace != null) {
+            PodList podList = podsInNamespace.list();
+            if (podList != null) {
+                List<Pod> items = podList.getItems();
+                if (CollectionUtils.isNotEmpty(items)) {
+                    //获取metrics
+//                    JSONObject podMetrics = null;
+                    PodMetricsList podMetrics = null;
+                    if (metrics) {
+//                        podMetrics = getPodsMetrics(namespace);
+                        try {
+                            podMetrics = kc.top().pods().metrics();
+                        } catch (Exception e) {
+                            System.err.println("获取pod metrics出错");
+                            e.printStackTrace();
+                        }
+                    }
+
+                    kcPods = new ArrayList<>();
+                    for (Pod pod : items) {
+                        KcPod kcPod = getOnePod(pod, podMetrics);
+                        kcPods.add(kcPod);
+                    }
+                }
+            }
+        }
+        return kcPods;
+    }
+
+    private static JSONObject getPodsMetrics(String namespace) throws IOException {
+        String url = K8sClient.getConfig().getApiServerPath() + ApiPaths.API_PATH_METRICS_PODS;
+        url = url.replaceAll("//+", "/")
+                .replace("{namespace}", namespace);
+        String s = K8sCustomUtils.doGet(url);
+        if (StringUtils.isEmpty(s)) {
+            return null;
+        }
+        try {
+            return JSONUtil.parseObj(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static KcPod getOnePod(Pod pod, PodMetricsList podMetricsList) throws ParseException {
+        KcPod kcPod = new KcPod();
+        setBaseInfo(kcPod, pod, podMetricsList);
+        setContainers(kcPod, pod, podMetricsList);
+        setInitContainers(kcPod, pod, podMetricsList);
+        setConditions(kcPod, pod);
+        return kcPod;
+    }
+
+    private static void setConditions(KcPod kcPod, Pod pod) throws ParseException {
+        List<KcPodCondition> kcPodConditions = new ArrayList<>();
+        List<PodCondition> conditions = pod.getStatus().getConditions();
+        if (CollectionUtils.isNotEmpty(conditions)) {
+            for (PodCondition condition : conditions) {
+                KcPodCondition kcPodCondition = new KcPodCondition();
+                kcPodCondition.setMessage(condition.getMessage())
+                        .setReason(condition.getReason())
+                        .setStatus(condition.getStatus())
+                        .setType(condition.getType());
+                String lastProbeTime = condition.getLastProbeTime();
+                if (lastProbeTime != null) {
+                    Date lastTime = DateSafeUtils.parse(lastProbeTime, K8sConstants.TIME_PATTERN);
+                    kcPodCondition.setLastProbTime(CommonUtils.timeOffset(lastTime));
+                }
+
+                String lastTransitionTime = condition.getLastTransitionTime();
+                if (lastTransitionTime != null) {
+                    Date lastTransTime = DateSafeUtils.parse(lastTransitionTime, K8sConstants.TIME_PATTERN);
+                    kcPodCondition.setLastTransitionTime(CommonUtils.timeOffset(lastTransTime));
+                }
+                kcPodConditions.add(kcPodCondition);
+            }
+        }
+        kcPod.setKcPodConditions(kcPodConditions);
+    }
+
+    private static void setInitContainers(KcPod kcPod, Pod pod, PodMetricsList podMetrics) throws ParseException {
+        List<KcPodContainer> kcPodContainers = new ArrayList<>();
+        PodStatus status = pod.getStatus();
+        List<ContainerStatus> containerStatuses = status.getInitContainerStatuses();
+        List<Container> containers = pod.getSpec().getInitContainers();
+        setKcPodContainer(kcPod, podMetrics, kcPodContainers, containerStatuses, containers);
+        kcPod.setInitContainers(kcPodContainers);
+    }
+
+    private static void setKcPodContainer(KcPod kcPod, PodMetricsList podMetrics, List<KcPodContainer> kcPodContainers, List<ContainerStatus> containerStatuses, List<Container> containers) throws ParseException {
+        if (CollectionUtils.isNotEmpty(containerStatuses)) {
+            for (ContainerStatus containerStatus : containerStatuses) {
+                for (Container container : containers) {
+                    if (Objects.equals(containerStatus.getName(), container.getName())) {
+                        KcPodContainer kcPodContainer = getContainer(container, containerStatus, kcPod, podMetrics);
+                        kcPodContainers.add(kcPodContainer);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void setContainers(KcPod kcPod, Pod pod, PodMetricsList podMetrics) throws ParseException {
+        List<KcPodContainer> kcPodContainers = new ArrayList<>();
+        PodStatus status = pod.getStatus();
+        List<ContainerStatus> containerStatuses = status.getContainerStatuses();
+        List<Container> containers = pod.getSpec().getContainers();
+        setKcPodContainer(kcPod, podMetrics, kcPodContainers, containerStatuses, containers);
+        kcPod.setContainers(kcPodContainers);
+
+    }
+
+    private static void setHealthParam(KcHealthParam healthParam, Probe probe) {
+        healthParam.setHealthThreshold(probe.getSuccessThreshold())
+                .setUnHealthThreshold(probe.getFailureThreshold())
+                .setInitialDelaySeconds(probe.getInitialDelaySeconds())
+                .setPeriodSeconds(probe.getPeriodSeconds())
+                .setTimeout(probe.getTimeoutSeconds());
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    private static KcPodContainer getContainer(Container container, ContainerStatus containerStatus, KcPod kcPod, PodMetricsList podMetrics) throws ParseException {
+        KcPodContainer podContainer = new KcPodContainer();
+        String image = container.getImage();
+        image = handleImage(image);
+
+        podContainer.setImage(image)
+                .setImagePullPolicy(container.getImagePullPolicy());
+
+        Probe livenessProbe = container.getLivenessProbe();
+        KcLivenessProbe kcLivenessProbe = getHealth(KcLivenessProbe.class, livenessProbe);
+
+        Probe readinessProbe = container.getReadinessProbe();
+        KcReadinessProbe kcReadinessProbe = getHealth(KcReadinessProbe.class, readinessProbe);
+
+        podContainer.setLivenessProbe(kcLivenessProbe)
+                .setReadinessProbe(kcReadinessProbe)
+                .setName(container.getName());
+
+        List<KcPodContainerPort> kcPodContainerPorts = new ArrayList<>();
+        List<ContainerPort> ports = container.getPorts();
+        if (CollectionUtils.isNotEmpty(ports)) {
+            for (ContainerPort port : ports) {
+                KcPodContainerPort kcPodContainerPort = new KcPodContainerPort();
+                kcPodContainerPort.setContainerPort(port.getContainerPort())
+                        .setHostIp(port.getHostIP())
+                        .setHostPort(port.getHostPort() == null ? null : port.getHostPort().toString())
+                        .setProtocol(port.getProtocol());
+                kcPodContainerPorts.add(kcPodContainerPort);
+            }
+        }
+
+        podContainer.setContainerPorts(kcPodContainerPorts);
+        podContainer.setTerminationMessagePath(container.getTerminationMessagePath())
+                .setTerminationMessagePolicy(container.getTerminationMessagePolicy());
+        podContainer.setContainerId(containerStatus.getContainerID())
+                .setImageId(podContainer.getImageId()).setReady(containerStatus.getReady())
+                .setRestartCount(containerStatus.getRestartCount());
+        podContainer.setLastStateRunning(getRunning(containerStatus.getLastState().getRunning()))
+                .setStateRunning(getRunning(containerStatus.getState().getRunning()))
+                .setLastStateTerminated(getTerminated(containerStatus.getLastState().getTerminated()))
+                .setStateTerminated(getTerminated(containerStatus.getState().getTerminated()))
+                .setLastStateWaiting(getWaiting(containerStatus.getLastState().getWaiting()))
+                .setStateWaiting(getWaiting(containerStatus.getState().getWaiting()));
+
+        //resource
+        podContainer.setResource(setResource(container));
+
+        //环境变量
+        podContainer.setEnvs(setEnvs(container));
+
+        //环境变量新
+        podContainer.setEnvVar(setEnvVar(container));
+
+        //挂载点
+        podContainer.setVolumeMounts(setVolumeMounts(container));
+
+        if (podMetrics != null) {
+            List<PodMetrics> items = podMetrics.getItems();
+            if (items != null) {
+                for (PodMetrics item : items) {
+                    if (item != null) {
+                        ObjectMeta metadata = item.getMetadata();
+                        String name1 = metadata.getName();
+                        if (Objects.equals(name1, kcPod.getBaseInfo().getName())) {
+                            long usedMemory = 0L;
+                            double usedCpu = 0.0;
+                            double usedStorage = 0;
+                            List<ContainerMetrics> containers = item.getContainers();
+                            if (containers != null) {
+                                for (ContainerMetrics cm : containers) {
+                                    if (cm != null) {
+                                        Map<String, Quantity> usage = cm.getUsage();
+                                        String connStr = cm.getName();
+                                        if (usage != null && Objects.equals(connStr, podContainer.getName())) {
+                                            Quantity memoryStr = usage.get("memory");
+                                            Quantity cpuStr = usage.get("cpu");
+                                            if (memoryStr != null) {
+                                                usedMemory += Quantity.getAmountInBytes(memoryStr).longValue() / 1024;
+                                            }
+                                            if (cpuStr != null) {
+                                                usedCpu += Quantity.getAmountInBytes(cpuStr).doubleValue();
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            podContainer.setUsedCpu(usedCpu)
+                                    .setUsedMemory(usedMemory);
+                        }
+                    }
+                }
+            }
+        }
+
+        return podContainer;
+    }
+
     private static KcPodContainerStateWaiting getWaiting(ContainerStateWaiting containerStateWaiting) {
         if (containerStateWaiting != null) {
             KcPodContainerStateWaiting kcPodContainerStateWaiting = new KcPodContainerStateWaiting();
@@ -529,20 +524,20 @@ public class KcPodUtils {
         }
 
         //获取所属工作负载信息
-        String ownerReferenceKind = "";
+        StringBuilder ownerReferenceKind = new StringBuilder();
         String ownerReferenceName = "";
         List<OwnerReference> ownerReferences = pod.getMetadata().getOwnerReferences();
         if (CollectionUtils.isNotEmpty(ownerReferences)) {
             for (OwnerReference ownerReference : ownerReferences) {
-                if (!"".equals(ownerReferenceKind)) {
-                    ownerReferenceKind += ",";
+                if (!"".equals(ownerReferenceKind.toString())) {
+                    ownerReferenceKind.append(",");
                 }
                 if (!"".equals(ownerReferenceName)) {
                     ownerReferenceName += ",";
                 }
                 String kind = ownerReference.getKind();
                 String name = ownerReference.getName();
-                ownerReferenceKind += kind;
+                ownerReferenceKind.append(kind);
                 ownerReferenceName += name;
             }
         }
@@ -559,13 +554,14 @@ public class KcPodUtils {
                 .setQosClass(status.getQosClass())
                 .setImagePullSecrets(imagePullSecretStr)
                 .setStartTime(CommonUtils.timeOffset(DateSafeUtils.parse(status.getStartTime(), K8sConstants.TIME_PATTERN)))
-                .setOwnerReferenceKind(ownerReferenceKind)
+                .setOwnerReferenceKind(ownerReferenceKind.toString())
                 .setOwnerReferenceName(ownerReferenceName);
         setPodMetricsInfo(podBaseInfo, podMetricsList);
 
         kcPod.setBaseInfo(podBaseInfo);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private static void setPodMetricsInfo(KcPodBaseInfo baseInfo, PodMetricsList podMetrics) {
         if (podMetrics == null) {
             return;
@@ -607,5 +603,6 @@ public class KcPodUtils {
             }
         }
     }
+
 
 }

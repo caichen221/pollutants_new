@@ -15,6 +15,8 @@ import lombok.Cleanup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,11 +32,9 @@ import java.util.stream.Collectors;
  * @date 2019/12/2 16:04
  * @since jdk1.8
  */
-@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
+@SuppressWarnings("unused")
 public class KcNodeUtils {
-    /**
-     * 下层模块要调用上层的函数，暂时先这么处理把
-     */
+    /**下层模块要调用上层的函数，暂时先这么处理把*/
     public static Object storeService;
 
     public static final ThreadLocal<Boolean> METRICS_TIMEOUT = new ThreadLocal<>();
@@ -49,7 +49,7 @@ public class KcNodeUtils {
         String name = null;
         String apiVersion;
         String address = null;
-        String status = null;
+        String status = "ready";
         String runTimeStr = null;
         Date createTime;
 
@@ -73,9 +73,13 @@ public class KcNodeUtils {
             if (CollectionUtils.isNotEmpty(addresses)) {
                 address = addresses.get(0).getAddress();
             }
-            status = nodeStatus.getPhase();
-            if (StringUtils.isEmpty(status)) {
-                status = "ready";
+            List<NodeCondition> conditions = nodeStatus.getConditions();
+            if (CollectionUtils.isNotEmpty(conditions)) {
+                boolean notReady = conditions.stream().noneMatch(nodeCondition ->
+                        Objects.equals(nodeCondition.getType(), "Ready") && Objects.equals(nodeCondition.getStatus(), "True"));
+                if (notReady) {
+                    status = "notReady";
+                }
             }
         }
 
@@ -232,6 +236,7 @@ public class KcNodeUtils {
     /**
      * 为节点设置基本信息
      */
+    @SuppressWarnings("ConstantConditions")
     private static void setNodeBaseInfo(KcNode kcNode, Node node) throws K8sClientException {
         KcNodeBaseInfo baseInfo = new KcNodeBaseInfo();
 
@@ -249,7 +254,7 @@ public class KcNodeUtils {
 
         //todo 未找到方式获取ipTunnelAddr
         String ipTunnelAddr = null;
-        String internalIP = null;
+        @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming") String internalIP = null;
         String hostname = null;
         String os = null;
         String architecture = null;
@@ -275,29 +280,11 @@ public class KcNodeUtils {
 
             //获取labels
             Map<String, String> metaLabels = metadata.getLabels();
-            if (MapUtils.isNotEmpty(metaLabels)) {
-                labels = new ArrayList<>();
-                for (Map.Entry<String, String> entry : metaLabels.entrySet()) {
-                    String[] labelArray = new String[2];
-                    labelArray[0] = entry.getKey();
-                    labelArray[1] = entry.getValue();
-                    labels.add(labelArray);
-                }
-            }
+            labels = getLabelsOrAnnotations(metaLabels);
 
             //获取annotations
             Map<String, String> metaAnnotations = metadata.getAnnotations();
-            if (MapUtils.isNotEmpty(metaAnnotations)) {
-                annotations = new ArrayList<>();
-                for (Map.Entry<String, String> entry : metaAnnotations.entrySet()) {
-                    String[] annotationArray = new String[2];
-                    annotationArray[0] = entry.getKey();
-                    annotationArray[1] = entry.getValue();
-                    annotations.add(annotationArray);
-                }
-            }
-
-
+            annotations = getLabelsOrAnnotations(metaAnnotations);
         }
 
         NodeSpec spec = node.getSpec();
@@ -322,7 +309,6 @@ public class KcNodeUtils {
 
         NodeStatus nodeStatus = node.getStatus();
         if (nodeStatus != null) {
-
             Map<String, Quantity> allocatable = nodeStatus.getAllocatable();
             if (allocatable != null) {
                 //获取cpu
@@ -387,7 +373,6 @@ public class KcNodeUtils {
             }
 
         }
-        //noinspection ConstantConditions
         baseInfo.setName(name)
                 .setCreateTime(createTime)
                 .setRunTimeStr(runTimeStr)
@@ -414,6 +399,20 @@ public class KcNodeUtils {
         setNodeBaseInfoCondition(baseInfo, node);
 
         kcNode.setBaseInfo(baseInfo);
+    }
+
+    private static List<String[]> getLabelsOrAnnotations(Map<String, String> metaLabels) {
+        if (MapUtils.isNotEmpty(metaLabels)) {
+            List<String[]> labels = new ArrayList<>();
+            for (Map.Entry<String, String> entry : metaLabels.entrySet()) {
+                String[] labelArray = new String[2];
+                labelArray[0] = entry.getKey();
+                labelArray[1] = entry.getValue();
+                labels.add(labelArray);
+            }
+            return labels;
+        }
+        return null;
     }
 
     private static void setNodeBaseInfoCondition(KcNodeBaseInfo baseInfo, Node node) throws K8sClientException {
@@ -532,11 +531,9 @@ public class KcNodeUtils {
             String name = nodeMetrics.getMetadata().getName();
             Quantity cpu = nodeMetrics.getUsage().get("cpu");
             Quantity memory = nodeMetrics.getUsage().get("memory");
-
             if (kcNodeMap.containsKey(name)) {
                 KcNode kcNode = kcNodeMap.get(name);
                 KcNodeBaseInfo baseInfo = kcNode.getBaseInfo();
-
                 double usedCpu = (Quantity.getAmountInBytes(cpu)).doubleValue();
                 long usedMemory = (Quantity.getAmountInBytes(memory)).longValue() / 1024;
 
@@ -547,6 +544,16 @@ public class KcNodeUtils {
         }
     }
 
+    private static int getIndex(List<Taint> taints, KcNodeBaseInfoTaint kcTaint) {
+        if (CollectionUtils.isNotEmpty(taints)) {
+            for (int i = 0; i < taints.size(); i++) {
+                if (Objects.equals(taints.get(i).getKey(), kcTaint.getKey())) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
     /**
      * 编辑污点
@@ -558,31 +565,13 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void editTaint(String nodeName, KcNodeBaseInfoTaint kcTaint) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-        int index = -1;
-        NodeSpec spec = node.getSpec();
+        Pair<Resource<Node>, Node> resourceAndNode = getResourceAndNode(nodeName);
+        NodeSpec spec = resourceAndNode.getRight().getSpec();
         if (spec == null) {
             throw new K8sClientException(String.format("未找到对应的污点\"%s\",无法编辑", kcTaint.getKey()));
         }
         List<Taint> taints = spec.getTaints();
-        if (CollectionUtils.isNotEmpty(taints)) {
-            for (int i = 0; i < taints.size(); i++) {
-                if (Objects.equals(taints.get(i).getKey(), kcTaint.getKey())) {
-                    index = i;
-                    break;
-                }
-            }
-        }
+        int index = getIndex(taints, kcTaint);
         if (index == -1) {
             throw new K8sClientException(String.format("未找到对应的污点\"%s\",无法编辑", kcTaint.getKey()));
         }
@@ -590,7 +579,7 @@ public class KcNodeUtils {
         taint.setEffect(kcTaint.getEffect());
         taint.setKey(kcTaint.getKey());
         taint.setValue(kcTaint.getValue());
-        resource.edit(n -> new NodeBuilder(n).editSpec().withTaints(taints)
+        resourceAndNode.getLeft().edit(n -> new NodeBuilder(n).editSpec().withTaints(taints)
                 .endSpec().build());
 
     }
@@ -601,41 +590,22 @@ public class KcNodeUtils {
      *
      * @param nodeName 节点名称
      * @param kcTaint  新增的污点
-     * @throws K8sClientException K8S异常
+     * @throws K8sClientException k8s异常
      * @date 2019/12/4
      * @since jdk1.8
      */
     public static void addTaint(String nodeName, KcNodeBaseInfoTaint kcTaint) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        NodeSpec spec = node.getSpec();
+        Pair<Resource<Node>, Node> resourceAndNode = getResourceAndNode(nodeName);
+        NodeSpec spec = resourceAndNode.getRight().getSpec();
         if (spec == null) {
             throw new K8sClientException("未找到对应节点的spec");
         }
-        int index = -1;
         List<Taint> taints = spec.getTaints();
-        if (CollectionUtils.isNotEmpty(taints)) {
-            for (int i = 0; i < taints.size(); i++) {
-                if (Objects.equals(taints.get(i).getKey(), kcTaint.getKey())) {
-                    index = i;
-                    break;
-                }
-            }
-        }
+        int index = getIndex(taints, kcTaint);
         if (index != -1) {
             throw new K8sClientException(String.format("找到对应的污点\"%s\",不可再新增同样的污点", kcTaint.getKey()));
         }
-        resource.edit(n -> new NodeBuilder(n).editSpec()
+        resourceAndNode.getLeft().edit(n -> new NodeBuilder(n).editSpec()
                 .addNewTaint()
                 .withKey(kcTaint.getKey())
                 .withNewEffect(kcTaint.getEffect())
@@ -655,19 +625,9 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void deleteTaint(String nodeName, String taintKey) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
+        Pair<Resource<Node>, Node> resourceAndNode = getResourceAndNode(nodeName);
         Taint taint = null;
-        NodeSpec spec = node.getSpec();
+        NodeSpec spec = resourceAndNode.getRight().getSpec();
         if (spec == null) {
             throw new K8sClientException("未找到对应的spec");
         }
@@ -683,7 +643,7 @@ public class KcNodeUtils {
         if (taint == null) {
             throw new K8sClientException(String.format("未找到对应的污点\"%s\",无需删除", taintKey));
         }
-        resource.edit(n -> new NodeBuilder(n).editSpec().withTaints(taints)
+        resourceAndNode.getLeft().edit(n -> new NodeBuilder(n).editSpec().withTaints(taints)
                 .endSpec().build());
     }
 
@@ -697,29 +657,14 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void addLabel(String nodeName, String[] label) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        ObjectMeta metadata = node.getMetadata();
-        if (metadata == null) {
-            throw new K8sClientException("未找到对应节点的spec");
-        }
-        Map<String, String> labels = metadata.getLabels();
+        Triple<Resource<Node>, Node, Map<String, String>> resourceNodeLabels = getResourceNodeLabels(nodeName);
+        Map<String, String> labels = resourceNodeLabels.getRight();
         if (MapUtils.isNotEmpty(labels)) {
             if (labels.containsKey(label[0])) {
                 throw new K8sClientException(String.format("找到对应的label\"%s\",不可再新增同样的label", label[0]));
             }
         }
-        resource.edit(n -> new NodeBuilder(n).editMetadata()
+        resourceNodeLabels.getLeft().edit(n -> new NodeBuilder(n).editMetadata()
                 .addToLabels(label[0], label[1])
                 .endMetadata().build());
     }
@@ -735,31 +680,15 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void editLabel(String nodeName, String[] label) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        ObjectMeta metadata = node.getMetadata();
-        if (metadata == null) {
-            throw new K8sClientException("未找到对应节点的spec");
-        }
-        Map<String, String> labels = metadata.getLabels();
+        Triple<Resource<Node>, Node, Map<String, String>> resourceNodeLabels = getResourceNodeLabels(nodeName);
+        Map<String, String> labels = resourceNodeLabels.getRight();
         if (MapUtils.isEmpty(labels)) {
             throw new K8sClientException(String.format("找不到对应的label\"%s\",不可编辑", label[0]));
         }
         if (!labels.containsKey(label[0])) {
             throw new K8sClientException(String.format("找不到对应的label\"%s\",不可编辑", label[0]));
         }
-
-        resource.edit(n -> new NodeBuilder(n).editMetadata()
+        resourceNodeLabels.getLeft().edit(n -> new NodeBuilder(n).editMetadata()
                 .addToLabels(label[0], label[1])
                 .endMetadata()
                 .build());
@@ -776,23 +705,8 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void deleteLabel(String nodeName, String labelKey) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        ObjectMeta metadata = node.getMetadata();
-        if (metadata == null) {
-            throw new K8sClientException("未找到对应节点的spec");
-        }
-        Map<String, String> labels = metadata.getLabels();
+        Triple<Resource<Node>, Node, Map<String, String>> resourceNodeLabels = getResourceNodeLabels(nodeName);
+        Map<String, String> labels = resourceNodeLabels.getRight();
         if (MapUtils.isEmpty(labels)) {
             throw new K8sClientException(String.format("找不到对应的label\"%s\",无需删除", labelKey));
         }
@@ -800,7 +714,7 @@ public class KcNodeUtils {
             throw new K8sClientException(String.format("找不到对应的label\"%s\",无需删除", labelKey));
         }
 
-        resource.edit(n -> new NodeBuilder(n).editMetadata()
+        resourceNodeLabels.getLeft().edit(n -> new NodeBuilder(n).editMetadata()
                 .removeFromLabels(labelKey)
                 .endMetadata()
                 .build());
@@ -811,39 +725,22 @@ public class KcNodeUtils {
      *
      * @param nodeName   节点名称
      * @param annotation 新增的annotation
-     * @throws K8sClientException k8s异常
+     * @throws K8sClientException K8S异常
      * @date 2019/12/4
      * @since jdk1.8
      */
     public static void addAnnotation(String nodeName, String[] annotation) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        ObjectMeta metadata = node.getMetadata();
-        if (metadata == null) {
-            throw new K8sClientException("未找到对应节点的spec");
-        }
-        Map<String, String> annotationMap = metadata.getAnnotations();
+        Triple<Resource<Node>, Node, Map<String, String>> resourceNodeAnnotations = getResourceNodeAnnotations(nodeName);
+        Map<String, String> annotationMap = resourceNodeAnnotations.getRight();
         if (MapUtils.isNotEmpty(annotationMap)) {
             if (annotationMap.containsKey(annotation[0])) {
                 throw new K8sClientException(String.format("找到对应的annotation\"%s\",不可再新增同样的annotation", annotation[0]));
             }
         }
-
-        resource.edit(n -> new NodeBuilder(n).editMetadata()
+        resourceNodeAnnotations.getLeft().edit(n -> new NodeBuilder(n).editMetadata()
                 .addToAnnotations(annotation[0], annotation[1])
                 .endMetadata()
                 .build());
-
     }
 
     /**
@@ -856,23 +753,8 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void editAnnotation(String nodeName, String[] annotations) throws K8sClientException {
-        @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
-        NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
-        Resource<Node> resource = nodes.withName(nodeName);
-        if (resource == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        Node node = resource.get();
-        if (node == null) {
-            throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
-        }
-
-        ObjectMeta metadata = node.getMetadata();
-        if (metadata == null) {
-            throw new K8sClientException("未找到对应节点的spec");
-        }
-        Map<String, String> anno = metadata.getAnnotations();
+        Triple<Resource<Node>, Node, Map<String, String>> resourceNodeAnnotations = getResourceNodeAnnotations(nodeName);
+        Map<String, String> anno = resourceNodeAnnotations.getRight();
         if (MapUtils.isEmpty(anno)) {
             throw new K8sClientException(String.format("找不到对应的annotation\"%s\",不可编辑", annotations[0]));
         }
@@ -880,7 +762,7 @@ public class KcNodeUtils {
             throw new K8sClientException(String.format("找不到对应的annotation\"%s\",不可编辑", annotations[0]));
         }
 
-        resource.edit(n -> new NodeBuilder(n).editMetadata()
+        resourceNodeAnnotations.getLeft().edit(n -> new NodeBuilder(n).editMetadata()
                 .addToAnnotations(annotations[0], annotations[1])
                 .endMetadata()
                 .build());
@@ -898,6 +780,22 @@ public class KcNodeUtils {
      * @since jdk1.8
      */
     public static void deleteAnnotation(String nodeName, String annotationKey) throws K8sClientException {
+        Triple<Resource<Node>, Node, Map<String, String>> resourceNodeAnnotations = getResourceNodeAnnotations(nodeName);
+        Map<String, String> anno = resourceNodeAnnotations.getRight();
+        if (MapUtils.isEmpty(anno)) {
+            throw new K8sClientException(String.format("找不到对应的label\"%s\",无需删除", annotationKey));
+        }
+        if (!anno.containsKey(annotationKey)) {
+            throw new K8sClientException(String.format("找不到对应的label\"%s\",无需删除", annotationKey));
+        }
+
+        resourceNodeAnnotations.getLeft().edit(n -> new NodeBuilder(n).editMetadata()
+                .removeFromAnnotations(annotationKey)
+                .endMetadata()
+                .build());
+    }
+
+    private static Pair<Resource<Node>, Node> getResourceAndNode(String nodeName) throws K8sClientException {
         @Cleanup KubernetesClient kcClient = K8sClient.getInstance();
         NonNamespaceOperation<Node, NodeList, Resource<Node>> nodes = kcClient.nodes();
         Resource<Node> resource = nodes.withName(nodeName);
@@ -909,22 +807,24 @@ public class KcNodeUtils {
         if (node == null) {
             throw new K8sClientException(String.format("节点名称\"%s\"不存在", nodeName));
         }
+        return Pair.of(resource, node);
+    }
 
-        ObjectMeta metadata = node.getMetadata();
+    private static Triple<Resource<Node>, Node, Map<String, String>> getResourceNodeLabels(String nodeName) throws K8sClientException {
+        Pair<Resource<Node>, Node> resourceAndNode = getResourceAndNode(nodeName);
+        ObjectMeta metadata = resourceAndNode.getRight().getMetadata();
         if (metadata == null) {
             throw new K8sClientException("未找到对应节点的spec");
         }
-        Map<String, String> anno = metadata.getAnnotations();
-        if (MapUtils.isEmpty(anno)) {
-            throw new K8sClientException(String.format("找不到对应的label\"%s\",无需删除", annotationKey));
-        }
-        if (!anno.containsKey(annotationKey)) {
-            throw new K8sClientException(String.format("找不到对应的label\"%s\",无需删除", annotationKey));
-        }
+        return Triple.of(resourceAndNode.getLeft(), resourceAndNode.getRight(), metadata.getLabels());
+    }
 
-        resource.edit(n -> new NodeBuilder(n).editMetadata()
-                .removeFromAnnotations(annotationKey)
-                .endMetadata()
-                .build());
+    private static Triple<Resource<Node>, Node, Map<String, String>> getResourceNodeAnnotations(String nodeName) throws K8sClientException {
+        Pair<Resource<Node>, Node> resourceAndNode = getResourceAndNode(nodeName);
+        ObjectMeta metadata = resourceAndNode.getRight().getMetadata();
+        if (metadata == null) {
+            throw new K8sClientException("未找到对应节点的spec");
+        }
+        return Triple.of(resourceAndNode.getLeft(), resourceAndNode.getRight(), metadata.getAnnotations());
     }
 }

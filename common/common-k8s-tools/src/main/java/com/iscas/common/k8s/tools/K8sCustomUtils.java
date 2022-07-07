@@ -27,19 +27,17 @@ public class K8sCustomUtils {
      * GET请求
      * */
     public static String doGet(String url) throws IOException {
-        KubernetesClient kc = K8sClient.getInstance();
-        OkHttpClient httpClient = ((DefaultKubernetesClient) kc).getHttpClient();
-        Request.Builder builder = new Request.Builder();
-        builder.url(url);
-        Request request = builder.build();
-        Call call = httpClient.newCall(request);
-        return Objects.requireNonNull(call.execute().body()).string();
+        return getStrResult(url);
     }
 
     /**
-     * GET请求
+     * POST请求
      * */
     public static String doPost(String url) throws IOException {
+        return getStrResult(url);
+    }
+
+    private static String getStrResult(String url) throws IOException {
         KubernetesClient kc = K8sClient.getInstance();
         OkHttpClient httpClient = ((DefaultKubernetesClient) kc).getHttpClient();
         Request.Builder builder = new Request.Builder();

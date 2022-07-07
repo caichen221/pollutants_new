@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
+ *
  * @author zhuquanwen
  * @version 1.0
  * @date 2019/12/9 17:48
@@ -15,4 +16,6 @@ public class KcContainerPort {
     private String name;
     private Integer containerPort;
     private Integer hostPort;
+    private String protocol;
+    private String hostIp;
 }

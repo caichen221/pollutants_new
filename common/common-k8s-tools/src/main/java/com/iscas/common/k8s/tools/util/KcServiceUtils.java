@@ -23,7 +23,6 @@ import java.util.*;
  * @date 2020/12/30 17:30
  * @since jdk1.8
  */
-@SuppressWarnings("unused")
 public class KcServiceUtils {
     private KcServiceUtils() {
     }
@@ -57,6 +56,7 @@ public class KcServiceUtils {
     }
 
 
+    @SuppressWarnings("unused")
     private static boolean serviceExists(String namespace, String name) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         MixedOperation<Service, ServiceList, ServiceResource<Service>> mixedOperation = kc.services();
@@ -91,7 +91,7 @@ public class KcServiceUtils {
                 //创建新的service
                 List<String[]> selectors = kcService.getSelectors();
                 //构建选择器，可以关联到deployment
-                Map<String, String> selectorMap = new HashMap<>(16);
+                Map<String, String> selectorMap = new HashMap<>(4);
                 if (CollectionUtils.isNotEmpty(selectors)) {
                     for (String[] selector : selectors) {
                         selectorMap.put(selector[0], selector[1]);
@@ -99,7 +99,7 @@ public class KcServiceUtils {
                 }
 
                 //label暂时构建一个与name一致的label
-                Map<String, String> labels = new HashMap<>(16);
+                Map<String, String> labels = new HashMap<>(2);
                 labels.put("name", kcService.getName());
 
                 //port
@@ -158,7 +158,7 @@ public class KcServiceUtils {
      *
      * @param namespace 命名空间
      * @return java.util.List<com.iscas.common.k8s.tools.model.deployment.KcDeployment>
-     * @throws ParseException ParseException
+     * @throws ParseException 异常
      * @date 2020/12/30
      * @since jdk1.8
      */

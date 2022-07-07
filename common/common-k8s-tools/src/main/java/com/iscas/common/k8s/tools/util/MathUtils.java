@@ -1,6 +1,7 @@
 package com.iscas.common.k8s.tools.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  *
@@ -9,11 +10,10 @@ import java.math.BigDecimal;
  * @date 2020/12/23 17:30
  * @since jdk1.8
  */
-@SuppressWarnings({"deprecation", "BigDecimalLegacyMethod"})
 public class MathUtils {
 
     public static double scale(double data, int scale) {
         BigDecimal bg = new BigDecimal(data);
-        return bg.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return bg.setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }
 }

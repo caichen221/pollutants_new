@@ -17,22 +17,22 @@ public class KcVolumeMounts {
 
     /**
      * 名称
-     */
+     * */
     private String name;
 
     /**
      * 挂载在容器内的目录
-     */
+     * */
     private String mountPath;
 
     /**
      * 子目录
-     */
+     * */
     private String subPath;
 
     /**
      * 读写模式
-     */
+     * */
     private boolean readOnly = false;
 
 }

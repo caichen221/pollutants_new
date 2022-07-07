@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author admin
  */
 public class PodExecEquivalent {
-    private static final CountDownLatch EXEC_LATCH = new CountDownLatch(1);
+    private static final CountDownLatch execLatch = new CountDownLatch(1);
 
     public static void main(String[] args) {
         try {
@@ -35,7 +35,7 @@ public class PodExecEquivalent {
                     .usingListener(new MyPodExecListener())
                     .exec("cd", "/");
 
-            boolean latchTerminationStatus = EXEC_LATCH.await(5, TimeUnit.SECONDS);
+            boolean latchTerminationStatus = execLatch.await(5, TimeUnit.SECONDS);
             if (!latchTerminationStatus) {
                 System.out.println("Latch could not terminate within specified time");
             }
@@ -57,13 +57,13 @@ public class PodExecEquivalent {
         @Override
         public void onFailure(Throwable throwable, Response response) {
             System.out.println("Some error encountered");
-            EXEC_LATCH.countDown();
+            execLatch.countDown();
         }
 
         @Override
         public void onClose(int i, String s) {
             System.out.println("Shell Closing");
-            EXEC_LATCH.countDown();
+            execLatch.countDown();
         }
     }
 }

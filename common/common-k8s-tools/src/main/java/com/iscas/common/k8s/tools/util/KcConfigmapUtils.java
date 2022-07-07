@@ -3,6 +3,7 @@ package com.iscas.common.k8s.tools.util;
 import com.iscas.common.k8s.tools.K8sClient;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ConfigMapList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -14,6 +15,7 @@ import io.kubernetes.client.util.Yaml;
 import lombok.Cleanup;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +27,7 @@ import java.util.Objects;
  * @date 2021/6/10 8:43
  * @since jdk1.8
  */
+@SuppressWarnings("unchecked")
 public class KcConfigmapUtils {
     private KcConfigmapUtils() {}
 
@@ -35,10 +38,18 @@ public class KcConfigmapUtils {
         return configMap.getData();
     }
 
+    public static List<ConfigMap> getConfigMaps(String namespace) {
+        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+        ConfigMapList list = kc.configMaps().inNamespace(namespace).list();
+        if (list != null) {
+            return list.getItems();
+        }
+        return Collections.EMPTY_LIST;
+    }
+
     /**
      * 获取配置字典的yaml
      * */
-    @SuppressWarnings("unused")
     public static String yaml(ApiClient apiClient, String namespace, String name) throws ApiException, K8sClientException {
         CoreV1Api coreApi = new CoreV1Api(apiClient);
         V1ConfigMapList configMapList = coreApi.listNamespacedConfigMap(namespace, "true", false, null, null, null, 100,

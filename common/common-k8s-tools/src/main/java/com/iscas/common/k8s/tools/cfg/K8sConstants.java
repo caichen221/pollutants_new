@@ -9,11 +9,10 @@ package com.iscas.common.k8s.tools.cfg;
  * @since jdk1.8
  */
 public interface K8sConstants {
+    /**相差的时间*/
+   long TIME_OFFSET = 8L * 3600 * 1000;
+//   long TIME_OFFSET = 0L;
 
-    long TIME_OFFSET = 0L;
-
-    /**
-     * 时间格式化串
-     */
-    String TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+   /**时间格式化串*/
+   String TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 }

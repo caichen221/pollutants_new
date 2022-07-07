@@ -8,18 +8,19 @@ import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
 /**
- * kubernetes-client github地址 <a href="https://github.com/fabric8io/kubernetes-client">https://github.com/fabric8io/kubernetes-client</a>
+ * kubernetes-client github地址 <a href="https://github.com/fabric8io/kubernetes-client">...</a>
  *
  * @author zhuquanwen
  * @version 1.0
  * @date 2019/12/2 13:49
  * @since jdk1.8
  */
-@SuppressWarnings({"unused", "FieldMayBeFinal"})
+@SuppressWarnings("unused")
 public class K8sClient {
     private K8sClient() {
     }
-    private volatile static KubernetesClient kc = null;
+    @SuppressWarnings("unused")
+    private static final KubernetesClient KC = null;
     private static K8sConfig k8sConfig = null;
     private static Config fabric8Config = null;
 

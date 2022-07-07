@@ -18,32 +18,32 @@ import java.util.Date;
 public class KcVersion {
     /**
      * git的版本号，一般使用它作为对外的版本号
-     */
+     * */
     private String gitVersion;
 
     /**
      * 支持的平台
-     */
+     * */
     private String platform;
 
     /**
      * 编译者
-     */
+     * */
     private String compiler;
 
 
     /**
      * 使用的go语言版本
-     */
+     * */
     private String goVersion;
 
     /**
      * git提交的ID
-     */
+     * */
     private String gitCommit;
 
     /**
      * 编译的时间
-     */
+     * */
     private Date buildDate;
 }

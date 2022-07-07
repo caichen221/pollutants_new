@@ -4,7 +4,6 @@ import com.iscas.common.k8s.tools.K8sClient;
 import com.iscas.common.k8s.tools.exception.K8sClientException;
 import com.iscas.common.k8s.tools.model.storageclass.KcStorageClass;
 import com.iscas.templet.exception.BaseException;
-import com.iscas.templet.exception.Exceptions;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.storage.StorageClass;
 import io.fabric8.kubernetes.api.model.storage.StorageClassList;
@@ -35,7 +34,6 @@ import java.util.Objects;
  * @date 2021/3/15 11:06
  * @since jdk1.8
  */
-@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class KcStorageClassUtils {
     private KcStorageClassUtils() {}
 
@@ -107,7 +105,6 @@ public class KcStorageClassUtils {
         kc.storage().storageClasses().createOrReplace(storageClass);
     }
 
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
     public static void deleteStorageClass(String name) throws BaseException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         StorageAPIGroupDSL storage = kc.storage();
@@ -118,7 +115,7 @@ public class KcStorageClassUtils {
                 Map<String, String> annotations = storageClass.getMetadata().getAnnotations();
                 if (MapUtils.isNotEmpty(annotations)) {
                     if (Objects.equals(annotations.get("storageclass.kubernetes.io/is-default-class"), "true")) {
-                        throw Exceptions.baseException("默认的存储资源不允许删除");
+                        throw new BaseException("默认的存储资源不允许删除");
                     }
                 }
                 storageClassResource.delete();

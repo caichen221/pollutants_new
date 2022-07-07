@@ -16,28 +16,18 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 public class KcSecret {
-    /**
-     * 命名空间
-     */
+    /**命名空间*/
     protected String namespace;
 
-    /**
-     * 名称
-     */
+    /**名称*/
     protected String name;
 
-    /**
-     * 类型,支持dockerConfig|opaque|serviceAccount|tls|bootstrap
-     */
+    /**类型,支持dockerConfig|opaque|serviceAccount|tls|bootstrap  */
     protected String type;
 
-    /**
-     * 可不可以编辑(不需要显示)
-     */
+    /**可不可以编辑(不需要显示)*/
     protected boolean canEdit = true;
 
-    /**
-     * 创建时间
-     */
+    /**创建时间*/
     protected Date createTime;
 }

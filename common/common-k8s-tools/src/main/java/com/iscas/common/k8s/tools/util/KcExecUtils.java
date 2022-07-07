@@ -8,8 +8,8 @@ import io.fabric8.kubernetes.client.dsl.internal.LogWatchCallback;
 import lombok.Cleanup;
 import okhttp3.*;
 import okio.ByteString;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
@@ -29,14 +29,20 @@ public class KcExecUtils {
     public static final int LOG_WATCH_LAST_LINES = 200;
 
 
-    public static void downloadFile(String namespace, String podName, String containerName, String filePath, File targetFile) {
-        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+    public static InputStream downloadFile(String namespace, String podName, String containerName, String filePath, KubernetesClient kc) throws FileNotFoundException {
         ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(containerName);
         CopyOrReadable<Boolean, InputStream, Boolean> file = containerResource.file(filePath);
+        return file.read();
+    }
+
+    public static void downloadDir(String namespace, String podName, String containerName, String filePath, File targetFile) {
+        @Cleanup KubernetesClient kc = K8sClient.getInstance();
+        ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(containerName);
+        CopyOrReadable<Boolean, InputStream, Boolean> file = containerResource.dir(filePath);
         file.copy(targetFile.toPath());
     }
 
-    public static void uploadFile(String namespace, String podName, String containerName, String filePath, File targetFile) {
+    public static void uploadFile(String namespace, String podName, String containerName, String filePath, File targetFile) throws FileNotFoundException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         ContainerResource<LogWatch, InputStream, PipedOutputStream, OutputStream, PipedInputStream, String, ExecWatch, Boolean, InputStream, Boolean> containerResource = kc.pods().inNamespace(namespace).withName(podName).inContainer(containerName);
         CopyOrReadable<Boolean, InputStream, Boolean> file = containerResource.file(filePath);
@@ -69,7 +75,6 @@ public class KcExecUtils {
         return containerResource.limitBytes(maxSize * 1024 * 1024).sinceSeconds(beforeMinutes * 60).getLog();
     }
 
-
     private static class MyPodExecListener implements ExecListener {
         @Override
         public void onOpen(Response response) {
@@ -98,21 +103,21 @@ public class KcExecUtils {
         //开始连接
         WebSocket websocket = httpClient.newWebSocket(request, new WebSocketListener() {
             @Override
-            public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
+            public void onOpen(@Nonnull WebSocket webSocket, @Nonnull Response response) {
                 super.onOpen(webSocket, response);
                 //连接成功...
                 System.out.println(1111);
             }
 
             @Override
-            public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
+            public void onMessage(@Nonnull WebSocket webSocket, @Nonnull String text) {
                 super.onMessage(webSocket, text);
                 //收到消息...（一般是这里处理json）
                 System.out.println(2222);
             }
 
             @Override
-            public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
+            public void onMessage(@Nonnull WebSocket webSocket, @Nonnull ByteString bytes) {
                 super.onMessage(webSocket, bytes);
                 //收到消息...（一般很少这种消息）
                 System.out.println(3333);
@@ -120,15 +125,14 @@ public class KcExecUtils {
             }
 
             @Override
-            public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
+            public void onClosed(@Nonnull WebSocket webSocket, int code, @Nonnull String reason) {
                 super.onClosed(webSocket, code, reason);
                 //连接关闭...
                 System.out.println(44444);
             }
 
-            @SuppressWarnings("NullableProblems")
             @Override
-            public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable throwable, @NotNull Response response) {
+            public void onFailure(@Nonnull WebSocket webSocket, @Nonnull Throwable throwable, Response response) {
                 super.onFailure(webSocket, throwable, response);
                 //连接失败...
                 throwable.printStackTrace();
@@ -159,14 +163,15 @@ public class KcExecUtils {
         Call call = httpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            public void onFailure(@Nonnull Call call, @Nonnull IOException e) {
                 System.out.println(111);
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
+            public void onResponse(@Nonnull Call call, @Nonnull Response response) {
                 System.out.println(2222);
             }
         });
     }
+
 }

@@ -1,7 +1,6 @@
 package com.iscas.common.k8s.tools.model.volume;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
@@ -11,8 +10,8 @@ import lombok.experimental.Accessors;
  * @date 2019/12/9 14:48
  * @since jdk1.8
  */
+@SuppressWarnings("Lombok")
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class KcVoNfsParam extends KcVolumeParam{
 

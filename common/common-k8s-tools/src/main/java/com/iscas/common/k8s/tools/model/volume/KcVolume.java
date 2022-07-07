@@ -27,7 +27,7 @@ public class KcVolume {
      * */
     private Object params;
 
-    @SuppressWarnings({"AlibabaEnumConstantsMustHaveComment", "unused"})
+    @SuppressWarnings("AlibabaEnumConstantsMustHaveComment")
     public enum KcVolumeType {
         NFS, pv, emptyDir, hostPath, configMap, secret
     }

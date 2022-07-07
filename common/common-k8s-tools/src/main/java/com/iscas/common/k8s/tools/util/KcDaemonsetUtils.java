@@ -29,19 +29,16 @@ import java.util.*;
  * @date 2021/10/27
  * @since jdk1.8
  */
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings({"unused", "unchecked", "DuplicatedCode"})
 public class KcDaemonsetUtils {
-    private KcDaemonsetUtils() {
-    }
+    private KcDaemonsetUtils() {}
 
     /**
      * 获取daemonset的信息
-     *
-     * @param namespace 命名空间
-     * @return List<KcDaemonset>
-     * @throws K8sClientException 异常
-     * @date 2021/10/27
      * @since jdk1.8
+     * @date 2021/10/27
+     * @param namespace 命名空间
+     * @throws K8sClientException k8s异常
      */
     public static List<KcDaemonset> getDaemonset(String namespace) throws K8sClientException {
 
@@ -71,15 +68,7 @@ public class KcDaemonsetUtils {
                                 //获取name
                                 name = metadata.getName();
                                 //获取运行时间
-                                String creationTimestamp = metadata.getCreationTimestamp();
-                                Date startTime;
-                                try {
-                                    startTime = DateSafeUtils.parse(creationTimestamp, K8sConstants.TIME_PATTERN);
-                                    startTime = CommonUtils.timeOffset(startTime);
-                                } catch (ParseException e) {
-                                    throw new K8sClientException("时间类型转换出错", e);
-                                }
-                                runtimeStr = CommonUtils.getTimeDistance(startTime);
+                                runtimeStr = CommonUtils.getRuntimeStr(metadata);
                             }
 
                             DaemonSetStatus status = item.getStatus();
@@ -104,6 +93,7 @@ public class KcDaemonsetUtils {
                                     .setRuntimeInfos(runtimeInfos);
                             kcDaemonset.setDaemonsetItem(item);
 
+                            //获取存储卷声明
                             kcDaemonsets.add(kcDaemonset);
                         }
                     }
@@ -116,19 +106,15 @@ public class KcDaemonsetUtils {
 
     /**
      * 创建一个Daemonset
-     */
-    @SuppressWarnings("AlibabaMethodTooLong")
+     * */
     public static void createDaemonset(KcDaemonset kcDaemonset) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         KcDepBaseInfo baseInfo = kcDaemonset.getBaseInfo();
         List<KcVolume> volumes = kcDaemonset.getVolumes();
 
         //命名空间
-        String namespace = baseInfo.getNamespace();
+        String namespace  = baseInfo.getNamespace();
         String name = baseInfo.getName();
-
-        //如果存在，删除这个Daemonset
-//        deleteDaemonset(namespace, name);
 
         Map<String, String> labelMap = KcDeploymentUtils.getLabelMap(baseInfo);
         Map<String, String> annotationMap = KcDeploymentUtils.getAnnotationMap(baseInfo);
@@ -175,7 +161,7 @@ public class KcDaemonsetUtils {
         if (StringUtils.isNotEmpty(imagePullSecret)) {
             LocalObjectReference localObjectReference = new LocalObjectReference();
             localObjectReference.setName(imagePullSecret);
-            podSpec.setImagePullSecrets(List.of(localObjectReference));
+            podSpec.setImagePullSecrets(Collections.singletonList(localObjectReference));
         }
 
         //template-spec-init container
@@ -268,14 +254,14 @@ public class KcDaemonsetUtils {
 
     /**
      * 设置运行时信息
-     */
+     * */
     private static List<KcRuntimeInfo> setRuntimeInfo(DaemonSet daemonset) throws K8sClientException {
         List<KcRuntimeInfo> kcConditions = null;
         DaemonSetStatus depStatus = daemonset.getStatus();
         if (depStatus != null) {
             List<DaemonSetCondition> conditions = depStatus.getConditions();
             if (CollectionUtils.isNotEmpty(conditions)) {
-                kcConditions = new ArrayList<>();
+                kcConditions  = new ArrayList<>();
                 for (DaemonSetCondition condition : conditions) {
                     KcRuntimeInfo kcCondtion = new KcRuntimeInfo();
                     String type;
@@ -313,8 +299,9 @@ public class KcDaemonsetUtils {
 
 
     /**
-     * 设置deployment的基本信息
-     */
+     *  设置deployment的基本信息
+     * */
+    @SuppressWarnings("ConstantConditions")
     private static KcDepBaseInfo setBaseInfo(DaemonSet daemonset) {
         KcDepBaseInfo baseInfo = new KcDepBaseInfo();
         String type = "daemonset";
@@ -346,7 +333,6 @@ public class KcDaemonsetUtils {
             planRepSum = status.getDesiredNumberScheduled();
             currentRepSum = status.getNumberReady();
         }
-        //noinspection ConstantConditions
         baseInfo.setType(type)
                 .setName(name)
                 .setDescription(description)
@@ -381,11 +367,12 @@ public class KcDaemonsetUtils {
 
     public static void restartDaemonset(String namespace, String name) {
         throw new UnsupportedOperationException("daemonset不支持重启");
+
     }
 
     /**
      * 伸缩
-     */
+     * */
     public static void scale(String namespace, String name, Integer maxReplicas) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         AppsAPIGroupDSL apps = kc.apps();

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @date 2021/3/22 16:28
  * @since jdk1.8
  */
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings("unchecked")
 public class KcStatefulsetUtils {
     private KcStatefulsetUtils() {}
 
@@ -73,15 +73,7 @@ public class KcStatefulsetUtils {
                                 //获取name
                                 name = metadata.getName();
                                 //获取运行时间
-                                String creationTimestamp = metadata.getCreationTimestamp();
-                                Date startTime;
-                                try {
-                                    startTime = DateSafeUtils.parse(creationTimestamp, K8sConstants.TIME_PATTERN);
-                                    startTime = CommonUtils.timeOffset(startTime);
-                                } catch (ParseException e) {
-                                    throw new K8sClientException("时间类型转换出错", e);
-                                }
-                                runtimeStr = CommonUtils.getTimeDistance(startTime);
+                                runtimeStr = CommonUtils.getRuntimeStr(metadata);
                             }
 
                             StatefulSetStatus status = item.getStatus();
@@ -122,6 +114,7 @@ public class KcStatefulsetUtils {
     /**
      * 创建一个Statefulset
      * */
+    @SuppressWarnings("DuplicatedCode")
     public static void createStatefulset(KcStatefulset kcStatefulset) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         KcDepBaseInfo baseInfo = kcStatefulset.getBaseInfo();
@@ -182,7 +175,7 @@ public class KcStatefulsetUtils {
         if (StringUtils.isNotEmpty(imagePullSecret)) {
             LocalObjectReference localObjectReference = new LocalObjectReference();
             localObjectReference.setName(imagePullSecret);
-            podSpec.setImagePullSecrets(List.of(localObjectReference));
+            podSpec.setImagePullSecrets(Collections.singletonList(localObjectReference));
         }
 
         //template-spec-init container
@@ -228,7 +221,7 @@ public class KcStatefulsetUtils {
                         persistentVolumeClaimSpec.setStorageClassName(vct.getStorageClass());
                         if (vct.getStorage() != 0) {
                            ResourceRequirements resourceRequirements = new ResourceRequirements();
-                           Map<String, Quantity> requests = new HashMap<>(16);
+                           Map<String, Quantity> requests = new HashMap<>(2);
                            requests.put("storage", Quantity.parse(((Double) vct.getStorage()).intValue() + "Gi"));
                            resourceRequirements.setRequests(requests);
                             persistentVolumeClaimSpec.setResources(resourceRequirements);
@@ -266,6 +259,7 @@ public class KcStatefulsetUtils {
     }
 
 
+    @SuppressWarnings("DuplicatedCode")
     private static List<KcVolumeClaimTemplate> setVolumeClaimTemplate(StatefulSet statefulSet) {
         List<KcVolumeClaimTemplate> kcVolumeClaimTemplates = new ArrayList<>();
         StatefulSetSpec spec = statefulSet.getSpec();
@@ -300,6 +294,7 @@ public class KcStatefulsetUtils {
     /**
      * 设置运行时信息
      * */
+    @SuppressWarnings("DuplicatedCode")
     private static List<KcRuntimeInfo> setRuntimeInfo(StatefulSet statefulSet) throws K8sClientException {
         List<KcRuntimeInfo> kcConditions = null;
         StatefulSetStatus depStatus = statefulSet.getStatus();
@@ -346,6 +341,7 @@ public class KcStatefulsetUtils {
     /**
      *  设置deployment的基本信息
      * */
+    @SuppressWarnings({"DuplicatedCode", "ConstantConditions"})
     private static KcDepBaseInfo setBaseInfo(StatefulSet statefulSet) {
         KcDepBaseInfo baseInfo = new KcDepBaseInfo();
         String type = "statefulset";
@@ -377,7 +373,6 @@ public class KcStatefulsetUtils {
             planRepSum = status.getReplicas();
             currentRepSum = status.getReadyReplicas();
         }
-        //noinspection ConstantConditions
         baseInfo.setType(type)
                 .setName(name)
                 .setDescription(description)
@@ -390,6 +385,7 @@ public class KcStatefulsetUtils {
         return baseInfo;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private static void setVolumns(StatefulSet statefulSet, KcStatefulset kcStatefulset) {
         StatefulSetSpec spec = statefulSet.getSpec();
         if (spec != null) {
@@ -420,6 +416,7 @@ public class KcStatefulsetUtils {
     /**
      * 伸缩
      * */
+    @SuppressWarnings("DuplicatedCode")
     public static void scale(String namespace, String name, Integer maxReplicas) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         AppsAPIGroupDSL apps = kc.apps();

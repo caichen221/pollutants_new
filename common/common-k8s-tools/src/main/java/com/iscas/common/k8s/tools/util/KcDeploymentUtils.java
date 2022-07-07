@@ -25,7 +25,6 @@ import com.iscas.common.k8s.tools.model.volume.KcVolume;
 import com.iscas.common.tools.core.date.DateSafeUtils;
 import com.iscas.common.tools.core.string.StringRaiseUtils;
 import com.iscas.templet.exception.BaseException;
-import com.iscas.templet.exception.Exceptions;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
 import io.fabric8.kubernetes.api.model.autoscaling.v2beta2.*;
@@ -49,9 +48,12 @@ import java.util.stream.Collectors;
  * @date 2019/12/8 17:30
  * @since jdk1.8
  */
-@SuppressWarnings({"rawtypes", "unchecked", "unused"})
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class KcDeploymentUtils {
     private static final String TCP = "TCP";
+
+    private static final String APP = "app";
+
     private KcDeploymentUtils() {}
 
     public static void setContainer(KcContainer container, Container specNestedInitContainer) throws K8sClientException {
@@ -173,34 +175,18 @@ public class KcDeploymentUtils {
                 throw new K8sClientException("暂时只支持TCP的健康检查");
             }
             KcHealthTcpParam tcpParam = readinessProbe.getHealthTcpParam();
-            Probe rProbe = new Probe();
-            TCPSocketAction tcpSocketAction = new TCPSocketAction();
-            tcpSocketAction.setPort(new IntOrString(tcpParam.getPort()));
-            rProbe.setTcpSocket(tcpSocketAction);
-            rProbe.setTimeoutSeconds(tcpParam.getTimeout());
-            rProbe.setInitialDelaySeconds(tcpParam.getInitialDelaySeconds());
-            rProbe.setPeriodSeconds(tcpParam.getPeriodSeconds());
-            rProbe.setSuccessThreshold(tcpParam.getHealthThreshold());
-            rProbe.setFailureThreshold(tcpParam.getUnHealthThreshold());
+            Probe rProbe = getProbe(tcpParam);
             specNestedInitContainer.setReadinessProbe(rProbe);
 
         }
 
         if (livenessProbe != null) {
             String type = livenessProbe.getType();
-            if (!"TCP".equalsIgnoreCase(type)) {
+            if (!TCP.equalsIgnoreCase(type)) {
                 throw new K8sClientException("暂时只支持TCP的健康检查");
             }
             KcHealthTcpParam tcpParam = livenessProbe.getHealthTcpParam();
-            Probe lProbe = new Probe();
-            TCPSocketAction tcpSocketAction = new TCPSocketAction();
-            tcpSocketAction.setPort(new IntOrString(tcpParam.getPort()));
-            lProbe.setTcpSocket(tcpSocketAction);
-            lProbe.setTimeoutSeconds(tcpParam.getTimeout());
-            lProbe.setInitialDelaySeconds(tcpParam.getInitialDelaySeconds());
-            lProbe.setPeriodSeconds(tcpParam.getPeriodSeconds());
-            lProbe.setSuccessThreshold(tcpParam.getHealthThreshold());
-            lProbe.setFailureThreshold(tcpParam.getUnHealthThreshold());
+            Probe lProbe = getProbe(tcpParam);
             specNestedInitContainer.setLivenessProbe(lProbe);
         }
 
@@ -216,6 +202,12 @@ public class KcDeploymentUtils {
                 if (port.getHostPort() != null) {
                     containerPort.setHostPort(port.getHostPort());
                 }
+                if (port.getProtocol() != null) {
+                    containerPort.setProtocol(port.getProtocol());
+                }
+                if (port.getHostIp() != null) {
+                    containerPort.setHostIP(port.getHostIp());
+                }
                 specNestedInitContainer.getPorts().add(containerPort);
             }
         }
@@ -226,8 +218,8 @@ public class KcDeploymentUtils {
             Integer cpuMin = resource.getCpuMin();
             Integer memoryMax = resource.getMemoryMax();
             Integer memoryMin = resource.getMemoryMin();
-            Map<String, Quantity> requests = new HashMap<>(4);
-            Map<String, Quantity> limits = new HashMap<>(4);
+            Map<String, Quantity> requests = new HashMap<>(16);
+            Map<String, Quantity> limits = new HashMap<>(16);
             if (cpuMax != null) {
                 limits.put("cpu", Quantity.parse(cpuMax + "m"));
             }
@@ -246,9 +238,23 @@ public class KcDeploymentUtils {
         }
     }
 
+    private static Probe getProbe(KcHealthTcpParam tcpParam) {
+        Probe rProbe = new Probe();
+        TCPSocketAction tcpSocketAction = new TCPSocketAction();
+        tcpSocketAction.setPort(new IntOrString(tcpParam.getPort()));
+        rProbe.setTcpSocket(tcpSocketAction);
+        rProbe.setTimeoutSeconds(tcpParam.getTimeout());
+        rProbe.setInitialDelaySeconds(tcpParam.getInitialDelaySeconds());
+        rProbe.setPeriodSeconds(tcpParam.getPeriodSeconds());
+        rProbe.setSuccessThreshold(tcpParam.getHealthThreshold());
+        rProbe.setFailureThreshold(tcpParam.getUnHealthThreshold());
+        return rProbe;
+    }
+
     /**
      * 创建一个Deployment
      * */
+    @SuppressWarnings("DuplicatedCode")
     public static void createDeployment(KcDeployment kcDeployment) throws K8sClientException {
         @Cleanup KubernetesClient kc = K8sClient.getInstance();
         KcDepBaseInfo baseInfo = kcDeployment.getBaseInfo();
@@ -257,6 +263,9 @@ public class KcDeploymentUtils {
         //命名空间
         String namespace  = baseInfo.getNamespace();
         String name = baseInfo.getName();
+
+        //如果存在，删除这个deployment
+//        KcDeploymentUtils.deleteDeployment(namespace, name);
 
         Map<String, String> labelMap = getLabelMap(baseInfo);
         Map<String, String> annotationMap = getAnnotationMap(baseInfo);
@@ -352,10 +361,10 @@ public class KcDeploymentUtils {
         Deployment deployment1 = deploymentRollableScalableResource.get();
         Map<String, String> labels = deployment.getMetadata().getLabels();
         Map<String, String> labels1 = deployment1.getMetadata().getLabels();
-        if (!labels1.containsKey("app") && labels.containsKey("app")) {
+        if (!labels1.containsKey(APP) && labels.containsKey(APP)) {
             //删除matchLabel,否则修改会失败
             LabelSelector selector = deployment.getSpec().getSelector();
-            if (selector != null && selector.getMatchLabels() != null && selector.getMatchLabels().containsKey("app")) {
+            if (selector != null && selector.getMatchLabels() != null && selector.getMatchLabels().containsKey(APP)) {
                 throw new K8sClientException("不允许修改matchlabel,请克隆此服务或删除此服务，重新创建");
             }
         }
@@ -397,7 +406,7 @@ public class KcDeploymentUtils {
         if (StringUtils.isNotEmpty(imagePullSecret)) {
             LocalObjectReference localObjectReference = new LocalObjectReference();
             localObjectReference.setName(imagePullSecret);
-            podSpec.setImagePullSecrets(List.of(localObjectReference));
+            podSpec.setImagePullSecrets(Collections.singletonList(localObjectReference));
         }
     }
 
@@ -481,7 +490,7 @@ public class KcDeploymentUtils {
                         }
                     }
                 } catch (K8sClientException e) {
-                    throw Exceptions.runtimeException(e);
+                    throw new RuntimeException(e);
                 }
                 return volume;
             }).collect(Collectors.toList());
@@ -508,7 +517,7 @@ public class KcDeploymentUtils {
      * @since jdk1.8
      * @date 2019/12/9
      * @param namespace 命名空间
-     * @throws K8sClientException 异常
+     * @throws K8sClientException K8S异常
      * @return java.util.List<com.iscas.common.k8s.tools.model.deployment.KcDeployment>
      */
     public static List<KcDeployment> getDeployments(String namespace) throws K8sClientException {
@@ -539,15 +548,7 @@ public class KcDeploymentUtils {
                                 //获取name
                                 name = metadata.getName();
                                 //获取运行时间
-                                String creationTimestamp = metadata.getCreationTimestamp();
-                                Date startTime;
-                                try {
-                                    startTime = DateSafeUtils.parse(creationTimestamp, K8sConstants.TIME_PATTERN);
-                                    startTime = CommonUtils.timeOffset(startTime);
-                                } catch (ParseException e) {
-                                    throw new K8sClientException("时间类型转换出错", e);
-                                }
-                                runtimeStr = CommonUtils.getTimeDistance(startTime);
+                                runtimeStr = CommonUtils.getRuntimeStr(metadata);
                             }
 
                             DeploymentStatus status = item.getStatus();
@@ -694,6 +695,7 @@ public class KcDeploymentUtils {
     /**
      * 设置运行时信息
      * */
+    @SuppressWarnings("DuplicatedCode")
     private static List<KcRuntimeInfo> setRuntimeInfo(Deployment deployment) throws K8sClientException {
         List<KcRuntimeInfo> kcConditions = null;
         DeploymentStatus depStatus = deployment.getStatus();
@@ -777,7 +779,7 @@ public class KcDeploymentUtils {
     }
 
     public static Map<String, Object> setSpec(LabelSelector selector,  PodTemplateSpec template) {
-        Map<String, Object> result = new HashMap<>(2);
+        Map<String, Object> result = new HashMap<>();
         List<String[]> matchLabels = new ArrayList<>();
         List<String[]> labels = new ArrayList<>();
         if (selector != null) {
@@ -814,6 +816,7 @@ public class KcDeploymentUtils {
     /**
      *  设置deployment的基本信息
      * */
+    @SuppressWarnings({"ConstantConditions", "DuplicatedCode"})
     private static KcDepBaseInfo setBaseInfo(Deployment deployment) {
         KcDepBaseInfo baseInfo = new KcDepBaseInfo();
         String type = "deployment";
@@ -845,7 +848,6 @@ public class KcDeploymentUtils {
             planRepSum = status.getReplicas();
             currentRepSum = status.getReadyReplicas();
         }
-        //noinspection ConstantConditions
         baseInfo.setType(type)
                 .setName(name)
                 .setDescription(description)
@@ -864,7 +866,7 @@ public class KcDeploymentUtils {
      * @date 2021/1/22
      * @param namespace 命名空间
      * @param name deployment的名字
-     * @throws ParseException parseException
+     * @throws ParseException ParseException
      * @return com.iscas.common.k8s.tools.model.autoscale.KcAutoscale
      */
     public static KcAutoscale getAutoScale(String namespace, String name) throws ParseException {
@@ -953,11 +955,11 @@ public class KcDeploymentUtils {
         if (nonNamespaceOperation != null) {
             Resource<HorizontalPodAutoscaler> horizontalPodAutoscalerResource = nonNamespaceOperation.withName(name);
             if (horizontalPodAutoscalerResource == null) {
-                throw Exceptions.baseException("不存在的扩容信息");
+                throw new BaseException("不存在的扩容信息");
             }
             horizontalPodAutoscalerResource.delete();
         } else {
-            throw Exceptions.baseException("不存在的扩容信息");
+            throw new BaseException("不存在的扩容信息");
         }
     }
 
@@ -966,7 +968,7 @@ public class KcDeploymentUtils {
         List<MetricSpec> metricSpecs = new ArrayList<>();
         KcAutoScaleResource memoryResource = autoscale.getMemoryResource();
         KcAutoScaleResource cpuResource = autoscale.getCpuResource();
-        if (memoryResource != null) {
+        if (memoryResource != null &&memoryResource.getAverageUtilization() != 0) {
             int averageUtilization = memoryResource.getAverageUtilization();
             MetricSpec memoryMetricsSpec = new MetricSpecBuilder()
                     .withType("Resource")
@@ -980,7 +982,7 @@ public class KcDeploymentUtils {
                     .build();
             metricSpecs.add(memoryMetricsSpec);
         }
-        if (cpuResource != null) {
+        if (cpuResource != null && cpuResource.getAverageUtilization() != 0) {
             int averageUtilization = cpuResource.getAverageUtilization();
             MetricSpec cpuMetricsSpec = new MetricSpecBuilder()
                     .withType("Resource")
