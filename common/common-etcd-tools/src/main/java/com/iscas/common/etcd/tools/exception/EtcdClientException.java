@@ -7,6 +7,7 @@ package com.iscas.common.etcd.tools.exception;
  * @date 2021/10/28 9:15
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class EtcdClientException extends RuntimeException {
     public EtcdClientException() {
         super();

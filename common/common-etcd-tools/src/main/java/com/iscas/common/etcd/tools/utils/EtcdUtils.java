@@ -15,12 +15,11 @@ import io.etcd.jetcd.options.PutOption;
 import io.netty.handler.ssl.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.net.ssl.SSLException;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -28,12 +27,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * @author zhuquanwen
  * ETCD操作工具类
  * <p>
  * 从k8s的master节点/etc/kubernetes/pki/etcd/ 拷贝server.crt、peer.crt到本地。
  * 在linux运行openssl pkcs8 -topk8 -nocrypt -in peer.key –out peer-pkcs8.key，
- * 将生成的peer-pkcs8.key拷贝到本地。
+ * 将生成的pwd拷贝到本地。
  */
+@SuppressWarnings({"UnstableApiUsage", "unused", "UnusedReturnValue"})
+@Slf4j
 public class EtcdUtils {
 
     public static String trustManagerPath = "classpath:ca.crt";
@@ -44,7 +46,7 @@ public class EtcdUtils {
 
     private static volatile Client client;
     private static long TIME_OUT = 3000L;
-    private static TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
+    private final static TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
     private static KV kvClient;
     private static Lock lockClient;
     private static Lease leaseClient;
@@ -63,7 +65,7 @@ public class EtcdUtils {
                     ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
                     ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
                     ApplicationProtocolNames.HTTP_2);
-            SslContext context = SslContextBuilder
+            return SslContextBuilder
                     .forClient()
                     // 设置alpn
                     .applicationProtocolConfig(alpn)
@@ -74,52 +76,62 @@ public class EtcdUtils {
                     // 设置客户端证书
                     .keyManager(keyCertChainFile, KeyFile)
                     .build();
-            return context;
-        } catch (FileNotFoundException e) {
-            throw new EtcdClientException("未找到证书配置文件", e);
-        } catch (SSLException e) {
-            throw new EtcdClientException("SSL连接出错", e);
+        } catch (IOException e) {
+            throw new EtcdClientException("未找到证书配置文件或SSL连接出错", e);
         }
     }
 
+    public static void replaceClient() throws EtcdClientException {
+        Client tmpClient = doGetClient();
+        client.close();
+        client = tmpClient;
+        kvClient = tmpClient.getKVClient();
+        lockClient = tmpClient.getLockClient();
+        leaseClient = tmpClient.getLeaseClient();
+        log.info("etcd客户端已替换!");
+    }
 
     public static Client getClient() throws EtcdClientException {
         if (client == null) {
             synchronized (EtcdUtils.class) {
                 if (client == null) {
-                    ClientBuilder builder = Client.builder();
-                    // 设置服务器地址,这里是列表
-                    builder.endpoints(etcdAddr.split(","));
-                    // 当服务器端开启ssl认证时则该地方的设置就没有意义了.etcd会使用客户端ca证书中的CN头作为用户名进行权限认证
-                    //        if (etcdProps.getAuthority()) {
-                    //            ByteSequence user = ByteSequence.from("username");
-                    //            ByteSequence pwd = ByteSequence.from("password");
-                    //
-                    //            builder.user(user);
-                    //            builder.password(pwd);
-                    //        }
-                    // 这个authority必填.是服务器端CA设置的可授权访问的host域名之一.
-                    // https访问网站的时候，最重要的一环就是验证服务器方的证书的域名是否与我想要访问的域名一致(可查看ETCD概念入门文章了解CA证书生成)
-                    builder.sslContext(openSslContext())
-                            .connectTimeout(Duration.ofSeconds(3))
-                            .keepaliveTimeout(Duration.ofSeconds(20))
-                            .authority(etcdDomain);
-                    client = builder.build();
+                    client = doGetClient();
                     kvClient = client.getKVClient();
                     lockClient = client.getLockClient();
                     leaseClient = client.getLeaseClient();
-
                 }
             }
         }
         return client;
     }
 
+    @SuppressWarnings("AlibabaRemoveCommentedCode")
+    public static Client doGetClient() {
+        ClientBuilder builder = Client.builder();
+        // 设置服务器地址,这里是列表
+        builder.endpoints(etcdAddr.split(","));
+        // 当服务器端开启ssl认证时则该地方的设置就没有意义了.etcd会使用客户端ca证书中的CN头作为用户名进行权限认证
+        //        if (etcdProps.getAuthority()) {
+        //            ByteSequence user = ByteSequence.from("username");
+        //            ByteSequence pwd = ByteSequence.from("password");
+        //
+        //            builder.user(user);
+        //            builder.password(pwd);
+        //        }
+        // 这个authority必填.是服务器端CA设置的可授权访问的host域名之一.
+        // https访问网站的时候，最重要的一环就是验证服务器方的证书的域名是否与我想要访问的域名一致(可查看ETCD概念入门文章了解CA证书生成)
+        builder.sslContext(openSslContext())
+//                .connectTimeout(Duration.ofSeconds(3))
+//                .keepaliveTimeout(Duration.ofSeconds(20))
+                .authority(etcdDomain);
+        return builder.build();
+    }
+
 
     /**
-     * 毫秒
+     * 设置超时时间
      *
-     * @param timeout
+     * @param timeout 超时时间 毫秒
      */
     public static void setTimeOut(long timeout) {
         EtcdUtils.TIME_OUT = timeout;
@@ -141,14 +153,14 @@ public class EtcdUtils {
     /**
      * 判断当前Key是否存在
      *
-     * @param key
+     * @param key key
      */
     public static Boolean exists(String key) {
         if (null == key || "".equals(key)) {
             return false;
         }
         ByteSequence byteKey = bytesOf(key);
-        GetResponse response = null;
+        GetResponse response;
         try {
             response = kvClient.get(byteKey).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
@@ -162,8 +174,8 @@ public class EtcdUtils {
     /**
      * 设置指定K-V
      *
-     * @param key
-     * @param value
+     * @param key k
+     * @param value v
      */
     public static Boolean put(String key, String value) {
         if (null == key || "".equals(key)) {
@@ -184,12 +196,10 @@ public class EtcdUtils {
     /**
      * 设置指定KV, 并带租约ID
      *
-     * @param key
-     * @param value
+     * @param key k
+     * @param value v
      * @param leaseId 租约ID
      * @return java.lang.Boolean
-     * @throws
-     * @version 1.0
      * @date 2021/10/28
      * @since jdk1.8
      */
@@ -198,7 +208,7 @@ public class EtcdUtils {
             throw new NullPointerException();
         }
         CompletableFuture<PutResponse> future = kvClient.put(bytesOf(key), bytesOf(value), PutOption.newBuilder().withLeaseId(leaseId).build());
-        PutResponse putResponse = null;
+        PutResponse putResponse;
         try {
             putResponse = future.get(TIME_OUT, TIME_UNIT);
             return !Objects.equals(null, putResponse);
@@ -212,17 +222,15 @@ public class EtcdUtils {
     /**
      * 设置KV 带超时时间
      *
-     * @param key
-     * @param value
+     * @param key k
+     * @param value v
      * @param ttl   过期时间，毫秒
-     * @return void
-     * @throws
-     * @version 1.0
+     * @return Boolean 是否设置成功
      * @date 2021/10/28
      * @since jdk1.8
      */
     public static Boolean putAndGrant(String key, String value, long ttl) {
-        LeaseGrantResponse leaseGrantResponse = null;
+        LeaseGrantResponse leaseGrantResponse;
         try {
             leaseGrantResponse = leaseClient.grant(ttl).get(TIME_OUT, TIME_UNIT);
             return put(key, value, leaseGrantResponse.getID());
@@ -237,9 +245,6 @@ public class EtcdUtils {
      * 释放租约
      *
      * @param leaseId 租约ID号
-     * @return void
-     * @throws
-     * @version 1.0
      * @date 2021/10/28
      * @since jdk1.8
      */
@@ -247,7 +252,8 @@ public class EtcdUtils {
         try {
             leaseClient.revoke(leaseId).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
-            throw new EtcdClientException(e.getMessage(), e);
+//            throw new EtcdClientException(e.getMessage(), e);
+            e.printStackTrace();
         } catch (TimeoutException e) {
             throw new EtcdClientException("操作ETCD超时", e);
         }
@@ -257,7 +263,7 @@ public class EtcdUtils {
     /**
      * 获取指定Key的值
      *
-     * @param key
+     * @param key k
      */
     public static String getSingle(String key) {
         if (null == key || "".equals(key)) {
@@ -265,7 +271,7 @@ public class EtcdUtils {
         }
 
         ByteSequence byteKey = bytesOf(key);
-        GetResponse response = null;
+        GetResponse response;
         try {
             response = kvClient.get(byteKey).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
@@ -283,7 +289,7 @@ public class EtcdUtils {
     /**
      * 获取指定Key前缀的KV映射表
      *
-     * @param prefix
+     * @param prefix key前缀
      */
     public static Map<String, String> getWithPrefix(String prefix) {
         if (null == prefix || "".equals(prefix)) {
@@ -292,7 +298,7 @@ public class EtcdUtils {
 
         ByteSequence prefixByte = bytesOf(prefix);
         GetOption getOption = GetOption.newBuilder().withPrefix(prefixByte).build();
-        GetResponse response = null;
+        GetResponse response;
         try {
             response = kvClient.get(prefixByte, getOption).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
@@ -301,7 +307,7 @@ public class EtcdUtils {
             throw new EtcdClientException("操作ETCD超时", e);
         }
 
-        Map<String, String> kvMap = new HashMap<>();
+        Map<String, String> kvMap = new HashMap<>(16);
         if (null != response && response.getCount() > 0) {
             response.getKvs().forEach(item -> kvMap.put(toString(item.getKey()), toString(item.getValue())));
         }
@@ -315,7 +321,7 @@ public class EtcdUtils {
         if (null == key || "".equals(key)) {
             throw new NullPointerException();
         }
-        long deleted = 0;
+        long deleted;
         try {
             deleted = kvClient.delete(bytesOf(key)).get(TIME_OUT, TIME_UNIT).getDeleted();
         } catch (InterruptedException | ExecutionException e) {
@@ -338,7 +344,7 @@ public class EtcdUtils {
 
         DeleteOption deleteOption = DeleteOption.newBuilder().withPrefix(prefixByte).build();
 
-        long deleted = 0;
+        long deleted;
         try {
             deleted = kvClient.delete(prefixByte, deleteOption).get(TIME_OUT, TIME_UNIT).getDeleted();
         } catch (InterruptedException | ExecutionException e) {
@@ -352,6 +358,7 @@ public class EtcdUtils {
     /**
      * 开启事务进行批量增删改操作(发布/回滚操作一定要开启事务执行批量操作)
      */
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static boolean operationWithTxn(List<String> delKeys, Map<String, String> addOrUpdateKV, String keyPrefix) {
         Txn txn = kvClient.txn();
         if (!CollectionUtils.isEmpty(delKeys)) {
@@ -378,7 +385,7 @@ public class EtcdUtils {
 
             txn.Then(addOrUpdateOps.toArray(new Op.PutOp[0]));
         }
-        TxnResponse txnResponse = null;
+        TxnResponse txnResponse;
         try {
             txnResponse = txn.commit().get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
@@ -397,14 +404,12 @@ public class EtcdUtils {
      * @param lockName        锁名称
      * @param lockTimeoutInSecond 锁超时时间
      * @return java.lang.Long
-     * @throws
-     * @version 1.0
      * @date 2021/10/28
      * @since jdk1.8
      */
     public static LockData acquireLock(String lockName, long lockTimeoutInSecond) {
 //        return 1L;
-        Long leaseId = 0L;
+        long leaseId;
         // 创建一个租约，租约有效期为ttlOfLease
         try {
             leaseId = leaseClient.grant(lockTimeoutInSecond).get(TIME_OUT, TimeUnit.MILLISECONDS).getID();
@@ -419,6 +424,7 @@ public class EtcdUtils {
             String lockId = toString(lockResponse.getKey());
             return new LockData(lockId, leaseId);
         } catch (InterruptedException | ExecutionException e) {
+
             revokeLease(leaseId);
             throw new EtcdClientException(e.getMessage(), e);
         } catch (TimeoutException e) {
@@ -435,8 +441,6 @@ public class EtcdUtils {
      * @param lockId 锁标记
      * @param leaseId  租约ID
      * @return void
-     * @throws
-     * @version 1.0
      * @date 2021/10/28
      * @since jdk1.8
      */
