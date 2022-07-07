@@ -16,21 +16,18 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * <p>docker工具<p/>
- * <p>需要开启远程访问，可参见：https://blog.csdn.net/u011943534/article/details/112134818<p/>
+ * <p>需要开启远程访问，可参见：<a href="https://blog.csdn.net/u011943534/article/details/112134818">...</a><p/>
  *
  * @author zhuquanwen
  * @version 1.0
  * @date 2021/9/14 15:58
  * @since jdk1.8
  */
+@SuppressWarnings("deprecation")
 @Slf4j
 public class DockerClientUtils {
     /**
@@ -56,8 +53,7 @@ public class DockerClientUtils {
      * @param host       连接host信息，如tcp://172.16.10.163:2375
      * @param apiVersion 使用的API版本，可以在远程docker服务上运行docker version看到
      * @return com.github.dockerjava.api.DockerClient
-     * @throws
-     * @version 1.0
+     * @throws URISyntaxException uri异常
      * @date 2021/9/14
      * @since jdk1.8
      */
@@ -81,8 +77,7 @@ public class DockerClientUtils {
      *
      * @param host 连接host信息，如tcp://172.16.10.163:2375
      * @return com.github.dockerjava.api.DockerClient
-     * @throws
-     * @version 1.0
+     * @throws URISyntaxException uri异常
      * @date 2021/9/14
      * @since jdk1.8
      */
@@ -96,26 +91,25 @@ public class DockerClientUtils {
      * @param client             容器客户端
      * @param createContainerReq 创建容器请求
      * @return com.github.dockerjava.api.command.CreateContainerResponse
-     * @throws
-     * @version 1.0
      * @date 2021/9/15
      * @since jdk1.8
      */
     public static CreateContainerResponse createContainer(DockerClient client, CreateContainerReq createContainerReq) {
         CreateContainerCmd containerCmd = client.createContainerCmd(createContainerReq.getImageName());
         //设置名字
-        Optional.ofNullable(createContainerReq.getContainerName()).ifPresent(containerName -> containerCmd.withName(containerName));
+        Optional.ofNullable(createContainerReq.getContainerName()).ifPresent(containerCmd::withName);
 
         //设置端口绑定
         if (createContainerReq.getPorts() != null) {
-            List<PortBinding> portBindings = createContainerReq.getPorts().stream()
-                    .map(port -> {
-                        Integer exposedPort = port.getExposedPort();
-                        Integer bindPort = port.getBindPort();
-                        Ports.Binding binding = bindPort == null ? Ports.Binding.empty() : Ports.Binding.bindPort(bindPort);
-                        return new PortBinding(binding, new ExposedPort(exposedPort));
-                    }).collect(Collectors.toList());
-            containerCmd.getHostConfig().withPortBindings(portBindings);
+            List<PortBinding> portBindings = new ArrayList<>();
+            for (CreateContainerReq.Port port : createContainerReq.getPorts()) {
+                Integer exposedPort = port.getExposedPort();
+                Integer bindPort = port.getBindPort();
+                Ports.Binding binding = bindPort == null ? Ports.Binding.empty() : Ports.Binding.bindPort(bindPort);
+                PortBinding portBinding = new PortBinding(binding, new ExposedPort(exposedPort));
+                portBindings.add(portBinding);
+            }
+            Objects.requireNonNull(containerCmd.getHostConfig()).withPortBindings(portBindings);
         }
 
         //设置环境变量
@@ -126,10 +120,11 @@ public class DockerClientUtils {
 
         //设置挂载
         if (createContainerReq.getBindVolumes() != null) {
-            List<Bind> binds = createContainerReq.getBindVolumes().stream()
-                    .map(bindVolume -> new Bind(bindVolume.getBind(), new Volume(bindVolume.getVol()), bindVolume.getAccessMode()))
-                    .collect(Collectors.toList());
-            containerCmd.getHostConfig().withBinds(binds);
+            List<Bind> binds = new ArrayList<>();
+            for (CreateContainerReq.BindVolume bindVolume : createContainerReq.getBindVolumes()) {
+                binds.add(new Bind(bindVolume.getBind(), new Volume(bindVolume.getVol()), bindVolume.getAccessMode()));
+            }
+            Objects.requireNonNull(containerCmd.getHostConfig()).withBinds(binds);
         }
 
         //创建
@@ -139,7 +134,7 @@ public class DockerClientUtils {
     /**
      * 启动容器
      *
-     * @param client
+     * @param client docker客户端
      * @param containerId 容器ID
      */
     public static void startContainer(DockerClient client, String containerId) {
@@ -149,7 +144,7 @@ public class DockerClientUtils {
     /**
      * 运行容器(创建并启动容器)
      *
-     * @param client
+     * @param client docker 客户端
      * @param createContainerReq 创建容器的信息
      */
     public static void runContainer(DockerClient client, CreateContainerReq createContainerReq) {
@@ -160,7 +155,7 @@ public class DockerClientUtils {
     /**
      * 停止容器
      *
-     * @param client
+     * @param client docker客户端
      * @param containerId 容器ID
      */
     public static void stopContainer(DockerClient client, String containerId) {
@@ -170,8 +165,8 @@ public class DockerClientUtils {
     /**
      * 删除容器
      *
-     * @param client
-     * @param containerId
+     * @param client docker客户端
+     * @param containerId 容器ID
      */
     public static void removeContainer(DockerClient client, String containerId) {
         client.removeContainerCmd(containerId).exec();
@@ -184,7 +179,8 @@ public class DockerClientUtils {
         String imageId = client.buildImageCmd(dockerFileOrFolder)
                 .withTags(new HashSet<String>() {{
                     add(imageName + ":" + imageTag);
-                }}).exec(new BuildImageResultCallback() {
+                }})
+                .exec(new BuildImageResultCallback() {
                     @Override
                     public void onNext(BuildResponseItem item) {
                         log.debug(item.getStream());
