@@ -11,6 +11,7 @@ import com.iscas.common.rpc.tools.sofa.SofaRpcOptions;
  * @date 2020/11/20 11:44
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class SofaRpcClientUtils {
     private SofaRpcClientUtils(){}
 
@@ -30,11 +31,9 @@ public class SofaRpcClientUtils {
      *         // 拿到代理类
      *         HelloService service = consumerConfig.refer();
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/20
      * @param consumerConfig 消费者定义
-     * @throws
      * @return T
      */
     public static <T> T getInstance(ConsumerConfig<T> consumerConfig) {
@@ -43,9 +42,9 @@ public class SofaRpcClientUtils {
 
     public static <T> T getSimpleInstance(Class<T> interfaceClass, String ip, int port) {
         ConsumerConfig<T> consumerConfig = new ConsumerConfig<T>()
-                .setInterfaceId(interfaceClass.getName()) // Specify the interface
-                .setProtocol(SofaRpcOptions.DEFAULT_PROTOCOL) // Specify the protocol.setDirectUrl
-                .setDirectUrl(SofaRpcOptions.DEFAULT_PROTOCOL + "://" + ip + ":" + port); // Specify the direct connection address
+                .setInterfaceId(interfaceClass.getName())
+                .setProtocol(SofaRpcOptions.DEFAULT_PROTOCOL)
+                .setDirectUrl(SofaRpcOptions.DEFAULT_PROTOCOL + "://" + ip + ":" + port);
         // Generate the proxy class
         return consumerConfig.refer();
     }

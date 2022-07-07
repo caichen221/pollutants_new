@@ -34,7 +34,7 @@ import java.util.concurrent.TimeoutException;
  * 在linux运行openssl pkcs8 -topk8 -nocrypt -in peer.key –out peer-pkcs8.key，
  * 将生成的pwd拷贝到本地。
  */
-@SuppressWarnings({"UnstableApiUsage", "unused", "UnusedReturnValue"})
+@SuppressWarnings({"unused", "UnusedReturnValue", "deprecation"})
 @Slf4j
 public class EtcdUtils {
 
@@ -155,6 +155,7 @@ public class EtcdUtils {
      *
      * @param key key
      */
+    @SuppressWarnings("DuplicatedCode")
     public static Boolean exists(String key) {
         if (null == key || "".equals(key)) {
             return false;
@@ -252,7 +253,6 @@ public class EtcdUtils {
         try {
             leaseClient.revoke(leaseId).get(TIME_OUT, TIME_UNIT);
         } catch (InterruptedException | ExecutionException e) {
-//            throw new EtcdClientException(e.getMessage(), e);
             e.printStackTrace();
         } catch (TimeoutException e) {
             throw new EtcdClientException("操作ETCD超时", e);

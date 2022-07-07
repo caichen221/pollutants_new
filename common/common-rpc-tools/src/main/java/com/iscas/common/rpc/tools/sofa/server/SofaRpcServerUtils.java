@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2020/11/20 11:29
  * @since jdk1.8
  */
+@SuppressWarnings("rawtypes")
 @Slf4j
 public class SofaRpcServerUtils {
     private SofaRpcServerUtils(){}
@@ -40,12 +41,9 @@ public class SofaRpcServerUtils {
      *         providerConfig.export();
      *
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/20
      * @param providerConfig 服务的定义
-     * @throws
-     * @return void
      */
     public static void export(ProviderConfig providerConfig) {
         providerConfig.export();
@@ -58,24 +56,21 @@ public class SofaRpcServerUtils {
 
     /**
      * 发布一个服务，不使用注册中心，使用bolt协议，其他参数都是默认参数
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/20
      * @param interfaceClass 服务接口的Class
      * @param entity 服务接口的实现类
      * @param port 对外发布的端口
-     * @throws
-     * @return void
      */
     public static <T> void simpleExport(Class<T> interfaceClass, T entity, int port) {
         ServerConfig serverConfig = new ServerConfig()
-                .setProtocol(SofaRpcOptions.DEFAULT_PROTOCOL) // Set a protocol, which is bolt by default
-                .setPort(port) // set a port, which is 12200 by default
-                .setDaemon(false); // non-daemon thread
+                .setProtocol(SofaRpcOptions.DEFAULT_PROTOCOL)
+                .setPort(port)
+                .setDaemon(false);
         ProviderConfig<T> providerConfig = new ProviderConfig<T>()
-                .setInterfaceId(interfaceClass.getName()) // Specify the interface
-                .setRef(entity) // Specify the implementation
-                .setServer(serverConfig); // Specify the server
+                .setInterfaceId(interfaceClass.getName())
+                .setRef(entity)
+                .setServer(serverConfig);
         export(providerConfig);
 
     }

@@ -10,7 +10,7 @@ import java.util.Map;
  * @date 2021/10/28 9:18
  * @since jdk1.8
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unused", "BooleanMethodIsAlwaysInverted"})
 public class CollectionUtils {
     private CollectionUtils() {}
 

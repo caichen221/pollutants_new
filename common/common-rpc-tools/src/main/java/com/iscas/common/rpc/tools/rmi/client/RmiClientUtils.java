@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 public class RmiClientUtils {
     private RmiClientUtils() {}
 
+    @SuppressWarnings({"unused", "unchecked"})
     public static <T extends Remote> T lookup(Class<T> tClass, String host, int port, String publishName) throws RemoteException, NotBoundException, MalformedURLException {
         return (T) Naming.lookup("rmi://" + host + ":" + port + "/" + publishName);
     }

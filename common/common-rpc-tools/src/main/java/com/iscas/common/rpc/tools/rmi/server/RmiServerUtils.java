@@ -21,17 +21,19 @@ public class RmiServerUtils {
 
     /**
      * RMI发布服务
-     * @version 1.0
-     * @since jdk1.8
-     * @date 2020/11/21
-     * @param host
-     * @param port
+     *
+     * @param host        host
+     * @param port        端口
      * @param publishName 发布名称/标记
-     * @param entity 实现类
-     * @throws
-     * @return void
+     * @param entity      实现类
+     * @throws RemoteException       异常
+     * @throws AlreadyBoundException 异常
+     * @throws MalformedURLException 异常
+     * @date 2020/11/21
+     * @since jdk1.8
      */
-    public static <T extends Remote> void bind(String host, int port, String publishName, T entity) throws RemoteException, AlreadyBoundException, MalformedURLException {
+    public static <T extends Remote> void bind(String host, int port, String publishName, T entity) throws RemoteException,
+            AlreadyBoundException, MalformedURLException {
         LocateRegistry.createRegistry(port);
         Naming.bind("rmi://" + host + ":" + port + "/" + publishName, entity);
         System.out.println("服务已启动");

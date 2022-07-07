@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/11/20 18:47
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 @Slf4j
 public class GrpcClientUtils {
     private GrpcClientUtils(){}
@@ -27,12 +28,10 @@ public class GrpcClientUtils {
      * MyResponse myResponse = blockingStub
      *                 .getRealNameByUsername(MyRequest.newBuilder().setUsername("zhangsan").build());
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/20
      * @param ip 服务端IP
      * @param port 端口
-     * @throws
      * @return io.grpc.ManagedChannel
      */
     public static ManagedChannel getManagedChannel(String ip, int port) {

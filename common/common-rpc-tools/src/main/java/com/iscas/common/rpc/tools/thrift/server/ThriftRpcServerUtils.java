@@ -7,8 +7,6 @@ import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TTransportException;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * thrift服务端工具类
  *
@@ -24,15 +22,13 @@ public class ThriftRpcServerUtils {
     /**
      * 发布服务
      *
-     * @version 1.0
      * @since jdk1.8
      * @date 2020/11/21
      * @param tprocessor  TProcessor tprocessor = new RPCDateService.Processor<RPCDateService.Iface>( new RPCDateServiceImpl());
      * @param port 对外发布的端口
-     * @throws
-     * @return void
+     * @throws TTransportException TTransportException
      */
-    public static <T extends TServer> void serve(TProcessor tprocessor, int port) throws TTransportException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static void serve(TProcessor tprocessor, int port) throws TTransportException {
         TServerSocket serverTransport = new TServerSocket(port);
         TServer.Args tArgs = new TServer.Args(serverTransport);
         tArgs.processor(tprocessor);
