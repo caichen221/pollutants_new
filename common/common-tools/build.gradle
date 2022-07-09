@@ -29,7 +29,7 @@ dependencies {
 // https://mvnrepository.com/artifact/com.google.zxing/core
     api group: 'com.google.zxing', name: 'core', version: "${zxingCoreVersion}"
 
-    api fileTree(dir: 'lib', include: '*.jar')
+    api fileTree(dir: 'libs', include: '*.jar')
 
     //jzip压缩
     api group: 'org.apache.ant', name: 'ant', version: "${apacheAntVersion}"
@@ -116,7 +116,6 @@ dependencies {
     api group: 'javax.xml', name: 'jaxb-impl', version: "${jaxbImplVersion}"
     api group: 'javax.xml.bind', name: 'jaxb-api', version: "${jaxbApiVersion}"
     api group: 'com.github.liaochong', name: 'myexcel', version: "${myexcelVersion}"
-
 }
 
 //install {

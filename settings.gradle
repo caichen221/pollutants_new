@@ -41,4 +41,6 @@ include 'biz-ssh-server'
 include 'biz-base'
 include 'biz-mp'
 include 'admin-server'
+include 'common:common-aspose-tools'
+findProject(':common:common-aspose-tools')?.name = 'common-aspose-tools'
 
