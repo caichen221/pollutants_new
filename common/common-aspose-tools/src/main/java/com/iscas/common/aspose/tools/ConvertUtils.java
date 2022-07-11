@@ -19,6 +19,19 @@ public class ConvertUtils {
     }
 
     /**
+     * word转为HTML
+     *
+     * @param is 输入流
+     * @param os 输出流
+     * @throws Exception 异常
+     * @date 2022/7/9
+     * @since jdk11
+     */
+    public static void doc2html(InputStream is, OutputStream os) throws Exception {
+        convert(is, os, SaveFormat.HTML_FIXED);
+    }
+
+    /**
      * word转为PDF
      *
      * @param is 输入流

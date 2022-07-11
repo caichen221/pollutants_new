@@ -15,11 +15,14 @@ import java.nio.file.Paths;
  */
 class ConvertUtilsTest {
 
+    /**
+     * 测试word转为PDF
+     * */
     @Test
-    public void test() throws Exception {
+    public void testWord2Pdf() throws Exception {
         try (
-                InputStream is = Files.newInputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\新建 DOCX 文档.docx"));
-                OutputStream os =Files.newOutputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\test.pdf"))
+                InputStream is = Files.newInputStream(Paths.get("D:\\文档资料\\_部署安装\\离线安装k8s\\1、安装k8s集群\\离线安装k8s集群.docx"));
+                OutputStream os =Files.newOutputStream(Paths.get("D:/tmp/test.pdf"))
         ) {
             ConvertUtils.doc2pdf(is, os);
         }
