@@ -17,6 +17,10 @@ import java.io.OutputStream;
  */
 @SuppressWarnings("unused")
 public class WaterMarkUtils {
+    static {
+        LicenseUtils.initLicense();
+    }
+
     private WaterMarkUtils() {
     }
 
@@ -57,7 +61,7 @@ public class WaterMarkUtils {
      * @since jdk11
      */
     public static void addWatermarkText(InputStream is, String text, OutputStream os, int saveFormat) throws Exception {
-        LicenseUtils.initLicense();
+        long old = System.currentTimeMillis();
         Document doc = new Document(is);
         Shape watermark = new Shape(doc, ShapeType.TEXT_PLAIN_TEXT);
         //水印内容
@@ -91,6 +95,8 @@ public class WaterMarkUtils {
             insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_EVEN);
         }
         doc.save(os, saveFormat);
+        long now = System.currentTimeMillis();
+        System.out.println("添加水印成功，共耗时：" + (now - old) + "毫秒");
     }
 
     /**
@@ -127,7 +133,7 @@ public class WaterMarkUtils {
      * @throws Exception 异常
      */
     public static void addWaterMarkTextMore(InputStream is, String wmText, OutputStream os, int saveFormat) throws Exception {
-        LicenseUtils.initLicense();
+        long old = System.currentTimeMillis();
         Document doc = new Document(is);
         Paragraph watermarkPara = new Paragraph(doc);
         for (int j = 0; j < 500; j = j + 100) {
@@ -142,6 +148,8 @@ public class WaterMarkUtils {
             insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_EVEN);
         }
         doc.save(os, saveFormat);
+        long now = System.currentTimeMillis();
+        System.out.println("添加水印成功，共耗时：" + (now - old) + "毫秒");
     }
 
     /**

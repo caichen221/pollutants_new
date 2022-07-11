@@ -18,6 +18,11 @@ import java.io.OutputStream;
  */
 @SuppressWarnings("unused")
 public class ConvertUtils {
+
+    static {
+        LicenseUtils.initLicense();
+    }
+
     private ConvertUtils() {
     }
 
@@ -58,11 +63,13 @@ public class ConvertUtils {
      * @since jdk11
      */
     public static void html2Word(String htmlText, OutputStream os, int saveFormat) throws Exception {
-        LicenseUtils.initLicense();
+        long old = System.currentTimeMillis();
         Document doc = new Document();
         DocumentBuilder builder = new DocumentBuilder(doc);
         builder.insertHtml(htmlText);
         doc.save(os, saveFormat);
+        long now = System.currentTimeMillis();
+        System.out.println("转换成功，共耗时：" + (now - old) + "毫秒");
     }
 
     /**
@@ -75,13 +82,15 @@ public class ConvertUtils {
      * @since jdk11
      */
     public static void word2html(InputStream is, OutputStream os) throws Exception {
-        LicenseUtils.initLicense();
+        long old = System.currentTimeMillis();
         Document doc = new Document(is);
         HtmlSaveOptions opts = new HtmlSaveOptions(SaveFormat.HTML);
         opts.setExportXhtmlTransitional(true);
         opts.setExportImagesAsBase64(true);
         opts.setExportPageSetup(true);
         doc.save(os, opts);
+        long now = System.currentTimeMillis();
+        System.out.println("转换成功，共耗时：" + (now - old) + "毫秒");
     }
 
     /**
@@ -108,14 +117,12 @@ public class ConvertUtils {
      * @since jdk11
      */
     public static void convert(InputStream is, OutputStream os, int saveFormat) throws Exception {
-        // 验证License 若不验证则转化出的pdf文档会有水印产生
-        LicenseUtils.initLicense();
         long old = System.currentTimeMillis();
         Document doc = new Document(is);
         // 全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
         doc.save(os, saveFormat);
         long now = System.currentTimeMillis();
-        System.out.println("Word转换成功，共耗时：" + (now - old) + "毫秒");
+        System.out.println("转换成功，共耗时：" + (now - old) + "毫秒");
     }
 
 }
