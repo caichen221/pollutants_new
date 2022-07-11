@@ -1,6 +1,8 @@
 package com.iscas.common.aspose.tools;
 
 import com.aspose.words.Document;
+import com.aspose.words.DocumentBuilder;
+import com.aspose.words.HtmlSaveOptions;
 import com.aspose.words.SaveFormat;
 
 import java.io.InputStream;
@@ -14,21 +16,72 @@ import java.io.OutputStream;
  * @date 2022/7/9 11:30
  * @since jdk11
  */
+@SuppressWarnings("unused")
 public class ConvertUtils {
     private ConvertUtils() {
     }
 
     /**
-     * word转为HTML
+     * HTML转为WORD,docx格式
      *
-     * @param is 输入流
-     * @param os 输出流
+     * @param htmlText html文本
+     * @param os       输出流 转换后的word，docx格式
      * @throws Exception 异常
      * @date 2022/7/9
      * @since jdk11
      */
-    public static void doc2html(InputStream is, OutputStream os) throws Exception {
-        convert(is, os, SaveFormat.HTML_FIXED);
+    public static void html2docx(String htmlText, OutputStream os) throws Exception {
+        html2Word(htmlText, os, SaveFormat.DOCX);
+    }
+
+    /**
+     * HTML转为WORD,doc格式
+     *
+     * @param htmlText html文本
+     * @param os       输出流 转换后的word,doc格式
+     * @throws Exception 异常
+     * @date 2022/7/9
+     * @since jdk11
+     */
+    public static void html2doc(String htmlText, OutputStream os) throws Exception {
+        html2Word(htmlText, os, SaveFormat.DOC);
+    }
+
+    /**
+     * HTML转为WORD
+     *
+     * @param htmlText   html文本
+     * @param os         输出流 转换后的word
+     * @param saveFormat 输出的格式。{@link SaveFormat#DOC} 或 {@link SaveFormat#DOCX}
+     * @throws Exception 异常
+     * @date 2022/7/9
+     * @since jdk11
+     */
+    public static void html2Word(String htmlText, OutputStream os, int saveFormat) throws Exception {
+        LicenseUtils.initLicense();
+        Document doc = new Document();
+        DocumentBuilder builder = new DocumentBuilder(doc);
+        builder.insertHtml(htmlText);
+        doc.save(os, saveFormat);
+    }
+
+    /**
+     * word转为HTML
+     *
+     * @param is 输入流 待转换的word
+     * @param os 输出流 转换后的html
+     * @throws Exception 异常
+     * @date 2022/7/9
+     * @since jdk11
+     */
+    public static void word2html(InputStream is, OutputStream os) throws Exception {
+        LicenseUtils.initLicense();
+        Document doc = new Document(is);
+        HtmlSaveOptions opts = new HtmlSaveOptions(SaveFormat.HTML);
+        opts.setExportXhtmlTransitional(true);
+        opts.setExportImagesAsBase64(true);
+        opts.setExportPageSetup(true);
+        doc.save(os, opts);
     }
 
     /**
@@ -40,15 +93,15 @@ public class ConvertUtils {
      * @date 2022/7/9
      * @since jdk11
      */
-    public static void doc2pdf(InputStream is, OutputStream os) throws Exception {
+    public static void word2pdf(InputStream is, OutputStream os) throws Exception {
         convert(is, os, SaveFormat.PDF);
     }
 
     /**
      * 格式转换
      *
-     * @param is          输入流
-     * @param os          输出流
+     * @param is         输入流
+     * @param os         输出流
      * @param saveFormat 文件格式,参见{@link SaveFormat}
      * @throws Exception 异常
      * @date 2022/7/9
