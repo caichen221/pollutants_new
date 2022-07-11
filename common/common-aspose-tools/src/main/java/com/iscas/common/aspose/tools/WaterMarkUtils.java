@@ -1,7 +1,7 @@
 package com.iscas.common.aspose.tools;
 
-import com.aspose.words.*;
 import com.aspose.words.Shape;
+import com.aspose.words.*;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -9,15 +9,54 @@ import java.io.OutputStream;
 
 /**
  * 添加水印的方法
+ *
  * @author zhuquanwen
  * @version 1.0
  * @date 2022/7/9 12:58
  * @since jdk11
  */
+@SuppressWarnings("unused")
 public class WaterMarkUtils {
-    private WaterMarkUtils() {}
+    private WaterMarkUtils() {
+    }
 
-    public static void addWatermarkText(InputStream is, String text, OutputStream os) throws Exception {
+    /**
+     * 为word添加水印,输出docx格式
+     *
+     * @param is   输入流参数，原始word的输入流
+     * @param text 水印文字
+     * @param os   输出流
+     * @date 2022/7/11
+     * @since jdk11
+     */
+    public static void addDocxWatermarkText(InputStream is, String text, OutputStream os) throws Exception {
+        addWatermarkText(is, text, os, SaveFormat.DOCX);
+    }
+
+    /**
+     * 为word添加水印,输出doc格式
+     *
+     * @param is   输入流参数，原始word的输入流
+     * @param text 水印文字
+     * @param os   输出流
+     * @date 2022/7/11
+     * @since jdk11
+     */
+    public static void addDocWatermarkText(InputStream is, String text, OutputStream os) throws Exception {
+        addWatermarkText(is, text, os, SaveFormat.DOC);
+    }
+
+    /**
+     * 添加水印
+     *
+     * @param is         输入流参数，原始文件的输入流
+     * @param text       水印文字
+     * @param os         输出流 输出文件的流
+     * @param saveFormat 输出文档格式
+     * @date 2022/7/11
+     * @since jdk11
+     */
+    public static void addWatermarkText(InputStream is, String text, OutputStream os, int saveFormat) throws Exception {
         LicenseUtils.initLicense();
         Document doc = new Document(is);
         Shape watermark = new Shape(doc, ShapeType.TEXT_PLAIN_TEXT);
@@ -46,43 +85,93 @@ public class WaterMarkUtils {
         watermark.setHorizontalAlignment(HorizontalAlignment.CENTER);
         Paragraph watermarkPara = new Paragraph(doc);
         watermarkPara.appendChild(watermark);
-        for (Section sect : doc.getSections())
-        {
+        for (Section sect : doc.getSections()) {
             insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_PRIMARY);
             insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_FIRST);
             insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_EVEN);
         }
-        doc.save(os, SaveFormat.DOC);
+        doc.save(os, saveFormat);
+    }
+
+    /**
+     * 插入多个水印,输出doc格式的
+     *
+     * @param is         输入流
+     * @param wmText     水印内容
+     * @param os         输出流
+     * @throws Exception 异常
+     */
+    public static void addDocWaterMarkTextMore(InputStream is, String wmText, OutputStream os) throws Exception {
+        addWaterMarkTextMore(is, wmText, os, SaveFormat.DOC);
+    }
+
+    /**
+     * 插入多个水印,输出docx格式的
+     *
+     * @param is         输入流
+     * @param wmText     水印内容
+     * @param os         输出流
+     * @throws Exception 异常
+     */
+    public static void addDocxWaterMarkTextMore(InputStream is, String wmText, OutputStream os) throws Exception {
+        addWaterMarkTextMore(is, wmText, os, SaveFormat.DOCX);
+    }
+
+    /**
+     * 插入多个水印
+     *
+     * @param is         输入流
+     * @param wmText     水印内容
+     * @param os         输出流
+     * @param saveFormat 格式
+     * @throws Exception 异常
+     */
+    public static void addWaterMarkTextMore(InputStream is, String wmText, OutputStream os, int saveFormat) throws Exception {
+        LicenseUtils.initLicense();
+        Document doc = new Document(is);
+        Paragraph watermarkPara = new Paragraph(doc);
+        for (int j = 0; j < 500; j = j + 100) {
+            for (int i = 0; i < 700; i = i + 85) {
+                Shape waterShape = shapeMore(doc, wmText, j, i);
+                watermarkPara.appendChild(waterShape);
+            }
+        }
+        for (Section sect : doc.getSections()) {
+            insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_PRIMARY);
+            insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_FIRST);
+            insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_EVEN);
+        }
+        doc.save(os, saveFormat);
     }
 
     /**
      * 在页眉中插入水印
-     * @param watermarkPara
-     * @param sect
-     * @param headerType
-     * @throws Exception
+     *
+     * @param watermarkPara 段落
+     * @param sect          章节
+     * @param headerType    类型
+     * @throws Exception 异常
      */
-    private static void insertWatermarkIntoHeader(Paragraph watermarkPara, Section sect, int headerType) throws Exception{
+    private static void insertWatermarkIntoHeader(Paragraph watermarkPara, Section sect, int headerType) throws Exception {
         HeaderFooter header = sect.getHeadersFooters().getByHeaderFooterType(headerType);
-        if (header == null)
-        {
+        if (header == null) {
             header = new HeaderFooter(sect.getDocument(), headerType);
             sect.getHeadersFooters().add(header);
         }
         header.appendChild(watermarkPara.deepClone(true));
     }
 
-
     /**
      * 设置水印属性
-     * @param doc
-     * @param wmText
-     * @param left
-     * @param top
-     * @return
-     * @throws Exception
+     *
+     * @param doc    文档
+     * @param wmText 水印内容
+     * @param left   靠左的位置
+     * @param top    靠上的位置
+     * @return Shape
+     * @throws Exception 异常
      */
-    public static Shape ShapeMore(Document doc, String wmText, double left, double top)throws Exception{
+    public static Shape shapeMore(Document doc, String wmText, double left, double top) throws Exception {
         Shape waterShape = new Shape(doc, ShapeType.TEXT_PLAIN_TEXT);
         //水印内容
         waterShape.getTextPath().setText(wmText);
@@ -94,10 +183,8 @@ public class WaterMarkUtils {
         waterShape.setHeight(13);
         //旋转水印
         waterShape.setRotation(-40);
-        //水印颜色 浅灰色
-        /*waterShape.getFill().setColor(Color.lightGray);
-        waterShape.setStrokeColor(Color.lightGray);*/
-        waterShape.setStrokeColor(new Color(210,210,210));
+        //水印颜色
+        waterShape.setStrokeColor(new Color(210, 210, 210));
         //将水印放置在页面中心
         waterShape.setLeft(left);
         waterShape.setTop(top);
@@ -105,31 +192,5 @@ public class WaterMarkUtils {
         waterShape.setWrapType(WrapType.NONE);
         return waterShape;
     }
-
-    /**
-     * 插入多个水印
-     * @param mdoc
-     * @param wmText
-     * @throws Exception
-     */
-    public static void WaterMarkMore(Document mdoc, String wmText)throws Exception{
-        Paragraph watermarkPara = new Paragraph(mdoc);
-        for (int j = 0; j < 500; j = j + 100)
-        {
-            for (int i = 0; i < 700; i = i + 85)
-            {
-                Shape waterShape = ShapeMore(mdoc, wmText, j, i);
-                watermarkPara.appendChild(waterShape);
-            }
-        }
-        for (Section sect : mdoc.getSections())
-        {
-            insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_PRIMARY);
-            insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_FIRST);
-            insertWatermarkIntoHeader(watermarkPara, sect, HeaderFooterType.HEADER_EVEN);
-        }
-    }
-
-
 
 }

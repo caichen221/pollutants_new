@@ -117,11 +117,3 @@ dependencies {
     api group: 'javax.xml.bind', name: 'jaxb-api', version: "${jaxbApiVersion}"
     api group: 'com.github.liaochong', name: 'myexcel', version: "${myexcelVersion}"
 }
-
-//install {
-//    repositories.mavenInstaller {
-//        pom.version="${project.version}"
-//        pom.artifactId="${project.archivesBaseName}"
-//        pom.groupId="${project.group}"
-//    }
-//}
