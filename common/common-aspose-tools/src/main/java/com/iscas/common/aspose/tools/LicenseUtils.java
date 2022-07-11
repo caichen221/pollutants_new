@@ -14,7 +14,9 @@ public class LicenseUtils {
     private LicenseUtils() {
     }
 
-    private volatile static License license = null;
+    private volatile static License wordLicense = null;
+
+    private volatile static com.aspose.cells.License excelLicense = null;
 
     //    static {
 //        String license =
@@ -45,12 +47,32 @@ public class LicenseUtils {
      * @since jdk11
      */
     public static void initLicense() {
-        if (license == null) {
+        initWordsLicense();
+        initCellsLicense();
+    }
+
+    public static void initWordsLicense() {
+        if (wordLicense == null) {
             synchronized (LicenseUtils.class) {
-                if (license == null) {
+                if (wordLicense == null) {
                     try (InputStream is = ConvertUtils.class.getClassLoader().getResourceAsStream("license.xml")) {
-                        license = new License();
-                        license.setLicense(is);
+                        wordLicense = new License();
+                        wordLicense.setLicense(is);
+                    } catch (Exception e) {
+                        throw new RuntimeException("获取license出错", e);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void initCellsLicense() {
+        if (excelLicense == null) {
+            synchronized (LicenseUtils.class) {
+                if (excelLicense == null) {
+                    try (InputStream is = ConvertUtils.class.getClassLoader().getResourceAsStream("license.xml")) {
+                        excelLicense = new com.aspose.cells.License();
+                        excelLicense.setLicense(is);
                     } catch (Exception e) {
                         throw new RuntimeException("获取license出错", e);
                     }

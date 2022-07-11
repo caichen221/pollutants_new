@@ -2,7 +2,6 @@
 dependencies {
     api fileTree(dir: 'libs', include: '*.jar')
 
-    //---------------------以下方式可以直接引入aspose的依赖，但会导致项目build特别慢，故将jar包直接放在libs中-------------------
+    //---------------------以下方式可以直接引入aspose的依赖，但会导致项目build特别慢(并且license需要破解使用)，故将jar包直接放在libs中-------------------
 //    api 'com.aspose:aspose-words:22.5'
 }
-0
