@@ -25,7 +25,7 @@ import java.util.Objects;
  * @date 2021/8/5 21:19
  * @since jdk1.8
  */
-@SuppressWarnings({"unchecked", "unused"})
+@SuppressWarnings({"unchecked", "unused", "deprecation"})
 public class WebSocketUtils {
     private WebSocketUtils() {
     }
@@ -35,7 +35,7 @@ public class WebSocketUtils {
     /**
      * 获取所有的websocket-sessions, Holder形式，不是真正的websoketsession
      */
-    public static Map<String, Object> getSessionsHolder() throws NoSuchFieldException, IllegalAccessException {
+    public static Map<String, Object> getSessionsHolder() throws IllegalAccessException {
         if (websocketSessionsHolder == null) {
             synchronized (WebSocketUtils.class) {
                 if (websocketSessionsHolder == null) {
@@ -65,7 +65,7 @@ public class WebSocketUtils {
      * 获取当前所有的websocket-sessions
      * map的key为ws://19.168.100.88:7901/demo/webSocketServer/xxx/yyy/websocket中的yyy
      */
-    public static Map<String, WebSocketSession> getSessions() throws NoSuchFieldException, IllegalAccessException {
+    public static Map<String, WebSocketSession> getSessions() throws IllegalAccessException {
         Map<String, WebSocketSession> result = new HashMap<>(16);
         Map<String, Object> sessionsHolder = getSessionsHolder();
         if (sessionsHolder != null) {
