@@ -41,14 +41,14 @@ class WordOperateUtilsTest {
                 InputStream mainIs = Files.newInputStream(Paths.get("D:/文档资料/安全认证.docx"));
                 InputStream addIs = Files.newInputStream(Paths.get("D:/文档资料/智能门户.docx"));
                 OutputStream os = Files.newOutputStream(Paths.get("D:/文档资料/智能menhu.docx"));
-                ) {
+        ) {
             WordOperateUtils.appendWord(mainIs, addIs, os, SaveFormat.DOCX, true, null);
         }
     }
 
     /**
      * 测试清洁文档，将批注都删除，接受修订
-     * */
+     */
     @Test
     public void cleanWord() throws Exception {
         try (
@@ -61,7 +61,7 @@ class WordOperateUtilsTest {
 
     /**
      * 测试获取所有书签
-     * */
+     */
     @Test
     public void testGetBookmarks() throws Exception {
         try (
@@ -74,15 +74,18 @@ class WordOperateUtilsTest {
 
     /**
      * 设置书签值
-     * */
+     */
     @Test
     public void testSetBookmarkVal() throws Exception {
         try (
                 InputStream is = Files.newInputStream(Paths.get("D:/tmp/test.docx"));
-                OutputStream os = Files.newOutputStream(Paths.get("D:/tmp/testxx.docx"));
+                OutputStream os = Files.newOutputStream(Paths.get("D:/tmp/testxx.docx"))
         ) {
             WordOperateUtils.setBookmarkVal(is, os, SaveFormat.DOCX, "你好你好", "哇啦啦啦");
-            InputStream is2 = Files.newInputStream(Paths.get("D:/tmp/testxx.docx"));
+        }
+        try (
+                InputStream is2 = Files.newInputStream(Paths.get("D:/tmp/testxx.docx"))
+        ) {
             WordOperateUtils.getBookMarks(is2).forEach(bookmark -> {
                 try {
                     System.out.println("bookmark:" + bookmark.getName() + "," + bookmark.getText());

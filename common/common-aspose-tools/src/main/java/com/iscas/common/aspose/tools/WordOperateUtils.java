@@ -4,7 +4,8 @@ import com.aspose.words.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -49,6 +50,27 @@ public class WordOperateUtils {
     }
 
     /**
+     * 设置书签值
+     *
+     * @param doc   文档
+     * @param name 书签名称
+     * @param val  书签值
+     * @throws Exception 异常
+     * @date 2022/7/11
+     * @since jdk11
+     */
+    public static void setBookmarkVal(Document doc, String name, String val) throws Exception {
+        BookmarkCollection bookmarkCollection = doc.getRange().getBookmarks();
+        for (Bookmark bookmark : bookmarkCollection) {
+            if (Objects.equals(bookmark.getName(), name)) {
+                bookmark.setText(val);
+                return;
+            }
+        }
+        throw new Exception("未找到书签:" + name);
+    }
+
+    /**
      * 根据书签名获取书签
      *
      * @param is   文档输入流
@@ -63,6 +85,20 @@ public class WordOperateUtils {
     }
 
     /**
+     * 根据书签名获取书签
+     *
+     * @param doc   文档
+     * @param name 书签名称
+     * @return java.util.List<com.aspose.words.Bookmark>
+     * @throws Exception 异常
+     * @date 2022/7/11
+     * @since jdk11
+     */
+    public static Bookmark getBookmark(Document doc, String name) throws Exception {
+        return getBookMarks(doc).stream().filter(b -> Objects.equals(name, b.getName())).findFirst().orElse(null);
+    }
+
+    /**
      * 获取书签
      *
      * @param is 文档输入流
@@ -72,7 +108,19 @@ public class WordOperateUtils {
      * @since jdk11
      */
     public static java.util.List<Bookmark> getBookMarks(InputStream is) throws Exception {
-        Document doc = new Document(is);
+        return getBookMarks(new Document(is));
+    }
+
+    /**
+     * 获取书签
+     *
+     * @param doc 文档
+     * @return java.util.List<com.aspose.words.Bookmark>
+     * @throws Exception 异常
+     * @date 2022/7/11
+     * @since jdk11
+     */
+    public static java.util.List<Bookmark> getBookMarks(Document doc) throws Exception {
         BookmarkCollection bookmarkCollection = doc.getRange().getBookmarks();
         java.util.List<Bookmark> bookmarks = new ArrayList<>();
         return StreamSupport.stream(bookmarkCollection.spliterator(), false).collect(Collectors.toList());
