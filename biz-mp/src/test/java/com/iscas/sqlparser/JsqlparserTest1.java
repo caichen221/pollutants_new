@@ -19,6 +19,7 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.SelectUtils;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.apache.commons.collections4.CollectionUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -32,6 +33,22 @@ import java.util.stream.Collectors;
  * @since jdk1.8
  */
 public class JsqlparserTest1 {
+
+    /**
+     * 判断SQL语句是否是查询
+     * */
+    @Test
+    public void testCheckSql() throws JSQLParserException {
+        String sql = "SELECT username, age, sex FROM user";
+        Statement select = CCJSqlParserUtil.parse(sql);
+        Assertions.assertTrue(select instanceof Select);
+
+        String sql2 = "delete from  user where id = 1";
+        Statement delete = CCJSqlParserUtil.parse(sql2);
+        Assertions.assertTrue(delete instanceof Delete);
+
+    }
+
     @Test
     public void testSelect1() throws JSQLParserException {
         String sql = "SELECT username, age, sex FROM user";
