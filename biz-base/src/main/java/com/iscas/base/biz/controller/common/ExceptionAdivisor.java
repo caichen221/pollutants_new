@@ -130,6 +130,10 @@ public class ExceptionAdivisor implements Constants, com.iscas.common.tools.cons
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity to500(BaseException e) {
         AccessLogUtils.log(SpringUtils.getRequest(), _500);
+        if (e.getCause() instanceof BaseException || e.getCause() instanceof BaseRuntimeException) {
+            // 防止baseException中套baseException的情况，检测一次
+            return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e.getCause());
+        }
         return res(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
     }
 
