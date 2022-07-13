@@ -383,6 +383,8 @@ public class DruidConfiguration implements EnvironmentAware {
         configuration.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
         configuration.setCacheEnabled(false);
         configuration.setDefaultEnumTypeHandler(defaultEnumTypeHandler);
+        // 添加此配置，防止update xx  set x = null 报错
+        configuration.setJdbcTypeForNull(JdbcType.NULL);
         factory.setConfiguration(configuration);
         // 分页插件
         PaginationInnerInterceptor paginationInnerInterceptor = getPaginationInnerInterceptor();
