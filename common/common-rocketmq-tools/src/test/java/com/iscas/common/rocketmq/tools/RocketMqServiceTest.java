@@ -25,7 +25,7 @@ public class RocketMqServiceTest {
     public void init() {
 //        rocketMqService = new RocketMqService("172.16.10.169:9876;172.16.10.168:9876",
 //                "test-topic-3", "test-tag", 5000);
-        rocketMqService = new RocketMqService("172.16.10.191:9876",
+        rocketMqService = new RocketMqService("172.16.10.168:9876",
                 "test-topic-3", "test-tag", 5000);
     }
 

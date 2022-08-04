@@ -33,9 +33,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * 启动类
@@ -88,13 +89,16 @@ import java.io.FileOutputStream;
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         SpringApplication springApplication = new SpringApplication(BizApp.class);
         springApplication.run(args);
         log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(),
                 SpringUtils.getBean(Environment.class).getProperty("server.port"));
-        FileOutputStream os = new FileOutputStream("newframe.pid");
-        IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
+        try (OutputStream os = new FileOutputStream("newframe.pid")) {
+            IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
+        } catch (IOException e) {
+            throw e;
+        }
     }
 
     /**
@@ -108,13 +112,11 @@ public class BizApp extends SpringBootServletInitializer {
         SpringApplicationBuilder sources = builder.sources(BizApp.class);
         log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(),
                 SpringUtils.getBean(Environment.class).getProperty("server.port"));
-        FileOutputStream os;
-        try {
-            os = new FileOutputStream("newframe.pid");
-        } catch (FileNotFoundException e) {
+        try (OutputStream os = new FileOutputStream("newframe.pid")) {
+            IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
+        } catch (IOException e) {
             throw Exceptions.runtimeException(e);
         }
-        IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
         return sources;
     }
 

@@ -1,0 +1,15 @@
+
+dependencies {
+    api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
+    api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:"${jacksonVersion}"
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
+    api "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+    api("org.apache.httpcomponents:httpmime:${httpcomponentsVersion}")
+    api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
+    api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
+    api group: 'cn.hutool', name: 'hutool-core', version: '5.8.5'
+
+    api fileTree(dir:"libs", include: "*.jar")
+}
+

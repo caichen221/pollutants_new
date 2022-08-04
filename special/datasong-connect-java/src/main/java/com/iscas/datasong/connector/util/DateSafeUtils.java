@@ -1,4 +1,4 @@
-package com.iscas.common.tools.core.date;
+package com.iscas.datasong.connector.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

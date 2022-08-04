@@ -44,4 +44,10 @@ include 'common:common-aspose-tools'
 findProject(':common:common-aspose-tools')?.name = 'common-aspose-tools'
 include 'special:admin-server'
 findProject(':special:admin-server')?.name = 'admin-server'
+/*include 'common:common-influxdb-tools'
+findProject(':common:common-influxdb-tools')?.name = 'common-influxdb-tools'*/
+include 'special:datasong-connect-java'
+findProject(':special:datasong-connect-java')?.name = 'datasong-connect-java'
+include 'special:common-access-tools'
+findProject(':special:common-acccess-tools')?.name = 'common-access-tools'
 

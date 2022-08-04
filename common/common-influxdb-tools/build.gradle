@@ -1,0 +1,5 @@
+
+dependencies {
+    api group: 'org.influxdb', name: 'influxdb-java', version: "${influxdbVersion}"
+    api "cn.hutool:hutool-all:${htoolVersion}"
+}
