@@ -1,13 +1,17 @@
 package com.iscas.datasong.connector.jdbc;
 
 import com.iscas.datasong.connector.exception.DatasongClientException;
+import com.iscas.datasong.connector.jdbc.statement.ExecuteDelete;
 import com.iscas.datasong.connector.jdbc.statement.ExecuteInsert;
 import com.iscas.datasong.connector.jdbc.statement.ExecuteQuery;
+import com.iscas.datasong.connector.jdbc.statement.ExecuteUpdate;
 import com.iscas.datasong.lib.common.DataSongException;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.update.Update;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -76,6 +80,10 @@ public class StatementImpl implements DsStatement {
                 return 0;
             } else if (statement instanceof Insert) {
                 return ExecuteInsert.execute((Insert) statement, connection);
+            } else if (statement instanceof Update) {
+                return ExecuteUpdate.execute((Update) statement, connection, fetchSize);
+            } else if (statement instanceof Delete) {
+                return ExecuteDelete.execute((Delete) statement, connection, fetchSize);
             }
         } catch (JSQLParserException e) {
             throw new SQLException("SQL解析出错", e);

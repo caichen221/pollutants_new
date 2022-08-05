@@ -152,7 +152,7 @@ public class ConnectionTest {
     public void testInsert2() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("insert into testtable values ('testId', 'testName')");
+        int count = statement.executeUpdate("insert into testtable values ('wegwe',88, 'testName')");
         System.out.println(count);
     }
 
@@ -163,8 +163,47 @@ public class ConnectionTest {
     public void testInsert3() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("insert into testtable(id, name) values ('testId', 'testName'),('testId2', 'testName2')");
+        int count = statement.executeUpdate("insert into testtable(id, name) values (89, 'testName'),(90, 'testName')");
         System.out.println(count);
+    }
+
+    /**
+     * 测试执行executeUpdate中使用update
+     * */
+    @Test
+    public void testUpdate1() throws SQLException {
+        Statement statement = connection.createStatement();
+        System.out.println(statement);
+        int count = statement.executeUpdate("update testtable set name = 'testName_2' WHERE id = 90");
+        System.out.println(count);
+    }
+
+    /**
+     * 测试执行executeUpdate中使用delete
+     * */
+    @Test
+    public void testDelete1() throws SQLException {
+        Statement statement = connection.createStatement();
+        System.out.println(statement);
+        int count = statement.executeUpdate("delete from testtable  WHERE id = 89");
+        System.out.println(count);
+    }
+
+    /**
+     * 测试执行查询，group by
+     * */
+    @Test
+    public void testGroupBy() throws SQLException {
+        Statement statement = connection.createStatement();
+        System.out.println(statement);
+        ResultSet rs = statement.executeQuery("select count(*), sum(id), name, id from testtable  group by name, id");
+        while (rs.next()) {
+            int c = rs.getInt("count(*)");
+            int s = rs.getInt("sum(id)");
+            String name = rs.getString("name");
+            int id = rs.getInt("id");
+            System.out.println("id=" + id + ";name=" + name + ";count=" + c + ";sum=" + s);
+        }
     }
 
 }

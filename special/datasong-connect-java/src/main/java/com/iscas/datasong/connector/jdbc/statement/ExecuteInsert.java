@@ -4,6 +4,7 @@ import com.iscas.datasong.client.DataSongDataService;
 import com.iscas.datasong.client.DataSongHttpClient;
 import com.iscas.datasong.connector.exception.DatasongClientException;
 import com.iscas.datasong.connector.jdbc.ConnectionImpl;
+import com.iscas.datasong.connector.parser.SelectSqlParser;
 import com.iscas.datasong.connector.util.CollectionUtils;
 import com.iscas.datasong.lib.common.DataSongException;
 import com.iscas.datasong.lib.request.SearchDataRequest;
@@ -84,20 +85,7 @@ public class ExecuteInsert {
         List<Expression> expressions = expressionList.getExpressions();
         List<Object> list = new ArrayList<>();
         for (Expression expression : expressions) {
-            if (expression instanceof StringValue) {
-                StringValue stringValue = (StringValue) expression;
-                list.add(stringValue.getValue());
-            } else if (expression instanceof LongValue) {
-                LongValue longValue = (LongValue) expression;
-                list.add(longValue.getValue());
-            } else if (expression instanceof NullValue) {
-                list.add(null);
-            } else if (expression instanceof DoubleValue) {
-                DoubleValue doubleValue = (DoubleValue) expression;
-                list.add(doubleValue.getValue());
-            } else {
-                throw new DatasongClientException(String.format("暂不支持的表达式类型:[%s]", expression.getClass().getName()));
-            }
+            list.add(SelectSqlParser.getData(expression));
         }
         if (keys.size() != list.size()) {
             throw new DatasongClientException("插入列的长度与数据的长度不匹配");

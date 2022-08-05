@@ -4,6 +4,7 @@ package com.iscas.datasong.connector.parser;
 import cn.hutool.core.util.ReflectUtil;
 import com.iscas.datasong.connector.exception.DatasongClientException;
 import com.iscas.datasong.connector.util.CollectionUtils;
+import com.iscas.datasong.connector.util.StringUtils;
 import com.iscas.datasong.lib.common.SortOrder;
 import com.iscas.datasong.lib.request.SearchDataRequest;
 import com.iscas.datasong.lib.request.search.condition.search.*;
@@ -21,6 +22,7 @@ import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.javatuples.Quartet;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -36,18 +38,21 @@ public class SelectSqlParser {
         // 获取表名
         String tableName = getTableName(select);
 
+        GroupByElement groupBy = getGroupBy(select);
+
         // 获取查询的列等信息
         List<SelectItem> selectItems = getSelectItems(select);
+        boolean all;
+        Set<String> selectCols = new HashSet<>();
         if (!CollectionUtils.isEmpty(selectItems)) {
             // 判断查询条件里是否包含*，如果不包含*，将查询的列放在查询条件里
-            boolean all = selectItems.stream().anyMatch(item -> item instanceof AllColumns);
-            Set<String> selectCols = new HashSet<>();
+            all = selectItems.stream().anyMatch(item -> item instanceof AllColumns);
             if (!all) {
                 for (SelectItem selectItem : selectItems) {
                     if (selectItem instanceof SelectExpressionItem) {
                         SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
                         Expression expression = selectExpressionItem.getExpression();
-                        all = getSelectCols(selectCols, expression);
+                        all = getSelectCols(selectCols, expression, groupBy != null);
                     }
                 }
             }
@@ -56,9 +61,8 @@ public class SelectSqlParser {
             }
         }
         // 构建group by
-        GroupByElement groupBy = getGroupBy(select);
-        TermStatisticCondition termStatisticCondition = createGroupBy(groupBy, selectItems);
-        if (termStatisticCondition != null) {
+        List<TermStatisticCondition> termStatisticConditions = createGroupBy(groupBy, selectItems);
+        for (TermStatisticCondition termStatisticCondition : termStatisticConditions) {
             request.addStatistic(termStatisticCondition);
         }
 
@@ -78,7 +82,7 @@ public class SelectSqlParser {
         List<OrderByElement> orderBy = getOrderBy(select);
         createOrderBy(request, orderBy);
 
-        return Quartet.with(tableName, request, selectItems, termStatisticCondition != null);
+        return Quartet.with(tableName, request, selectItems, CollectionUtils.isNotEmpty(termStatisticConditions));
     }
 
 
@@ -118,15 +122,17 @@ public class SelectSqlParser {
         }
     }
 
-    private static TermStatisticCondition createGroupBy(GroupByElement groupBy, List<SelectItem> selectItems) throws DatasongClientException {
+    private static List<TermStatisticCondition> createGroupBy(GroupByElement groupBy, List<SelectItem> selectItems) throws DatasongClientException {
         if (groupBy != null) {
             ExpressionList groupByExpressionList = groupBy.getGroupByExpressionList();
             List<Expression> expressions = groupByExpressionList.getExpressions();
+            List<TermStatisticCondition> termStatisticConditions = new ArrayList<>();
+
             TermStatisticCondition termStatisticCondition = null;
             TermStatisticCondition innerTermStatisticCondition = null;
-            for (Expression expression : expressions) {
-                if (expression instanceof Column) {
-                    Column column = (Column) expression;
+            for (Expression exp : expressions) {
+                if (exp instanceof Column) {
+                    Column column = (Column) exp;
                     String columnName = column.getColumnName();
                     if (termStatisticCondition == null) {
                         termStatisticCondition = new TermStatisticCondition();
@@ -139,9 +145,11 @@ public class SelectSqlParser {
                         innerTermStatisticCondition = subCondition;
                     }
                 } else {
-                    throw new DatasongClientException(String.format("暂不支持的表达式类型:[%s]", expression.getClass().getName()));
+                    throw new DatasongClientException(String.format("暂不支持的表达式类型:[%s]", exp.getClass().getName()));
                 }
             }
+            termStatisticConditions.add(termStatisticCondition);
+
             // 获取分组内的查询函数
             for (SelectItem selectItem : selectItems) {
                 if (selectItem instanceof SelectExpressionItem) {
@@ -156,17 +164,24 @@ public class SelectSqlParser {
                         Expression expression1 = paramExpressions.get(0);
 
                         String funcName = multipartName.get(0);
+                        // alias不允许有特殊字符，这里转为base64，并且将base64中的+/替换掉
+                        String securityFunctionName = Base64.getEncoder().encodeToString(function.toString().getBytes(StandardCharsets.UTF_8));
+                        securityFunctionName = securityFunctionName.replace("+", "iscas123");
+                        securityFunctionName = securityFunctionName.replace("/", "Iscas123");
+                        securityFunctionName = securityFunctionName.replace("=", "dengyu");
+
                         if ("COUNT".equalsIgnoreCase(funcName)) {
                             CountStatisticCondition condition = new CountStatisticCondition();
-                            condition.setAlias(alias != null ? alias.getName() : null);
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
                             if (!(expression1 instanceof AllColumns)) {
                                 Column column = (Column) expression1;
                                 condition.setColumn(column.getColumnName());
                             }
                             innerTermStatisticCondition.addChild(condition);
+
                         } else if ("AVG".equalsIgnoreCase(funcName)) {
                             AvgStatisticCondition condition = new AvgStatisticCondition();
-                            condition.setAlias(alias != null ? alias.getName() : null);
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
                             if (!(expression1 instanceof AllColumns)) {
                                 Column column = (Column) expression1;
                                 condition.setColumn(column.getColumnName());
@@ -174,7 +189,7 @@ public class SelectSqlParser {
                             innerTermStatisticCondition.addChild(condition);
                         } else if ("MAX".equalsIgnoreCase(funcName)) {
                             MaxStatisticCondition condition = new MaxStatisticCondition();
-                            condition.setAlias(alias != null ? alias.getName() : null);
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
                             if (!(expression1 instanceof AllColumns)) {
                                 Column column = (Column) expression1;
                                 condition.setColumn(column.getColumnName());
@@ -182,7 +197,7 @@ public class SelectSqlParser {
                             innerTermStatisticCondition.addChild(condition);
                         } else if ("MIN".equalsIgnoreCase(funcName)) {
                             MinStatisticCondition condition = new MinStatisticCondition();
-                            condition.setAlias(alias != null ? alias.getName() : null);
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
                             if (!(expression1 instanceof AllColumns)) {
                                 Column column = (Column) expression1;
                                 condition.setColumn(column.getColumnName());
@@ -190,7 +205,7 @@ public class SelectSqlParser {
                             innerTermStatisticCondition.addChild(condition);
                         } else if ("SUM".equalsIgnoreCase(funcName)) {
                             SumStatisticCondition condition = new SumStatisticCondition();
-                            condition.setAlias(alias != null ? alias.getName() : null);
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
                             if (!(expression1 instanceof AllColumns)) {
                                 Column column = (Column) expression1;
                                 condition.setColumn(column.getColumnName());
@@ -200,12 +215,12 @@ public class SelectSqlParser {
                     }
                 }
             }
-            return termStatisticCondition;
+            return termStatisticConditions;
         }
         return null;
     }
 
-    private static void createSearchCondition(BoolSearchCondition searchCondition, Expression expression, boolean and) throws DatasongClientException {
+    public static void createSearchCondition(BoolSearchCondition searchCondition, Expression expression, boolean and) throws DatasongClientException {
         if (expression instanceof OrExpression) {
             // or连接的条件
             or(searchCondition, (OrExpression) expression);
@@ -336,7 +351,7 @@ public class SelectSqlParser {
         return boolSearchCondition;
     }
 
-    private static Object getData(Expression expression) throws DatasongClientException {
+    public static Object getData(Expression expression) throws DatasongClientException {
         if (expression instanceof LongValue) {
             LongValue longValue = (LongValue) expression;
             return longValue.getValue();
@@ -390,7 +405,7 @@ public class SelectSqlParser {
         }
     }
 
-    private static boolean getSelectCols(Set<String> selectCols, Expression expression) {
+    private static boolean getSelectCols(Set<String> selectCols, Expression expression, boolean withGroupBy) {
         // 根据不同的expression类型获取查询的列
         if (expression instanceof AllColumns) {
             return true;
@@ -404,11 +419,14 @@ public class SelectSqlParser {
         } else if (expression instanceof Function) {
             Function function = (Function) expression;
             ExpressionList parameters = function.getParameters();
-            if (parameters != null) {
-                for (Expression parametersExpression : parameters.getExpressions()) {
-                    boolean selectCols1 = getSelectCols(selectCols, parametersExpression);
-                    if (selectCols1) {
-                        return true;
+            List<String> multipartName = function.getMultipartName();
+            if (!StringUtils.equalsAny(multipartName.get(0), "count", "sum", "avg", "max", "min")) {
+                if (parameters != null) {
+                    for (Expression parametersExpression : parameters.getExpressions()) {
+                        boolean selectCols1 = getSelectCols(selectCols, parametersExpression, withGroupBy);
+                        if (selectCols1) {
+                            return true;
+                        }
                     }
                 }
             }

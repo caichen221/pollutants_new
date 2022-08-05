@@ -1,8 +1,5 @@
 package com.iscas.datasong.connector.pull;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
 /**
  * @author zhuquanwen
  * @version 1.0
@@ -10,5 +7,8 @@ import java.util.List;
  * @since jdk11
  */
 public interface IPullDataService {
+    /**
+     * ResultSet中拉取数据的接口
+     * */
     void pullData();
 }

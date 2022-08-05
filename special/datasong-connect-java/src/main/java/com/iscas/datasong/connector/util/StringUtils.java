@@ -1,5 +1,8 @@
 package com.iscas.datasong.connector.util;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  *
  * @author zhuquanwen
@@ -15,4 +18,9 @@ public class StringUtils {
             return 0;
         }
     }
+
+    public static boolean equalsAny(String str, String... strs) {
+        return Arrays.asList(strs).contains(str);
+    }
+
 }
