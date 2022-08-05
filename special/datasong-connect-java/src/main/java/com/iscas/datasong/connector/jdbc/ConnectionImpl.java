@@ -82,7 +82,7 @@ public class ConnectionImpl implements Connection, Constants {
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return null;
+        return prepareStatement(sql, DEFAULT_RESULT_SET_TYPE, DEFAULT_RESULT_SET_CONCURRENCY);
     }
 
     @Override
@@ -170,10 +170,12 @@ public class ConnectionImpl implements Connection, Constants {
 
     }
 
-
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return null;
+        PreparedStatementImpl statement = new PreparedStatementImpl(this, sql);
+        statement.setResultSetType(resultSetType);
+        statement.setResultSetConcurrency(resultSetConcurrency);
+        return statement;
     }
 
     @Override

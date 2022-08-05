@@ -206,4 +206,44 @@ public class ConnectionTest {
         }
     }
 
+    /**
+     * 测试插入数据，获取返回的ID
+     * */
+    @Test
+    public void testGetGenerateKey() throws SQLException {
+        Statement statement = connection.createStatement();
+        System.out.println(statement);
+        statement.executeUpdate("insert into testtable (id, name) values (92, '王二')", Statement.RETURN_GENERATED_KEYS);
+        ResultSet rs = statement.getGeneratedKeys();
+        while (rs.next()) {
+            System.out.println(rs.getString(1));
+        }
+    }
+
+    /**
+     * 测试prepareStatement
+     * */
+    @Test
+    public void testPrepareStatement() throws SQLException {
+        PreparedStatement prepareStatement = connection.prepareStatement("select * from testtable");
+        ResultSet resultSet = prepareStatement.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("name"));
+        }
+    }
+
+    /**
+     * 测试prepareStatement
+     * */
+    @Test
+    public void testPrepareStatement2() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select * from testtable where name = ?");
+        ps.setString(1, "testName");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("name"));
+            System.out.println(resultSet.getInt("id"));
+        }
+    }
+
 }

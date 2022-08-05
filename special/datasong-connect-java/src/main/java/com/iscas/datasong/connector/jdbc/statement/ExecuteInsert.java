@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 public class ExecuteInsert {
 
-    public static int execute(Insert insert, ConnectionImpl connection) throws JSQLParserException, DataSongException, DatasongClientException {
+    public static List<String> execute(Insert insert, ConnectionImpl connection) throws JSQLParserException, DataSongException, DatasongClientException {
         Table table = insert.getTable();
         String tableName = table.getName();
         String dbName = connection.getDbName();
@@ -77,8 +77,7 @@ public class ExecuteInsert {
             }
             insertData.add(map);
         }
-        List<String> resIds = dataService.batchSaveData(dbName, tableName, insertData);
-        return resIds != null ? resIds.size() : 0;
+        return dataService.batchSaveData(dbName, tableName, insertData);
     }
 
     private static List<Object> getDataFromExp(ExpressionList expressionList, List<String> keys) throws DatasongClientException {

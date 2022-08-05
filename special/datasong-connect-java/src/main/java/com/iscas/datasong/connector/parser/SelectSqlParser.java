@@ -62,8 +62,10 @@ public class SelectSqlParser {
         }
         // 构建group by
         List<TermStatisticCondition> termStatisticConditions = createGroupBy(groupBy, selectItems);
-        for (TermStatisticCondition termStatisticCondition : termStatisticConditions) {
-            request.addStatistic(termStatisticCondition);
+        if (CollectionUtils.isNotEmpty(termStatisticConditions)) {
+            for (TermStatisticCondition termStatisticCondition : termStatisticConditions) {
+                request.addStatistic(termStatisticCondition);
+            }
         }
 
         // 构建查询条件
