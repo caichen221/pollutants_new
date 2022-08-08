@@ -35,13 +35,13 @@ public class ResultParser {
 
     public static void parse(List<Map<String, Object>> items, List<StatisticResult> statisticResults,
                              List<SelectItem> selectItems, boolean hasGroupBy) {
-        if (hasGroupBy) {
+//        if (hasGroupBy) {
             if (CollectionUtils.isNotEmpty(statisticResults)) {
                 List<Map<String, Object>> itemsOld = new ArrayList<>(items);
                 items.clear();
                 parseStatisticResult(statisticResults.get(0), items, new HashMap<>());
             }
-        }
+//        }
         if (CollectionUtils.isNotEmpty(selectItems)) {
             Map<String, List<Object[]>> resultHandleMap = getResultHandleMap(selectItems);
             if (CollectionUtils.isNotEmpty(items)) {
@@ -103,6 +103,9 @@ public class ResultParser {
                             parseStatisticResult(child, items, subGroupInfo);
                         }
                     }
+                } else {
+                    // 处理最后的值
+                    handleLastData(List.of(sr), subGroupInfo, items);
                 }
             }
         }

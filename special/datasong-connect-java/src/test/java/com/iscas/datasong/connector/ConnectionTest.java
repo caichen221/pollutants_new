@@ -246,4 +246,17 @@ public class ConnectionTest {
         }
     }
 
+    /**
+     * 测试count(*)
+     * */
+    @Test
+    public void testCount() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select count(*) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getInt(1));
+
+        }
+    }
+
 }

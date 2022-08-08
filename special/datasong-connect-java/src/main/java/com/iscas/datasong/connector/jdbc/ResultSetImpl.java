@@ -15,6 +15,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zhuquanwen
@@ -423,7 +424,10 @@ public class ResultSetImpl implements ResultSet {
 
     @Override
     public ResultSetMetaData getMetaData() {
-        throw new UnsupportedOperationException("暂时不支持方法：getMetaData");
+        List<Integer> indexes = new ArrayList<>(headerMapping.keySet());
+        indexes.sort(Integer::compareTo);
+        List<String> headers = indexes.stream().map(index -> headerMapping.get(index)).collect(Collectors.toList());
+        return new ResultSetMetaDataImpl(headers);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.iscas.datasong.connector.util.StringUtils;
 import com.iscas.datasong.lib.common.SortOrder;
 import com.iscas.datasong.lib.request.SearchDataRequest;
 import com.iscas.datasong.lib.request.search.condition.search.*;
+import com.iscas.datasong.lib.request.search.condition.statistic.singleseq.SingleSeqStatisticCondition;
 import com.iscas.datasong.lib.request.search.condition.statistic.singleseq.cascade.TermStatisticCondition;
 import com.iscas.datasong.lib.request.search.condition.statistic.singleseq.metric.*;
 import net.sf.jsqlparser.JSQLParserException;
@@ -66,6 +67,12 @@ public class SelectSqlParser {
             for (TermStatisticCondition termStatisticCondition : termStatisticConditions) {
                 request.addStatistic(termStatisticCondition);
             }
+        } else {
+            // 构建除了group by之外的count、avg、sum、max、min等函数
+            List<SingleSeqStatisticCondition> tscs = createStatistic(selectItems);
+            if (CollectionUtils.isNotEmpty(tscs)) {
+                tscs.forEach(request::addStatistic);
+            }
         }
 
         // 构建查询条件
@@ -85,6 +92,81 @@ public class SelectSqlParser {
         createOrderBy(request, orderBy);
 
         return Quartet.with(tableName, request, selectItems, CollectionUtils.isNotEmpty(termStatisticConditions));
+    }
+
+    private static List<SingleSeqStatisticCondition> createStatistic(List<SelectItem> selectItems) {
+        List<SingleSeqStatisticCondition> singleSeqStatisticConditions = new ArrayList<>();
+        // 获取分组内的查询函数
+        for (int i = selectItems.size() - 1; i >= 0; i--) {
+            SelectItem selectItem = selectItems.get(i);
+            if (selectItem instanceof SelectExpressionItem) {
+                SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
+                Alias alias = selectExpressionItem.getAlias();
+                Expression expression = selectExpressionItem.getExpression();
+                if (expression instanceof Function) {
+                    Function function = (Function) expression;
+                    List<String> multipartName = function.getMultipartName();
+                    ExpressionList parameters = function.getParameters();
+                    List<Expression> paramExpressions = parameters.getExpressions();
+                    Expression expression1 = paramExpressions.get(0);
+
+                    String funcName = multipartName.get(0);
+                    // alias不允许有特殊字符，这里转为base64，并且将base64中的+/替换掉
+                    String securityFunctionName = Base64.getEncoder().encodeToString(function.toString().getBytes(StandardCharsets.UTF_8));
+                    securityFunctionName = securityFunctionName.replace("+", "iscas123");
+                    securityFunctionName = securityFunctionName.replace("/", "Iscas123");
+                    securityFunctionName = securityFunctionName.replace("=", "dengyu");
+
+                    if ("COUNT".equalsIgnoreCase(funcName)) {
+                        CountStatisticCondition condition = new CountStatisticCondition();
+                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                        if (!(expression1 instanceof AllColumns)) {
+                            Column column = (Column) expression1;
+                            condition.setColumn(column.getColumnName());
+                        }
+                        singleSeqStatisticConditions.add(condition);
+//                        selectItems.remove(i);
+                    } else if ("AVG".equalsIgnoreCase(funcName)) {
+                        AvgStatisticCondition condition = new AvgStatisticCondition();
+                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                        if (!(expression1 instanceof AllColumns)) {
+                            Column column = (Column) expression1;
+                            condition.setColumn(column.getColumnName());
+                        }
+                        singleSeqStatisticConditions.add(condition);
+//                        selectItems.remove(i);
+                    } else if ("MAX".equalsIgnoreCase(funcName)) {
+                        MaxStatisticCondition condition = new MaxStatisticCondition();
+                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                        if (!(expression1 instanceof AllColumns)) {
+                            Column column = (Column) expression1;
+                            condition.setColumn(column.getColumnName());
+                        }
+                        singleSeqStatisticConditions.add(condition);
+//                        selectItems.remove(i);
+                    } else if ("MIN".equalsIgnoreCase(funcName)) {
+                        MinStatisticCondition condition = new MinStatisticCondition();
+                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                        if (!(expression1 instanceof AllColumns)) {
+                            Column column = (Column) expression1;
+                            condition.setColumn(column.getColumnName());
+                        }
+                        singleSeqStatisticConditions.add(condition);
+//                        selectItems.remove(i);
+                    } else if ("SUM".equalsIgnoreCase(funcName)) {
+                        SumStatisticCondition condition = new SumStatisticCondition();
+                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                        if (!(expression1 instanceof AllColumns)) {
+                            Column column = (Column) expression1;
+                            condition.setColumn(column.getColumnName());
+                        }
+                        singleSeqStatisticConditions.add(condition);
+//                        selectItems.remove(i);
+                    }
+                }
+            }
+        }
+        return singleSeqStatisticConditions;
     }
 
 
