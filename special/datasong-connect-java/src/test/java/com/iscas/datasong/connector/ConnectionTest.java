@@ -272,4 +272,184 @@ public class ConnectionTest {
         }
     }
 
+    /**
+     * 测试position
+     * */
+    @Test
+    public void testPosition() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select position('a' in 'abc') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getInt(1));
+        }
+    }
+
+    /**
+     * 测试repeat
+     * */
+    @Test
+    public void testRepeat() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select repeat('a', 5) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试replace
+     * */
+    @Test
+    public void testReplace() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select replace('a25@wse', '@', '%%%') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试reverse
+     * */
+    @Test
+    public void testReverse() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select reverse('a25@wse') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试right
+     * */
+    @Test
+    public void testRight() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select right('a25@wse', 2) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试RPAD
+     * */
+    @Test
+    public void testRpad() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select Rpad('a25@wse', 12, 'zzz') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试RTRIM
+     * */
+    @Test
+    public void testRtrim() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select RTRIM('  a25@wse  ') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试SPACE
+     * */
+    @Test
+    public void testSpace() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select SPACE(4) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试STRCMP
+     * */
+    @Test
+    public void testStrcmp() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select STRCMP(4, 10) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getInt(1));
+        }
+    }
+
+    /**
+     * 测试SUBSTR
+     * */
+    @Test
+    public void testSubStr() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select substr('中国你好呀，你好呀', 2, 2) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试SUBSTRING
+     * */
+    @Test
+    public void testSubString() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select substring('中国你好呀，你好呀', 2, 2) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试SUBSTRING_INDEX
+     * */
+    @Test
+    public void testSubStringIndex() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select substring_index('中国*你好*呀，你好*呀', '*', 0) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试trim
+     * */
+    @Test
+    public void testTrim() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select trim(' wegweg ') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试ucase
+     * */
+    @Test
+    public void testUcase() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select Ucase(' wegweg ') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
+    /**
+     * 测试UPPER
+     * */
+    @Test
+    public void testUpper() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select Upper(' wegweg ') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
+        }
+    }
+
 }

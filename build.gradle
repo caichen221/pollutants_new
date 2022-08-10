@@ -50,7 +50,8 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("com.google.protobuf:protobuf-gradle-plugin:${gradleProtobufGenerateVersion}")
-        classpath "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:${shadowJarVersion}"
+//        classpath "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:${shadowJarVersion}"
+        classpath "com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:${shadowJarVersion}"
         classpath "com.bmuschko:gradle-docker-plugin:${gradleDockerVersion}"
 
     }

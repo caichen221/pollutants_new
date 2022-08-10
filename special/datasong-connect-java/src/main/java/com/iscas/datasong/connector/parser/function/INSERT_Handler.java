@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * FORMAT(x,n) 函数可以将数字 x 进行格式化 "#,###.##", 将 x 保留到小数点后 n 位，最后一位四舍五入。
+ * INSERT(s1,x,len,s2)	字符串 s2 替换 s1 的 x 位置开始长度为 len 的字符串
  * @author zhuquanwen
  * @version 1.0
  * @date 2022/7/29 17:42

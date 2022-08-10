@@ -111,63 +111,64 @@ public class SelectSqlParser {
                     Function function = (Function) expression;
                     List<String> multipartName = function.getMultipartName();
                     ExpressionList parameters = function.getParameters();
-                    List<Expression> paramExpressions = parameters.getExpressions();
-                    Expression expression1 = paramExpressions.get(0);
+                    if (parameters != null) {
+                        List<Expression> paramExpressions = parameters.getExpressions();
+                        Expression expression1 = paramExpressions.get(0);
 
-                    String funcName = multipartName.get(0);
-                    // alias不允许有特殊字符，这里转为base64，并且将base64中的+/替换掉
-                    String securityFunctionName = Base64.getEncoder().encodeToString(function.toString().getBytes(StandardCharsets.UTF_8));
-                    securityFunctionName = securityFunctionName.replace("+", "iscas123");
-                    securityFunctionName = securityFunctionName.replace("/", "Iscas123");
-                    securityFunctionName = securityFunctionName.replace("=", "dengyu");
+                        String funcName = multipartName.get(0);
+                        // alias不允许有特殊字符，这里转为base64，并且将base64中的+/替换掉
+                        String securityFunctionName = Base64.getEncoder().encodeToString(function.toString().getBytes(StandardCharsets.UTF_8));
+                        securityFunctionName = securityFunctionName.replace("+", "iscas123");
+                        securityFunctionName = securityFunctionName.replace("/", "Iscas123");
+                        securityFunctionName = securityFunctionName.replace("=", "dengyu");
 
-                    if ("COUNT".equalsIgnoreCase(funcName)) {
-                        CountStatisticCondition condition = new CountStatisticCondition();
-                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
-                        if (!(expression1 instanceof AllColumns)) {
-                            Column column = (Column) expression1;
-                            condition.setColumn(column.getColumnName());
-                        }
-                        termStatisticCondition.addChild(condition);
+                        if ("COUNT".equalsIgnoreCase(funcName)) {
+                            CountStatisticCondition condition = new CountStatisticCondition();
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                            if (!(expression1 instanceof AllColumns)) {
+                                Column column = (Column) expression1;
+                                condition.setColumn(column.getColumnName());
+                            }
+                            termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
-                    } else if ("AVG".equalsIgnoreCase(funcName)) {
-                        AvgStatisticCondition condition = new AvgStatisticCondition();
-                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
-                        if (!(expression1 instanceof AllColumns)) {
-                            Column column = (Column) expression1;
-                            condition.setColumn(column.getColumnName());
-                        }
-                        termStatisticCondition.addChild(condition);
+                        } else if ("AVG".equalsIgnoreCase(funcName)) {
+                            AvgStatisticCondition condition = new AvgStatisticCondition();
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                            if (!(expression1 instanceof AllColumns)) {
+                                Column column = (Column) expression1;
+                                condition.setColumn(column.getColumnName());
+                            }
+                            termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
-                    } else if ("MAX".equalsIgnoreCase(funcName)) {
-                        MaxStatisticCondition condition = new MaxStatisticCondition();
-                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
-                        if (!(expression1 instanceof AllColumns)) {
-                            Column column = (Column) expression1;
-                            condition.setColumn(column.getColumnName());
-                        }
-                        termStatisticCondition.addChild(condition);
+                        } else if ("MAX".equalsIgnoreCase(funcName)) {
+                            MaxStatisticCondition condition = new MaxStatisticCondition();
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                            if (!(expression1 instanceof AllColumns)) {
+                                Column column = (Column) expression1;
+                                condition.setColumn(column.getColumnName());
+                            }
+                            termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
-                    } else if ("MIN".equalsIgnoreCase(funcName)) {
-                        MinStatisticCondition condition = new MinStatisticCondition();
-                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
-                        if (!(expression1 instanceof AllColumns)) {
-                            Column column = (Column) expression1;
-                            condition.setColumn(column.getColumnName());
-                        }
-                        termStatisticCondition.addChild(condition);
+                        } else if ("MIN".equalsIgnoreCase(funcName)) {
+                            MinStatisticCondition condition = new MinStatisticCondition();
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                            if (!(expression1 instanceof AllColumns)) {
+                                Column column = (Column) expression1;
+                                condition.setColumn(column.getColumnName());
+                            }
+                            termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
-                    } else if ("SUM".equalsIgnoreCase(funcName)) {
-                        SumStatisticCondition condition = new SumStatisticCondition();
-                        condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
-                        if (!(expression1 instanceof AllColumns)) {
-                            Column column = (Column) expression1;
-                            condition.setColumn(column.getColumnName());
-                        }
-                        termStatisticCondition.addChild(condition);
+                        } else if ("SUM".equalsIgnoreCase(funcName)) {
+                            SumStatisticCondition condition = new SumStatisticCondition();
+                            condition.setAlias(alias != null ? alias.getName() : securityFunctionName);
+                            if (!(expression1 instanceof AllColumns)) {
+                                Column column = (Column) expression1;
+                                condition.setColumn(column.getColumnName());
+                            }
+                            termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
+                        }
                     }
-
                 }
             }
         }

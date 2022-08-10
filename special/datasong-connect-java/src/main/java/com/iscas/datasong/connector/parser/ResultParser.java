@@ -8,6 +8,7 @@ import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.NamedExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
@@ -146,13 +147,22 @@ public class ResultParser {
                     Function function = (Function) expression;
                     ExpressionList parameters = function.getParameters();
                     if (parameters != null) {
-                        String colNames = parameters.getExpressions().stream().filter(exp -> exp instanceof Column).map(exp -> ((Column) exp).getColumnName())
-                                .collect(Collectors.joining(","));
-                        resultHandleMap.computeIfAbsent(colNames, k -> new ArrayList<>()).add(new Object[]{alias, function});
+                        insertResultHandleMap(parameters.getExpressions(), resultHandleMap, alias, function);
+                    } else {
+                        NamedExpressionList namedParameters = function.getNamedParameters();
+                        if (namedParameters != null) {
+                            insertResultHandleMap(namedParameters.getExpressions(), resultHandleMap, alias, function);
+                        }
                     }
                 }
             }
         }
         return resultHandleMap;
+    }
+
+    private static void insertResultHandleMap(List<Expression> namedParameters, Map<String, List<Object[]>> resultHandleMap, Alias alias, Function function) {
+        String colNames = namedParameters.stream().filter(exp -> exp instanceof Column).map(exp -> ((Column) exp).getColumnName())
+                .collect(Collectors.joining(","));
+        resultHandleMap.computeIfAbsent(colNames, k -> new ArrayList<>()).add(new Object[]{alias, function});
     }
 }

@@ -63,7 +63,7 @@ public class LPAD_Handler implements FunctionHandler {
         }
     }
 
-    private String getStr(String str, int len) {
+    protected String getStr(String str, int len) {
         return str.repeat(len / str.length()) + str.substring(0, len % str.length());
     }
 

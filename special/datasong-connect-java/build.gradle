@@ -1,5 +1,10 @@
+apply plugin: 'com.github.johnrengelman.shadow'
 
-version = "0.0.1-SNAPSHOT"
+shadowJar {
+    archiveBaseName = 'datasong-connect-java'
+    archiveClassifier = null
+    archiveVersion = '0.0.1'
+}
 
 dependencies {
     api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
@@ -10,8 +15,7 @@ dependencies {
     api("org.apache.httpcomponents:httpmime:${httpcomponentsVersion}")
     api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
     api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
-    api group: 'cn.hutool', name: 'hutool-core', version: '5.8.5'
-
+    api group: 'cn.hutool', name: 'hutool-core', version: "${htoolVersion}"
     api fileTree(dir:"libs", include: "*.jar")
 }
 

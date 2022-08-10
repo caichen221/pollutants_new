@@ -1,5 +1,6 @@
 package com.iscas.datasong.connector.parser.function;
 
+import cn.hutool.core.util.ArrayUtil;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.schema.Column;
 
@@ -49,8 +50,33 @@ public interface FunctionHandler {
             return ((LongValue) expression).getValue();
         } else if (expression instanceof DoubleValue) {
             return ((DoubleValue) expression).getValue();
+        } else if (expression instanceof SignedExpression) {
+            SignedExpression signedExpression = (SignedExpression) expression;
+            char sign = signedExpression.getSign();
+            if (sign == '-') {
+                Object data1 = getData(data, ((SignedExpression) expression).getExpression());
+                if (data1 instanceof Long) {
+                    Long d = (Long) data1;
+                    return -d;
+                } else if (data1 instanceof Double) {
+                    Double d = (Double) data1;
+                    return -d;
+                } else {
+                    throw new RuntimeException(String.format("不支持的Expression类型:[%s]", expression.getClass().getName()));
+                }
+            } else {
+                throw new RuntimeException(String.format("不支持的Expression类型:[%s]", expression.getClass().getName()));
+            }
         } else {
             throw new RuntimeException(String.format("不支持的Expression类型:[%s]", expression.getClass().getName()));
         }
+    }
+
+    default String escape(String str) {
+        String[] needStrs = new String[]{"$", "(", ")", "*", "+", ".", "[", "]", "?", "^", "{", "}", "|", "\\"};
+        if (ArrayUtil.contains(needStrs, str)) {
+            return "\\" + str;
+        }
+        return str;
     }
 }

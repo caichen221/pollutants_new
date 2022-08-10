@@ -6,19 +6,22 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- * MID(s,n,len) 从字符串 s 的 n 位置截取长度为 len 的子字符串，同 SUBSTRING(s,n,len)
- *
+ * <p>SUBSTRING_INDEX(s, delimiter, number) 返回从字符串 s 的第 number 个出现的分隔符 delimiter 之后的子串。</p>
+ * <p>如果 number 是正数，返回第 number 个字符左边的字符串。</p>
+ * <p>如果 number 是负数，返回第(number 的绝对值(从右边数))个字符右边的字符串。</p>
  * @author zhuquanwen
  * @version 1.0
- * @date 2022/8/8
+ * @date 2022/8/10 14:01
  * @since jdk11
  */
-@SuppressWarnings({"unused", "AlibabaClassNamingShouldBeCamel", "JavadocDeclaration"})
-public class MID_Handler implements FunctionHandler {
+@SuppressWarnings({"JavadocDeclaration", "AlibabaClassNamingShouldBeCamel", "unused"})
+public class SUBSTRING_INDEX_Handler implements FunctionHandler {
     @Override
     public void handle(Map<String, Object> data, Alias alias, Function func) {
         ExpressionList parameters = func.getParameters();
@@ -33,24 +36,19 @@ public class MID_Handler implements FunctionHandler {
                 Object third = getData(data, exp3);
                 String result = "";
                 if (first != null && second != null && third != null) {
-                   String str = first.toString();
-                   int start = 0;
-                   try {
-                       start = Integer.parseInt(second.toString());
-                   } catch (Exception ignored) {}
-                   if (start > 0) {
-                       int len = 0;
-                       try {
-                           len = Integer.parseInt(third.toString());
-                       } catch (Exception ignored) {}
-                       if (len > 0) {
-                           if (start + len > str.length()) {
-                               result = str.substring(start - 1);
-                           } else {
-                               result = str.substring(start - 1, start - 1 + len);
-                           }
-                       }
-                   }
+                    String[] splitStrArray = first.toString().split(escape(second.toString()));
+                    int len = 0;
+                    try {
+                        len = Integer.parseInt(third.toString());
+                    } catch (Exception ignored){}
+
+                    if (len > 0) {
+                        int end = Math.min(len, splitStrArray.length);
+                        result = Arrays.stream(Arrays.copyOfRange(splitStrArray, 0, end)).collect(Collectors.joining(second.toString()));
+                    } else if (len < 0) {
+                        int start = Math.max(0, splitStrArray.length + len);
+                        result = Arrays.stream(Arrays.copyOfRange(splitStrArray, start, splitStrArray.length)).collect(Collectors.joining(second.toString()));
+                    }
                 }
                 if (alias != null) {
                     data.put(alias.getName(), result);
@@ -60,4 +58,5 @@ public class MID_Handler implements FunctionHandler {
             }
         }
     }
+
 }

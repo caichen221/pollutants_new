@@ -40,7 +40,7 @@ public class LTRIM_Handler implements FunctionHandler {
         }
     }
 
-    private String ltrim(String str) {
+    protected String ltrim(String str) {
         char[] chars = str.toCharArray();
         int index = 0;
         for (int i = 0; i < chars.length; i++) {
