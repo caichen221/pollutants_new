@@ -16,7 +16,7 @@ dependencies {
 //    api project(":special:biz-flowable")
 //    api project(":common:common-tools")
 
-    api project(":biz-ssh-server")
+    api project(":special:ssh-server")
 //    api project(":special:biz-neo4j")
 
     //SSH客户端

@@ -96,6 +96,9 @@ public class SelectSqlParser {
 
     private static List<SingleSeqStatisticCondition> createStatistic(List<SelectItem> selectItems) {
         List<SingleSeqStatisticCondition> singleSeqStatisticConditions = new ArrayList<>();
+        TermStatisticCondition termStatisticCondition = new TermStatisticCondition();
+        termStatisticCondition.setAlias("termStatisticCondition");
+        singleSeqStatisticConditions.add(termStatisticCondition);
         // 获取分组内的查询函数
         for (int i = selectItems.size() - 1; i >= 0; i--) {
             SelectItem selectItem = selectItems.get(i);
@@ -103,6 +106,7 @@ public class SelectSqlParser {
                 SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
                 Alias alias = selectExpressionItem.getAlias();
                 Expression expression = selectExpressionItem.getExpression();
+
                 if (expression instanceof Function) {
                     Function function = (Function) expression;
                     List<String> multipartName = function.getMultipartName();
@@ -124,7 +128,7 @@ public class SelectSqlParser {
                             Column column = (Column) expression1;
                             condition.setColumn(column.getColumnName());
                         }
-                        singleSeqStatisticConditions.add(condition);
+                        termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
                     } else if ("AVG".equalsIgnoreCase(funcName)) {
                         AvgStatisticCondition condition = new AvgStatisticCondition();
@@ -133,7 +137,7 @@ public class SelectSqlParser {
                             Column column = (Column) expression1;
                             condition.setColumn(column.getColumnName());
                         }
-                        singleSeqStatisticConditions.add(condition);
+                        termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
                     } else if ("MAX".equalsIgnoreCase(funcName)) {
                         MaxStatisticCondition condition = new MaxStatisticCondition();
@@ -142,7 +146,7 @@ public class SelectSqlParser {
                             Column column = (Column) expression1;
                             condition.setColumn(column.getColumnName());
                         }
-                        singleSeqStatisticConditions.add(condition);
+                        termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
                     } else if ("MIN".equalsIgnoreCase(funcName)) {
                         MinStatisticCondition condition = new MinStatisticCondition();
@@ -151,7 +155,7 @@ public class SelectSqlParser {
                             Column column = (Column) expression1;
                             condition.setColumn(column.getColumnName());
                         }
-                        singleSeqStatisticConditions.add(condition);
+                        termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
                     } else if ("SUM".equalsIgnoreCase(funcName)) {
                         SumStatisticCondition condition = new SumStatisticCondition();
@@ -160,9 +164,10 @@ public class SelectSqlParser {
                             Column column = (Column) expression1;
                             condition.setColumn(column.getColumnName());
                         }
-                        singleSeqStatisticConditions.add(condition);
+                        termStatisticCondition.addChild(condition);
 //                        selectItems.remove(i);
                     }
+
                 }
             }
         }

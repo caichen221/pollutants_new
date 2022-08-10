@@ -4,7 +4,6 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import lombok.Data;
-import org.springframework.web.socket.WebSocketSession;
 
 /**
  * SSH连接信息

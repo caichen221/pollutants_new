@@ -251,11 +251,24 @@ public class ConnectionTest {
      * */
     @Test
     public void testCount() throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("select count(*) from testtable WHERE name like '%test%'");
+        PreparedStatement ps = connection.prepareStatement("select count(*), sum(id) from testtable WHERE name like '%test%'");
         ResultSet resultSet = ps.executeQuery();
         while (resultSet.next()) {
             System.out.println(resultSet.getInt(1));
+            System.out.println(resultSet.getInt(2));
 
+        }
+    }
+
+    /**
+     * 测试Mid
+     * */
+    @Test
+    public void testMid() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select mid('axaaaa', 1, 3) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1));
         }
     }
 

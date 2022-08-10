@@ -1,4 +1,6 @@
 
+version = "0.0.1-SNAPSHOT"
+
 dependencies {
     api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
     api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
