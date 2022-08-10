@@ -20,6 +20,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.operators.arithmetic.IntegerDivision;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.*;
 import org.javatuples.Quartet;
@@ -127,7 +128,7 @@ public class ExecuteQuery {
                         if (expression instanceof net.sf.jsqlparser.schema.Column) {
                             // 获取列名作为映射的值
                             result.put(i, ((net.sf.jsqlparser.schema.Column) expression).getColumnName());
-                        } else if (expression instanceof Function) {
+                        } else if (expression instanceof Function || expression instanceof IntegerDivision) {
                             // 函数, 没有使用别名，直接使用其toString作为值
                             result.put(i, expression.toString());
                         } else {

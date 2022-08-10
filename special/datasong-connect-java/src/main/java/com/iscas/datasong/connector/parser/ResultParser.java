@@ -1,5 +1,6 @@
 package com.iscas.datasong.connector.parser;
 
+import com.iscas.datasong.connector.parser.function.DivHandler;
 import com.iscas.datasong.connector.parser.function.FunctionHandler;
 import com.iscas.datasong.connector.util.CollectionUtils;
 import com.iscas.datasong.lib.common.StatisticItem;
@@ -7,6 +8,7 @@ import com.iscas.datasong.lib.common.StatisticResult;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.operators.arithmetic.IntegerDivision;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.NamedExpressionList;
 import net.sf.jsqlparser.schema.Column;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
  */
 public class ResultParser {
     private static final Map<String, FunctionHandler> FUNCTION_HANDLER_MAP = new ConcurrentHashMap<>(32);
+
+    private static final DivHandler DIV_HANDLER = new DivHandler();
 
     private ResultParser() {
     }
@@ -75,6 +79,10 @@ public class ResultParser {
                                         }
                                     })).ifPresent(functionHandler -> functionHandler.handle(item, alias, function));
                                 }
+                            } else if (o[1] instanceof IntegerDivision) {
+                                Alias alias = (Alias) o[0];
+                                IntegerDivision integerDivision = (IntegerDivision) o[1];
+                                DIV_HANDLER.handle(item, alias, integerDivision);
                             }
                         }
                     }
@@ -154,6 +162,9 @@ public class ResultParser {
                             insertResultHandleMap(namedParameters.getExpressions(), resultHandleMap, alias, function);
                         }
                     }
+                } else if (expression instanceof IntegerDivision) {
+                    IntegerDivision integerDivision = (IntegerDivision) expression;
+                    insertResultHandleMap(resultHandleMap, alias, integerDivision);
                 }
             }
         }
@@ -164,5 +175,13 @@ public class ResultParser {
         String colNames = namedParameters.stream().filter(exp -> exp instanceof Column).map(exp -> ((Column) exp).getColumnName())
                 .collect(Collectors.joining(","));
         resultHandleMap.computeIfAbsent(colNames, k -> new ArrayList<>()).add(new Object[]{alias, function});
+    }
+
+    private static void insertResultHandleMap(Map<String, List<Object[]>> resultHandleMap, Alias alias, IntegerDivision integerDivision) {
+        Expression leftExpression = integerDivision.getLeftExpression();
+        Expression rightExpression = integerDivision.getRightExpression();
+        String colNames = List.of(leftExpression, rightExpression).stream().filter(exp -> exp instanceof Column).map(exp -> ((Column) exp).getColumnName())
+                .collect(Collectors.joining(","));
+        resultHandleMap.computeIfAbsent(colNames, k -> new ArrayList<>()).add(new Object[]{alias, integerDivision});
     }
 }
