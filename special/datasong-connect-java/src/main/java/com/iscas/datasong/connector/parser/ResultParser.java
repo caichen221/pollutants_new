@@ -3,6 +3,7 @@ package com.iscas.datasong.connector.parser;
 import com.iscas.datasong.connector.parser.function.DivHandler;
 import com.iscas.datasong.connector.parser.function.FunctionHandler;
 import com.iscas.datasong.connector.util.CollectionUtils;
+import com.iscas.datasong.connector.util.StringUtils;
 import com.iscas.datasong.lib.common.StatisticItem;
 import com.iscas.datasong.lib.common.StatisticResult;
 import net.sf.jsqlparser.expression.Alias;
@@ -154,7 +155,9 @@ public class ResultParser {
                 } else if (expression instanceof Function) {
                     Function function = (Function) expression;
                     ExpressionList parameters = function.getParameters();
-                    if (parameters != null) {
+                    if ( StringUtils.equalsIgnoreCaseAny(function.getMultipartName().get(0), "rand", "pi")) {
+                        resultHandleMap.computeIfAbsent("", k -> new ArrayList<>()).add(new Object[]{alias, function});
+                    } else if (parameters != null) {
                         insertResultHandleMap(parameters.getExpressions(), resultHandleMap, alias, function);
                     } else {
                         NamedExpressionList namedParameters = function.getNamedParameters();

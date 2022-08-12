@@ -4,6 +4,9 @@ import cn.hutool.core.util.ArrayUtil;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.schema.Column;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -13,6 +16,7 @@ import java.util.Map;
  * @date 2022/7/28 10:40
  * @since jdk11
  */
+@SuppressWarnings("JavadocDeclaration")
 public interface FunctionHandler {
     /**
      * 处理函数
@@ -67,6 +71,8 @@ public interface FunctionHandler {
             } else {
                 throw new RuntimeException(String.format("不支持的Expression类型:[%s]", expression.getClass().getName()));
             }
+        } else if (expression instanceof IntervalExpression) {
+            return expression;
         } else {
             throw new RuntimeException(String.format("不支持的Expression类型:[%s]", expression.getClass().getName()));
         }
@@ -78,5 +84,46 @@ public interface FunctionHandler {
             return "\\" + str;
         }
         return str;
+    }
+
+    default long getIntervalMs(Date date, IntervalExpression intervalExpression) {
+        long res = 0L;
+        String parameter = intervalExpression.getParameter();
+        String intervalType = intervalExpression.getIntervalType();
+        try {
+            double v = Double.parseDouble(parameter);
+            long x = Math.round(v);
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            switch (intervalType.toUpperCase(Locale.ROOT)) {
+                case "DAY":
+                    res = date.getTime() + x * 24 * 3600 * 1000L;
+                    break;
+                case "MONTH":
+                    c.add(Calendar.MONTH, (int) x);
+                    break;
+                case "HOUR":
+                    c.add(Calendar.HOUR, (int) x);
+                    break;
+                case "MINUTE":
+                    c.add(Calendar.MINUTE, (int) x);
+                    break;
+                case "SECOND":
+                    c.add(Calendar.SECOND, (int) x);
+                    break;
+                case "MILLISECOND":
+                    c.add(Calendar.MILLISECOND, (int) x);
+                    break;
+                case "WEEK":
+                    res = date.getTime() + x * 7 * 24 * 3600 * 1000L;
+                    break;
+                case "YEAR":
+                    c.add(Calendar.YEAR, (int) x);
+                    break;
+                default: throw new RuntimeException(String.format("不支持表达式：" + intervalExpression));
+            }
+            res = c.getTime().getTime();
+        } catch (Exception ignored) {}
+        return res;
     }
 }

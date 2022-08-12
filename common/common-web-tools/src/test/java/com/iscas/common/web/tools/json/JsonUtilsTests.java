@@ -41,6 +41,26 @@ public class JsonUtilsTests {
             "}";
 
     @Test
+    public void testDeSerialCost() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Random r = new Random();
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 300; i++) {
+                list.add(new HashMap<>(){{
+                    put("id", 100);
+                    put("time", "2020-12-15-48 14:14:25");
+                    put("value", r.nextDouble());
+                    put("xid", UUID.randomUUID());
+                }});
+            }
+            String s = JsonUtils.toJson(list);
+            long start = System.currentTimeMillis();
+            List list1 = JsonUtils.fromJson(s, List.class);
+            System.out.println(System.currentTimeMillis() - start);
+        }
+    }
+
+    @Test
     public void test0() {
         Map map = JsonUtils.fromJson(json2, Map.class);
         System.out.println(map);

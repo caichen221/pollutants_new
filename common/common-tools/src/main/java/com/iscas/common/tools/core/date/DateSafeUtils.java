@@ -142,4 +142,18 @@ public class DateSafeUtils {
     public static Date parse(String dateStr, TimeZone timeZone) throws ParseException {
         return parse(dateStr, PATTERN, timeZone);
     }
+
+    /**
+     * 任意时间字符串转换成时间，无需指定解析模板
+     */
+    public static Date parseStringToDate(String dateStr) throws ParseException {
+        String parse = dateStr.replaceFirst("\\d{4}(\\D?)", "yyyy$1");
+        parse = parse.replaceFirst("^\\d{2}(\\D?)", "yy$1");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}(\\D?)", "$1MM$2");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}( ?)", "$1dd$2");
+        parse = parse.replaceFirst("( )\\d{1,2}(\\D?)", "$1HH$2");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}(\\D?)", "$1mm$2");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}(\\D?)", "$1ss$2");
+        return DateSafeUtils.parse(dateStr, parse);
+    }
 }

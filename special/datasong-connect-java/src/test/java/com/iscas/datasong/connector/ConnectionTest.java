@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -608,4 +609,219 @@ public class ConnectionTest {
         }
     }
 
+    /**
+     * 测试GREATEST
+     * */
+    @Test
+    public void testGreatest() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select GREATEST(5.6, 56) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试LEAST
+     * */
+    @Test
+    public void testLeast() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select least(5.6, 56) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试Ln
+     * */
+    @Test
+    public void testLN() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select ln(2) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试Log
+     * */
+    @Test
+    public void testLog() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select log(2, 4) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试Log 10
+     * */
+    @Test
+    public void testLog10() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select log10(2) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试Log 2
+     * */
+    @Test
+    public void testLog2() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select log2(23) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试mod
+     * */
+    @Test
+    public void testMod() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select MOD(23, 4) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试pi
+     * */
+    @Test
+    public void testPi() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select pi() from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试pow(x, y)
+     * */
+    @Test
+    public void testPow() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select pow(3, 6) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试power(x, y)
+     * */
+    @Test
+    public void testPower() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select power(3, 6) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试radians
+     * */
+    @Test
+    public void testRadians() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select RADIANS('34') from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试rand
+     * */
+    @Test
+    public void testRand() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select RAND() from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试sign
+     * */
+    @Test
+    public void testSign() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select SIGN(-50) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试sin
+     * */
+    @Test
+    public void testSin() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select SIN(-50) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试sqrt
+     * */
+    @Test
+    public void testSqrt() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select sqrt(9) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试tan
+     * */
+    @Test
+    public void testTan() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select tan(9) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试truncate
+     * */
+    @Test
+    public void testTruncate() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select truncate(9.1254, 2) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试adddate
+     * */
+    @Test
+    public void testAddDate() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select adddate('2017-01-04', INTERVAL 10 YEAR ) from testtable WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
 }

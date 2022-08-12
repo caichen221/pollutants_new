@@ -23,6 +23,10 @@ public class StringUtils {
         return Arrays.asList(strs).contains(str);
     }
 
+    public static boolean equalsIgnoreCaseAny(String str, String... strs) {
+        return Arrays.stream(strs).anyMatch(str::equalsIgnoreCase);
+    }
+
     public static String reverse(String str) {
         StringBuilder sb = new StringBuilder();
         for (int i = str.length() - 1; i >= 0; i--) {

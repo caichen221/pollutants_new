@@ -9,14 +9,17 @@ import java.util.TimeZone;
 
 /**
  * <p>线程安全的时间转化工具类</p>
+ *
  * @author zhuquanwen
  * @version 1.0
- * @since jdk1.8
  * @date 2018/7/16
+ * @since jdk1.8
  **/
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "JavadocDeclaration"})
 public class DateSafeUtils {
-    private DateSafeUtils(){}
+    private DateSafeUtils() {
+    }
+
     public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
     /**
      * 锁对象
@@ -26,6 +29,7 @@ public class DateSafeUtils {
      * 存放不同的日期模板格式的sdf的Map
      */
     private static final Map<String, ThreadLocal<SimpleDateFormat>> SDF_MAP = new HashMap<>();
+
     /**
      * 返回一个ThreadLocal的sdf,每个线程只会new一次sdf
      *
@@ -70,7 +74,8 @@ public class DateSafeUtils {
     /**
      * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
      * 如果新的线程中没有SimpleDateFormat，才会new一个
-     * @param date {@link Date} 时间
+     *
+     * @param date    {@link Date} 时间
      * @param pattern 格式化串
      * @return String 时间字符串格式
      */
@@ -81,8 +86,9 @@ public class DateSafeUtils {
     /**
      * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
      * 如果新的线程中没有SimpleDateFormat，才会new一个
-     * @param date {@link Date} 时间
-     * @param pattern 格式化串
+     *
+     * @param date     {@link Date} 时间
+     * @param pattern  格式化串
      * @param timeZone 时区
      * @return String 时间字符串格式
      */
@@ -92,14 +98,14 @@ public class DateSafeUtils {
 
     /**
      * 使用默认的格式化方式yyyy-MM-dd HH:mm:ss
-     * */
+     */
     public static String format(Date date) {
         return format(date, PATTERN);
     }
 
     /**
      * 使用默认的格式化方式yyyy-MM-dd HH:mm:ss
-     * */
+     */
     public static String format(Date date, TimeZone timeZone) {
         return format(date, PATTERN, timeZone);
     }
@@ -107,10 +113,11 @@ public class DateSafeUtils {
     /**
      * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
      * 如果新的线程中没有SimpleDateFormat，才会new一个
+     *
      * @param dateStr 字符串
      * @param pattern 时间字符串格式
-     * @throws ParseException 时间转换错误
      * @return Date {@link Date} 时间
+     * @throws ParseException 时间转换错误
      */
     public static Date parse(String dateStr, String pattern) throws ParseException {
         return getSdf(pattern).parse(dateStr);
@@ -119,11 +126,12 @@ public class DateSafeUtils {
     /**
      * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
      * 如果新的线程中没有SimpleDateFormat，才会new一个
-     * @param dateStr 字符串
-     * @param pattern 时间字符串格式
+     *
+     * @param dateStr  字符串
+     * @param pattern  时间字符串格式
      * @param timeZone 时区
-     * @throws ParseException 时间转换错误
      * @return Date {@link Date} 时间
+     * @throws ParseException 时间转换错误
      */
     public static Date parse(String dateStr, String pattern, TimeZone timeZone) throws ParseException {
         return getSdf(pattern, timeZone).parse(dateStr);
@@ -131,15 +139,30 @@ public class DateSafeUtils {
 
     /**
      * 使用默认的格式化方式yyyy-MM-dd HH:mm:ss
-     * */
+     */
     public static Date parse(String dateStr) throws ParseException {
         return parse(dateStr, PATTERN);
     }
 
     /**
      * 使用默认的格式化方式yyyy-MM-dd HH:mm:ss
-     * */
+     */
     public static Date parse(String dateStr, TimeZone timeZone) throws ParseException {
         return parse(dateStr, PATTERN, timeZone);
     }
+
+    /**
+     * 任意时间字符串转换成时间，无需指定解析模板
+     */
+    public static Date parseStringToDate(String dateStr) throws ParseException {
+        String parse = dateStr.replaceFirst("\\d{4}(\\D?)", "yyyy$1");
+        parse = parse.replaceFirst("^\\d{2}(\\D?)", "yy$1");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}(\\D?)", "$1MM$2");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}( ?)", "$1dd$2");
+        parse = parse.replaceFirst("( )\\d{1,2}(\\D?)", "$1HH$2");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}(\\D?)", "$1mm$2");
+        parse = parse.replaceFirst("(\\D?)\\d{1,2}(\\D?)", "$1ss$2");
+        return DateSafeUtils.parse(dateStr, parse);
+    }
+
 }
