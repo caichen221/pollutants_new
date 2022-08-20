@@ -5,7 +5,7 @@ import java.sql.Statement;
 /**
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/7 21:32
  * @since jdk1.8
  */

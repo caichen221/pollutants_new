@@ -6,6 +6,7 @@ package com.iscas.datasong.connector.exception;
  * @date 2022/8/3 8:52
  * @since jdk11
  */
+@SuppressWarnings("unused")
 public class DatasongClientException extends Exception {
     public DatasongClientException() {
         super();

@@ -10,7 +10,7 @@ import com.iscas.datasong.lib.common.DataSongException;
 import com.iscas.datasong.lib.request.SearchDataRequest;
 import com.iscas.datasong.lib.response.data.SearchDataResponse;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.expression.operators.relational.MultiExpressionList;
@@ -18,7 +18,6 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.insert.Insert;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +70,9 @@ public class ExecuteInsert {
         }
         List<Map<String, Object>> insertData = new ArrayList<>();
         for (List<Object> datum : data) {
-            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>(16);
             for (int i = 0; i < datum.size(); i++) {
+                assert keys != null;
                 map.put(keys.get(i), datum.get(i));
             }
             insertData.add(map);

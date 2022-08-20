@@ -11,12 +11,12 @@ import java.util.Properties;
 
  *
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/29 18:36
  * @since jdk1.8
  */
+@SuppressWarnings("unused")
 public class HostInfo {
-    public static final int NO_PORT = -1;
     private static final String HOST_PORT_SEPARATOR = ":";
 
     private final String host;
@@ -43,7 +43,7 @@ public class HostInfo {
         String host = strs[2].substring(strs[2].indexOf("//") + 2);
         int port = Integer.parseInt(strs[3].split("/")[0]);
         String dbName = strs[3].split("/")[1];
-        Map<String, String> hostProperties = new HashMap<String, String>() {{
+        Map<String, String> hostProperties = new HashMap<>(2) {{
             put(Constants.DBNAME_KEY, dbName);
         }};
         return new HostInfo(host, port, user, password, hostProperties);

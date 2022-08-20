@@ -16,7 +16,7 @@ import java.util.Map;
  * @date 2022/8/9 18:44
  * @since jdk11
  */
-@SuppressWarnings({"JavadocDeclaration", "AlibabaClassNamingShouldBeCamel"})
+@SuppressWarnings({"JavadocDeclaration", "AlibabaClassNamingShouldBeCamel", "unused"})
 public class POSITION_Handler implements FunctionHandler {
     @Override
     public void handle(Map<String, Object> data, Alias alias, Function func) {

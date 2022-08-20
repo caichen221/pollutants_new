@@ -1,14 +1,14 @@
 package com.iscas.datasong.connector.parser;
 
+import com.iscas.datasong.connector.parser.function.CURRENT_DATE_Handler;
 import com.iscas.datasong.connector.parser.function.DivHandler;
+import com.iscas.datasong.connector.parser.function.EXTRACT_Handler;
 import com.iscas.datasong.connector.parser.function.FunctionHandler;
 import com.iscas.datasong.connector.util.CollectionUtils;
 import com.iscas.datasong.connector.util.StringUtils;
 import com.iscas.datasong.lib.common.StatisticItem;
 import com.iscas.datasong.lib.common.StatisticResult;
-import net.sf.jsqlparser.expression.Alias;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.IntegerDivision;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.NamedExpressionList;
@@ -31,6 +31,9 @@ import java.util.stream.Collectors;
  */
 public class ResultParser {
     private static final Map<String, FunctionHandler> FUNCTION_HANDLER_MAP = new ConcurrentHashMap<>(32);
+
+    private static final CURRENT_DATE_Handler CURRENT_DATE_HANDLER = new CURRENT_DATE_Handler();
+    private static final EXTRACT_Handler EXTRACT_HANDLER = new EXTRACT_Handler();
 
     private static final DivHandler DIV_HANDLER = new DivHandler();
 
@@ -84,6 +87,19 @@ public class ResultParser {
                                 Alias alias = (Alias) o[0];
                                 IntegerDivision integerDivision = (IntegerDivision) o[1];
                                 DIV_HANDLER.handle(item, alias, integerDivision);
+                            } else if (o[1] instanceof TimeKeyExpression) {
+                                Alias alias = (Alias) o[0];
+                                TimeKeyExpression timeKeyExpression = (TimeKeyExpression) o[1];
+                                String funcName = timeKeyExpression.getStringValue();
+                                if (StringUtils.equalsIgnoreCaseAny(funcName, "CURRENT_DATE()", "CURRENT_TIME()", "CURRENT_TIMESTAMP()",
+                                        "CURTIME()")) {
+                                    CURRENT_DATE_HANDLER.handle(item, alias, funcName);
+                                }
+                            } else if (o[1] instanceof ExtractExpression) {
+                                Alias alias = (Alias) o[0];
+                                ExtractExpression extractExpression = (ExtractExpression) o[1];
+                                Expression expression = extractExpression.getExpression();
+                                EXTRACT_HANDLER.handle(new HashMap<>(), null, null);
                             }
                         }
                     }
@@ -155,7 +171,7 @@ public class ResultParser {
                 } else if (expression instanceof Function) {
                     Function function = (Function) expression;
                     ExpressionList parameters = function.getParameters();
-                    if ( StringUtils.equalsIgnoreCaseAny(function.getMultipartName().get(0), "rand", "pi")) {
+                    if (StringUtils.equalsIgnoreCaseAny(function.getMultipartName().get(0), "rand", "pi", "curdate", "curtime", "date")) {
                         resultHandleMap.computeIfAbsent("", k -> new ArrayList<>()).add(new Object[]{alias, function});
                     } else if (parameters != null) {
                         insertResultHandleMap(parameters.getExpressions(), resultHandleMap, alias, function);
@@ -168,6 +184,16 @@ public class ResultParser {
                 } else if (expression instanceof IntegerDivision) {
                     IntegerDivision integerDivision = (IntegerDivision) expression;
                     insertResultHandleMap(resultHandleMap, alias, integerDivision);
+                } else if (expression instanceof TimeKeyExpression) {
+                    TimeKeyExpression timeKeyExpression = (TimeKeyExpression) expression;
+                    String stringValue = timeKeyExpression.getStringValue();
+                    if (StringUtils.equalsIgnoreCaseAny(stringValue, "CURRENT_DATE()", "CURRENT_TIME()", "CURRENT_TIMESTAMP()",
+                            "CURTIME()")) {
+                        insertResultHandleMap(resultHandleMap, alias, timeKeyExpression);
+                    }
+                } else if (expression instanceof ExtractExpression) {
+                    ExtractExpression extractExpression = (ExtractExpression) expression;
+                    insertResultHandleMap(resultHandleMap, alias, extractExpression);
                 }
             }
         }
@@ -186,5 +212,13 @@ public class ResultParser {
         String colNames = List.of(leftExpression, rightExpression).stream().filter(exp -> exp instanceof Column).map(exp -> ((Column) exp).getColumnName())
                 .collect(Collectors.joining(","));
         resultHandleMap.computeIfAbsent(colNames, k -> new ArrayList<>()).add(new Object[]{alias, integerDivision});
+    }
+
+    private static void insertResultHandleMap(Map<String, List<Object[]>> resultHandleMap, Alias alias, TimeKeyExpression timeKeyExpression) {
+        resultHandleMap.computeIfAbsent("", k -> new ArrayList<>()).add(new Object[]{alias, timeKeyExpression});
+    }
+
+    private static void insertResultHandleMap(Map<String, List<Object[]>> resultHandleMap, Alias alias, ExtractExpression extractExpression) {
+        resultHandleMap.computeIfAbsent("", k -> new ArrayList<>()).add(new Object[]{alias, extractExpression});
     }
 }

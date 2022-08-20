@@ -17,16 +17,12 @@ import java.util.Objects;
  * @date 2022/8/8 9:45
  * @since jdk11
  */
+@SuppressWarnings({"rawtypes", "unused"})
 public class ResultSetMetaDataImpl implements ResultSetMetaData {
-    private final List<ColumnMetaData> columns = new ArrayList();
-
-    public ResultSetMetaDataImpl() {
-    }
+    private final List<ColumnMetaData> columns = new ArrayList<>();
 
     public ResultSetMetaDataImpl(List<String> headers) {
-        Iterator var2 = headers.iterator();
-        while(var2.hasNext()) {
-            String column = (String)var2.next();
+        for (String column : headers) {
             ColumnMetaData columnMetaData = new ColumnMetaData();
             columnMetaData.setColumnLabel(column);
             columnMetaData.setColumnName(column);
@@ -37,11 +33,10 @@ public class ResultSetMetaDataImpl implements ResultSetMetaData {
         }
     }
 
+    @SuppressWarnings("unused")
     public ResultSetMetaDataImpl(List<String> headers, List<Field> fields) {
         if (null != fields) {
-            Iterator var3 = fields.iterator();
-            while(var3.hasNext()) {
-                Field field = (Field)var3.next();
+            for (Field field : fields) {
                 ColumnMetaData columnMetaData = new ColumnMetaData();
                 columnMetaData.setColumnLabel(field.getName());
                 columnMetaData.setColumnName(field.getName());
@@ -167,6 +162,7 @@ public class ResultSetMetaDataImpl implements ResultSetMetaData {
         return this.getColumn(column).getColumnClassName();
     }
 
+    @SuppressWarnings("unused")
     public static class ColumnMetaData {
         private boolean autoIncrement = false;
         private boolean caseSensitive;

@@ -15,15 +15,16 @@ import java.util.logging.Logger;
 /**
  * 驱动
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2021/6/29 16:10
  * @since jdk1.8
  */
+@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
 public class Driver implements java.sql.Driver {
     static {
         try {
             java.sql.DriverManager.registerDriver(new Driver());
-        } catch (SQLException E) {
+        } catch (SQLException e) {
             throw new RuntimeException("Can't register driver!");
         }
     }
@@ -40,13 +41,13 @@ public class Driver implements java.sql.Driver {
     }
 
     @Override
-    public boolean acceptsURL(String url) throws SQLException {
+    public boolean acceptsURL(String url) {
         //jdbc:datasong://192.168.100.88:3306/quick-frame-samples
         return ConnectionUrl.acceptsUrl(url);
     }
 
     @Override
-    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
+    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) {
         return new DriverPropertyInfo[0];
     }
 

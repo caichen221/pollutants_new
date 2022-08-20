@@ -17,11 +17,8 @@ import com.iscas.datasong.lib.request.SearchDataRequest;
 import com.iscas.datasong.lib.response.data.SearchDataResponse;
 import com.iscas.datasong.lib.util.DataSongJsonUtils;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Alias;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.IntegerDivision;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.*;
 import org.javatuples.Quartet;
 
@@ -31,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/7 21:15
  * @since jdk1.8
  */
@@ -49,7 +46,19 @@ public class ExecuteQuery {
             Quartet<String, SearchDataRequest, List<SelectItem>, Boolean> request = SelectSqlParser.parseSelect((Select) statement);
             SearchDataRequest searchDataRequest = request.getValue1();
             String tableName = request.getValue0();
-            if (searchDataRequest.getStatistic() != null || !Objects.equals(searchDataRequest.getSize(), Integer.MAX_VALUE)) {
+            if ("DUAL".equalsIgnoreCase(tableName)) {
+                // 不需要查询数据库，直接解析函数
+                rs.setPullModel(false);
+                // 解析结果
+                List<Map<String, Object>> searchData = new ArrayList<>();
+                Map<String, Object> data = new HashMap<>();
+                data.put(null, null);
+                searchData.add(data);
+                ResultParser.parse(searchData, null, request.getValue2(), request.getValue3());
+                searchData.remove(null);
+                // 将结果放在ResultSet中
+                rs.setCacheData(searchData);
+            } else if (searchDataRequest.getStatistic() != null || !Objects.equals(searchDataRequest.getSize(), Integer.MAX_VALUE)) {
                 // 对于查询最后都采用拉取的方式，但CreatePullDataRequest中没找到设置分页和设置统计信息的地方，故这两种情况采用查询方式
                 rs.setPullModel(false);
                 SearchDataResponse searchResult = dataService.search(dbName, tableName, searchDataRequest);
@@ -128,7 +137,8 @@ public class ExecuteQuery {
                         if (expression instanceof net.sf.jsqlparser.schema.Column) {
                             // 获取列名作为映射的值
                             result.put(i, ((net.sf.jsqlparser.schema.Column) expression).getColumnName());
-                        } else if (expression instanceof Function || expression instanceof IntegerDivision) {
+                        } else if (expression instanceof Function || expression instanceof IntegerDivision || expression instanceof TimeKeyExpression ||
+                                expression instanceof ExtractExpression) {
                             // 函数, 没有使用别名，直接使用其toString作为值
                             result.put(i, expression.toString());
                         } else {

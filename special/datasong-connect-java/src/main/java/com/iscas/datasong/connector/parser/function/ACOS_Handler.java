@@ -17,7 +17,7 @@ import java.util.Map;
  * @date 2022/8/10 15:24
  * @since jdk11
  */
-@SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "JavadocDeclaration", "unused"})
+@SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "unused"})
 public class ACOS_Handler implements FunctionHandler {
     @Override
     public void handle(Map<String, Object> data, Alias alias, Function func) {

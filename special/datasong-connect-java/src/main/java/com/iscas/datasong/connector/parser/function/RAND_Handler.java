@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"JavadocDeclaration", "unused", "AlibabaClassNamingShouldBeCamel"})
 public class RAND_Handler implements FunctionHandler {
-    private SecureRandom random = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
     @Override
     public void handle(Map<String, Object> data, Alias alias, Function func) {
         double result = random.nextDouble();

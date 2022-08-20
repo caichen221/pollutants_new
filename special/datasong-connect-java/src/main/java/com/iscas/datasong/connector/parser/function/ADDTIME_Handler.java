@@ -5,7 +5,6 @@ import com.iscas.datasong.connector.util.DateSafeUtils;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
-import net.sf.jsqlparser.expression.IntervalExpression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
 import java.text.ParseException;
@@ -36,16 +35,35 @@ public class ADDTIME_Handler implements FunctionHandler {
                 Object first = getData(data, exp1);
                 Object second = getData(data, exp2);
                 if (first != null && second != null) {
-                    String dateStr = first.toString();
                     try {
-                        Date date = DateSafeUtils.parseStringToDate(dateStr);
-                        String timeStr = second.toString();
-                        if (!timeStr.contains(":")) {
-                            try {
-                                int s = Integer.parseInt(timeStr);
-                            } catch (Exception e) {}
+                        Date date;
+                        if (first instanceof Date) {
+                            date = (Date) first;
+                        } else {
+                            String dateStr = first.toString();
+                            date = DateSafeUtils.parseStringToDate(dateStr);
                         }
-                        result = null;
+                        String timeStr = second.toString();
+                        Date addDate = null;
+                        // 暂时认为第2个时间格式只能是秒数、HH:mm:ss、HH：mm
+                        try {
+                            int addSecond = Integer.parseInt(timeStr);
+                            date = new Date(date.getTime() + addSecond * 1000L);
+                        } catch (Exception e) {
+                            try {
+                                addDate = DateSafeUtils.parse(timeStr, "HH:mm:ss");
+                                long addTime = addDate.getTime() - DateSafeUtils.parse("1970-01-01 00:00:00").getTime();
+                                date = new Date(date.getTime() + addTime);
+                            } catch (Exception e2) {
+                                try {
+                                    addDate = DateSafeUtils.parse(timeStr, "HH:mm");
+                                    long addTime = addDate.getTime() - DateSafeUtils.parse("1970-01-01 00:00:00").getTime();
+                                    date = new Date(date.getTime() + addTime);
+                                } catch (Exception ignored) {
+                                }
+                            }
+                        }
+                        result =  DateSafeUtils.format(date);
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
@@ -57,5 +75,10 @@ public class ADDTIME_Handler implements FunctionHandler {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) throws ParseException {
+        Date parse = DateSafeUtils.parse("12:23:11", "HH:mm:ss");
+        System.out.println(parse);
     }
 }

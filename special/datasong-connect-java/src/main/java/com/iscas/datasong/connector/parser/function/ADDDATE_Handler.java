@@ -8,8 +8,6 @@ import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.IntervalExpression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -38,12 +36,17 @@ public class ADDDATE_Handler implements FunctionHandler {
                 Object first = getData(data, exp1);
                 Object second = getData(data, exp2);
                 if (first != null && second != null) {
-                    String dateStr = first.toString();
                     try {
-                        Date date = DateSafeUtils.parseStringToDate(dateStr);
+                        Date date;
+                        if (first instanceof Date) {
+                            date = (Date) first;
+                        } else {
+                            String dateStr = first.toString();
+                            date = DateSafeUtils.parseStringToDate(dateStr);
+                        }
                         long time = 0L;
                         if (exp2 instanceof IntervalExpression) {
-                            time = getIntervalMs(date, (IntervalExpression) exp2);
+                            time = getIntervalMs(date, (IntervalExpression) exp2, true);
                         } else {
                             try {
                                 double v = Double.parseDouble(second.toString());

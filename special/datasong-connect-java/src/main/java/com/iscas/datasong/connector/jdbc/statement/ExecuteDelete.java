@@ -5,20 +5,18 @@ import com.iscas.datasong.client.DataSongHttpClient;
 import com.iscas.datasong.connector.exception.DatasongClientException;
 import com.iscas.datasong.connector.jdbc.ConnectionImpl;
 import com.iscas.datasong.connector.parser.SelectSqlParser;
-import com.iscas.datasong.connector.util.CollectionUtils;
 import com.iscas.datasong.lib.common.DataSongException;
 import com.iscas.datasong.lib.request.CreatePullDataRequest;
 import com.iscas.datasong.lib.request.search.condition.search.BoolSearchCondition;
 import com.iscas.datasong.lib.util.DataSongJsonUtils;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.update.Update;
-import net.sf.jsqlparser.statement.update.UpdateSet;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

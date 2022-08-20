@@ -23,16 +23,17 @@ import java.util.stream.Collectors;
 
 /**
  * @author zhuquanwen
- * @vesion 1.0
+ * @version 1.0
  * @date 2022/1/7 16:35
  * @since jdk1.8
  */
+@SuppressWarnings({"FieldCanBeLocal", "unused", "MagicConstant"})
 public class StatementImpl implements DsStatement {
 
     private int resultSetType;
     private int resultSetConcurrency;
 
-    private ConnectionImpl connection;
+    private final ConnectionImpl connection;
 
     private int fetchSize = 1000;
 
@@ -47,7 +48,7 @@ public class StatementImpl implements DsStatement {
     * */
     private List<String> dsIds;
 
-    private List<String> batchSqls = new ArrayList<>();
+    private final List<String> batchSqls = new ArrayList<>();
 
     private boolean closed = false;
 
@@ -264,13 +265,13 @@ public class StatementImpl implements DsStatement {
             ResultSetImpl rs = new ResultSetImpl(this);
             if (CollectionUtils.isNotEmpty(dsIds)) {
                 List<Map<String, Object>> data = dsIds.stream().map(id -> {
-                    Map<String, Object> header = new HashMap<>();
+                    Map<String, Object> header = new HashMap<>(1);
                     header.put("_id", id);
                     return header;
                 }).collect(Collectors.toList());
                 rs.setCacheData(data);
             }
-            rs.setHeaderMapping(new HashMap<>(){{put(0, "_id");}});
+            rs.setHeaderMapping(new HashMap<>(1){{put(0, "_id");}});
             return rs;
         }
         return null;
@@ -315,7 +316,7 @@ public class StatementImpl implements DsStatement {
     }
 
     @Override
-    public int getResultSetHoldability() throws SQLException {
+    public int getResultSetHoldability() {
         return 0;
     }
 
