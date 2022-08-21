@@ -30,7 +30,7 @@ public class TIME_TO_SEC_Handler implements FunctionHandler {
                 Object first = getData(data, exp1);
                 int result = 0;
                 if (first != null) {
-                    Date date = getDate(first);
+                    Date date = getTime(first);
                     String str = DateSafeUtils.format(date, "HH:mm:ss");
                     String[] strs = str.split(":");
                     result = Integer.parseInt(strs[0].trim()) * 3600 +  Integer.parseInt(strs[1].trim()) * 60 +

@@ -146,6 +146,20 @@ public interface FunctionHandler {
         return date;
     }
 
+    default Date getTime(Object obj) {
+        Date date;
+        if (obj instanceof Date) {
+            date = (Date) obj;
+        } else {
+            try {
+                date = DateSafeUtils.parse("2020-01-01 " + obj.toString());
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return date;
+    }
+
     default String getWeek(int dayOfWeek) {
         switch (dayOfWeek) {
             case Calendar.MONDAY:

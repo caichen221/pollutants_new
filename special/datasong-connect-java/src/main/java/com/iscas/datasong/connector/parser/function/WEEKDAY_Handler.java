@@ -35,6 +35,10 @@ public class WEEKDAY_Handler implements FunctionHandler {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
                     result = calendar.get(Calendar.DAY_OF_WEEK);
+                    result = result - 2;
+                    if (result < 0) {
+                        result = 7 + result;
+                    }
                 }
                 if (alias != null) {
                     data.put(alias.getName(), result);

@@ -32,7 +32,7 @@ public class WEEK_Handler implements FunctionHandler {
                     Date date = getDate(first);
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
-                    result = calendar.get(Calendar.WEEK_OF_YEAR);
+                    result = calendar.get(Calendar.WEEK_OF_YEAR) - 1;
                 }
                 if (alias != null) {
                     data.put(alias.getName(), result);

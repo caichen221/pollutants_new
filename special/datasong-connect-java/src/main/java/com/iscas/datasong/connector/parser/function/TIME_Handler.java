@@ -30,7 +30,7 @@ public class TIME_Handler implements FunctionHandler {
                 Object first = getData(data, exp1);
                 String result = "";
                 if (first != null) {
-                    Date date = getDate(first);
+                    Date date = getTime(first);
                     result = DateSafeUtils.format(date, "HH:mm:ss");
                 }
                 if (alias != null) {

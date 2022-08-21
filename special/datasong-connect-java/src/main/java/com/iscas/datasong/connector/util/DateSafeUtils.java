@@ -55,7 +55,7 @@ public class DateSafeUtils {
 
     private static SimpleDateFormat getSdf(final String pattern, final TimeZone timeZone) {
         String key = pattern + "_" + timeZone.getRawOffset();
-        ThreadLocal<SimpleDateFormat> tl = SDF_MAP.get(key);
+         ThreadLocal<SimpleDateFormat> tl = SDF_MAP.get(key);
         // 此处的双重判断和同步是为了防止sdfMap这个单例被多次put重复的sdf
         if (tl == null) {
             synchronized (LOCK_OBJ) {

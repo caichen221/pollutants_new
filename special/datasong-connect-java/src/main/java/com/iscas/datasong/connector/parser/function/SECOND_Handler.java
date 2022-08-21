@@ -1,11 +1,13 @@
 package com.iscas.datasong.connector.parser.function;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.iscas.datasong.connector.util.DateSafeUtils;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +31,12 @@ public class SECOND_Handler implements FunctionHandler {
                 Expression exp1 = expressions.get(0);
                 Object first = getData(data, exp1);
                 if (first != null) {
-                    Date date = getDate(first);
+                    Date date;
+                    try {
+                        date = DateSafeUtils.parse(first.toString(), "HH:mm:ss");
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
                     if (date != null) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(date);

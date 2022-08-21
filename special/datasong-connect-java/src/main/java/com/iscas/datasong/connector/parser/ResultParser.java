@@ -171,7 +171,8 @@ public class ResultParser {
                 } else if (expression instanceof Function) {
                     Function function = (Function) expression;
                     ExpressionList parameters = function.getParameters();
-                    if (StringUtils.equalsIgnoreCaseAny(function.getMultipartName().get(0), "rand", "pi", "curdate", "curtime", "date")) {
+                    if (StringUtils.equalsIgnoreCaseAny(function.getMultipartName().get(0), "rand", "pi", "curdate", "curtime", "date",
+                            "localtime", "localtimestamp", "now", "sysdate")) {
                         resultHandleMap.computeIfAbsent("", k -> new ArrayList<>()).add(new Object[]{alias, function});
                     } else if (parameters != null) {
                         insertResultHandleMap(parameters.getExpressions(), resultHandleMap, alias, function);

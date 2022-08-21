@@ -33,7 +33,12 @@ public class HOUR_Handler implements FunctionHandler {
                 Expression exp1 = expressions.get(0);
                 Object first = getData(data, exp1);
                 if (first != null) {
-                    Date date = getDate(first);
+                    Date date;
+                    try {
+                        date = DateSafeUtils.parse(first.toString(), "HH:mm:ss");
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
                     result = calendar.get(Calendar.HOUR_OF_DAY);

@@ -1041,5 +1041,402 @@ public class ConnectionTest {
         }
     }
 
+    /**
+     * 测试FROM_DAYS(n)
+     * */
+    @Test
+    public void testFromDays() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT FROM_DAYS(1111)  FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试HOUR(t)
+     * */
+    @Test
+    public void testHour() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT HOUR('10:20:30') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试LAST_DAY
+     * */
+    @Test
+    public void testLastDay() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT LAST_DAY('2017-06-20') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试LOCALTIME()
+     * */
+    @Test
+    public void testLocalTime() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT LOCALTIME() FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+
+    /**
+     * 测试LOCALTIMESTAMP()
+     * */
+    @Test
+    public void testLocalTimeStamp() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT LOCALTIMESTAMP() FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试MAKE_DATE()
+     * */
+    @Test
+    public void testMakeDate() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT MAKEDATE(2017, 3) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试MAKETIME(hour, minute, second)
+     * */
+    @Test
+    public void testMakeTime() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT MAKETIME(11, 35, 4) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试MICROSECOND(date)
+     * */
+    @Test
+    public void testMicrosecond() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT MICROSECOND('2017-06-20 09:34:00.000023') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试MINUTE(t)
+     * */
+    @Test
+    public void testMinute() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT MINUTE('11:12:13') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试MONTHNAME(d)
+     * */
+    @Test
+    public void testMonthName() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT MONTHNAME('2011-11-11 11:11:11') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试MONTH(d)
+     * */
+    @Test
+    public void testMonth() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT MONTH('2011-11-11 11:11:11') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试NOW()
+     * */
+    @Test
+    public void testNow() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT NOW() FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试PERIOD_ADD(period, number)
+     * */
+    @Test
+    public void testPeriodAdd() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT PERIOD_ADD(201703, 5) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试PERIOD_DIFF(period1, period2)
+     * */
+    @Test
+    public void testPeriodDiff() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT PERIOD_DIFF(201710, 201703) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+
+    /**
+     * 测试QUARTER(d)
+     * */
+    @Test
+    public void testQuarter() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT QUARTER('2011-11-11 11:11:11') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试SECOND(d)
+     * */
+    @Test
+    public void testSecond() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT SECOND('11:22:13') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试SEC_TO_TIME(s)
+     * */
+    @Test
+    public void testSecToTime() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT SEC_TO_TIME(4320) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试STR_TO_DATE(string, format_mask)
+     * */
+    @Test
+    public void testStrToDate() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT STR_TO_DATE('August 10 2017', '%M %d %Y') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试SUBDATE(d,n)
+     * */
+    @Test
+    public void tesSubDate() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT SUBDATE('2011-11-11 11:11:11', 1) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试SUBTIME(t,n)
+     * */
+    @Test
+    public void tesSubTime() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT SUBTIME('2011-11-11 11:11:11', 5) FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试SYSDATE()
+     * */
+    @Test
+    public void tesSysDate() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT SYSDATE() FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TIME(expression)
+     * */
+    @Test
+    public void testTime() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TIME('19:30:10') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TIME_FORMAT(expression)
+     * */
+    @Test
+    public void testTimeFormat() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TIME_FORMAT('11:11:11','%r') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TIME_TO_SEC(expression)
+     * */
+    @Test
+    public void testTimeToSec() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TIME_TO_SEC('01:12:00') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TIMEDIFF(time1, time2)
+     * */
+    @Test
+    public void testTimeDiff() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TIMEDIFF('3:10:11', '13:10:10') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TIMESTAMP(expression, interval)
+     * */
+    @Test
+    public void testTimeStamp() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TIMESTAMP('2017-07-23',  '13:10:11') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TIMESTAMPDIFF(unit,datetime_expr1,datetime_expr2)
+     * */
+    @Test
+    public void testTimeStampDiff() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TIMESTAMPDIFF(DAY,'2003-02-01','2003-05-01') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试TO_DAYS(d)
+     * */
+    @Test
+    public void testToDays() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT TO_DAYS('0001-01-01 01:01:01') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试WEEK(d)
+     * */
+    @Test
+    public void testWeek() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT WEEK('2011-11-11 11:11:11') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试WEEKDAY(d)
+     * */
+    @Test
+    public void testWeekDay() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT WEEKDAY('2022-08-21') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试WEEKOFYEAR(d)
+     * */
+    @Test
+    public void testWeekOfYear() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT WEEKOFYEAR('2011-11-11 11:11:11') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试YEAR(d)
+     * */
+    @Test
+    public void testYear() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT YEAR('2017-06-15') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
+
+    /**
+     * 测试YEARWEEK(date, mode)
+     * */
+    @Test
+    public void testYearWeek() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT YEARWEEK('2017-06-15') FROM dual");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getObject(1));
+        }
+    }
 
 }
