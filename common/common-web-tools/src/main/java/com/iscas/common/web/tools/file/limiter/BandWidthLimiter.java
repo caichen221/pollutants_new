@@ -64,9 +64,9 @@ public class BandWidthLimiter {
      * @param len len
      */
     public synchronized void limitNextBytes(int len) {
-        int online = FileDownloadUtils.onlineDownloadNumber.get();
-        int max =  online > 0 ? BandWidthLimiter.maxBandWith / online : BandWidthLimiter.maxBandWith;
-        setMaxRate(max);
+//        int online = FileDownloadUtils.onlineDownloadNumber.get();
+//        int max =  online > 0 ? BandWidthLimiter.maxBandWith / online : BandWidthLimiter.maxBandWith;
+//        setMaxRate(max);
         this.bytesWillBeSentOrReceive += len;
         /* We have sent chunkLength bytes */
         while (this.bytesWillBeSentOrReceive > CHUNK_LENGTH) {

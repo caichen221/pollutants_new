@@ -71,6 +71,8 @@ public interface FunctionHandler {
             }
         } else if (expression instanceof IntervalExpression) {
             return expression;
+        } else if (expression instanceof NullValue) {
+            return null;
         } else {
             throw new RuntimeException(String.format("不支持的Expression类型:[%s]", expression.getClass().getName()));
         }
