@@ -30,7 +30,11 @@ public class LimiterInputStream extends InputStream {
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (bandwidthLimiter != null) {
-            bandwidthLimiter.limitNextBytes(len);
+            int limitLen = len;
+            if (is.available() < len) {
+                limitLen = is.available();
+            }
+            bandwidthLimiter.limitNextBytes(limitLen);
         }
         return this.is.read(b, off, len);
     }
