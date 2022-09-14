@@ -28,6 +28,7 @@ public class CaptchaTests {
         String captcha = CaptchaUtils.createCaptcha(os);
         System.out.println(captcha);
         Assertions.assertNotNull(captcha);
+        os.close();
         file.delete();
         System.out.println("-------CaptchaUtils生成验证码end---------");
     }

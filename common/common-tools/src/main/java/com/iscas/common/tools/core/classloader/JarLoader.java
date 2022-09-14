@@ -37,7 +37,7 @@ public class JarLoader extends URLClassLoader {
     /**
      * 缓存对应类型的加载的类
      * */
-    public static Map<String, Map<String, Class>> typeJarLoaderClasses = new ConcurrentHashMap<>();
+//    public static Map<String, Map<String, Class>> typeJarLoaderClasses = new ConcurrentHashMap<>();
 
     /**缓存对象*/
     private static final Map<String, Map<String, byte[]>> CLASS_BYTES = new ConcurrentHashMap<>();
@@ -186,7 +186,7 @@ public class JarLoader extends URLClassLoader {
             // 放入缓存
             jarLoaderClasses.put(name, aClass);
             // 放入带数据库类型的缓存
-            typeJarLoaderClasses.computeIfAbsent(dbType, key -> new ConcurrentHashMap<>(32)).put(name, aClass);
+//            typeJarLoaderClasses.computeIfAbsent(dbType, key -> new ConcurrentHashMap<>(32)).put(name, aClass);
         }
         return aClass;
     }
@@ -200,11 +200,11 @@ public class JarLoader extends URLClassLoader {
                 if (MapUtils.isNotEmpty(cacheMap)) {
                     byte[] bytes = cacheMap.get(name);
                     if (bytes != null) {
-                       Class<?> aClassx = this.defineClass(name, bytes, 0, bytes.length);
-                       if (aClassx != null) {
-                           System.out.println("读取到缓存.....");
-                           return aClassx;
-                       }
+                        Class<?> aClassx = this.defineClass(name, bytes, 0, bytes.length);
+                        if (aClassx != null) {
+                            System.out.println("读取到缓存.....");
+                            return aClassx;
+                        }
                     }
                 }
             }

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  *
  * @author zhuquanwen
  * @version 1.0
- * @date 2020/8/20 21:26e
+ * @date 2020/8/20 21:26
  * @since jdk1.8
  */
 @Retention(RetentionPolicy.RUNTIME)

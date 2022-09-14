@@ -13,19 +13,16 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
+ * 扫描包的工具类
  * @author zhuquanwen
  * @date 2018/4/25 17:30
  **/
 @SuppressWarnings("unused")
 @Slf4j
 public class ScannerUtils {
-    public static Set<Class<?>> getClasses(String pack) {
-        return getClasses(pack, true);
-    }
-
 
     @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
-    public static Set<Class<?>> getClasses(String pack, boolean ignore$) {
+    public static Set<Class<?>> getClasses(String pack) {
 
         // 第一个class类的集合
         Set<Class<?>> classes = new LinkedHashSet<>();
@@ -37,71 +34,71 @@ public class ScannerUtils {
         Enumeration<URL> dirs;
         try {
             dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
-            // 循环迭代下去
-            while (dirs.hasMoreElements()) {
-                // 获取下一个元素
-                URL url = dirs.nextElement();
-                // 得到协议的名称
-                String protocol = url.getProtocol();
-                // 如果是以文件的形式保存在服务器上
-                if ("file".equals(protocol)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("============file类型的扫描");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // 循环迭代下去
+        while (dirs.hasMoreElements()) {
+            // 获取下一个元素
+            URL url = dirs.nextElement();
+            // 得到协议的名称
+            String protocol = url.getProtocol();
+            // 如果是以文件的形式保存在服务器上
+            if ("file".equals(protocol)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("============file类型的扫描");
+                }
+                // 获取包的物理路径
+                String filePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
+                // 以文件的方式扫描整个包下的文件 并添加到集合中
+                findAndAddClassesInPackageByFile(pack, filePath, recursive, classes);
+            } else if ("jar".equals(protocol)) {
+                String packageName1 = "";
+                // 如果是jar包文件
+                // 定义一个JarFile
+                if (log.isDebugEnabled()) {
+                    log.debug("=============jar类型的扫描");
+                }
+                JarFile jar;
+                // 获取jar
+                try {
+                    jar = ((JarURLConnection) url.openConnection()).getJarFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // 从此jar包 得到一个枚举类
+                Enumeration<JarEntry> entries = jar.entries();
+                // 同样的进行循环迭代
+                while (entries.hasMoreElements()) {
+                    // 获取jar里的一个实体 可以是目录 和一些jar包里的其他文件 如META-INF等文件
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    // 如果是以/开头的
+                    if (name.charAt(0) == '/') {
+                        // 获取后面的字符串
+                        name = name.substring(1);
                     }
-                    // 获取包的物理路径
-                    String filePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
-                    // 以文件的方式扫描整个包下的文件 并添加到集合中
-                    findAndAddClassesInPackageByFile(pack, filePath, recursive, classes);
-                } else if ("jar".equals(protocol)) {
-                    String packageName1 = "";
-                    // 如果是jar包文件
-                    // 定义一个JarFile
-                    if (log.isDebugEnabled()) {
-                        log.debug("=============jar类型的扫描");
-                    }
-                    JarFile jar;
-                    try {
-                        // 获取jar
-                        jar = ((JarURLConnection) url.openConnection()).getJarFile();
-                        // 从此jar包 得到一个枚举类
-                        Enumeration<JarEntry> entries = jar.entries();
-                        // 同样的进行循环迭代
-                        while (entries.hasMoreElements()) {
-                            // 获取jar里的一个实体 可以是目录 和一些jar包里的其他文件 如META-INF等文件
-                            JarEntry entry = entries.nextElement();
-                            String name = entry.getName();
-                            // 如果是以/开头的
-                            if (name.charAt(0) == '/') {
-                                // 获取后面的字符串
-                                name = name.substring(1);
-                            }
-                            // 如果前半部分和定义的包名相同
-                            if (name.startsWith(packageDirName)) {
-                                int idx = name.lastIndexOf('/');
-                                // 如果以"/"结尾 是一个包
-                                if (idx != -1) {
-                                    // 获取包名 把"/"替换成"."
-                                    packageName1 = name.substring(0, idx).replace('/', '.');
-                                }
-                                // 如果可以迭代下去 并且是一个包
-                                // 如果是一个.class文件 而且不是目录
-                                if (name.endsWith(".class") && !entry.isDirectory() && !name.contains("$")) {
-                                    // 去掉后面的".class" 获取真正的类名
-                                    String className = name.substring(packageName1.length() + 1, name.length() - 6);
-
-                                    addClasses(packageName1 + '.' + className, classes);
-                                }
-                            }
+                    // 如果前半部分和定义的包名相同
+                    if (name.startsWith(packageDirName)) {
+                        int idx = name.lastIndexOf('/');
+                        // 如果以"/"结尾 是一个包
+                        if (idx != -1) {
+                            // 获取包名 把"/"替换成"."
+                            packageName1 = name.substring(0, idx).replace('/', '.');
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        // 如果可以迭代下去 并且是一个包
+                        // 如果是一个.class文件 而且不是目录
+                        if (name.endsWith(".class") && !entry.isDirectory() && !name.contains("$")) {
+                            // 去掉后面的".class" 获取真正的类名
+                            String className = name.substring(packageName1.length() + 1, name.length() - 6);
+
+                            addClasses(packageName1 + '.' + className, classes);
+                        }
                     }
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+            }
+        }
         return classes;
     }
 
