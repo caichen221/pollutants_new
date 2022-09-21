@@ -2,6 +2,7 @@ package com.iscas.biz.filter;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.filter.LoginFilter;
 import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
 import com.iscas.biz.domain.common.Role;
@@ -17,6 +18,7 @@ import com.iscas.templet.exception.BaseRuntimeException;
 import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
@@ -33,6 +35,7 @@ import java.util.Optional;
 @StartedFilterComponent(order = 1)
 @Slf4j
 @ConditionalOnMybatis
+@ConditionalOnBean(LoginFilter.class)
 public class InitUserRoleFilter extends AbstractStartedFilter {
 
     @Override

@@ -18,7 +18,7 @@ public class ConnectionTest {
     public void testConnection() {
         try {
             Class.forName("com.iscas.datasong.connector.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:datasong://192.168.100.21:15680/dmotest", null, null);
+            connection = DriverManager.getConnection("jdbc:datasong://192.168.100.21:15680/dmodbdatasong1", null, null);
             System.out.println(connection);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class ConnectionTest {
     public void test() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select * from testtable");
+        ResultSet rs = statement.executeQuery("select * from ods_table_02");
         while (rs.next()) {
             System.out.println(rs.getString(1));
         }
