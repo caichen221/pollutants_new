@@ -7,14 +7,12 @@ import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.view.table.TableResponse;
 import com.iscas.templet.view.table.TableResponseData;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ public class AchievementsController extends BaseController {
     private AchievementsService achievementsService;
 
 
-    @ApiOperation(value="[测试/XXX] 测试datasong-client-plus的查询，带分页排序", notes="create by:朱全文 2020-03-02")
+    @Operation(summary="[测试/XXX] 测试datasong-client-plus的查询，带分页排序", description="create by:朱全文 2020-03-02")
 //    @ApiImplicitParams(
 //            {
 //                    @ApiImplicitParam(name = "map", value = "上传到数据", required = true, dataType = "TableSearchRequest")
@@ -48,7 +46,7 @@ public class AchievementsController extends BaseController {
         return response;
     }
 
-    @ApiOperation(value="[测试/XXX] 测试datasong-client-plus的查询，直接返回表", notes="create by:朱全文 2020-03-02")
+    @Operation(summary="[测试/XXX] 测试datasong-client-plus的查询，直接返回表", description="create by:朱全文 2020-03-02")
 //    @ApiImplicitParams(
 //            {
 //                    @ApiImplicitParam(name = "map", value = "上传到数据", required = true, dataType = "TableSearchRequest")
@@ -62,10 +60,10 @@ public class AchievementsController extends BaseController {
         return response;
     }
 
-    @ApiOperation(value="[测试/XXX] 测试新增", notes="create by:朱全文 2020-03-02")
-    @ApiImplicitParams(
+    @Operation(summary="[测试/XXX] 测试新增", description="create by:朱全文 2020-03-02")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "achievements", value = "新增的数据", required = true, dataType = "Achievements")
+                    @Parameter(name = "achievements", description = "新增的数据", required = true)
             }
     )
     @PostMapping()
@@ -76,10 +74,10 @@ public class AchievementsController extends BaseController {
         return response;
     }
 
-    @ApiOperation(value="[测试/XXX] 测试查询", notes="create by:朱全文 2020-03-02")
-    @ApiImplicitParams(
+    @Operation(summary="[测试/XXX] 测试查询", description="create by:朱全文 2020-03-02")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "String", value = "查询的数据", required = true, dataType = "String")
+                    @Parameter(name = "String", description = "查询的数据", required = true)
             }
     )
     @GetMapping("/search")
@@ -90,10 +88,10 @@ public class AchievementsController extends BaseController {
         return response;
     }
 
-    @ApiOperation(value="[测试/XXX] 测试删除", notes="create by:朱全文 2020-03-02")
-    @ApiImplicitParams(
+    @Operation(summary="[测试/XXX] 测试删除", description="create by:朱全文 2020-03-02")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "String", value = "待删除的ID", required = true, dataType = "String")
+                    @Parameter(name = "String", description= "待删除的ID", required = true)
             }
     )
     @DeleteMapping()

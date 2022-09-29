@@ -2,8 +2,6 @@ package com.iscas.biz.test.controller;
 
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
-import io.swagger.annotations.ApiParam;
-import oracle.ucp.proxy.annotation.Post;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,10 +35,10 @@ public class PathVariableTest {
     }
 
     @PostMapping("/{datasourceType}/{datasourceName}/upload")
-    public ResponseEntity upload(@ApiParam(value = "数据源类型") @PathVariable String datasourceType,
-                                 @ApiParam(value = "数据源名称") @PathVariable String datasourceName,
-                                 @ApiParam(value = "文件父路径") @RequestParam String parentPath,
-                                 @ApiParam(value = "文件") MultipartFile[] files) throws BaseException {
+    public ResponseEntity upload(@PathVariable String datasourceType,
+                                 @PathVariable String datasourceName,
+                                 @RequestParam String parentPath,
+                                 MultipartFile[] files) throws BaseException {
         System.out.println(datasourceName);
         return new ResponseEntity();
     }

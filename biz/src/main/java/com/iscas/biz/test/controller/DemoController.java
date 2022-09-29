@@ -6,10 +6,10 @@ import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.common.web.tools.cookie.CookieUtils;
 import com.iscas.common.web.tools.json.JsonObject;
 import com.iscas.common.web.tools.json.JsonUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -22,27 +22,26 @@ import java.io.*;
 import java.util.Map;
 
 /**
- *
  * @author zhuquanwen
  * @version 1.0
  * @date 2019/7/3 8:25
  * @since jdk1.8
  */
 @RestController
-@Api(tags = "swagger示例")
+@Tag(name = "swagger示例")
 public class DemoController {
-    @ApiOperation(value="[测试/李爽] 测试测试哈哈", notes="create by:朱全文 2020-02-21")
+    @Operation(summary = "[测试/李爽] 测试测试哈哈", description = "create by:朱全文 2020-02-21")
     @GetMapping("/tx")
     public String tx() {
         CookieUtils.setCookie(SpringUtils.getResponse(), "mykey", "myvalue", 10000);
         System.out.println("tx");
-        return RandomStringUtils.randomStr(1024 *1024);
+        return RandomStringUtils.randomStr(1024 * 1024);
     }
 
-    @ApiOperation(value="[测试/李爽] 测试测试哈哈", notes="create by:朱全文 2020-02-21")
-    @ApiImplicitParams(
+    @Operation(summary = "[测试/李爽] 测试测试哈哈", description = "create by:朱全文 2020-02-21")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "map", value = "上传到数据", required = true, dataType = "TableSearchRequest")
+                    @Parameter(name = "map", description = "上传到数据", required = true)
             }
     )
     @PostMapping("/tx2")
@@ -56,6 +55,7 @@ public class DemoController {
         System.out.println(data);
         return "tx";
     }
+
     @DeleteMapping("/tx4")
     public String tx4(@RequestParam String key) {
         return "tx";
@@ -77,13 +77,13 @@ public class DemoController {
         response.setHeader(
                 "Content-disposition",
                 "attachment; filename="
-                        +"source.hdf");
+                        + "source.hdf");
         IoUtil.copy(is, response.getOutputStream());
     }
 
     @PostMapping("/tx7")
     public String tx6(MultipartFile file) throws IOException {
-       return "tx7";
+        return "tx7";
     }
 
     @GetMapping("/tx8")
@@ -130,8 +130,8 @@ public class DemoController {
     public String health() {
         JsonObject jsonObject = JsonUtils.createJsonObject();
         jsonObject.set("health", 1)
-                  .set("version","0.0.1")
-                  .set("cache_refresh", 1);
+                .set("version", "0.0.1")
+                .set("cache_refresh", 1);
         return jsonObject.toJson();
     }
 

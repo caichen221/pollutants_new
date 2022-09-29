@@ -10,13 +10,12 @@ import com.iscas.biz.flowable.service.IFlowDefinitionService;
 import com.iscas.biz.service.common.RoleService;
 import com.iscas.biz.service.common.UserService;
 import com.iscas.templet.common.ResponseEntity;
-import com.iscas.templet.exception.BaseRuntimeException;
 import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.table.TableResponse;
 import com.iscas.templet.view.table.TableResponseData;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +41,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @Slf4j
-@Api(tags = "流程定义")
+@Tag(name = "流程定义-FlowDefinitionController")
 @RestController
 @RequestMapping("/flowable/definition")
 @RequiredArgsConstructor
@@ -56,10 +55,10 @@ public class FlowDefinitionController {
     private final RoleService sysRoleService;
 
     @GetMapping(value = "/list")
-    @ApiOperation(value = "获取流程定义的列表")
-    public TableResponse list(@ApiParam(value = "当前页码", required = true) @RequestParam Integer pageNum,
-                              @ApiParam(value = "每页条数", required = true) @RequestParam Integer pageSize,
-                              @ApiParam(value = "流程名称") @RequestParam(required = false) String name) {
+    @Operation(summary = "获取流程定义的列表")
+    public TableResponse list(@Parameter(name = "当前页码", required = true) @RequestParam Integer pageNum,
+                              @Parameter(name = "每页条数", required = true) @RequestParam Integer pageSize,
+                              @Parameter(name = "流程名称") @RequestParam(required = false) String name) {
         Page<FlowProcDefDto> page = flowDefinitionService.list(name, pageNum, pageSize);
         TableResponseData<FlowProcDefDto> tableResponseData = new TableResponseData<>();
         tableResponseData.setRows(page.getTotal());
@@ -70,10 +69,10 @@ public class FlowDefinitionController {
     }
 
 
-    @ApiOperation(value = "导入流程文件", notes = "上传bpmn20的xml文件")
+    @Operation(summary = "导入流程文件", description = "上传bpmn20的xml文件")
     @PostMapping("/import")
-    public ResponseEntity importFile(@ApiParam(value = "流程名称", required = true) @RequestParam(required = false) String name,
-                                     @ApiParam(value = "流程分类", required = true) @RequestParam(required = false) String category,
+    public ResponseEntity importFile(@Parameter(name = "流程名称", required = true) @RequestParam(required = false) String name,
+                                     @Parameter(name = "流程分类", required = true) @RequestParam(required = false) String category,
                                      MultipartFile file) {
         try (InputStream in = file.getInputStream()) {
             flowDefinitionService.importFile(name, category, in);
@@ -83,9 +82,9 @@ public class FlowDefinitionController {
         }
     }
 
-    @ApiOperation(value = "读取xml文件")
+    @Operation(summary = "读取xml文件")
     @GetMapping("/readXml/{deployId}")
-    public ResponseEntity readXml(@ApiParam(value = "deployId") @PathVariable(value = "deployId") String deployId) {
+    public ResponseEntity readXml(@Parameter(name = "deployId") @PathVariable(value = "deployId") String deployId) {
         try {
             return flowDefinitionService.readXml(deployId);
         } catch (Exception e) {
@@ -94,9 +93,9 @@ public class FlowDefinitionController {
 
     }
 
-    @ApiOperation(value = "读取图片文件")
+    @Operation(summary = "读取图片文件")
     @GetMapping("/readImage/{deployId}")
-    public void readImage(@ApiParam(value = "deployId") @PathVariable(value = "deployId") String deployId, HttpServletResponse response) {
+    public void readImage(@Parameter(name = "deployId") @PathVariable(value = "deployId") String deployId, HttpServletResponse response) {
         OutputStream os;
         BufferedImage image;
         try {
@@ -113,7 +112,7 @@ public class FlowDefinitionController {
     }
 
 
-    @ApiOperation(value = "保存流程设计器内的xml文件")
+    @Operation(summary = "保存流程设计器内的xml文件")
     @PostMapping("/save")
     public ResponseEntity save(@RequestBody FlowSaveXmlVo vo) {
         try (InputStream in = new ByteArrayInputStream(vo.getXml().getBytes(StandardCharsets.UTF_8))) {
@@ -125,37 +124,37 @@ public class FlowDefinitionController {
     }
 
 
-    @ApiOperation(value = "根据流程定义id启动流程实例")
+    @Operation(summary = "根据流程定义id启动流程实例")
     @PostMapping("/start/{procDefId}")
-    public ResponseEntity start(@ApiParam(value = "流程定义id") @PathVariable(value = "procDefId") String procDefId,
-                                @ApiParam(value = "变量集合,json对象") @RequestBody Map<String, Object> variables) {
+    public ResponseEntity start(@Parameter(name = "流程定义id") @PathVariable(value = "procDefId") String procDefId,
+                                @Parameter(name = "变量集合,json对象") @RequestBody Map<String, Object> variables) {
         // 在用户发起流程时调用此接口
         return flowDefinitionService.startProcessInstanceById(procDefId, variables);
     }
 
-    @ApiOperation(value = "激活或挂起流程定义")
+    @Operation(summary = "激活或挂起流程定义")
     @PutMapping(value = "/updateState")
-    public ResponseEntity updateState(@ApiParam(value = "1:激活,2:挂起", required = true) @RequestParam Integer state,
-                                      @ApiParam(value = "流程部署ID", required = true) @RequestParam String deployId) {
+    public ResponseEntity updateState(@Parameter(name = "1:激活,2:挂起", required = true) @RequestParam Integer state,
+                                      @Parameter(name = "流程部署ID", required = true) @RequestParam String deployId) {
         flowDefinitionService.updateState(state, deployId);
         return new ResponseEntity();
     }
 
-    @ApiOperation(value = "删除流程")
+    @Operation(summary = "删除流程")
     @DeleteMapping(value = "/delete")
-    public ResponseEntity delete(@ApiParam(value = "流程部署ID", required = true) @RequestParam String deployId) {
+    public ResponseEntity delete(@Parameter(name = "流程部署ID", required = true) @RequestParam String deployId) {
         flowDefinitionService.delete(deployId);
         return new ResponseEntity<>();
     }
 
-    @ApiOperation(value = "指定流程办理人员列表")
+    @Operation(summary = "指定流程办理人员列表")
     @GetMapping("/userList")
     public ResponseEntity userList() {
         List<User> list = userService.list();
         return new ResponseEntity().setValue(list);
     }
 
-    @ApiOperation(value = "指定流程办理组列表")
+    @Operation(summary = "指定流程办理组列表")
     @GetMapping("/roleList")
     public ResponseEntity roleList() {
         List<Role> list = sysRoleService.list();

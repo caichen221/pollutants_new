@@ -4,9 +4,8 @@ import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
-import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.Exceptions;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.undertow.server.handlers.form.MultiPartParserDefinition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @SuppressWarnings({"unused", "rawtypes"})
 @RestController
-@Api(tags = "全局异常处理")
+@Tag(name = "全局异常处理")
 public class ErrorPageController {
     @Value("${spring.servlet.multipart.max-file-size:10485760000}")
     private String maxFileSize;
@@ -64,10 +63,10 @@ public class ErrorPageController {
 
     @RequestMapping(value = "/500", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity to500() throws Exception {
+    public ResponseEntity to500() throws Throwable {
         AuthContextHolder.removeContext();
         HttpServletRequest request = SpringUtils.getRequest();
-        Object attribute = request.getAttribute("javax.servlet.error.exception");
+        Object attribute = request.getAttribute("jakarta.servlet.error.exception");
         //如果是文件太大了异常 抛处错误给前台
         if (attribute instanceof IllegalStateException) {
             IllegalStateException exception = (IllegalStateException) attribute;
@@ -79,7 +78,7 @@ public class ErrorPageController {
         } else if (attribute instanceof AuthenticationRuntimeException) {
             throw (AuthenticationRuntimeException) attribute;
         }
-        throw (Exception) attribute;
+        throw (Throwable) attribute;
     }
 
 }

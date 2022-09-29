@@ -2,8 +2,8 @@ package com.iscas.biz.controller.common.auth;
 
 
 import com.iscas.base.biz.aop.auth.SkipAuthentication;
-import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.autoconfigure.auth.TokenProps;
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.common.AuthCacheService;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -11,10 +11,10 @@ import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.common.tools.core.random.RandomStringUtils;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +37,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"rawtypes", "unused", "unchecked"})
 @RestController
-@Api(tags = "登陆控制器")
+@Tag(name = "登陆控制器-LoginController")
 @SkipAuthentication
 @Validated
 @ConditionalOnMybatis
@@ -52,7 +52,7 @@ public class LoginController extends BaseController implements Constants {
     private final AuthCacheService authCacheService;
 
 
-    @ApiOperation(value="[登录控制器]用户登出", notes="create by:朱全文 2020-02-21")
+    @Operation(summary="[登录控制器]用户登出", description="create by:朱全文 2020-02-21")
     @GetMapping(value = "/logout", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity logout(HttpServletRequest request){
         ResponseEntity responseEntity = new ResponseEntity(200, "注销成功");
@@ -61,7 +61,7 @@ public class LoginController extends BaseController implements Constants {
         return responseEntity;
     }
 
-    @ApiOperation(value="[登录控制器]登录前置", notes="create by:朱全文 2020-02-21")
+    @Operation(summary="[登录控制器]登录前置", description="create by:朱全文 2020-02-21")
     @GetMapping(value = "/prelogin", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Map> preLogin(){
         ResponseEntity<Map> responseEntity = new ResponseEntity<>();
@@ -71,12 +71,9 @@ public class LoginController extends BaseController implements Constants {
         return responseEntity;
     }
 
-    @ApiOperation(value="[登录控制器]登录", notes="create by:朱全文 2020-02-21")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "user", value = "用户名密码等信息", required = true, dataType = "Map")
-            }
-    )
+    @Operation(summary="[登录控制器]登录", description="create by:朱全文 2020-02-21")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "用户名密码等信息",
+            content = @Content(examples = @ExampleObject(value = "{\"username\":\"zhangsan\", \"password\":\"iscas123\", \"key\":\"dewetwet\"}")))
     @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity login(HttpServletResponse response, @RequestBody @LoginConstraint Map<String,String> user) throws Exception {
         ResponseEntity responseEntity = new ResponseEntity();

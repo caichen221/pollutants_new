@@ -6,10 +6,10 @@ import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.view.tree.TreeResponse;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ import java.io.IOException;
  * @since jdk1.8
  */
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
-@Api(tags = "系统日志")
+@Tag(name = "系统日志-SystemLogController")
 @RestController
 @RequestMapping("/system/log")
 @Validated
@@ -40,16 +40,16 @@ public class SystemLogController extends BaseController {
     }
 
     @GetMapping("/tree")
-    @ApiOperation(value="获取日志树-create by zqw 2021-02-25")
+    @Operation(summary="获取日志树-create by zqw 2021-02-25")
     public TreeResponse getTree() throws BaseException {
         return systemLogService.getTree();
     }
 
-    @ApiOperation(value="获取日志-create by zqw 2021-02-25")
-    @ApiImplicitParams(
+    @Operation(summary="获取日志-create by zqw 2021-02-25")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "filePath", value = "日志文件路径，在树上可以获取", required = true, dataType = "String"),
-                    @ApiImplicitParam(name = "lines", value = "行数", required = true, dataType = "Integer")
+                    @Parameter(name = "filePath", description = "日志文件路径，在树上可以获取", required = true),
+                    @Parameter(name = "lines", description = "行数", required = true)
             }
     )
     @GetMapping("/view")

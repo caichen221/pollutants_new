@@ -8,10 +8,11 @@ import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.view.tree.TreeResponse;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,7 +27,7 @@ import java.util.List;
  * @since jdk1.8
  */
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
-@Api(tags = "菜单管理")
+@Tag(name = "菜单管理-MenuController")
 @RestController
 @RequestMapping("/menu")
 @ConditionalOnMybatis
@@ -37,40 +38,28 @@ public class MenuController extends BaseController {
         this.menuService = menuService;
     }
 
-    @ApiOperation(value = "[菜单管理]获取菜单树-2021-02-22", notes = "create by:朱全文")
+    @Operation(summary = "[菜单管理]获取菜单树-2021-02-22", description = "create by:朱全文")
     @GetMapping
     public TreeResponse get() throws BaseException {
         return getTreeResponse().setValue(menuService.getTree());
     }
 
-    @ApiOperation(value = "[菜单管理]新增组织机构节点-2021-02-22", notes = "create by:朱全文")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "menu", value = "菜单数据", required = true, dataType = "Menu")
-            }
-    )
+    @Operation(summary = "[菜单管理]新增组织机构节点-2021-02-22", description = "create by:朱全文")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "菜单数据", content = @Content(schema = @Schema(implementation = Menu.class)))
     @PostMapping("/node")
     public ResponseEntity addNode(@Valid @RequestBody Menu menu) throws BaseException {
         return getResponse().setValue(menuService.addMenu(menu));
     }
 
-    @ApiOperation(value = "[菜单管理]修改菜单节点-2021-02-22", notes = "create by:朱全文")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "menu", value = "菜单数据", required = true, dataType = "Menu")
-            }
-    )
+    @Operation(summary = "[菜单管理]修改菜单节点-2021-02-22", description = "create by:朱全文")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "菜单数据", content = @Content(schema = @Schema(implementation = Menu.class)))
     @PutMapping("/node")
     public ResponseEntity editNode(@Valid @RequestBody Menu menu) {
         return getResponse().setValue(menuService.editMenu(menu));
     }
 
-    @ApiOperation(value = "[菜单管理]删除菜单节点-2021-02-22", notes = "create by:朱全文")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "menuIds", value = "菜单Ids", required = true, dataType = "List")
-            }
-    )
+    @Operation(summary = "[菜单管理]删除菜单节点-2021-02-22", description = "create by:朱全文")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "菜单数据", content = @Content(examples = @ExampleObject(value = "[123, 124]")))
     @PostMapping("/node/del")
     public ResponseEntity deleteNode(@RequestBody List<Integer> menuIds) {
         AssertCollectionUtils.assertCollectionNotEmpty(menuIds, "menuIds不能未空");

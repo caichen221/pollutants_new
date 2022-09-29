@@ -15,10 +15,13 @@ import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableSearchRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
@@ -37,7 +40,7 @@ import java.util.Map;
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/param")
-@Api(tags = "参数管理")
+@Tag(name = "参数管理-ParamController")
 @ConditionalOnMybatis
 public class ParamController extends BaseController {
 
@@ -48,30 +51,22 @@ public class ParamController extends BaseController {
     @Autowired
     private ParamService paramService;
 
-    @ApiOperation(value = "获取表头", notes = "不带数据，带下拉列表")
+    @Operation(summary = "获取表头", description = "不带数据，带下拉列表")
     @GetMapping(value = "/getHeader", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
         return tableDefinitionService.getHeaderWithOption(TABLE_IDENTITY);
     }
 
-    @ApiOperation(value = "查询表格数据", notes = "不带表头")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "request", value = "查询条件", required = true, dataType = "TableSearchRequest")
-            }
-    )
+    @Operation(summary = "查询表格数据", description = "不带表头")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "查询条件", content = @Content(schema = @Schema(implementation = TableSearchRequest.class)))
     @PostMapping(value = "/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
         return tableDefinitionService.getData(TABLE_IDENTITY, request, null);
     }
 
-    @ApiOperation(value = "删除参数数据", notes = "根据主键删除数据")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "ids", value = "id的集合", required = true, dataType = "List")
-            }
-    )
+    @Operation(summary = "删除参数数据", description = "根据主键删除数据")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "id的集合", content = @Content(examples = @ExampleObject(value = "[123,124]")))
     @PostMapping("/del")
     @LogRecord(type = LogType.SYSTEM, desc = "删除参数", operateType = OperateType.delete)
     public ResponseEntity deleteData(@RequestBody List<Object> ids) {
@@ -81,12 +76,8 @@ public class ParamController extends BaseController {
         return responseEntity;
     }
 
-    @ApiOperation(value = "新增参数数据", notes = "插入")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "data", value = "新增的数据", required = true, dataType = "Map")
-            }
-    )
+    @Operation(summary = "新增参数数据", description = "插入")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "新增的数据", content = @Content(examples = @ExampleObject(value = "{\"key1\":\"val1\"}")))
     @PostMapping("/data")
     @LogRecord(type = LogType.SYSTEM, desc = "新增参数", operateType = OperateType.add)
     public ResponseEntity saveData(@RequestBody Map<String, Object> data) throws ValidDataException {
@@ -94,12 +85,8 @@ public class ParamController extends BaseController {
         return tableDefinitionService.saveData(TABLE_IDENTITY, data, false, null, forceItem);
     }
 
-    @ApiOperation(value = "修改参数数据", notes = "更新")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "data", value = "修改的数据(未变动的数据也传)", required = true, dataType = "Map")
-            }
-    )
+    @Operation(summary = "修改参数数据", description = "更新")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "修改的数据(未变动的数据也传)", content = @Content(examples = @ExampleObject(value = "{\"key1\":\"val1\"}")))
     @PutMapping("/data")
     @CacheEvict(value = "param", key = "#data.get(\"param_key\")")
     @LogRecord(type = LogType.SYSTEM, desc = "修改参数", operateType = OperateType.update)
@@ -110,7 +97,7 @@ public class ParamController extends BaseController {
     }
 
     @GetMapping("/getParamValue/{key}")
-    @ApiOperation(value = "测试", notes = "getParamValue")
+    @Operation(summary = "测试", description = "getParamValue")
     public ResponseEntity getParamValue(@PathVariable String key) {
         ResponseEntity response = getResponse();
         String value = paramService.getParamValue(key);

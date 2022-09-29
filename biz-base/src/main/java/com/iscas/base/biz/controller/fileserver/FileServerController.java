@@ -5,10 +5,14 @@ import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.Exceptions;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +33,20 @@ import java.util.Map;
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/file")
-@Api(tags="文件上传")
+@Tag(name="文件上传-FileServerController")
 public class FileServerController extends BaseController {
     @Autowired
     private FileServerService fileServerService;
 
-    @ApiOperation(value="[文件服务/xxx]文件上传", notes="create by:朱全文 2019-09-25")
-    @ApiImplicitParams(
+    @Operation(summary="[文件服务/xxx]文件上传", description="create by:朱全文 2019-09-25")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "files", value = "上传的文件(RequestBody),支持多个文件，文件的key为file", required = true, dataType = "MultipartFile[]")
+                    @Parameter(name = "files", description = "上传的文件(RequestBody),支持多个文件，文件的key为file", required = true)
             }
     )
+    @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type="object"), schemaProperties={
+            @SchemaProperty(name = "files", schema = @Schema(type="string", format = "binary", description = "要上传的文件"))
+    }))
     @PostMapping("/upload")
     public ResponseEntity upload(@RequestParam("file") MultipartFile[] files) throws BaseException {
         ResponseEntity response = getResponse();
@@ -55,10 +62,10 @@ public class FileServerController extends BaseController {
         }
     }
 
-    @ApiOperation(value="[文件服务/xxx]文件下载", notes="create by:朱全文 2019-09-25")
-    @ApiImplicitParams(
+    @Operation(summary="[文件服务/xxx]文件下载", description="create by:朱全文 2019-09-25")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "path", value = "下载的文件路径(RequestParam)", required = true, dataType = "String")
+                    @Parameter(name = "path", description = "下载的文件路径(RequestParam)", required = true)
             }
     )
     @GetMapping("/download")

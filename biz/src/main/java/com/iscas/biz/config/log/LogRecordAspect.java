@@ -68,7 +68,7 @@ public class LogRecordAspect implements Constants {
         } catch (Exception e) {
             log.error("请求出错, error：{}", e.getMessage());
             desc.append("操作失败:");
-            return new Object();
+            throw e;
         } finally {
             try {
                 logInfo.setLogDesc(desc.append(logRecord.desc()).toString()).setRequestTookTime(System.currentTimeMillis() - start);

@@ -3,10 +3,10 @@ package com.iscas.biz.controller.common;
 import com.iscas.biz.service.common.VerificationCodeService;
 import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
 
+
 /**
- *
  * @author zhuquanwen
  * @version 1.0
  * @date 2020/8/17 20:49
@@ -26,7 +26,7 @@ import javax.validation.constraints.NotBlank;
  */
 @SuppressWarnings({"unused", "rawtypes"})
 @RestController
-@Api(tags = "验证码控制器")
+@Tag(name = "验证码控制器-VerificationCodeController")
 @Slf4j
 @ConditionalOnProperty(havingValue = "true", value = "kaptcha.enabled")
 @Validated
@@ -37,11 +37,11 @@ public class VerificationCodeController extends BaseController {
 
     /**
      * 获取验证码
-     * */
-    @ApiOperation(value="[验证码]获取验证码", notes="create by:朱全文 2020-02-21")
-    @ApiImplicitParams(
+     */
+    @Operation(summary = "[验证码]获取验证码", description = "create by:朱全文 2020-02-21")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "key", value = "加密码", required = true, dataType = "String")
+                    @Parameter(name = "key", description = "加密码", required = true)
             }
     )
     @GetMapping
@@ -51,12 +51,12 @@ public class VerificationCodeController extends BaseController {
 
     /**
      * 校验验证码
-     * */
-    @ApiOperation(value="[验证码] 校验验证码", notes="create by:朱全文 2020-02-21")
-    @ApiImplicitParams(
+     */
+    @Operation(summary = "[验证码] 校验验证码", description = "create by:朱全文 2020-02-21")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "code", value = "验证码", required = true, dataType = "String"),
-                    @ApiImplicitParam(name = "key", value = "加密码", required = true, dataType = "String")
+                    @Parameter(name = "code", description = "验证码", required = true),
+                    @Parameter(name = "key", description = "加密码", required = true)
             }
     )
     @GetMapping("/verify")

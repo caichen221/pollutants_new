@@ -1,7 +1,6 @@
 package com.iscas.biz.flowable.domain.vo;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,32 +14,32 @@ import java.util.Map;
  * @since jdk11
  */
 @Data
-@ApiModel("工作流任务相关--请求参数")
+@Schema(title = "工作流任务相关--请求参数")
 public class FlowTaskVo implements Serializable {
-    @ApiModelProperty("任务Id")
+    @Schema(title = "任务Id")
     private String taskId;
 
-    @ApiModelProperty("用户Id")
+    @Schema(title = "用户Id")
     private String userId;
 
-    @ApiModelProperty("任务意见")
+    @Schema(title = "任务意见")
     private String comment;
 
-    @ApiModelProperty("流程实例Id")
+    @Schema(title = "流程实例Id")
     private String instanceId;
 
-    @ApiModelProperty("节点")
+    @Schema(title = "节点")
     private String targetKey;
 
-    @ApiModelProperty("流程变量信息")
+    @Schema(title = "流程变量信息")
     private Map<String, Object> values;
 
-    @ApiModelProperty("审批人")
+    @Schema(title = "审批人")
     private String assignee;
 
-    @ApiModelProperty("候选人")
+    @Schema(title = "候选人")
     private List<String> candidateUsers;
 
-    @ApiModelProperty("审批组")
+    @Schema(title = "审批组")
     private List<String> candidateGroups;
 }

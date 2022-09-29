@@ -6,10 +6,14 @@ import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.Exceptions;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,24 +35,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/files")
 @RequiredArgsConstructor
-@Api(tags = "文件上传示例-支持断点续传")
+@Tag(name = "文件上传示例-支持断点续传-FragmentFileServerController")
 public class FragmentFileServerController extends BaseController {
     private final FileInfoService fileInfoService;
 
     @PostMapping("/upload")
-    @ApiOperation(value = "文件上传", notes = "文件上传")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "file", value = "上传的文件", required = true, dataType = "MultipartFile"),
-                    @ApiImplicitParam(name = "suffix", value = "文件后缀", required = true, dataType = "String"),
-                    @ApiImplicitParam(name = "shardIndex", value = "分片索引号", required = true, dataType = "Integer"),
-                    @ApiImplicitParam(name = "shardSize", value = "当前上传分片大小", required = true, dataType = "Integer"),
-                    @ApiImplicitParam(name = "shardTotal", value = "分片数目", required = true, dataType = "Integer"),
-                    @ApiImplicitParam(name = "size", value = "文件大小", required = true, dataType = "Integer"),
-                    @ApiImplicitParam(name = "key", value = "文件的key,MD5码：文件名 + 文件大小 + 文件类型 + 文件最后修改时间的MD5码", required = true, dataType = "String"),
-                    @ApiImplicitParam(name = "name", value = "文件名称", required = true, dataType = "String")
-            }
-    )
+    @Operation(summary = "文件上传", description = "文件上传")
+    @RequestBody(content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "object"), schemaProperties = {
+            @SchemaProperty(name = "file", schema = @Schema(type = "string", format = "binary", description = "上传的文件")),
+            @SchemaProperty(name = "suffix", schema = @Schema(type = "string", description = "文件后缀")),
+            @SchemaProperty(name = "shardIndex", schema = @Schema(type = "string", description = "分片索引号")),
+            @SchemaProperty(name = "shardSize", schema = @Schema(type = "string", description = "当前上传分片大小")),
+            @SchemaProperty(name = "shardTotal", schema = @Schema(type = "string", description = "分片数目")),
+            @SchemaProperty(name = "size", schema = @Schema(type = "string", description = "文件大小")),
+            @SchemaProperty(name = "key", schema = @Schema(type = "string", description = "文件的key,MD5码：文件名 + 文件大小 + 文件类型 + 文件最后修改时间的MD5码")),
+            @SchemaProperty(name = "name", schema = @Schema(type = "string", description = "文件名称"))
+    }))
     public ResponseEntity upload(MultipartFile file, String suffix, int shardIndex, int shardSize,
                                  int shardTotal, int size, String key, String name) throws BaseException {
         try {
@@ -60,10 +62,10 @@ public class FragmentFileServerController extends BaseController {
     }
 
     @PostMapping("/check")
-    @ApiOperation(value = "文件上传", notes = "文件上传")
-    @ApiImplicitParams(
+    @Operation(summary = "文件检测", description = "文件检测")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "key", value = "文件的key,MD5码：文件名 + 文件大小 + 文件类型 + 文件最后修改时间的MD5码", required = true, dataType = "String")
+                    @Parameter(name = "key", description = "文件的key,MD5码：文件名 + 文件大小 + 文件类型 + 文件最后修改时间的MD5码", required = true)
             }
     )
     public ResponseEntity check(String key) throws BaseException {

@@ -85,7 +85,7 @@ import java.io.OutputStream;
 //@EnableCheckReferer //是否校验referer，需配合配置文件内的域名白名单
 @RetrofitScan("com.iscas.biz.test.retrofit") //扫描retrofit的包
 @EnableQuartz // 允许quartz
-@EnableFlowable // 允许flowable工作流引擎
+//@EnableFlowable // 允许flowable工作流引擎
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
 

@@ -13,12 +13,14 @@ import com.iscas.templet.common.BaseController;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.BaseException;
+import com.iscas.templet.exception.BaseRuntimeException;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableSearchRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +38,7 @@ import java.util.Map;
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
 @RestController
 @RequestMapping("/dictData")
-@Api(tags = "字典管理")
+@Tag(name = "字典管理-DicDataController")
 @ConditionalOnMybatis
 public class DictDataController extends BaseController {
 
@@ -46,45 +48,36 @@ public class DictDataController extends BaseController {
     @Autowired
     private DictDataService dictDataService;
 
-    @ApiOperation(value = "获取表头", notes = "不带数据，带下拉列表")
+    @Operation(summary = "获取表头", description = "不带数据，带下拉列表")
     @GetMapping(value = "/getHeader", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
         return tableDefinitionService.getHeaderWithOption(TABLE_IDENTITY);
     }
 
-    @ApiOperation(value = "查询表格数据", notes = "不带表头")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "request", value = "查询条件", required = true, dataType = "TableSearchRequest")
-            }
-    )
+    @Operation(summary = "查询表格数据", description = "不带表头")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "查询条件",
+            content = @Content(schema = @Schema(implementation = TableSearchRequest.class)))
     @PostMapping(value = "/getData", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
         return tableDefinitionService.getData(TABLE_IDENTITY, request, null);
     }
 
-    @ApiOperation(value = "删除字典数据", notes = "根据主键删除数据")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "ids", value = "id的集合", required = true, dataType = "List")
-            }
-    )
+    @Operation(summary = "删除字典数据", description = "根据主键删除数据")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "id的集合",
+            content = @Content(examples = @ExampleObject(value = "[123, 124]")))
     @PostMapping("/del")
     @LogRecord(type = LogType.SYSTEM, desc = "删除字典数据", operateType = OperateType.delete)
-    public ResponseEntity deleteData(@RequestBody List<Object> ids) {
+    public ResponseEntity deleteData(@RequestBody List<Object> ids) throws BaseException {
         ResponseEntity responseEntity = getResponse();
         boolean ret = dictDataService.deleteByIds(ids);
         responseEntity.setValue(ret);
         return responseEntity;
     }
 
-    @ApiOperation(value = "新增字典数据", notes = "插入")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "data", value = "新增的数据", required = true, dataType = "Map")
-            }
-    )
+    @Operation(summary = "新增字典数据", description = "插入")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "新增的数据",
+            content = @Content(examples = @ExampleObject(value = "{\"key\":\"val\"}")))
     @PostMapping("/data")
     @LogRecord(type = LogType.SYSTEM, desc = "新增字典数据", operateType = OperateType.add)
     public ResponseEntity saveData(@RequestBody Map<String, Object> data) throws ValidDataException {
@@ -92,12 +85,9 @@ public class DictDataController extends BaseController {
         return tableDefinitionService.saveData(TABLE_IDENTITY, data, false, null, forceItem);
     }
 
-    @ApiOperation(value = "修改字典数据", notes = "更新")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "data", value = "修改的数据(未变动的数据也传)", required = true, dataType = "Map")
-            }
-    )
+    @Operation(summary = "修改字典数据", description = "更新")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "修改的数据(未变动的数据也传)",
+            content = @Content(examples = @ExampleObject(value = "{\"key\":\"val\"}")))
     @PutMapping("/data")
     @LogRecord(type = LogType.SYSTEM, desc = "修改字典数据", operateType = OperateType.update)
     public ResponseEntity editData(@RequestBody Map<String, Object> data)

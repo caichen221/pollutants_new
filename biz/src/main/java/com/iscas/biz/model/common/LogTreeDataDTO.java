@@ -1,7 +1,6 @@
 package com.iscas.biz.model.common;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,12 +14,12 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel("日志树的属性")
+@Schema(title = "日志树的属性")
 public class LogTreeDataDTO {
-    @ApiModelProperty("是否为文件，false代表是文件夹")
+    @Schema(title = "是否为文件，false代表是文件夹")
     private boolean isFile;
-    @ApiModelProperty("文件路径")
+    @Schema(title = "文件路径")
     private String filePath;
-    @ApiModelProperty("文件名")
+    @Schema(title = "文件名")
     private String fileName;
 }

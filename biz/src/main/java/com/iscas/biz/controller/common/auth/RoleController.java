@@ -12,10 +12,14 @@ import com.iscas.templet.exception.BaseException;
 import com.iscas.templet.exception.ValidDataException;
 import com.iscas.templet.view.table.TableSearchRequest;
 import com.iscas.templet.view.tree.TreeResponseData;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.MediaType;
@@ -35,7 +39,7 @@ import java.util.Map;
  * @since jdk1.8
  */
 @SuppressWarnings({"unused", "rawtypes", "unchecked"})
-@Api(tags = "角色管理")
+@Tag(name = "角色管理-RoleController")
 @RestController
 @RequestMapping("/role")
 @Validated
@@ -51,28 +55,25 @@ public class RoleController extends BaseController {
     }
 
     @SkipAuthentication
-    @ApiOperation(value="获取表头", notes="不带数据，带下拉列表")
+    @Operation(summary = "获取表头", description = "不带数据，带下拉列表")
     @GetMapping(value = "/header", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getTableHeaderWithOption() throws BaseException {
         return tableDefinitionService.getHeaderWithOption(tableIdentity);
     }
 
-    @ApiOperation(value="查询角色数据", notes="查询角色数据，提交TableSearchRequest")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "request", value = "查询条件", required = true, dataType = "TableSearchRequest")
-            }
-    )
+    @Operation(summary = "查询角色数据", description = "查询角色数据，提交TableSearchRequest")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "查询条件",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TableSearchRequest.class)))
     @PostMapping
     public ResponseEntity getData(@RequestBody TableSearchRequest request)
             throws ValidDataException {
         return tableDefinitionService.getData(tableIdentity, request, null);
     }
 
-    @ApiOperation(value="获取角色的菜单树", notes="获取角色的菜单树")
-    @ApiImplicitParams(
+    @Operation(summary = "获取角色的菜单树", description = "获取角色的菜单树")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+                    @Parameter(name = "roleId", description = "角色id", required = true)
             }
     )
     @GetMapping("/menu/tree")
@@ -81,28 +82,29 @@ public class RoleController extends BaseController {
     }
 
 
-    @ApiOperation(value="修改角色的菜单树", notes="修改角色的菜单树")
-    @ApiImplicitParams(
+    @Operation(summary = "修改角色的菜单树", description = "修改角色的菜单树")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "treeResponseData", value = "角色菜单树", required = true, dataType = "TreeResponseData"),
-                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+                    @Parameter(name = "roleId", description = "角色id", required = true)
             }
     )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "修改的树结构值",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TreeResponseData.class)))
     @PutMapping("/menu/tree")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
+    public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, @RequestParam @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         roleService.updateMenuTree(treeResponseData, roleId);
         return getResponse();
     }
 
-    @ApiOperation(value="获取角色对应的操作权限", notes="获取角色对应的操作权限")
-    @ApiImplicitParams(
+    @Operation(summary = "获取角色对应的操作权限", description = "获取角色对应的操作权限")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+                    @Parameter(name = "roleId", description = "角色id", required = true)
             }
     )
     @GetMapping("/opration")
@@ -110,30 +112,29 @@ public class RoleController extends BaseController {
         return getResponse().setValue(roleService.getOprations(roleId));
     }
 
-    @ApiOperation(value="修改角色对应的操作权限", notes="修改角色对应的操作权限")
-    @ApiImplicitParams(
+    @Operation(summary = "修改角色对应的操作权限", description = "修改角色对应的操作权限")
+    @Parameters(
             {
-                    @ApiImplicitParam(name = "oprations", value = "操作权限", required = true, dataType = "List"),
-                    @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+                    @Parameter(name = "roleId", description = "角色id", required = true)
             }
     )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "操作权限", content = @Content(mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = Opration.class))))
     @PutMapping("/opration")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
+    public ResponseEntity editOpration(@RequestBody List<Opration> oprations, @RequestParam @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         roleService.editOpration(oprations, roleId);
         return getResponse();
     }
 
-    @ApiOperation(value="删除角色数据", notes="根据主键删除数据")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "ids", value = "id的集合", required = true, dataType = "List")
-            }
-    )
+    @Operation(summary = "删除角色数据", description = "根据主键删除数据")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "id的集合", content = @Content(mediaType = "application/json", examples = {
+            @ExampleObject(value = "[123, 124]")
+    }))
     @PostMapping("/del")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
@@ -145,36 +146,30 @@ public class RoleController extends BaseController {
         return tableDefinitionService.batchDeleteData(tableIdentity, ids);
     }
 
-    @ApiOperation(value="新增角色数据", notes="插入")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "data", value = "新增的数据", required = true, paramType = "body", dataTypeClass = Map.class)
-            }
-    )
+    @Operation(summary = "新增角色数据", description = "插入")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "新增的数据", content = @Content(mediaType = "application/json",
+            examples = @ExampleObject(value = "{\"key1\":\"val1\", \"key2\":\"val2\"}")))
     @PostMapping("/data")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity saveData(@RequestBody @RoleConstraint Map<String,Object> data)
+    public ResponseEntity saveData(@RequestBody @RoleConstraint Map<String, Object> data)
             throws ValidDataException {
         return tableDefinitionService.saveData(tableIdentity, data, false);
     }
 
-    @ApiOperation(value="修改角色数据", notes="更新")
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "data", value = "修改的数据(未变动的数据也传)", required = true, dataType = "Map")
-            }
-    )
+    @Operation(summary = "修改角色数据", description = "更新")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "修改的数据", content = @Content(mediaType = "application/json",
+            examples = @ExampleObject(value = "{\"key1\":\"val1\", \"key2\":\"val2\"}")))
     @PutMapping("/data")
     @Caching(evict = {
             @CacheEvict(value = "auth", key = "'url_map'"),
             @CacheEvict(value = "auth", key = "'menus'"),
             @CacheEvict(value = "auth", key = "'role_map'")
     })
-    public ResponseEntity editData(@RequestBody @RoleConstraint Map<String,Object> data)
+    public ResponseEntity editData(@RequestBody @RoleConstraint Map<String, Object> data)
             throws ValidDataException {
         return tableDefinitionService.saveData(tableIdentity, data, false, null, null);
     }

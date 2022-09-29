@@ -4,9 +4,11 @@ import com.iscas.biz.flowable.condition.ConditionalOnFlowable;
 import com.iscas.biz.flowable.domain.vo.FlowTaskVo;
 import com.iscas.biz.flowable.service.IFlowInstanceService;
 import com.iscas.templet.common.ResponseEntity;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ import java.util.Map;
  */
 @SuppressWarnings({"rawtypes", "unused"})
 @Slf4j
-@Api(tags = "工作流流程实例管理")
+@Tag(name = "工作流流程实例管理-FlowInstanceController")
 @RestController
 @RequestMapping("/flowable/instance")
 @RequiredArgsConstructor
@@ -30,34 +32,35 @@ import java.util.Map;
 public class FlowInstanceController {
     private final IFlowInstanceService flowInstanceService;
 
-    @ApiOperation(value = "根据流程定义id启动流程实例")
+    @Operation(summary = "根据流程定义id启动流程实例")
     @PostMapping("/startBy/{procDefId}")
-    public ResponseEntity startById(@ApiParam(value = "流程定义id") @PathVariable(value = "procDefId") String procDefId,
-                                    @ApiParam(value = "变量集合,json对象") @RequestBody Map<String, Object> variables) {
+    public ResponseEntity startById(@Parameter(name = "流程定义id") @PathVariable(value = "procDefId") String procDefId,
+                                    @Parameter(name = "变量集合,json对象") @RequestBody Map<String, Object> variables) {
         return flowInstanceService.startProcessInstanceById(procDefId, variables);
 
     }
 
 
-    @ApiOperation(value = "激活或挂起流程实例")
+    @Operation(summary = "激活或挂起流程实例")
     @PostMapping(value = "/updateState")
-    public ResponseEntity updateState(@ApiParam(value = "1:激活,2:挂起", required = true) @RequestParam Integer state,
-                                  @ApiParam(value = "流程实例ID", required = true) @RequestParam String instanceId) {
+    public ResponseEntity updateState(@Parameter(name = "1:激活,2:挂起", required = true) @RequestParam Integer state,
+                                  @Parameter(name = "流程实例ID", required = true) @RequestParam String instanceId) {
         flowInstanceService.updateState(state,instanceId);
         return new ResponseEntity();
     }
 
-    @ApiOperation("结束流程实例")
+    @Operation(summary = "结束流程实例")
     @PostMapping(value = "/stopProcessInstance")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(schema = @Schema(implementation = FlowTaskVo.class)))
     public ResponseEntity stopProcessInstance(@RequestBody FlowTaskVo flowTaskVo) {
         flowInstanceService.stopProcessInstance(flowTaskVo);
         return new ResponseEntity();
     }
 
-    @ApiOperation(value = "删除流程实例")
+    @Operation(summary = "删除流程实例")
     @DeleteMapping(value = "/delete")
-    public ResponseEntity delete(@ApiParam(value = "流程实例ID", required = true) @RequestParam String instanceId,
-                             @ApiParam(value = "删除原因") @RequestParam(required = false) String deleteReason) {
+    public ResponseEntity delete(@Parameter(name = "流程实例ID", required = true) @RequestParam String instanceId,
+                             @Parameter(name = "删除原因") @RequestParam(required = false) String deleteReason) {
         flowInstanceService.delete(instanceId,deleteReason);
         return new ResponseEntity();
     }

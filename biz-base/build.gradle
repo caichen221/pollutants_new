@@ -127,9 +127,12 @@ dependencies {
     api group: 'io.github.openfeign.form', name: 'feign-form', version: "${feignFormVersion}"
 
     //knife4j,替代swagger
-    api "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
+//    api "com.github.xiaoymin:knife4j-spring-boot-starter:${knife4jVersion}"
+//
+//    api group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
 
-    api group: 'io.springfox', name: 'springfox-boot-starter', version:"${swaggerVersion}"
+    api group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.11'
+
 
     api group: 'org.springframework.retry', name: 'spring-retry'
 
