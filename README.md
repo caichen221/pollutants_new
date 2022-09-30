@@ -10,6 +10,19 @@
 版本更新日志
 ===================================================
 
+- 2.1.3-20220929-1
+
+  - 1、添加Exceptions工具类，简化一些抛异常的写法
+  - 2、优化common-docker-tools、common-etcd-tools、common-k8s-tools、common-redis-tools、common-rpc-tools模块代码
+  - 3、添加common-aspose-tools 模块丰富word操作
+  - 4、移动admin-server、biz-ssh-server到special下
+  - 5、添加datasong-connect-java模块
+  - 6、修复showdjar依赖每次都要重新下载的问题
+  - 7、升级springboot版本至2.7.4
+  - 8、修改@EnableAuth不开启但InitUserRoleFilter还会执行的BUG
+  - 9、使用springdoc替换springfox，解决swagger不更新导致与springboot不兼容的问题，删除knife4j的依赖
+-----------------------------------------------
+
 - 2.1.2-20220704-1
 
   - 1、添加TreeHelper、ComboboxHelper工具类
