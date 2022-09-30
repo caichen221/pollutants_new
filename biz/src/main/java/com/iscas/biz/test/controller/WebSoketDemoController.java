@@ -6,23 +6,20 @@ import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.service.common.WsService;
 import com.iscas.templet.common.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import okio.ByteString;
-import org.apache.poi.ss.formula.functions.T;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.*;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Map;
@@ -42,6 +39,21 @@ public class WebSoketDemoController {
     private SimpUserRegistry userRegistry;
     @Autowired
     private WsService wsService;
+
+
+    @SubscribeMapping("/topic/getResponse")
+    public WsData<String> sub() {
+        WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, "test",
+                false, "服务端收到了订阅");
+        return wsData;
+    }
+
+    @SubscribeMapping("/queue/message")
+    public WsData<String> sub2() {
+        WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, "test",
+                false, "服务端收到了订阅");
+        return wsData;
+    }
 
 
     /**

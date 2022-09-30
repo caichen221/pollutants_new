@@ -68,6 +68,8 @@ public class UserInterceptor implements ChannelInterceptor {
 
         } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
 
+        } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+
         }
 
         return message;
