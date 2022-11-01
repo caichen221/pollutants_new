@@ -33,6 +33,4 @@ public class SpringDocConfig {
                 .build();
     }
 
-
-
 }
