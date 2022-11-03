@@ -367,6 +367,10 @@
             <AppenderRef ref="consoleAppender"/>
         </AsyncLogger>
 
+        <AsyncLogger name="org.apache.http.impl.execchain.RetryExec" level="error" includeLocation="true" additivity="false">
+            <AppenderRef ref="errorFileAppender"/>
+        </AsyncLogger>
+
         <AsyncLogger name="accessLogger" level="debug" includeLocation="true" additivity="false">
             <AppenderRef ref="accessAppender"/>
             <AppenderRef ref="consoleAppender"/>
