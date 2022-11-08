@@ -68,4 +68,67 @@ public class CsvUtilsTests {
         CsvUtils.writeCsv(osw, ' ', csvResult, true);
         return file;
     }
+
+    @Test
+    public void testWriteUseEntity() throws IOException {
+        File file = writeCsvUseEntity();
+        file.delete();
+    }
+
+    private File writeCsvUseEntity() throws IOException {
+        CsvUtils.CsvResult<TestModel> csvResult = new CsvUtils.CsvResult<>();
+        LinkedHashMap<String, String> header = new LinkedHashMap<>();
+        header.put("a", "欸");
+        header.put("b", "必");
+        header.put("c", "西");
+
+        TestModel testModel1 = new TestModel();
+        testModel1.setA("hahaha");
+        testModel1.setB("lalala");
+        testModel1.setC("哈哈哈");
+
+        TestModel testModel2 = new TestModel();
+        testModel2.setA("一年又一年");
+        testModel2.setB("啦啦啦啦");
+        testModel2.setC("测试测试");
+
+        csvResult.setHeader(header);
+        csvResult.setContent(List.of(testModel1, testModel2));
+        File file = File.createTempFile("test", ".csv");
+        file.deleteOnExit();
+        @Cleanup FileOutputStream fileOutputStream = new FileOutputStream(file);
+        @Cleanup OutputStreamWriter osw = new OutputStreamWriter(fileOutputStream);
+        CsvUtils.writeCsv(osw, ' ', csvResult, true);
+        return file;
+    }
+
+    private static class TestModel {
+        private String a;
+        private String b;
+        private String c;
+
+        public String getA() {
+            return a;
+        }
+
+        public void setA(String a) {
+            this.a = a;
+        }
+
+        public String getB() {
+            return b;
+        }
+
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        public String getC() {
+            return c;
+        }
+
+        public void setC(String c) {
+            this.c = c;
+        }
+    }
 }

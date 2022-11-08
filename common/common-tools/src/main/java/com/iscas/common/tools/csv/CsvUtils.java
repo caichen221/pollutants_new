@@ -131,7 +131,7 @@ public class CsvUtils {
                                             throw new RuntimeException("获取java对象数据的值出错", e);
                                         }
                                     });
-                                    o = methodHandle.invoke(t.getClass());
+                                    o = methodHandle.invoke(t);
                                 } catch (Throwable e) {
                                     throw new RuntimeException("获取java对象数据的值出错", e);
                                 }
