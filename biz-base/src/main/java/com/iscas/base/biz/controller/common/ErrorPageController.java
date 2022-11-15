@@ -66,7 +66,7 @@ public class ErrorPageController {
     public ResponseEntity to500() throws Throwable {
         AuthContextHolder.removeContext();
         HttpServletRequest request = SpringUtils.getRequest();
-        Object attribute = request.getAttribute("jakarta.servlet.error.exception");
+        Object attribute = request.getAttribute("javax.servlet.error.exception");
         //如果是文件太大了异常 抛处错误给前台
         if (attribute instanceof IllegalStateException) {
             IllegalStateException exception = (IllegalStateException) attribute;
