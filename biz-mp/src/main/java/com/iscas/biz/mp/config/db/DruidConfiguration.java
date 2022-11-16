@@ -150,7 +150,6 @@ public class DruidConfiguration implements EnvironmentAware {
                             runSchema(dataSource, value, dbName);
                         }
                     }
-
                 }
             }
         }
