@@ -10,6 +10,18 @@
 版本更新日志
 ===================================================
 
+- 2.1.3-20221116-1
+
+  - 1、添加SpringDoc配置
+  - 2、解决ErrorPageController误引用了jakarta导致异常信息无法正确提示的BUG
+  - 3、修改CsvUtils中的BUG
+  - 4、修改TableDefinitionService中的BUG
+  - 5、修复MybatisGeneralUtils中的BUG
+  - 6、解决引入了多个datasong-client-0.2.4.jar导致无法争取打jar包的BUG
+  - 7、升级springboot版本至2.7.5
+  - 8、添加DatasourceRegistryUtils工具类实现数据源的动态添加与移除
+-----------------------------------------------
+
 - 2.1.3-20220929-1
 
   - 1、添加Exceptions工具类，简化一些抛异常的写法
