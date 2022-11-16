@@ -164,7 +164,8 @@ public class TableDefinitionService {
             tableField.setAddable(columnDefinition.isAddable());
             tableField.setEditable(columnDefinition.isEditable());
             //字段转为驼峰
-            tableField.setField(StringRaiseUtils.convertToHump(columnDefinition.getField()));
+//            tableField.setField(StringRaiseUtils.convertToHump(columnDefinition.getField()));
+            tableField.setField(columnDefinition.getField());
             tableField.setHeader(columnDefinition.getHeader());
             tableField.setHidden(columnDefinition.isHidden());
             tableField.setLink(columnDefinition.isLink());

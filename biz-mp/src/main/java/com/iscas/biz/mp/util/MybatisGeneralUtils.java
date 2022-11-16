@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * mybatis工具类
  * 可以自定义sessionfactory,
  * 为了连接非配置文件内的数据库，
- * 适用于数据归并或抽取时
  * @author zhuquanwen
  * @version 1.0
  * @date 2019/12/10 0010 下午 15:48
