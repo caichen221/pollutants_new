@@ -58,7 +58,7 @@ public class MybatisGeneralUtils {
         try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
             Map result;
-            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.selectOneBySql";
             result = sqlSession.selectOne(method, sqlMap);
             sqlSession.commit();
             return result;
@@ -69,7 +69,7 @@ public class MybatisGeneralUtils {
         try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
             List<Map> result;
-            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicSelect";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.selectBySql";
             result = sqlSession.selectList(method, sqlMap);
             sqlSession.commit();
             return result;
@@ -79,7 +79,7 @@ public class MybatisGeneralUtils {
     public static void executeInsert(SqlSessionFactory sessionFactory, String sql) {
         try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
-            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicInsert";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.insertBySql";
             sqlSession.insert(method, sqlMap);
             sqlSession.commit();
         }
@@ -88,7 +88,7 @@ public class MybatisGeneralUtils {
     public static void executeUpdate(SqlSessionFactory sessionFactory, String sql) {
         try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
-            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicUpdate";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.updateBySql";
             sqlSession.update(method, sqlMap);
             sqlSession.commit();
         }
@@ -97,7 +97,7 @@ public class MybatisGeneralUtils {
     public static void executeDelete(SqlSessionFactory sessionFactory, String sql) {
         try (SqlSession sqlSession = sessionFactory.openSession()) {
             Map<String, String> sqlMap = createSqlMap(sql);
-            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.dynamicDelete";
+            String method = "com.iscas.biz.mp.enhancer.mapper.DynamicMapper.deleteBySql";
             sqlSession.update(method, sqlMap);
             sqlSession.commit();
         }
