@@ -51,4 +51,6 @@ include 'special:common-access-tools'
 findProject(':special:common-acccess-tools')?.name = 'common-access-tools'
 include 'special:ssh-server'
 findProject(':special:ssh-server')?.name = 'ssh-server'
+include 'common:common-ocr-tools'
+findProject(':common:common-ocr-tools')?.name = 'common-ocr-tools'
 
