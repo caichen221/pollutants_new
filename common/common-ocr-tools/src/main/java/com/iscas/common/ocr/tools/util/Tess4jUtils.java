@@ -3,111 +3,100 @@ package com.iscas.common.ocr.tools.util;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import net.sourceforge.tess4j.util.LoadLibs;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
+ * ITesseract线程不安全，不要在多线程中使用共享的ITesseract
+ *
  * @author zhuquanwen
  * @version 1.0
  * @date 2022/11/18 19:57
  * @since jdk11
  */
 public class Tess4jUtils {
-    private Tess4jUtils() {}
+    private Tess4jUtils() {
+    }
 
     /**
-     * 从图片中提取文字,默认设置英文字库,使用classpath目录下的训练库
-     * @param path
-     * @return
+     * 识别一个
+     *
+     * @param dataPath 训练库路径
+     * @param language 语言
+     * @param is       图片输入流
+     * @return java.lang.String
+     * @date 2022/11/23
+     * @since jdk11
      */
-    public static String readChar(String path){
-        return null;
-//        // JNA Interface Mapping
-//        ITesseract instance = new Tesseract();
-//        // JNA Direct Mapping
-//        // ITesseract instance = new Tesseract1();
-//        File imageFile = new File(path);
-//        //In case you don't have your own tessdata, let it also be extracted for you
-//        //这样就能使用classpath目录下的训练库了
-//        File tessDataFolder = LoadLibs.extractTessResources("tessdata");
-//        //Set the tessdata path
-//        instance.setDatapath(tessDataFolder.getAbsolutePath());
-//        //英文库识别数字比较准确
-//        instance.setLanguage(Const.ENG);
-//        return getOCRText(instance, imageFile);
+    public static String getText(String dataPath, String language, InputStream is) throws IOException, TesseractException {
+        ITesseract instance = getTesseract(dataPath, language);
+        return getText(instance, is);
     }
 
-//    /**
-//     * 从图片中提取文字
-//     * @param path 图片路径
-//     * @param dataPath 训练库路径
-//     * @param language 语言字库
-//     * @return
-//     */
-//    public static String readChar(String path, String dataPath, String language){
-//        File imageFile = new File(path);
-//        ITesseract instance = new Tesseract();
-//        instance.setDatapath(dataPath);
-//        //英文库识别数字比较准确
-//        instance.setLanguage(language);
-//        return getOCRText(instance, imageFile);
-//    }
-//
-//    /**
-//     * 识别图片文件中的文字
-//     * @param instance
-//     * @param imageFile
-//     * @return
-//     */
-//    private static String getOCRText(ITesseract instance, File imageFile){
-//        String result = null;
-//        try {
-//            result = instance.doOCR(imageFile);
-//        } catch (TesseractException e) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
+    /**
+     * 识别一个，默认使用中文
+     *
+     * @param dataPath 训练库路径
+     * @param is       图片输入流
+     * @return java.lang.String
+     * @date 2022/11/23
+     * @since jdk11
+     */
+    public static String getText(String dataPath, InputStream is) throws IOException, TesseractException {
+        return getText(dataPath, "chi_sim", is);
+    }
 
-//    public static void main(String[] args) {
-//        /*String path = "src/main/resources/image/text.png";
-//        System.out.println(readChar(path));*/
-//
-//        String ch = "src/main/resources/image/ch.png";
-//        System.out.println(readChar(ch, "src/main/resources", Const.CHI_SIM));
-//    }
+    /**
+     * 识别一个
+     *
+     * @param instance ITesseract
+     * @param is       图片输入流
+     * @return java.lang.String
+     * @date 2022/11/23
+     * @since jdk11
+     */
+    public static String getText(ITesseract instance, InputStream is) throws IOException, TesseractException {
+        BufferedImage bufferedImage = ImageIO.read(is);
+        return instance.doOCR(bufferedImage);
+    }
 
-    public static void main(String[] args) throws IOException {
-        // 创建实例
-        ITesseract instance = new Tesseract();
-        instance.setDatapath("D:\\ocr\\Tess4J\\tessdata");
-
-        // 设置识别语言
-
-        instance.setLanguage("chi_sim");
-
-        // 设置识别引擎
-
-//        instance.setOcrEngineMode(1);
-
-        // 读取文件
-
-        BufferedImage image = ImageIO.read(new File("d:/ocr/微信图片_20221118193524.jpg"));
-
-        try {
-
-            // 识别
-            String result = instance.doOCR(image);
-            System.out.println(result);
-        } catch (TesseractException e) {
-            System.err.println(e.getMessage());
+    /**
+     * 识别一个路径，返回key为文件名，value为识别结果
+     *
+     * @param dataPath 训练库的路径
+     * @param language 语言
+     * @param file     文件
+     * @return java.util.Map<java.lang.String, java.lang.String>
+     * @date 2022/11/23
+     * @since jdk11
+     */
+    public static Map<String, String> getMultiText(String dataPath, String language, File file) throws IOException, TesseractException {
+        Map<String, String> result = new HashMap<>(16);
+        if (file.isDirectory()) {
+            ITesseract instance = getTesseract(dataPath, language);
+            for (File subFile : Objects.requireNonNull(file.listFiles())) {
+                if (subFile.isFile()) {
+                    result.put(subFile.getName(), getText(instance, new FileInputStream(subFile)));
+                }
+            }
         }
-
-
+        return result;
     }
+
+    private static ITesseract getTesseract(String dataPath, String language) {
+        ITesseract instance = new Tesseract();
+        instance.setDatapath(dataPath);
+        instance.setLanguage(language);
+        return instance;
+    }
+
 
 }
