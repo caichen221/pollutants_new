@@ -18,6 +18,8 @@ public class LicenseUtils {
 
     private volatile static com.aspose.cells.License excelLicense = null;
 
+    private volatile static com.aspose.pdf.License pdfLicense = null;
+
     //    static {
 //        String license =
 //                "<License>\n" +
@@ -49,6 +51,7 @@ public class LicenseUtils {
     public static void initLicense() {
         initWordsLicense();
         initCellsLicense();
+        initPdfLicense();
     }
 
     public static void initWordsLicense() {
@@ -73,6 +76,21 @@ public class LicenseUtils {
                     try (InputStream is = ConvertUtils.class.getClassLoader().getResourceAsStream("license.xml")) {
                         excelLicense = new com.aspose.cells.License();
                         excelLicense.setLicense(is);
+                    } catch (Exception e) {
+                        throw new RuntimeException("获取license出错", e);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void initPdfLicense() {
+        if (pdfLicense == null) {
+            synchronized (LicenseUtils.class) {
+                if (pdfLicense == null) {
+                    try (InputStream is = ConvertUtils.class.getClassLoader().getResourceAsStream("license.xml")) {
+                        pdfLicense = new com.aspose.pdf.License();
+                        pdfLicense.setLicense(is);
                     } catch (Exception e) {
                         throw new RuntimeException("获取license出错", e);
                     }

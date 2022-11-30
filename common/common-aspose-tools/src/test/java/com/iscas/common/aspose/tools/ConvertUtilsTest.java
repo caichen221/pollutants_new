@@ -94,4 +94,17 @@ class ConvertUtilsTest {
         }
     }
 
+    /**
+     * 测试pdf转为word
+     */
+    @Test
+    public void testPdf2docx() throws Exception {
+        try (
+                InputStream is = Files.newInputStream(Paths.get("D:\\朱全文报销\\舟山汉庭酒店发票.pdf"));
+                OutputStream os = Files.newOutputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\test.docx"))
+        ) {
+            ConvertUtils.pdf2docx(is, os);
+        }
+    }
+
 }

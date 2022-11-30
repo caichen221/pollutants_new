@@ -2,6 +2,8 @@
 dependencies {
     api fileTree(dir: 'libs', include: '*.jar')
 
+//    api(group: 'com.aspose', name: 'aspose-pdf', version: '11.7.0')
+
     //---------------------以下方式可以直接引入aspose的依赖，但会导致项目build特别慢(并且license需要破解使用)，故将jar包直接放在libs中-------------------
 //    api 'com.aspose:aspose-words:22.5'
 }

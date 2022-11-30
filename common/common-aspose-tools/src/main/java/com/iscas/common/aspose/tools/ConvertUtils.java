@@ -164,6 +164,23 @@ public class ConvertUtils {
     }
 
     /**
+     * pdf转为word docx
+     *
+     * @param is 输入流
+     * @param os 输出流
+     * @throws Exception 异常
+     * @date 2022/11/29
+     * @since jdk11
+     */
+    public static void pdf2docx(InputStream is, OutputStream os) throws Exception {
+        long old = System.currentTimeMillis();
+        com.aspose.pdf.Document doc = new com.aspose.pdf.Document(is);
+        doc.save(os, com.aspose.pdf.SaveFormat.DocX);
+        long now = System.currentTimeMillis();
+        System.out.println("转换成功，共耗时：" + (now - old) + "毫秒");
+    }
+
+    /**
      * 格式转换
      *
      * @param is         输入流

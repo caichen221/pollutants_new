@@ -47,6 +47,34 @@ class WordOperateUtilsTest {
     }
 
     /**
+     * 测试拼接一个word文档
+     */
+    @Test
+    public void testAppendDoc3() throws Exception {
+        try (
+                InputStream mainIs = Files.newInputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\_指南附件1.技术改进类（方式一）项目申报书_5表单(1).doc"));
+                InputStream addIs = Files.newInputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\智能门户.docx"));
+                OutputStream os = Files.newOutputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\合并结果.docx"));
+        ) {
+            WordOperateUtils.appendWord(mainIs, addIs, os, SaveFormat.DOCX, true, "test1");
+        }
+    }
+
+    /**
+     * 测试拼接一个pdf文档
+     */
+    @Test
+    public void testAppendDoc4() throws Exception {
+        try (
+                InputStream mainIs = Files.newInputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\_指南附件1.技术改进类（方式一）项目申报书_5表单(1).doc"));
+                InputStream addIs = Files.newInputStream(Paths.get("D:\\朱全文报销\\舟山汉庭酒店发票.pdf"));
+                OutputStream os = Files.newOutputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\合并结果.docx"));
+        ) {
+            WordOperateUtils.appendPdf(mainIs, addIs, os, SaveFormat.DOCX, true, "test1");
+        }
+    }
+
+    /**
      * 测试清洁文档，将批注都删除，接受修订
      */
     @Test
@@ -94,5 +122,14 @@ class WordOperateUtilsTest {
                 }
             });
         }
+    }
+
+    /**
+     * 测试复制列
+     * */
+    @Test
+    public void copyCell3() throws Exception {
+        WordOperateUtils.copyCell(0, 0, "C:\\Users\\Administrator\\Desktop\\三亚测试\\xxx.docx",
+                "C:\\Users\\Administrator\\Desktop\\三亚测试\\yyy.docx", 21, 4 , 3, 5, 4);
     }
 }
