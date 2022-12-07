@@ -32,6 +32,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StopWatch;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -90,9 +91,12 @@ import java.io.OutputStream;
 public class BizApp extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws IOException {
+        StopWatch stopWatch = new StopWatch("appStart");
+        stopWatch.start();
         SpringApplication springApplication = new SpringApplication(BizApp.class);
         springApplication.run(args);
-        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(),
+        stopWatch.stop();
+        log.info("服务已启动，启动耗时：{}ms,进程号:[{}],端口号:[{}]", stopWatch.getTotalTimeMillis(), RuntimeUtils.getCurrentPid(),
                 SpringUtils.getBean(Environment.class).getProperty("server.port"));
         try (OutputStream os = new FileOutputStream("newframe.pid")) {
             IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
