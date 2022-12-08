@@ -58,7 +58,7 @@ public class JsonUtils {
         try {
             return getMapper().writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
 //			throw new DataSongException(Status.PARAM_ERROR, String.format("object to json error: [%s]",DataSongExceptionUtils.getExceptionInfo(e)));
         }
@@ -69,7 +69,7 @@ public class JsonUtils {
         try {
             return getMapper().readValue(json, classOfT);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -83,7 +83,7 @@ public class JsonUtils {
         try {
             return (T) getMapper().readValue(json, typeReference);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
         }
 //        return null;
@@ -353,7 +353,7 @@ public class JsonUtils {
             JavaType javaType = getMapper().getTypeFactory().constructParametricType(mainClass, subClass);
             return getMapper().readValue(json, javaType);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -368,7 +368,7 @@ public class JsonUtils {
             JavaType javaType = getJavaType(parametricTypes);
             return getMapper().readValue(json, javaType);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
