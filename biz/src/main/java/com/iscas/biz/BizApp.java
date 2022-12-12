@@ -96,7 +96,7 @@ public class BizApp extends SpringBootServletInitializer {
         SpringApplication springApplication = new SpringApplication(BizApp.class);
         springApplication.run(args);
         stopWatch.stop();
-        log.info("服务已启动，启动耗时：{}ms,进程号:[{}],端口号:[{}]", stopWatch.getTotalTimeMillis(), RuntimeUtils.getCurrentPid(),
+        log.info("服务已启动，启动耗时：{}ms,进程号:[{}],端口号:[{}]", stopWatch.getTotalTimeSeconds(), RuntimeUtils.getCurrentPid(),
                 SpringUtils.getBean(Environment.class).getProperty("server.port"));
         try (OutputStream os = new FileOutputStream("newframe.pid")) {
             IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
@@ -113,8 +113,11 @@ public class BizApp extends SpringBootServletInitializer {
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        StopWatch stopWatch = new StopWatch("appStart");
+        stopWatch.start();
         SpringApplicationBuilder sources = builder.sources(BizApp.class);
-        log.info("服务已启动，进程号:[{}],端口号:[{}]", RuntimeUtils.getCurrentPid(),
+        stopWatch.stop();
+        log.info("服务已启动，启动耗时：{}ms,进程号:[{}],端口号:[{}]", stopWatch.getTotalTimeSeconds(), RuntimeUtils.getCurrentPid(),
                 SpringUtils.getBean(Environment.class).getProperty("server.port"));
         try (OutputStream os = new FileOutputStream("newframe.pid")) {
             IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());

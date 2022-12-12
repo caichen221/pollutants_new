@@ -69,6 +69,11 @@ public class FileDownloadUtils {
         response.setContentType("application/octet-stream");
         response.setHeader("content-type", "application/octet-stream");
         response.setHeader("content-disposition", getContentDispositionVal(request, name));
+        String origin = request.getHeader("Origin");
+        if (origin == null || "".equals(origin) || "null".equals(origin)) {
+            origin = "*";
+        }
+        response.setHeader("Access-Control-Allow-Origin", origin);
     }
 
 

@@ -8,3 +8,4 @@ com.iscas.base.biz.autoconfigure.redis.cache.RedisCacheAutoConfiguration
 com.iscas.base.biz.autoconfigure.requestbody.replaced.RequestBodyReplacedAutoConfiguration
 com.iscas.base.biz.autoconfigure.valid.ValidatorAutoConfiguration
 com.iscas.base.biz.autoconfigure.verification.code.VerificationCodeAutoConfiguration
+com.iscas.base.biz.autoconfigure.charset.CharsetAutoConfiguration
