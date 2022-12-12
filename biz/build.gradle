@@ -89,9 +89,11 @@ bootJar {
 }
 
 bootWar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Start-Class': 'com.iscas.biz.BizApp'
     }
+    rootSpec.exclude("**/undertow-*.jar")
 //    launchScript()
 }
 

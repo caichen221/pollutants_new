@@ -4,6 +4,7 @@ package com.iscas.base.biz.autoconfigure.https;
 
 import io.undertow.UndertowOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -27,6 +28,7 @@ import io.undertow.servlet.api.WebResourceCollection;
 @SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "server.ssl.enabled", havingValue = "true")
+@ConditionalOnClass(Undertow.class)
 public class HttpsAutoConfiguration {
 
     /**

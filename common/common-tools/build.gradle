@@ -68,7 +68,10 @@ dependencies {
     api group: 'com.github.junrar', name: 'junrar', version: "${junrarVersion}"
 
     // https://mvnrepository.com/artifact/net.oschina.htmlsucker/HtmlSucker
-    api group: 'net.oschina.htmlsucker', name: 'HtmlSucker', version: "${htmlsuckerVersion}"
+    api ("net.oschina.htmlsucker:HtmlSucker:${htmlsuckerVersion}") {
+        exclude group:"org.jsoup", module:"jsoup"
+    }
+    api group:"org.jsoup", name:"jsoup", version:"${jsoupVersion}"
     // https://mvnrepository.com/artifact/com.alibaba/easyexcel
     api group: 'com.alibaba', name: 'easyexcel', version: "${easyexcelVersion}"
 

@@ -72,7 +72,7 @@ public class ErrorPageController {
             IllegalStateException exception = (IllegalStateException) attribute;
             Throwable cause = exception.getCause();
             //TODO 这里耦合的Undertow的包，如果以后替为tomcat这段要删除或作其他处理
-            if (cause instanceof MultiPartParserDefinition.FileTooLargeException) {
+            if (cause != null && cause.getClass().getName().equals("io.undertow.server.handlers.form.MultiPartParserDefinition$FileTooLargeException")) {
                 throw Exceptions.baseException("文件大小超过限制，最大限制" + maxFileSize, ((Exception) attribute).getMessage());
             }
         } else if (attribute instanceof AuthenticationRuntimeException) {

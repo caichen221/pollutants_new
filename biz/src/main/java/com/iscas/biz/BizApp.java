@@ -15,6 +15,7 @@ import com.iscas.common.tools.core.runtime.RuntimeUtils;
 import com.iscas.templet.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.jdbc.DataSourceHealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
@@ -89,6 +90,8 @@ import java.io.OutputStream;
 //@EnableFlowable // 允许flowable工作流引擎
 @Slf4j
 public class BizApp extends SpringBootServletInitializer {
+    @Value("${server.port}")
+    private String serverPort;
 
     public static void main(String[] args) throws IOException {
         StopWatch stopWatch = new StopWatch("appStart");
@@ -118,7 +121,7 @@ public class BizApp extends SpringBootServletInitializer {
         SpringApplicationBuilder sources = builder.sources(BizApp.class);
         stopWatch.stop();
         log.info("服务已启动，启动耗时：{}ms,进程号:[{}],端口号:[{}]", stopWatch.getTotalTimeSeconds(), RuntimeUtils.getCurrentPid(),
-                SpringUtils.getBean(Environment.class).getProperty("server.port"));
+                serverPort);
         try (OutputStream os = new FileOutputStream("newframe.pid")) {
             IoUtil.writeUtf8(os, true, RuntimeUtils.getCurrentPid());
         } catch (IOException e) {

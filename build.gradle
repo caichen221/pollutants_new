@@ -95,7 +95,8 @@ subprojects {
 
 //    configurations.all {
 //        resolutionStrategy {
-//            force 'com.google.guava:guava:29.0-android'
+////            force 'com.google.guava:guava:29.0-android'
+//            force 'org.jsoup:jsoup:1.15.3'
 //        }
 //    }
 //    configurations {
