@@ -263,7 +263,7 @@ public class WordOperateUtils {
             // 横向纸张
             builder.getPageSetup().setOrientation(Orientation.LANDSCAPE);
         }
-        builder.insertBreak(BreakType.SECTION_BREAK_NEW_PAGE);
+//        builder.insertBreak(BreakType.SECTION_BREAK_NEW_PAGE);
         long now = System.currentTimeMillis();
         System.out.println("拼接成功，共耗时：" + (now - old) + "毫秒");
         return mainDoc;
