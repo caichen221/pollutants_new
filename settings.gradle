@@ -53,4 +53,6 @@ include 'special:ssh-server'
 findProject(':special:ssh-server')?.name = 'ssh-server'
 include 'common:common-ocr-tools'
 findProject(':common:common-ocr-tools')?.name = 'common-ocr-tools'
+include 'special:common-rocksdb-tools'
+findProject(':special:common-rocksdb-tools')?.name = 'common-rocksdb-tools'
 
