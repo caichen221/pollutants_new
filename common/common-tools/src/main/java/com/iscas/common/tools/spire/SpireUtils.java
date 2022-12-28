@@ -1,9 +1,6 @@
 package com.iscas.common.tools.spire;
 
-import com.spire.doc.Document;
-import com.spire.doc.FileFormat;
-import com.spire.doc.Section;
-import com.spire.doc.TableRow;
+import com.spire.doc.*;
 import com.spire.doc.interfaces.ITable;
 
 /**
@@ -43,4 +40,27 @@ public class SpireUtils {
         doc.saveToFile(dstFilePath, FileFormat.Docx_2013);
         doc.dispose();
     }
+
+
+    public static Document appendWord(Document doc1, Document doc2) {
+        //在第二个文档中循环获取所有节
+        for (Object sectionObj : (Iterable) doc2.getSections()) {
+            Section sec=(Section)sectionObj;
+            //在所有节中循环获取所有子对象
+            for (Object docObj :(Iterable ) sec.getBody().getChildObjects()) {
+                DocumentObject obj=(DocumentObject)docObj;
+
+                //获取第一个文档的最后一节
+                Section lastSection = doc1.getLastSection();
+
+                //将所有子对象添加到第一个文档的最后一节中
+                Body body = lastSection.getBody();
+                body.getChildObjects().add(obj.deepClone());
+            }
+        }
+        return doc1;
+
+    }
+
+
 }

@@ -5,7 +5,6 @@ import com.aspose.words.Document;
 import com.aspose.words.SaveFormat;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -20,6 +19,18 @@ import java.util.List;
  */
 class WordOperateUtilsTest {
 
+    @Test
+    public void testAppendAuto() throws Exception {
+        LicenseUtils.initLicense();
+        Document doc1 = new Document("D:/文档资料/安全认证.docx");
+        Document doc2 = new Document("D:/文档资料/平台技术调研.docx");
+        Document doc3 = new Document("D:\\文档资料\\中宣部\\应用软件与系统集成-合稿V2.docx");
+        doc1 = WordOperateUtils.appendWordAuto(doc1, doc2, doc3);
+        doc1.save(Files.newOutputStream(Paths.get("d:/tmp/ceshi2.docx")), SaveFormat.DOCX);
+    }
+
+
+
     /**
      * 测试拼接一个word文档
      */
@@ -27,9 +38,9 @@ class WordOperateUtilsTest {
     public void testAppendDoc() throws Exception {
         LicenseUtils.initLicense();
         Document doc1 = new Document("D:/文档资料/安全认证.docx");
-        Document doc2 = new Document("D:/文档资料/智能门户.docx");
+        Document doc2 = new Document("D:\\文档资料\\中宣部\\应用软件与系统集成-合稿V2.docx");
         doc1 = WordOperateUtils.appendWord(doc1, doc2, true, null);
-        doc1.save(Files.newOutputStream(Paths.get("d:/tmp/智能menhu.docx")), SaveFormat.DOCX);
+        doc1.save(Files.newOutputStream(Paths.get("d:/tmp/ceshi.docx")), SaveFormat.DOCX);
     }
 
     /**

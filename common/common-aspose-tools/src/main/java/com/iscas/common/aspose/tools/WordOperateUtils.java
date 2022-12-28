@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -270,6 +269,22 @@ public class WordOperateUtils {
     }
 
     /**
+     * 拼接多个word，在每个尾部另起一页按顺序拼接
+     * @since jdk1.8
+     * @date 2022/12/28
+     * @param docs 待拼接的Document
+     * @return com.aspose.words.Document
+     */
+    public static Document appendWordAuto(Document... docs) throws Exception {
+        Document resDoc = new Document();
+        resDoc.removeAllChildren();
+        for (Document doc : docs) {
+            resDoc.appendDocument(doc, ImportFormatMode.USE_DESTINATION_STYLES);
+        }
+        return resDoc;
+    }
+
+    /**
      * 拼接pdf，如果bookmark为空，从最后拼接，如果bookmark不为空，从此书签位置拼接
      *
      * @param mainDoc    主文件
@@ -347,7 +362,6 @@ public class WordOperateUtils {
     }
 
 
-
     /**
      * 复制列
      *
@@ -365,9 +379,9 @@ public class WordOperateUtils {
      */
     public static void copyCell(int sectionIndex, int tableIndex, String srcFilePath, String dstFilePath, int rowOffset,
                                 int copyRowCount, int colOffset, int colEnd, int colCount) throws Exception {
-        com.aspose.words.Document document = new com.aspose.words.Document(srcFilePath);
+        Document document = new Document(srcFilePath);
         NodeCollection childNodes = document.getChildNodes(NodeType.TABLE, true);
-        com.aspose.words.Table tb = (com.aspose.words.Table) childNodes.get(tableIndex);
+        Table tb = (Table) childNodes.get(tableIndex);
         for (int i = rowOffset; i < copyRowCount + rowOffset; i++) {
             CellCollection cells = tb.getRows().get(i).getCells();
             Cell start = cells.get(colOffset);
@@ -375,9 +389,9 @@ public class WordOperateUtils {
             mergeCells(start, end);
         }
         document.save(dstFilePath, SaveFormat.DOCX);
-        com.aspose.words.Document document2 = new com.aspose.words.Document(dstFilePath);
+        Document document2 = new Document(dstFilePath);
         NodeCollection childNodes2 = document2.getChildNodes(NodeType.TABLE, true);
-        com.aspose.words.Table tb2 = (com.aspose.words.Table) childNodes2.get(tableIndex);
+        Table tb2 = (Table) childNodes2.get(tableIndex);
         double subWidth = 0;
         for (int i = rowOffset; i < copyRowCount + rowOffset; i++) {
             RowCollection rows = tb2.getRows();
@@ -401,7 +415,7 @@ public class WordOperateUtils {
     }
 
     public static void mergeCells(Cell startCell, Cell endCell) {
-        com.aspose.words.Table parentTable = startCell.getParentRow().getParentTable();
+        Table parentTable = startCell.getParentRow().getParentTable();
 
         // Find the row and cell indices for the start and end cell.
         Point startCellPos = new Point(startCell.getParentRow().indexOf(startCell), parentTable.indexOf(startCell.getParentRow()));
