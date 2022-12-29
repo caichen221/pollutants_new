@@ -1,5 +1,6 @@
 package com.iscas.templet.helper;
 
+import com.alibaba.fastjson.JSON;
 import com.iscas.templet.annotation.table.TbField;
 import com.iscas.templet.annotation.table.TbFieldRule;
 import com.iscas.templet.annotation.table.TbSetting;
@@ -41,11 +42,16 @@ public class HeaderHelper {
 
     private static void tableFieldsHandle(Class clazz, TableHeaderResponseData headerData) {
         List<TableField> cols = new ArrayList<>();
-        Field[] declaredFields = clazz.getDeclaredFields();
+//        Field[] declaredFields = clazz.getDeclaredFields();
+        Field[] declaredFields = ReflectHelper.getFieldsDirectly(clazz);
         for (Field declaredField : declaredFields) {
             TbField tbField = declaredField.getAnnotation(TbField.class);
             if (tbField != null) {
                 TableField tableField = new TableField();
+                List<ComboboxData> comboboxDatas = null;
+                if (tbField.option() != null && !"".equals(tbField.option().strip())) {
+                    comboboxDatas = JSON.parseArray(tbField.option(),ComboboxData.class);
+                }
                 tableField.setField(tbField.field())
                         .setHeader(tbField.header())
                         .setEditable(tbField.editable())
@@ -55,6 +61,7 @@ public class HeaderHelper {
                         .setSearch(tbField.search())
                         .setSearchType(tbField.searchType())
                         .setHidden(tbField.hidden())
+                        .setOption(comboboxDatas)
                         .setSearchWay(Objects.equals("", tbField.searchWay()) ? null : tbField.searchWay())
                         .setSelectUrl(Objects.equals("", tbField.selectUrl()) ? null : tbField.selectUrl());
 
