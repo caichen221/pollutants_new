@@ -1,6 +1,8 @@
 package com.iscas.biz.config;
 
+import com.iscas.biz.annotation.ApiV1RestController;
 import com.iscas.biz.config.log.AccessLogInterceptor;
+import com.iscas.biz.property.ApiPrefix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private ThreadPoolTaskExecutor asyncExecutor;
     @Value("${response.header.server:newframe/2.0.0}")
     private String responseHeaderServer;
+
+    @Autowired
+    private ApiPrefix apiPrefix;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -55,6 +60,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
         configurer.setTaskExecutor(asyncExecutor);
+    }
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.addPathPrefix(apiPrefix.getV1(), c -> c.isAnnotationPresent(ApiV1RestController.class));
     }
 }
 
