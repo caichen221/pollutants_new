@@ -240,7 +240,7 @@ public class TableService extends BaseTableService {
                                 throw Exceptions.validDataException(tableField.getHeader() + "长度不得小于" + lengthMap.get("min"));
                             }
                             if (String.valueOf(value).length() > lengthMap.get("max")) {
-                                throw Exceptions.validDataException(tableField.getHeader() + "长度不得大于" + lengthMap.get("min"));
+                                throw Exceptions.validDataException(tableField.getHeader() + "长度不得大于" + lengthMap.get("max"));
                             }
                         }
                     }

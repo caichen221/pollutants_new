@@ -118,5 +118,5 @@ dependencies {
     api group: 'javax.activation', name: 'activation', version: "${activationVersion}"
     api group: 'javax.xml', name: 'jaxb-impl', version: "${jaxbImplVersion}"
     api group: 'javax.xml.bind', name: 'jaxb-api', version: "${jaxbApiVersion}"
-    api group: 'com.github.liaochong', name: 'myexcel', version: "${myexcelVersion}"
+//    api group: 'com.github.liaochong', name: 'myexcel', version: "${myexcelVersion}"
 }
