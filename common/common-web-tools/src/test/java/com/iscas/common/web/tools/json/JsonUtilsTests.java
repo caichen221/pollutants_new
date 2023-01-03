@@ -3,11 +3,13 @@ package com.iscas.common.web.tools.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -298,6 +300,33 @@ public class JsonUtilsTests {
         final List<String> strings = Files.readAllLines(file.toPath());
         strings.forEach(System.out::println);
         file.delete();
+    }
+
+    /**
+     * 测试localDatetime序列化
+     * */
+    @Test
+    public void testLocalDateTime() {
+        LocalDateTime now = LocalDateTime.now();
+        String jsonStr = JsonUtils.toJson(now);
+        System.out.println(jsonStr);
+    }
+
+    /**
+     * 测试localDatetime序列化
+     * */
+    @Test
+    public void testLocalDateTime2() {
+        TM tm = new TM();
+        tm.setTime(LocalDateTime.now());
+        tm.setStr("test");
+        System.out.println(JsonUtils.toJson(List.of(tm)));
+    }
+
+    @Data
+    private static class TM {
+        private LocalDateTime time;
+        private String str;
     }
 
 }

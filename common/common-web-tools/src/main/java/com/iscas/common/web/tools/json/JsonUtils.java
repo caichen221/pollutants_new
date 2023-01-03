@@ -10,10 +10,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -147,6 +155,19 @@ public class JsonUtils {
                     if (timeZone != null) {
                         mapper.setTimeZone(timeZone);
                     }
+
+                    // 添加对LocalDateTime类型和LocalDate类型支持
+                    JavaTimeModule module = new JavaTimeModule();
+                    LocalDateTimeDeserializer dateTimeDeserializer = new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    LocalDateTimeSerializer dateTimeSerializer = new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    module.addDeserializer(LocalDateTime.class, dateTimeDeserializer);
+                    module.addSerializer(LocalDateTime.class, dateTimeSerializer);
+
+                    LocalDateDeserializer dateDeserializer = new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    LocalDateSerializer dateSerializer = new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    module.addDeserializer(LocalDate.class, dateDeserializer);
+                    module.addSerializer(LocalDate.class, dateSerializer);
+                    mapper.registerModules(module);
 
 //			mapper.configure(SerializationFeature.WRAP_ROOT_VALUE CLOSE_CLOSEABLE)
                 }

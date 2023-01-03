@@ -8,6 +8,8 @@ dependencies {
 
     api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
 
+    api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+
     api group: 'cn.miludeer', name: 'jsoncode', version: "${jsoncodeVersion}"
 
     api ("net.sf.json-lib:json-lib:${jsonlibVersion}")
