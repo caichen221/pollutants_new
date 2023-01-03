@@ -158,12 +158,11 @@ public class TableOperateUtils {
                         // 如果需要校验重复性，校验是否数据库中已有该属性
                         duplicateProp(service, tableField.getField(), value);
                     }
-
-                    //校验回调函数
-                    if (ruleCallback != null) {
-                        ruleCallback.validate(saveData, tableField);
-                    }
                 }
+            }
+            //校验回调函数
+            if (ruleCallback != null) {
+                ruleCallback.validate(saveData, tableField);
             }
         }
     }
