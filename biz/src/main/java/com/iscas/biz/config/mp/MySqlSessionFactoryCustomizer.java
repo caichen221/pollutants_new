@@ -34,6 +34,8 @@ public class MySqlSessionFactoryCustomizer implements SqlSessionFactoryCustomize
             } catch (IllegalAccessException e) {
                 log.error("MySqlSessionFactoryCustomizer 出错", e);
             }
+            // 返回Map时也能返回驼峰的值
+//            configuration.setObjectWrapperFactory(new MybatisMapWrapperFactory());
         }
     }
 }
