@@ -278,21 +278,21 @@ public class EhCacheUtils {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        //从配置文件创建配置对象
-        Configuration xmlConf = new XmlConfiguration(EhCacheUtils.class.getResource("/ehcache.xml"));
-        //创建缓存管理器
-        CacheManager cacheManager = CacheManagerBuilder.newCacheManager(xmlConf);
-        cacheManager.init();
-        //从缓存管理器中获取缓存
-        Cache<String, String> mycache3 = cacheManager.getCache("myCache3", String.class, String.class);
-        //使用缓存
-        mycache3.put("1", "Hello world!");
-        System.out.println(mycache3.get("1"));
-        TimeUnit.SECONDS.sleep(11);
-        System.out.println(mycache3.get("1"));
-        //清空缓存，关闭缓存管理器
-        mycache3.clear();
-        cacheManager.close();
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//        //从配置文件创建配置对象
+//        Configuration xmlConf = new XmlConfiguration(EhCacheUtils.class.getResource("/ehcache.xml"));
+//        //创建缓存管理器
+//        CacheManager cacheManager = CacheManagerBuilder.newCacheManager(xmlConf);
+//        cacheManager.init();
+//        //从缓存管理器中获取缓存
+//        Cache<String, String> mycache3 = cacheManager.getCache("myCache3", String.class, String.class);
+//        //使用缓存
+//        mycache3.put("1", "Hello world!");
+//        System.out.println(mycache3.get("1"));
+//        TimeUnit.SECONDS.sleep(11);
+//        System.out.println(mycache3.get("1"));
+//        //清空缓存，关闭缓存管理器
+//        mycache3.clear();
+//        cacheManager.close();
+//    }
 }
