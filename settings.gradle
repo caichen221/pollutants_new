@@ -55,4 +55,6 @@ include 'common:common-ocr-tools'
 findProject(':common:common-ocr-tools')?.name = 'common-ocr-tools'
 include 'special:common-rocksdb-tools'
 findProject(':special:common-rocksdb-tools')?.name = 'common-rocksdb-tools'
+include 'special:common-ehcache-tools'
+findProject(':special:common-ehcache-tools')?.name = 'common-ehcache-tools'
 
