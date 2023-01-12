@@ -2,7 +2,6 @@ package com.iscas.base.biz.desensitization;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.iscas.authentication.service.DesensitizationSerializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

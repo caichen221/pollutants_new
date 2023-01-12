@@ -3,6 +3,7 @@ package com.iscas.base.biz.config;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.iscas.base.biz.util.SpringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +20,7 @@ import java.util.Optional;
  */
 @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
 @Component
+@Slf4j
 public class ServerRunner implements CommandLineRunner {
     @Autowired(required = false)
     private SocketIOServer socketIOServer;
@@ -28,22 +30,26 @@ public class ServerRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (socketIOServer != null) {
-            Optional.ofNullable(namespaces).ifPresent(nss ->
-                    Arrays.stream(nss).forEach(ns -> {
-                        //获取命名空间
-                        SocketIONamespace socketIONamespace = socketIOServer.getNamespace(ns);
-                        //获取期待的类名
-                        String className = ns.substring(1) + "MessageEventHandler";
-                        try {
-                            Object bean = SpringUtils.getBean(className);
-                            Optional.of(bean).ifPresent(socketIONamespace::addListeners);
-                        } catch (Exception ignored) {
+        try {
+            if (socketIOServer != null) {
+                Optional.ofNullable(namespaces).ifPresent(nss ->
+                        Arrays.stream(nss).forEach(ns -> {
+                            //获取命名空间
+                            SocketIONamespace socketIONamespace = socketIOServer.getNamespace(ns);
+                            //获取期待的类名
+                            String className = ns.substring(1) + "MessageEventHandler";
+                            try {
+                                Object bean = SpringUtils.getBean(className);
+                                Optional.of(bean).ifPresent(socketIONamespace::addListeners);
+                            } catch (Exception ignored) {
 
-                        }
+                            }
 
-                    }));
-            socketIOServer.start();
+                        }));
+                socketIOServer.start();
+            }
+        } catch (Exception e) {
+            log.warn("socket-io启动出错", e);
         }
     }
 }
