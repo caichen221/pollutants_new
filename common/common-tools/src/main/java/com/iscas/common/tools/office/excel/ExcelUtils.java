@@ -19,6 +19,9 @@ import java.io.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -279,6 +282,7 @@ public class ExcelUtils {
                                 MethodHandle getterMethodHandle = getMehodHandle(t.getClass(), headers[j], cacheMethod);
                                 cellValue = getterMethodHandle.invoke(t);
                             }
+                            cellValue = handleCellValue(cellValue);
                             newCell.setCellValue(cellValue == null ? "" : String.valueOf(cellValue));
                             if (styleMap != null && styleMap.get(headers[j]) != null) {
                                 newCell.setCellStyle((CellStyle) styleMap.get(headers[j]));
@@ -365,10 +369,10 @@ public class ExcelUtils {
                             if (t instanceof Map) {
                                 cellValue = ((Map) t).get(headers[j]);
                             } else {
-
                                 MethodHandle getterMethodHandle = getMehodHandle(t.getClass(), headers[j], cacheMethod);
                                 cellValue = getterMethodHandle.invoke(t);
                             }
+                            cellValue = handleCellValue(cellValue);
                             newCell.setCellValue(cellValue == null ? "" : String.valueOf(cellValue));
                             if (styleMap != null && styleMap.get(headers[j]) != null) {
                                 newCell.setCellStyle((HSSFCellStyle) styleMap.get(headers[j]));
@@ -1046,6 +1050,7 @@ public class ExcelUtils {
                         cellValue = getterMethodHandle.invoke(t);
                         //                        cellValue = getReadMethod(cachedMethodMap, entry.getKey(), t.getClass()).invoke(t);
                     }
+                    cellValue = handleCellValue(cellValue);
                     osw.write(cellStr.replace("@wordIndex@", getColNoByIndex(index++))
                             .replace("@index@", String.valueOf(rowIndex[0])).replace("@data@", cellValue == null ? "" : cellValue.toString()));
                 }
@@ -1091,6 +1096,21 @@ public class ExcelUtils {
             //最多支持26 * 26列，足够了，就这样吧。
             return getColNoByIndex((index - 26) / 26) + getColNoByIndex((index - 26) % 26);
         }
+    }
+
+    private static Object handleCellValue(Object cellValue) {
+        if (cellValue instanceof LocalDateTime) {
+            // 将LocalDateTime类型格式化为字符串
+            LocalDateTime localDateTime = (LocalDateTime) cellValue;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return localDateTime.format(formatter);
+        } else if (cellValue instanceof LocalDate) {
+            // 将LocalDate类型格式化为字符串
+            LocalDate localDate = (LocalDate) cellValue;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return localDate.format(formatter);
+        }
+        return cellValue;
     }
 
 }
