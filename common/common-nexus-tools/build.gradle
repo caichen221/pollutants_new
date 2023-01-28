@@ -1,0 +1,12 @@
+dependencies {
+//    implementation "org.apache.httpcomponents:httpmime"
+    implementation "org.jsoup:jsoup:${jsoupVersion}"
+    api "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+    api "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    api "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}

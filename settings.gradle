@@ -57,4 +57,6 @@ include 'special:common-rocksdb-tools'
 findProject(':special:common-rocksdb-tools')?.name = 'common-rocksdb-tools'
 include 'special:common-ehcache-tools'
 findProject(':special:common-ehcache-tools')?.name = 'common-ehcache-tools'
+include 'common:common-nexus-tools'
+findProject(':common:common-nexus-tools')?.name = 'common-nexus-tools'
 
