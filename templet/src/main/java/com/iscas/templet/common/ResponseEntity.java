@@ -6,6 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author zhuquanwen
@@ -72,6 +73,16 @@ public class ResponseEntity<T> implements Serializable {
     public ResponseEntity(String message){
         super();
         this.message = message;
+    }
+
+    public static <T> ResponseEntity<T> ok(T value) {
+        return Objects.isNull(value) ? new ResponseEntity<>() : new ResponseEntity<T>().setValue(value);
+    }
+
+    public static ResponseEntity<Void> error(int status, String message, Exception e) {
+        ResponseEntity<Void> res = new ResponseEntity<>(status, message);
+        res.setDesc(e.getMessage());
+        return res;
     }
 
 
