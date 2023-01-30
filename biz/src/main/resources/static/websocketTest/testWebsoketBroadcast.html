@@ -16,9 +16,9 @@
         //订阅消息
         function subscribe() {
 
-            stompClient.subscribe('/app/topic/getResponse', function(response){
+            stompClient.subscribe('/topic/getResponse', function(response){
                 console.log(response);
-                alert("/app/topic/getResponse 你接收到的消息为:" + response);
+                alert("/topic/getResponse 你接收到的消息为:" + response);
             });
 
         }

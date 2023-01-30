@@ -61,8 +61,8 @@ public class WebSocketStompSimpleConfig implements WebSocketMessageBrokerConfigu
         te.setThreadNamePrefix("wss-heartbeat-thread-");
         te.initialize();
         registry.enableSimpleBroker("/queue", "/topic").setHeartbeatValue(new long[]{0L, 20000L}).setTaskScheduler(te);
-        // 全局使用的消息前缀（客户端订阅路径上会体现出来）
-        registry.setApplicationDestinationPrefixes("/app", "/user");
+        // 全局前端给后台发消息的前缀，为了是的@SubscribeMapping注解生效，将/user, /queue, /topic也添加进来
+        registry.setApplicationDestinationPrefixes("/app", "/user", "/queue", "/topic");
         // 点对点使用的订阅前缀（客户端订阅路径上会体现出来），不设置的话，默认也是/user/
         registry.setUserDestinationPrefix("/user/");
     }

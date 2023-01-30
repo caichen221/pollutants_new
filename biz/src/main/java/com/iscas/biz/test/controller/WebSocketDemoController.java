@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.simp.user.SimpUser;
@@ -33,15 +34,16 @@ import java.util.UUID;
 @Slf4j
 @EnableScheduling
 @ConditionalOnMybatis
-public class WebSoketDemoController {
-
+public class WebSocketDemoController {
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     private SimpUserRegistry userRegistry;
     @Autowired
     private WsService wsService;
 
 
-    @SubscribeMapping("/topic/getResponse")
+    @SubscribeMapping("/getResponse")
     public WsData<String> sub() {
         WsData<String> wsData = new WsData<>(UUID.randomUUID().toString(), WsData.MsgTypeEnum.BUSINESS, "test",
                 false, "服务端收到了订阅");
@@ -75,7 +77,7 @@ public class WebSoketDemoController {
 
     /**
      * 接收数据体
-    * */
+     * */
     @MessageMapping(value = "/P2P")
     public void templateTest(Principal principal, Map<String,String> data) {
         log.info("当前在线人数:" + userRegistry.getUserCount());
@@ -143,6 +145,7 @@ public class WebSoketDemoController {
     @MessageMapping("/broadcast")
     @SendTo("/topic/getResponse")
     public ResponseEntity topic() throws Exception {
+        simpMessagingTemplate.convertAndSend("/topic/getResponse", "xxxx");
         return new ResponseEntity(200,"success");
     }
 
