@@ -1,6 +1,6 @@
 package com.iscas.biz.test.controller;
 
-import com.iscas.biz.annotation.ApiV1RestController;
+import com.iscas.biz.annotation.api.ApiV1RestController;
 import com.iscas.templet.common.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

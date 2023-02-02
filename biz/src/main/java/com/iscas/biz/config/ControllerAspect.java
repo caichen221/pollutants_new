@@ -66,7 +66,7 @@ public class ControllerAspect {
             }
             return result;
         } finally {
-            StaticInfo.START_TIME_THREAD_LOCAL.remove();
+//            StaticInfo.START_TIME_THREAD_LOCAL.remove();
             AuthContextHolder.removeContext();
         }
 
