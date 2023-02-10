@@ -5,13 +5,15 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.config.Constants;
+import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.common.tools.core.date.DateRaiseUtils;
 import com.iscas.common.tools.core.io.file.ConfigUtils;
+import com.iscas.templet.exception.AuthenticationRuntimeException;
 import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidTokenException;
+import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -24,10 +26,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * JWT工具类
@@ -104,18 +104,22 @@ public class JWTUtils {
             throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "不存在或已经被注销");
         }
         Algorithm algorithm = getVerifyAlgorithm(type);
-        JWTVerifier jwtVerifier = switch (type) {
-            case HMAC256 -> JWT.require(algorithm).build();
-            case RSA -> JWT.require(algorithm).withIssuer(ISS).build();
-            //noinspection UnnecessaryDefault
-            default -> throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
-        };
+        JWTVerifier jwtVerifier;
+        switch (type) {
+            case HMAC256:
+                jwtVerifier = JWT.require(algorithm).build();
+                break;
+            case RSA:
+                jwtVerifier = JWT.require(algorithm).withIssuer(ISS).build();
+                break;
+            default: throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
+        }
 
         DecodedJWT decodedJWT;
         try {
             decodedJWT = jwtVerifier.verify(token);
         } catch (Exception e) {
-            throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "校验失败", e);
+            throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "校验失败");
         }
         return decodedJWT.getClaims();
     }
@@ -139,10 +143,10 @@ public class JWTUtils {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
             if (username == null) {
-                throw Exceptions.validTokenException("token 校验失败，未获取到用户信息");
+                throw Exceptions.validTokenException("token 校验失败");
             }
         } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw Exceptions.authenticationRuntimeException("未获取到当前登录的用户信息", e);
+            throw Exceptions.authenticationRuntimeException("未获取到当前登录的用户信息");
         }
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
 
@@ -191,16 +195,19 @@ public class JWTUtils {
         } else {
             username = userIdAndName;
         }
-        return switch (type) {
-            case HMAC256 -> JWT.create()
-                    .withHeader(map)
-                    .withClaim("username", username)
-                    .withClaim("userId", userId)
-                    .withClaim("date", iatDate)
-                    .withExpiresAt(expiresDate)
-                    .withIssuedAt(iatDate)
-                    .sign(Algorithm.HMAC256(SECRET));
-            case RSA -> JWT.create()
+        switch (type) {
+            case HMAC256:
+                algorithm = Algorithm.HMAC256(SECRET);
+                return JWT.create()
+                        .withHeader(map)
+                        .withClaim("username", username)
+                        .withClaim("userId", userId)
+                        .withClaim("date", iatDate)
+                        .withExpiresAt(expiresDate)
+                        .withIssuedAt(iatDate)
+                        .sign(algorithm);
+            case RSA:
+                return JWT.create()
                         .withHeader(map)
                         .withIssuer(ISS)
                         .withClaim("username", username)
@@ -211,18 +218,20 @@ public class JWTUtils {
                         .withExpiresAt(expiresDate)
                         .withIssuedAt(iatDate)
                         .sign(createRsaAlgorithm(true));
-            //noinspection UnnecessaryDefault
-            default -> throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
-        };
+            default:
+                throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
+        }
     }
 
     private static Algorithm getVerifyAlgorithm(AlgorithmType type) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        return switch (type) {
-            case HMAC256 -> Algorithm.HMAC256(SECRET);
-            case RSA -> createRsaAlgorithm(false);
-            //noinspection UnnecessaryDefault
-            default -> throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
-        };
+        switch (type) {
+            case HMAC256:
+                return Algorithm.HMAC256(SECRET);
+            case RSA:
+                return createRsaAlgorithm(false);
+            default:
+                throw Exceptions.formatUnsupportedOperationException("不支持的加密算法类型:[{}]", type);
+        }
     }
 
 }
