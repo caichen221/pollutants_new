@@ -119,7 +119,7 @@ public class JWTUtils {
         try {
             decodedJWT = jwtVerifier.verify(token);
         } catch (Exception e) {
-            throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "校验失败");
+            throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "校验失败", e);
         }
         return decodedJWT.getClaims();
     }
@@ -143,10 +143,10 @@ public class JWTUtils {
             Map<String, Claim> clainMap = JWTUtils.verifyToken(token, SpringUtils.getBean(TokenProps.class).getCreatorMode());
             username = clainMap.get("username").asString();
             if (username == null) {
-                throw Exceptions.validTokenException("token 校验失败");
+                throw Exceptions.validTokenException("token 校验失败, username不存在");
             }
         } catch (ValidTokenException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw Exceptions.authenticationRuntimeException("未获取到当前登录的用户信息");
+            throw Exceptions.authenticationRuntimeException("未获取到当前登录的用户信息", e);
         }
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
 
