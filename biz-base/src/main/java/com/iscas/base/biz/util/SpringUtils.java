@@ -3,10 +3,11 @@ package com.iscas.base.biz.util;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.HeaderKey;
-import org.bouncycastle.operator.MacCalculatorProvider;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -116,6 +117,22 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
      */
     public static HttpSession getSession(boolean flag) {
         return Optional.ofNullable(getRequest()).map(req -> req.getSession(flag)).orElse(null);
+    }
+
+    /**
+     * 注册或替换一个Bean
+     *
+     * @param beanName beanName
+     * @param bean     bean实例
+     * @date 2023/2/14
+     */
+    public static void registerOrReplaceSingletonBean(String beanName, Object bean) {
+        AutowireCapableBeanFactory autowireCapableBeanFactory = applicationContext.getAutowireCapableBeanFactory();
+        DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) autowireCapableBeanFactory;
+        if (defaultListableBeanFactory.containsBean(beanName)) {
+            defaultListableBeanFactory.destroySingleton(beanName);
+        }
+        defaultListableBeanFactory.registerSingleton(beanName, bean);
     }
 
     public static String getIpAddr() {
