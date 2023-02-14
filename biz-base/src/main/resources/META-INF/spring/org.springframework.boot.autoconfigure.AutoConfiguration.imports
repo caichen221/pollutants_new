@@ -11,3 +11,4 @@ com.iscas.base.biz.autoconfigure.verification.code.VerificationCodeAutoConfigura
 com.iscas.base.biz.autoconfigure.charset.CharsetAutoConfiguration
 com.iscas.base.biz.autoconfigure.undertow.UndertowAutoConfiguration
 com.iscas.base.biz.autoconfigure.jackson.Jackson2ObjectMapperCustomizerConfig
+com.iscas.base.biz.autoconfigure.trace.LogTraceIdAutoConfiguration

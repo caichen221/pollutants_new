@@ -69,4 +69,12 @@ public interface Constants {
 
     String KEY_USER_TOKEN = "user-token:";
 
+    /**日志链路追踪的请求头*/
+    String TRACE_ID_HEADER = "x-traceId-header";
+
+    /**
+     * 日志链路追踪id日志标志
+     */
+    String LOG_TRACE_ID = "traceId";
+
 }

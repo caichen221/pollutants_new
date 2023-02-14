@@ -9,7 +9,8 @@
     <properties>
         <!-- 格式化输出：%date 表示日期，%thread 表示线程名，%-5level：级别从左显示 5 个字符宽度 %msg：日志消息，%n 是换行符-->
         <!-- %logger{36} 表示 Logger 名字最长 36 个字符 -->
-        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level [%logger{50}:%L] - %msg%n"/>
+        <!--如果在PATTERN中配置了%C、%M、%L、%l、%F需要在appender中将includeLocation设置为true，会影响日志性能，项目上线后根据实际情况调整-->
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{traceId}] %-5level [%logger{50}:%L] - %msg%n"/>
         <property name="LOG_CONSOLE_PATTERN" value="%style{%d{ISO8601}}{bright,green} %highlight{%-5level} [%style{%t}{bright,blue}] %style{%C{}}{bright,yellow}: %msg%n%style{%throwable}{red}"/>
         <property name="ACCESS_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"/>
 

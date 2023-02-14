@@ -58,7 +58,8 @@ import java.io.OutputStream;
 @ComponentScan(basePackages = {"com.iscas"}
         , excludeFilters = {
         @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.test.*"),
-        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.biz.mp.test.*")
+        ,
         @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
 }
 )

@@ -173,6 +173,7 @@ dependencies {
                 exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
             }
     api group: 'io.github.resilience4j', name: 'resilience4j-spring-boot2', version: "${resilience4jSpringBoot2Version}"
+    api group: 'com.alibaba', name: 'transmittable-thread-local', version: '2.14.2'
 
 
 

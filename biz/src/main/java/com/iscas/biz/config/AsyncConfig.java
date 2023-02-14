@@ -1,5 +1,6 @@
 package com.iscas.biz.config;
 
+import com.iscas.base.biz.schedule.CustomThreadPoolTaskExecutor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -25,7 +26,7 @@ public class AsyncConfig implements AsyncConfigurer, BizConstant {
 
     @Bean("asyncExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        ThreadPoolTaskExecutor executor = new CustomThreadPoolTaskExecutor();
         executor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
         executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors() * 2);
         executor.setQueueCapacity(20000);
