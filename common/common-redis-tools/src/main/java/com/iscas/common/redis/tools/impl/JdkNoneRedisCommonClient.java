@@ -181,7 +181,7 @@ public class JdkNoneRedisCommonClient {
 
     protected void doExpire(String key, long milliseconds) {
         synchronized (key.intern()) {
-            Object value = jdkNoneRedisConnection.objectCache.get(key);
+            Object value = jdkNoneRedisConnection.objectCache.get(key, false);
             if (value != null) {
                 jdkNoneRedisConnection.objectCache.put(key, value, milliseconds);
             }
@@ -200,7 +200,7 @@ public class JdkNoneRedisCommonClient {
     }
 
     protected <T> T doGet(Class<T> tClass, String key) {
-        return (T) jdkNoneRedisConnection.objectCache.get(key);
+        return (T) jdkNoneRedisConnection.objectCache.get(key, false);
     }
 
     protected long doSetnx(String key, Object value) {
