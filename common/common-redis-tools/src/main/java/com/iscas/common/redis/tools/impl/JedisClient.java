@@ -220,7 +220,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             }
             result = jedisCommandsBytesSadd(jedis, getBytesKey(key), bytes);
             if (cacheSeconds != 0) {
-                expire(key, cacheSeconds);
+                expire(key, cacheSeconds * 1000L);
             }
         } finally {
             returnResource(jedis);
@@ -608,7 +608,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
     public long zadd(String key, Map<?, Double> valueScoreMap, int cacheSeconds) throws IOException {
         long result = zadd(key, valueScoreMap);
         if (result > 0) {
-            expire(key, cacheSeconds);
+            expire(key, cacheSeconds * 1000L);
         }
         return result;
     }
@@ -1424,7 +1424,7 @@ public class JedisClient extends JedisCommonClient implements IJedisClient {
             jedis = getResource(Object.class);
             result = jedisCommandsBytesSet(jedis, getBytesKey(key), toBytes(value));
             if (cacheSeconds != 0) {
-                expire(key, cacheSeconds);
+                expire(key, cacheSeconds * 1000L);
             }
             return "OK".equals(result);
         } finally {

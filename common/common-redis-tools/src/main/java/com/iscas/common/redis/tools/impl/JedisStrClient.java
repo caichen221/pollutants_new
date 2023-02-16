@@ -1335,7 +1335,7 @@ public class JedisStrClient extends JedisCommonClient implements IJedisStrClient
                 result = jedisCluster.set(key, value);
             }
             if (cacheSeconds != 0) {
-                expire(key, cacheSeconds);
+                expire(key, cacheSeconds * 1000L);
             }
             return "OK".equals(result);
         } finally {
