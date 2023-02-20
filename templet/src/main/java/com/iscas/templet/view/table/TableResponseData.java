@@ -19,7 +19,7 @@ public class TableResponseData<T> implements Serializable {
     /**
      * 返回总条目
      */
-    protected Long rows;
+    protected Long rows = 0L;
     /**
      * 返回的具体数据，是个集合
      */
