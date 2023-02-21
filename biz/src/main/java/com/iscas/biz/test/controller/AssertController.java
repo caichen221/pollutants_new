@@ -19,7 +19,7 @@ public class AssertController {
     @GetMapping("/test")
     public String test() {
         String str = null;
-        String ipAddr = SpringUtils.getIpAddr();
+        String ipAddr = SpringUtils.getRemoteAddr();
         AssertObjUtils.assertNotNull(str, "str 不能为null");
         return str;
     }

@@ -28,7 +28,7 @@ public class AccessLogUtils {
         AuthContext context = AuthContextHolder.getContext();
         assert request != null;
         AccessLog accessLog = new AccessLog()
-                .setIp(SpringUtils.getIpAddr(request))
+                .setIp(SpringUtils.getRemoteAddr(request))
                 .setMethod(request.getMethod())
                 .setUri(request.getRequestURI())
                 .setCreateTime(createTime)

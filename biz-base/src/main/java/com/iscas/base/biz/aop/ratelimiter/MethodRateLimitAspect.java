@@ -5,7 +5,6 @@ import com.iscas.base.biz.config.StaticInfo;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.templet.exception.Exceptions;
-import com.iscas.templet.exception.RequestTimeoutRuntimeException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -38,7 +37,7 @@ public class MethodRateLimitAspect {
             return joinPoint.proceed();
         }
         //获取request对象
-        String remoteAddr = SpringUtils.getIpAddr();
+        String remoteAddr = SpringUtils.getRemoteAddr();
 
         //本地访问不做限制
         if (Objects.equals(CommonConstant.LOCAL_IP, remoteAddr)) {
