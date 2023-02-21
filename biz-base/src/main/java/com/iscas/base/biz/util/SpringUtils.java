@@ -3,6 +3,9 @@ package com.iscas.base.biz.util;
 import com.iscas.common.tools.assertion.AssertObjUtils;
 import com.iscas.common.tools.constant.CommonConstant;
 import com.iscas.common.tools.constant.HeaderKey;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
@@ -22,6 +25,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -44,6 +49,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 获取request header
+     *
+     * @param headerName 请求头名
+     * @return String 值
      */
     public static String getReqHeader(String headerName) {
         HttpServletRequest request = getRequest();
@@ -52,6 +60,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 获取response header
+     *
+     * @param headerName 响应头名
+     * @return String 值
      */
     public static String getResHeader(String headerName) {
         HttpServletResponse response = getResponse();
@@ -60,6 +71,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 设置response header
+     *
+     * @param headerName key
+     * @param headerVal  value
      */
     public static void setResHeader(String headerName, String headerVal) {
         HttpServletResponse response = getResponse();
@@ -68,6 +82,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 设置request attribute
+     *
+     * @param key key
+     * @param val value
      */
     public static void setReqAttr(String key, Object val) {
         HttpServletRequest request = getRequest();
@@ -76,6 +93,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 获取request attribute
+     *
+     * @param key key
+     * @param val value
      */
     public static <T> T getReqAttr(String key, Class<T> val) {
         HttpServletRequest request = getRequest();
@@ -84,6 +104,8 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 获取request
+     *
+     * @return HttpServletRequest request
      */
     public static HttpServletRequest getRequest() {
         return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
@@ -91,13 +113,11 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
                 .orElse(null);
     }
 
-    public static void main(String[] args) {
-        HttpServletRequest request = getRequest();
-        System.out.println(request);
-    }
 
     /**
      * 获取response
+     *
+     * @return HttpServletResponse response
      */
     public static HttpServletResponse getResponse() {
         return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
@@ -107,6 +127,8 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 获取session
+     *
+     * @return HttpSession session
      */
     public static HttpSession getSession() {
         return Optional.ofNullable(getRequest()).map(HttpServletRequest::getSession).orElse(null);
@@ -114,6 +136,9 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
 
     /**
      * 获取session
+     *
+     * @param flag 如果session不存在是否创建session
+     * @return HttpSession session
      */
     public static HttpSession getSession(boolean flag) {
         return Optional.ofNullable(getRequest()).map(req -> req.getSession(flag)).orElse(null);
@@ -135,15 +160,20 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
         defaultListableBeanFactory.registerSingleton(beanName, bean);
     }
 
-    public static String getIpAddr() {
-        return getIpAddr(getRequest());
+    /**
+     * 获取客户端IP地址
+     *
+     * @return java.lang.String IP地址
+     */
+    public static String getRemoteAddr() {
+        return getRemoteAddr(getRequest());
     }
 
     /**
      * 获取客户端地址
      */
     @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static String getIpAddr(HttpServletRequest request) {
+    public static String getRemoteAddr(HttpServletRequest request) {
         AssertObjUtils.assertNotNull(request, "未获取到request请求，无法获取客户端请求");
         String ipAddress;
         try {
@@ -175,6 +205,64 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
         return ipAddress;
     }
 
+    public static ApplicationContext getApplicationContext() {
+        return SpringUtils.applicationContext;
+    }
+
+    /**
+     * 按名称获取Bean
+     *
+     * @param name bean名称
+     * @return T
+     * @throws BeansException 异常
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getBean(String name) throws BeansException {
+        return (T) applicationContext.getBean(name);
+    }
+
+    /**
+     * 按类型获取Bean
+     *
+     * @param tClass bean类型
+     * @return T
+     * @throws BeansException 异常
+     */
+    public static <T> T getBean(Class<T> tClass) throws BeansException {
+        return applicationContext.getBean(tClass);
+    }
+
+    /**
+     * 获取springmvc 的URI对应的method
+     */
+    public static Map<RequestMappingInfo, HandlerMethod> getMvcUriMethods() {
+        ObjectProvider<RequestMappingHandlerMapping> beanProvider = applicationContext.getBeanProvider(RequestMappingHandlerMapping.class);
+        return beanProvider.stream().filter(bp -> bp.getClass() == RequestMappingHandlerMapping.class).findFirst()
+                .map(AbstractHandlerMethodMapping::getHandlerMethods).orElse(null);
+    }
+
+    /**
+     * 通过连接点对象获取其方法或类上的注解
+     *
+     * @param point  连接点
+     * @param tClass 注解类型
+     * @return T 注解
+     * @date 2023/2/21
+     */
+    public static <T extends Annotation> T getAnnotation(ProceedingJoinPoint point, Class<T> tClass) {
+        T t = null;
+        Signature signature = point.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        Method method = methodSignature.getMethod();
+        if (method != null && method.isAnnotationPresent(tClass)) {
+            t = method.getAnnotation(tClass);
+        }
+        if (t == null && method.getDeclaringClass().isAnnotationPresent(tClass)) {
+            t = method.getDeclaringClass().getAnnotation(tClass);
+        }
+        return t;
+    }
+
     private static String checkAndGetIpAddr(HttpServletRequest request, String ipAddress, String elseHeaderKey) {
         if (checkWrongIpAddr(ipAddress)) {
             return request.getHeader(elseHeaderKey);
@@ -189,28 +277,6 @@ public class SpringUtils implements ApplicationContextAware, CommonConstant, Hea
     @Override
     public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
         SpringUtils.applicationContext = applicationContext;
-    }
-
-    public static ApplicationContext getApplicationContext() {
-        return SpringUtils.applicationContext;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T getBean(String name) throws BeansException {
-        return (T) applicationContext.getBean(name);
-    }
-
-    public static <T> T getBean(Class<T> tClass) throws BeansException {
-        return applicationContext.getBean(tClass);
-    }
-
-    /**
-     * 获取springmvc 的URI对应的method
-     * */
-    public static Map<RequestMappingInfo, HandlerMethod> getMvcUriMethods() {
-        ObjectProvider<RequestMappingHandlerMapping> beanProvider = applicationContext.getBeanProvider(RequestMappingHandlerMapping.class);
-        return beanProvider.stream().filter(bp -> bp.getClass() == RequestMappingHandlerMapping.class).findFirst()
-                .map(AbstractHandlerMethodMapping::getHandlerMethods).orElse(null);
     }
 
 }
