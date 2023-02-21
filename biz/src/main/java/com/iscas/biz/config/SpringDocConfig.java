@@ -1,7 +1,10 @@
 package com.iscas.biz.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +17,11 @@ public class SpringDocConfig {
                 .info(new Info()
                         .title("newframe-接口文档")
                         .description("基于SpringDoc的在线接口文档")
-                        .version("0.0.1"));
+                        .version("0.0.1"))
+                .components(new Components().addSecuritySchemes("tokenHeader", new SecurityScheme()
+                        .type(SecurityScheme.Type.APIKEY)
+                        .in(SecurityScheme.In.HEADER).name("Authorization")))
+                .addSecurityItem(new SecurityRequirement().addList("tokenHeader"));
     }
 
     @Bean
