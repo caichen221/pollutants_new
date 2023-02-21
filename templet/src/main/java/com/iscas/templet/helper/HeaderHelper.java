@@ -78,7 +78,9 @@ public class HeaderHelper {
                                 .setContainsHigh(tableFieldRule.containsHigh())
                                 .setContainsLow(tableFieldRule.containsLow())
                                 .setHighVal("".equals(tableFieldRule.highValue()) ? null : tableFieldRule.highValue())
-                                .setLowVal("".equals(tableFieldRule.lowValue()) ? null : tableFieldRule.lowValue());
+                                .setLowVal("".equals(tableFieldRule.lowValue()) ? null : tableFieldRule.lowValue())
+                                .setMustIn(tableFieldRule.mustIn())
+                                .setMustNotIn(tableFieldRule.mustNotIn());
                         Map<String, Integer> length = null;
                         int max = tableFieldRule.maxLength();
                         int min = tableFieldRule.minLength();

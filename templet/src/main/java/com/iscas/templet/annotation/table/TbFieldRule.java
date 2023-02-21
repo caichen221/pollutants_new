@@ -33,4 +33,8 @@ public @interface TbFieldRule {
 
     boolean containsLow() default false; //是否包含最小值
 
+    String[] mustIn() default {}; // 必须在数组中取某个值
+
+    String[] mustNotIn() default {}; // 值必须不在数组中
+
 }

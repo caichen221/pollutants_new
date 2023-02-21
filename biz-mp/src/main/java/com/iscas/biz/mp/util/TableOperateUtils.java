@@ -19,10 +19,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -154,6 +151,36 @@ public class TableOperateUtils {
                             }
                         }
                     }
+                    if (ArrayUtils.isNotEmpty(rule.getMustIn())) {
+                        // 值必须在数组中
+                        if (Objects.isNull(value) || !ArrayUtils.contains(rule.getMustIn(), value.toString())) {
+                            throw Exceptions.formatValidDataException("[" + tableField.getHeader() + "]值必须在:{}中", Arrays.toString(rule.getMustIn()));
+                        }
+                    }
+                    if (ArrayUtils.isNotEmpty(rule.getMustNotIn())) {
+                        // 值必须不在数组中
+                        if (Objects.nonNull(value) && ArrayUtils.contains(rule.getMustNotIn(), value.toString())) {
+                            throw Exceptions.formatValidDataException("[" + tableField.getHeader() + "]值必须不在:{}中", Arrays.toString(rule.getMustIn()));
+                        }
+                    }
+                    if (rule.getHighVal() != null && !ObjectUtils.isEmpty(value)) {
+                        // 校验最大值
+                        int compare = value.toString().compareTo(rule.getHighVal().toString());
+                        if (rule.isContainsHigh() && compare > 0) {
+                            throw Exceptions.formatValidDataException("[{}]值必须小于等于:[{}]", tableField.getHeader(), rule.getHighVal());
+                        } else if (!rule.isContainsHigh() && compare >= 0) {
+                            throw Exceptions.formatValidDataException("[{}]值必须小于:[{}]", tableField.getHeader(), rule.getHighVal());
+                        }
+                    }
+                    if (rule.getLowVal() != null && !ObjectUtils.isEmpty(value)) {
+                        // 校验最小值
+                        int compare = value.toString().compareTo(rule.getLowVal().toString());
+                        if (rule.isContainsLow() && compare < 0) {
+                            throw Exceptions.formatValidDataException("[{}]值必须大于等于:[{}]", tableField.getHeader(), rule.getLowVal());
+                        } else if (!rule.isContainsLow() && compare <= 0) {
+                            throw Exceptions.formatValidDataException("[{}]值必须大于:[{}]", tableField.getHeader(), rule.getLowVal());
+                        }
+                    }
                     if (validDistinct && rule.isDistinct()) {
                         // 如果需要校验重复性，校验是否数据库中已有该属性
                         duplicateProp(service, tableField.getField(), value);
@@ -237,11 +264,12 @@ public class TableOperateUtils {
 
     /**
      * 获取EXCEL的表头
-     * @since jdk1.8
-     * @date 2022/12/30
+     *
      * @param excelIgnoredFields 忽略的属性
-     * @param clazz 类
-     * @return java.util.LinkedHashMap<java.lang.String,java.lang.String>
+     * @param clazz              类
+     * @return java.util.LinkedHashMap<java.lang.String, java.lang.String>
+     * @date 2022/12/30
+     * @since jdk1.8
      */
     public static LinkedHashMap<String, String> getExcelHeader(String[] excelIgnoredFields, Class clazz) throws HeaderException {
         TableHeaderResponse header = TableOperateUtils.getHeader(clazz);
@@ -311,4 +339,33 @@ public class TableOperateUtils {
         }
         return queryWrapper;
     }
+
+    public static <T> void filterToEntity(TableSearchRequest request, T t) throws ValidDataException, HeaderException {
+        Map<String, List> filter = (Map<String, List>) request.getFilter();
+        TableHeaderResponse header = TableOperateUtils.getHeader(t.getClass());
+        Map<String, TableField> colMap = header.getValue().getCols().stream().collect(Collectors.toMap(TableField::getField, tf -> tf));
+        if (MapUtil.isNotEmpty(filter)) {
+            for (Map.Entry<String, List> entry : filter.entrySet()) {
+                String field = entry.getKey();
+                List conditions = entry.getValue();
+                if (CollectionUtil.isEmpty(conditions)) {
+                    throw new ValidDataException(String.format("字段:[%s]的查询条件不能为空", field));
+                }
+                if (!colMap.containsKey(field)) {
+                    throw new ValidDataException(String.format("字段:[%s]未在表头中定义", field));
+                }
+                TableField tableField = colMap.get(field);
+                if (!tableField.isSearch()) {
+                    throw new ValidDataException(String.format("字段:[%s]不支持查询", field));
+                }
+                TableSearchType searchType = tableField.getSearchType();
+                if (searchType == null) {
+                    throw new ValidDataException(String.format("字段:[%s]为定义searchType", field));
+                }
+                // 暂时不考虑时间的多个值的问题
+                ReflectUtil.setFieldValue(t, field, conditions.get(0));
+            }
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.iscas.templet.view.validator;
 
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -40,6 +41,17 @@ public class Rule implements Serializable {
     protected boolean containsLow = false;
     protected Object highVal;
     protected Object lowVal;
+
+    /**
+     * 取值必须是其中一种
+     * */
+    protected String[] mustIn;
+
+    /**
+     * 取值必须不是其中一种
+     * */
+    protected String[] mustNotIn;
+
     /**
      * 提示描述
      */
