@@ -12,7 +12,8 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = ElementType.METHOD)
+@Target(value = {ElementType.METHOD, ElementType.TYPE})
+@Inherited
 public @interface DS {
     String value();
 }
