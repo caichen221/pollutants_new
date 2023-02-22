@@ -88,8 +88,9 @@ public class JWTUtils {
         map.put("typ", "JWT");
         String token = doCreateToken(userIdAndName, iatDate, expiresDate, map, type);
         //将token缓存起来
-        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-        authCacheService.set(token, iatDate, Constants.AUTH_CACHE, expire * 60);
+        CacheUtils.putCache(Constants.AUTH_CACHE, token, iatDate);
+//        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
+//        authCacheService.set(token, iatDate, Constants.AUTH_CACHE, expire * 60);
         return token;
     }
 
@@ -98,8 +99,9 @@ public class JWTUtils {
     }
 
     public static Map<String, Claim> verifyToken(String token, AlgorithmType type) throws IOException, ValidTokenException, NoSuchAlgorithmException, InvalidKeySpecException {
-        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-        Object obj = authCacheService.get(token, Constants.AUTH_CACHE);
+//        IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
+//        Object obj = authCacheService.get(token, Constants.AUTH_CACHE);
+        Object obj = CacheUtils.getCache(Constants.AUTH_CACHE, token, String.class);
         if (obj == null) {
             throw Exceptions.validTokenException("登录凭证校验失败", "token:" + token + "不存在或已经被注销");
         }
@@ -151,7 +153,7 @@ public class JWTUtils {
         IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
 
         //修改为支持用户多会话模式
-        if (!authCacheService.listContains(Constants.KEY_USER_TOKEN + username, token, Constants.LOGIN_CACHE)) {
+        if (!authCacheService.listContains(Constants.KEY_USER_TOKEN + username, token)) {
             throw Exceptions.authenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
         }
 

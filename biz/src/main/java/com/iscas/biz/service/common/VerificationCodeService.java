@@ -3,6 +3,7 @@ package com.iscas.biz.service.common;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.iscas.base.biz.service.IAuthCacheService;
+import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.HeaderKey;
 import com.iscas.common.tools.constant.MediaType;
@@ -20,6 +21,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
+import static com.iscas.base.biz.config.Constants.CAPTCHA_CACHE;
 
 /**
  *
@@ -39,7 +42,8 @@ public class VerificationCodeService implements HeaderKey, MediaType {
 
     public void verificationCode(String key) throws LoginException, IOException {
         HttpServletResponse response = SpringUtils.getResponse();
-        String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+//        String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+        String loginKey = CacheUtils.getCache(CAPTCHA_CACHE, key, String.class);
         if (loginKey == null) {
             throw Exceptions.loginException("未获得加密码，拒绝生成验证码");
         }
@@ -51,12 +55,8 @@ public class VerificationCodeService implements HeaderKey, MediaType {
         String capText = producer.createText();
 
         log.debug("*************验证码已经生成为：{}******************", capText);
-
-        Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
-        String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
-        assert loginRandomCacheTime != null;
-        int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
-        authCacheService.set(Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText, com.iscas.base.biz.config.Constants.LOGIN_CACHE, loginRandomCacheSenconds);
+        CacheUtils.putCache(CAPTCHA_CACHE, Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText);
+//        authCacheService.set(Constants.KAPTCHA_SESSION_KEY + ":" + loginKey, capText, com.iscas.base.biz.config.Constants.LOGIN_CACHE, loginRandomCacheSenconds);
         BufferedImage bi = producer.createImage(capText);
         ServletOutputStream out = response.getOutputStream();
         // 向页面输出验证码
@@ -65,23 +65,27 @@ public class VerificationCodeService implements HeaderKey, MediaType {
     }
 
     public ResponseEntity verify(String code, String key) throws LoginException {
-        String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+//        String loginKey = (String) authCacheService.get(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+        String loginKey = CacheUtils.getCache(CAPTCHA_CACHE, key, String.class);
         if (loginKey == null) {
             throw Exceptions.loginException("未获得加密码，拒绝校验验证码");
         }
         String cacheKey = Constants.KAPTCHA_SESSION_KEY + ":" + loginKey;
         ResponseEntity response = new ResponseEntity();
         // 获取验证码
-        Object storeCode = authCacheService.get(cacheKey, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+//        Object storeCode = authCacheService.get(cacheKey, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+        String storeCode = CacheUtils.getCache(CAPTCHA_CACHE, cacheKey, String.class);
         // 判断验证码是否为空
         if (StringUtils.isEmpty(code)) {
             response.setValue(false);
         } else {
             // 校验验证码的正确与否
             boolean result = StringUtils.equalsAnyIgnoreCase(code, storeCode + "");
-            authCacheService.remove(cacheKey, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+//            authCacheService.remove(cacheKey, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+            CacheUtils.evictCache(CAPTCHA_CACHE, cacheKey);
             if (!result) {
-                authCacheService.remove(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+//                authCacheService.remove(key, com.iscas.base.biz.config.Constants.LOGIN_CACHE);
+                CacheUtils.evictCache(CAPTCHA_CACHE, key);
             }
             response.setValue(result);
         }

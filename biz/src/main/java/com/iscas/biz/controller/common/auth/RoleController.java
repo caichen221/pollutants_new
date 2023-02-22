@@ -92,9 +92,10 @@ public class RoleController extends BaseController {
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = TreeResponseData.class)))
     @PutMapping("/menu/tree")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public ResponseEntity updateMenuTree(@RequestBody TreeResponseData treeResponseData, @RequestParam @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         roleService.updateMenuTree(treeResponseData, roleId);
@@ -122,9 +123,10 @@ public class RoleController extends BaseController {
             array = @ArraySchema(schema = @Schema(implementation = Opration.class))))
     @PutMapping("/opration")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public ResponseEntity editOpration(@RequestBody List<Opration> oprations, @RequestParam @NotNull(message = "{role.id.null.constraint.message}") Integer roleId) {
         roleService.editOpration(oprations, roleId);
@@ -137,9 +139,10 @@ public class RoleController extends BaseController {
     }))
     @PostMapping("/del")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public ResponseEntity deleteData(@RequestBody List<Object> ids)
             throws ValidDataException {
@@ -151,9 +154,10 @@ public class RoleController extends BaseController {
             examples = @ExampleObject(value = "{\"key1\":\"val1\", \"key2\":\"val2\"}")))
     @PostMapping("/data")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public ResponseEntity saveData(@RequestBody @RoleConstraint Map<String, Object> data)
             throws ValidDataException {
@@ -165,9 +169,10 @@ public class RoleController extends BaseController {
             examples = @ExampleObject(value = "{\"key1\":\"val1\", \"key2\":\"val2\"}")))
     @PutMapping("/data")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public ResponseEntity editData(@RequestBody @RoleConstraint Map<String, Object> data)
             throws ValidDataException {

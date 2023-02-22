@@ -1,20 +1,20 @@
-package com.iscas.base.biz.autoconfigure.redis.cache;
+package com.iscas.base.biz.autoconfigure.cache.redis;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.iscas.base.biz.autoconfigure.auth.TokenProps;
+import com.iscas.base.biz.autoconfigure.cache.CacheSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -40,15 +40,12 @@ import java.util.Map;
 @SuppressWarnings("unused")
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis")
+@EnableConfigurationProperties(CacheSpec.class)
 public class RedisCacheAutoConfiguration {
-    @Value("${spring.cache.redis.time-to-live:2000000}")
-    private int timeToLive;
-
-    @Value("${login.random.data.cache.time-to-live}")
-    private int randomTimeToLive;
-
+    @Value("${spring.cache.redis.time-to-live}")
+    private Duration timeToLive;
     @Autowired
-    private TokenProps tokenProps;
+    private CacheSpec cacheSpec;
 
     /**
      * 序列化配置
@@ -67,35 +64,32 @@ public class RedisCacheAutoConfiguration {
     @Bean("cacheManager")
     @Primary
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-        return new RedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
+        return new CustomizedRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
                 // 默认策略，未配置的 key 会使用这个
                 this.getRedisCacheConfigurationWithTtl(timeToLive),
                 // 指定 key 策略
-                this.getRedisCacheConfigurationMap()
+                this.getRedisCacheConfigurationMap(),
+                // redis连接工厂
+                redisConnectionFactory
         );
     }
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
-        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>(4);
-        redisCacheConfigurationMap.put("auth", this.getRedisCacheConfigurationWithTtl((int) (tokenProps.getExpire().getSeconds())));
-        redisCacheConfigurationMap.put("test", this.getRedisCacheConfigurationWithTtl(18000));
-        redisCacheConfigurationMap.put("loginCache", this.getRedisCacheConfigurationWithTtl(randomTimeToLive));
+        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>(8);
+        cacheSpec.getSpecs().forEach((name, spec) ->
+                redisCacheConfigurationMap.put(name, this.getRedisCacheConfigurationWithTtl(spec.getExpireTime())));
         return redisCacheConfigurationMap;
     }
 
-    private RedisCacheConfiguration getRedisCacheConfigurationWithTtl(Integer seconds) {
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+    private RedisCacheConfiguration getRedisCacheConfigurationWithTtl(Duration duration) {
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializerValue = new Jackson2JsonRedisSerializer<>(Object.class);
+        jackson2JsonRedisSerializerValue.setObjectMapper(om);
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
-        redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(
-                RedisSerializationContext
-                        .SerializationPair
-                        .fromSerializer(jackson2JsonRedisSerializer)
-        ).entryTtl(Duration.ofSeconds(seconds));
-
+        RedisSerializationContext.SerializationPair<Object> objectSerializationPair = RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializerValue);
+        redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(objectSerializationPair).entryTtl(duration);
         return redisCacheConfiguration;
     }
 

@@ -6,6 +6,7 @@ import com.iscas.base.biz.autoconfigure.auth.TokenProps;
 import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.common.AuthCacheService;
+import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
 import com.iscas.biz.validator.anno.LoginConstraint;
 import com.iscas.common.tools.core.random.RandomStringUtils;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 登陆控制器
@@ -65,9 +67,11 @@ public class LoginController extends BaseController implements Constants {
     @GetMapping(value = "/prelogin", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Map> preLogin(){
         ResponseEntity<Map> responseEntity = new ResponseEntity<>();
-        String data = RandomStringUtils.randomStr(16);
-        String uuid = authCacheService.createCodeAndPut(data);
-        responseEntity.setValue(Map.of("key", uuid, "encryKey", data));
+        String secretKey = RandomStringUtils.randomStr(16);
+        String uuid = UUID.randomUUID().toString();
+        // 放入缓存
+        CacheUtils.putCache(Constants.CAPTCHA_CACHE, uuid, secretKey);
+        responseEntity.setValue(Map.of("key", uuid, "encryKey", secretKey));
         return responseEntity;
     }
 

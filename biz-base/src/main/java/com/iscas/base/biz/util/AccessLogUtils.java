@@ -21,6 +21,13 @@ public class AccessLogUtils {
     private AccessLogUtils() {
     }
 
+    /**
+     * 记录访问日志
+     *
+     * @param request http request
+     * @param status  http 状态码
+     * @date 2023/2/21
+     */
     public static void log(HttpServletRequest request, int status) {
         Long startTime = request == null ? null : (Long) request.getAttribute(Constants.KEY_REQUEST_START_TIME);
 

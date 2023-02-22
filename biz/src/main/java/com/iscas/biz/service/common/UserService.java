@@ -273,7 +273,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'username:'.concat(#username)")
+            @CacheEvict(value = "permission", key = "'username:'.concat(#username)")
     })
     public void deleteOneUserCache(String username) {
         log.debug("删除用户:{}的权限相关缓存", username);

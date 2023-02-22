@@ -68,9 +68,10 @@ public class OrgController extends BaseController {
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "组织机构ID集合", content = @Content(examples = @ExampleObject(value = "[123, 124]")))
     @PostMapping("/node/del")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public ResponseEntity deleteNode(@RequestBody List<Integer> orgIds) {
         AssertCollectionUtils.assertCollectionNotEmpty(orgIds, "orgIds不能未空");

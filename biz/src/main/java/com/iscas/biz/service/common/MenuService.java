@@ -139,9 +139,10 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public int addMenu(Menu menu) throws ValidDataException {
         AssertObjUtils.assertNull(menu.getMenuId(), "请求参数有误，menuId不能为空");
@@ -163,9 +164,10 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     public int editMenu(Menu menu) {
@@ -212,9 +214,10 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
 
     @SuppressWarnings("UnusedReturnValue")
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public int deleteMenu(Integer menuId) {
         this.removeById(menuId);

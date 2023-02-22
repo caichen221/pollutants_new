@@ -1,12 +1,15 @@
 package com.iscas.base.biz.service;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.autoconfigure.auth.TokenProps;
+import com.iscas.base.biz.config.Constants;
 import com.iscas.base.biz.model.auth.Menu;
 import com.iscas.base.biz.model.auth.Role;
 import com.iscas.base.biz.model.auth.Url;
-import com.iscas.base.biz.util.*;
+import com.iscas.base.biz.util.AuthUtils;
+import com.iscas.base.biz.util.CacheUtils;
+import com.iscas.base.biz.util.JWTUtils;
+import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
 import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.LoginException;
@@ -37,7 +40,8 @@ public abstract class AbstractAuthService implements Constants {
 
     public void invalidToken(HttpServletRequest request) {
         String token = AuthUtils.getToken(request);
-        SpringUtils.getBean(IAuthCacheService.class).remove(token, Constants.AUTH_CACHE);
+//        SpringUtils.getBean(IAuthCacheService.class).remove(token, Constants.AUTH_CACHE);
+        CacheUtils.evictCache(Constants.AUTH_CACHE, token);
         request.getSession().invalidate();
     }
 
@@ -55,9 +59,5 @@ public abstract class AbstractAuthService implements Constants {
         } catch (Exception e) {
             throw Exceptions.validTokenException("token 校验失败", e.getMessage(), e);
         }
-
     }
-
-
-
 }

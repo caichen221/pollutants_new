@@ -10,9 +10,8 @@ import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.base.biz.util.AuthUtils;
+import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.templet.exception.AuthenticationRuntimeException;
-import com.iscas.templet.exception.AuthorizationRuntimeException;
 import com.iscas.templet.exception.Exceptions;
 import com.iscas.templet.exception.ValidTokenException;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +99,8 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 }
                 authContext.setToken(token);
                 IAuthCacheService authCacheService = SpringUtils.getApplicationContext().getBean(IAuthCacheService.class);
-                if (authCacheService.get(token, Constants.AUTH_CACHE) == null) {
+//                if (authCacheService.get(token, Constants.AUTH_CACHE) == null) {
+                if (CacheUtils.getCache(Constants.AUTH_CACHE, token, String.class) == null) {
                     throw Exceptions.authenticationRuntimeException("身份认证信息有误", "token有误或已被注销");
                 }
                 //如果token不为null,校验token
@@ -114,7 +114,7 @@ public class LoginFilter extends OncePerRequestFilter implements Constants {
                 } catch (ValidTokenException e) {
                     throw Exceptions.authenticationRuntimeException("校验身份信息出错", "校验token出错");
                 }
-                if (!authCacheService.listContains("user-token:" + username, token, Constants.LOGIN_CACHE)) {
+                if (!authCacheService.listContains("user-token:" + username, token)) {
                     throw Exceptions.authenticationRuntimeException("身份认证信息有误", "token已失效");
                 }
 

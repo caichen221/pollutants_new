@@ -33,10 +33,7 @@ public class CaffCacheUtils {
      * 最大容量
      */
     private static final int MAXIMUM_SIZE = 10000;
-    /**
-     * 目前没查到资料怎样使缓存用不失效，设置尽量一个大的值10年
-     */
-    private static final int EXPIRE_AFTER_WRITE = 3650 * 24 * 60;
+
     private static volatile LoadingCache<String, Object> localCache = null;
 
     public static LoadingCache<String, Object> getLocalCache() {

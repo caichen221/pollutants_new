@@ -8,6 +8,7 @@ import com.iscas.base.biz.model.auth.Url;
 import com.iscas.base.biz.service.AbstractAuthService;
 import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.AuthUtils;
+import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.CustomSession;
 import com.iscas.base.biz.util.JWTUtils;
 import com.iscas.biz.domain.common.User;
@@ -74,7 +75,7 @@ public class AuthServiceImpl extends AbstractAuthService {
         this.tokenProps = tokenProps;
     }
 
-    @Cacheable(value = "auth", key = "'url_map'")
+    @Cacheable(value = "permission", key = "'url_map'")
     @Override
     public Map<String, Url> getUrls() {
         log.debug("------读取url信息------");
@@ -84,7 +85,7 @@ public class AuthServiceImpl extends AbstractAuthService {
                 .orElse(Map.of());
     }
 
-    @Cacheable(value = "auth", key = "'menus'")
+    @Cacheable(value = "permission", key = "'menus'")
     @Override
     public List<Menu> getMenus() {
         return Optional.ofNullable(menuMapper.selectList(null))
@@ -94,7 +95,7 @@ public class AuthServiceImpl extends AbstractAuthService {
     }
 
 
-    @Cacheable(value = "auth", key = "'username:'.concat(#username)")
+    @Cacheable(value = "permission", key = "'username:'.concat(#username)")
     @Override
     public List<Role> getRoles(String username) {
         Map<String, Role> auth = getAuth();
@@ -109,11 +110,12 @@ public class AuthServiceImpl extends AbstractAuthService {
     @Override
     public void invalidToken(HttpServletRequest request) {
         Optional.ofNullable(AuthUtils.getToken())
-                .ifPresent(token -> authCacheService.remove(token, Constants.AUTH_CACHE));
+//                .ifPresent(token -> authCacheService.remove(token, Constants.AUTH_CACHE));
+                .ifPresent(token -> CacheUtils.evictCache(token, Constants.AUTH_CACHE));
         request.getSession().invalidate();
     }
 
-    @Cacheable(value = "auth", key = "'role_map'")
+    @Cacheable(value = "permission", key = "'role_map'")
     @Override
     public Map<String, Role> getAuth() {
         log.debug("------读取角色信息------");
@@ -160,27 +162,32 @@ public class AuthServiceImpl extends AbstractAuthService {
     public void loginHandler(HttpServletResponse response, Map<String, String> user, ResponseEntity responseEntity, int expire, int cookieExpire) throws LoginException {
         String pwd = user.get("password");
         String username = user.get("username");
-        String secKey = user.get("key");
-        String loginKey = (String) authCacheService.get(secKey, Constants.LOGIN_CACHE);
-        if (loginKey == null) {
+        String uuid = user.get("key");
+//        String loginKey = (String) authCacheService.get(uuid, Constants.LOGIN_CACHE);
+        String secretKey = CacheUtils.getCache(Constants.CAPTCHA_CACHE, uuid, String.class);
+        if (secretKey == null) {
             throw Exceptions.loginException("未获得加密码，拒绝登录");
         }
-        authCacheService.remove(secKey, Constants.LOGIN_CACHE);
+//        authCacheService.remove(uuid, Constants.LOGIN_CACHE);
+        CacheUtils.evictCache(Constants.CAPTCHA_CACHE, uuid);
         try {
-            username = Objects.requireNonNull(AesUtils.aesDecrypt(username, loginKey)).trim();
-            pwd = Objects.requireNonNull(AesUtils.aesDecrypt(pwd, loginKey)).trim();
+            username = Objects.requireNonNull(AesUtils.aesDecrypt(username, secretKey)).trim();
+            pwd = Objects.requireNonNull(AesUtils.aesDecrypt(pwd, secretKey)).trim();
         } catch (Exception e) {
             throw Exceptions.loginException("非法登陆", e);
         }
         String userLockedKey = CACHE_KEY_USER_LOCK + "_" + username;
         String userLoginErrorCountKey = CACHE_KEY_LOGIN_ERROR_COUNT + "_" + username;
-        if (authCacheService.get(userLockedKey, Constants.AUTH_CACHE) != null) {
+//        if (authCacheService.get(userLockedKey, Constants.AUTH_CACHE) != null) {
+        if (CacheUtils.getCache(Constants.LOCK_USER_CACHE, userLockedKey, String.class) != null) {
             throw Exceptions.loginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
-        Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
+//        Integer errCount = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
+        Integer errCount = CacheUtils.getCache(Constants.AUTH_CACHE, userLoginErrorCountKey, Integer.class);
         if (errCount != null && errCount >= MAX_LOGIN_ERROR_COUNT) {
-            authCacheService.set(userLockedKey, "locked", Constants.AUTH_CACHE, 120);
-            throw  new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
+            CacheUtils.putCache(LOCK_USER_CACHE, userLockedKey, "locked");
+//            authCacheService.set(userLockedKey, "locked", Constants.AUTH_CACHE, 120);
+            throw new LoginException("用户登录连续失败次数过多，已被锁定，自动解锁时间2分钟");
         }
 
         User dbUser = userMapper.selectByUserName(username);
@@ -192,9 +199,11 @@ public class AuthServiceImpl extends AbstractAuthService {
             try {
                 verify = MD5Utils.saltVerify(pwd, dbUser.getUserPwd());
                 if (!verify) {
-                    Integer count = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
+//                    Integer count = (Integer) authCacheService.get(userLoginErrorCountKey, Constants.AUTH_CACHE);
+                    Integer count = CacheUtils.getCache(Constants.AUTH_CACHE, userLoginErrorCountKey, Integer.class);
                     int errorCount = count == null ? 1 : count + 1;
-                    authCacheService.set(userLoginErrorCountKey, errorCount, Constants.AUTH_CACHE, (int) tokenProps.getExpire().getSeconds());
+//                    authCacheService.set(userLoginErrorCountKey, errorCount, Constants.AUTH_CACHE, (int) tokenProps.getExpire().getSeconds());
+                    CacheUtils.putCache(AUTH_CACHE, userLoginErrorCountKey, errorCount);
                     throw Exceptions.loginException("密码错误");
                 }
             } catch (LoginException e) {
@@ -257,8 +266,11 @@ public class AuthServiceImpl extends AbstractAuthService {
             //创建一个虚拟session（没用）
             CustomSession.setAttribute(sessionId, SESSION_USER, username);
 
-            authCacheService.remove(userLockedKey, Constants.AUTH_CACHE);
-            authCacheService.remove(userLoginErrorCountKey, Constants.AUTH_CACHE);
+//            authCacheService.remove(userLockedKey, Constants.AUTH_CACHE);
+            CacheUtils.evictCache(LOCK_USER_CACHE, userLockedKey);
+//            authCacheService.remove(userLoginErrorCountKey, Constants.AUTH_CACHE);
+            CacheUtils.evictCache(Constants.AUTH_CACHE, userLoginErrorCountKey);
+
 
             //处理多用户登陆的问题
 //                if (username != null) {
@@ -290,7 +302,7 @@ public class AuthServiceImpl extends AbstractAuthService {
             throw Exceptions.loginException("登录时创建token异常", e);
         } catch (IOException e) {
             e.printStackTrace();
-            throw  new LoginException("登录异常", e);
+            throw new LoginException("登录异常", e);
         }
     }
 

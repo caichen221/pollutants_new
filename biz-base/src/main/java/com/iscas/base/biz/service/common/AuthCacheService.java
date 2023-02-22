@@ -1,13 +1,11 @@
 package com.iscas.base.biz.service.common;
 
 import com.iscas.base.biz.service.IAuthCacheService;
-import com.iscas.base.biz.util.AuthCacheUtils;
+import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.CommonRedisHelper;
-import com.iscas.base.biz.util.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings({"unused", "AlibabaServiceOrDaoClassShouldEndWithImpl", "AlibabaUndefineMagicConstant", "rawtypes", "unchecked"})
 @Service
 public class AuthCacheService implements IAuthCacheService {
-    private static final String CACHE_AUTH = "auth";
     private final CacheManager cacheManager;
 
     @Autowired(required = false)
@@ -35,38 +32,41 @@ public class AuthCacheService implements IAuthCacheService {
     @Value("${user.max.sessions:1}")
     private int userMaxSessions;
 
-    private final Map<String, List<String>> jdkList = new WeakHashMap<>();
+    private final Map<String, List<String>> jdkList = new HashMap<>();
 
     public AuthCacheService(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
 
 
-    @Override
-    public String createCodeAndPut(String secretKey) {
-        UUID uuid = UUID.randomUUID();
-        Environment environment = SpringUtils.getApplicationContext().getBean(Environment.class);
-        String loginRandomCacheTime = environment.getProperty("login.random.data.cache.time-to-live");
-        assert loginRandomCacheTime != null;
-        int loginRandomCacheSenconds = Integer.parseInt(loginRandomCacheTime);
-        AuthCacheUtils.put(uuid.toString(), secretKey, "loginCache", loginRandomCacheSenconds);
-        return uuid.toString();
-    }
+//    @Override
+//    public String createCodeAndPut(String secretKey) {
+//        String uuid = UUID.randomUUID().toString();
+//        // 放入缓存
+//        CacheUtils.putCache(Constants.CAPTCHA_CACHE, uuid, secretKey);
+//        return uuid;
+//    }
 
-    @Override
-    public void remove(String key, String cacheKey) {
-        AuthCacheUtils.remove(key, cacheKey);
-    }
+//    @Override
+//    public void remove(String key, String cacheKey) {
+////        AuthCacheUtils.remove(key, cacheKey);
+//        CacheUtils.evictCache(cacheKey, key);
+//    }
 
-    @Override
-    public void set(String key, Object value, String cacheKey, int ttl) {
-        AuthCacheUtils.put(key, value, cacheKey, ttl);
-    }
+//    @Override
+//    public void set(String key, Object value, String cacheKey) {
+//        CacheUtils.putCache(cacheKey, key, value);
+//    }
 
-    @Override
-    public Object get(String key, String cacheKey) {
-        return AuthCacheUtils.get(key, cacheKey);
-    }
+//    @Override
+//    public void set(String key, Object value, String cacheKey, int ttl) {
+//        AuthCacheUtils.put(key, value, cacheKey, ttl);
+//    }
+
+//    @Override
+//    public Object get(String key, String cacheKey) {
+//        return CacheUtils.getCache(cacheKey, key, Object.class);
+//    }
 
     @Override
     public void rpush(String key, String value, String cacheKey) {
@@ -75,7 +75,8 @@ public class AuthCacheService implements IAuthCacheService {
                 List<String> values = jdkList.computeIfAbsent(key, k -> new ArrayList<>());
                 if (llen(key, cacheKey) >= userMaxSessions) {
                     //移除较早登录的会话
-                    Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> remove(token, cacheKey));
+//                    Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> remove(token, cacheKey));
+                    Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> CacheUtils.evictCache(cacheKey, token));
                 }
                 //加入新会话
                 values.add(value);
@@ -88,7 +89,8 @@ public class AuthCacheService implements IAuthCacheService {
                     if (lock) {
                         if (llen(key, cacheKey) >= userMaxSessions) {
                             //移除较早登录的会话
-                            Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> remove(token, cacheKey));
+//                            Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> remove(token, cacheKey));
+                            Optional.ofNullable(lpop(key, cacheKey)).ifPresent(token -> CacheUtils.evictCache(cacheKey, token));
                         }
                         //加入新会话
                         redisTemplate.opsForList().rightPush(key, value);
@@ -132,7 +134,7 @@ public class AuthCacheService implements IAuthCacheService {
     }
 
     @Override
-    public boolean listContains(String key, String value, String cacheKey) {
+    public boolean listContains(String key, String value) {
         if (!isRedisCacheManager()) {
             return Optional.ofNullable(jdkList.get(key)).map(list -> list.contains(value)).orElse(false);
         } else {

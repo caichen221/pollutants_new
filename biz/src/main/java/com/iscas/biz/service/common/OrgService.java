@@ -118,9 +118,10 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public int addOrg(Org org) throws ValidDataException {
         AssertObjUtils.assertNull(org.getOrgId(), "请求参数有误，orgId必须为空");
@@ -143,9 +144,10 @@ public class OrgService extends ServiceImpl<OrgMapper, Org> {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Throwable.class)
     @Caching(evict = {
-            @CacheEvict(value = "auth", key = "'url_map'"),
-            @CacheEvict(value = "auth", key = "'menus'"),
-            @CacheEvict(value = "auth", key = "'role_map'")
+            @CacheEvict(value = "permission", key = "'url_map'"),
+            @CacheEvict(value = "permission", key = "'menus'"),
+            @CacheEvict(value = "permission", key = "'role_map'"),
+            @CacheEvict(value = "permission", key = "'username:*'")
     })
     public int editOrg(Org org) {
         AssertObjUtils.assertNotNull(org.getOrgId(), "请求参数有误，orgId不能为空");

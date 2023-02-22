@@ -67,6 +67,16 @@ public interface Constants {
     String LOGIN_CACHE = "loginCache";
     String AUTH_CACHE = "auth";
 
+    /**
+     * 验证码缓存name
+     * */
+    String CAPTCHA_CACHE = "captcha";
+
+    /**
+     * 锁定用户缓存name
+     * */
+    String LOCK_USER_CACHE = "lockuser";
+
     String KEY_USER_TOKEN = "user-token:";
 
     /**日志链路追踪的请求头*/
