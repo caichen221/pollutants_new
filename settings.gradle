@@ -59,4 +59,6 @@ include 'special:common-ehcache-tools'
 findProject(':special:common-ehcache-tools')?.name = 'common-ehcache-tools'
 include 'common:common-nexus-tools'
 findProject(':common:common-nexus-tools')?.name = 'common-nexus-tools'
+include 'special:common-ehcache2-tools'
+findProject(':special:common-ehcache2-tools')?.name = 'common-ehcache2-tools'
 
