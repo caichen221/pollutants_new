@@ -38,8 +38,29 @@ public class MD5UtilsTests {
     @Test
     public void MD53() throws NoSuchAlgorithmException {
         boolean sec = MD5Utils.saltVerify("admin"
-                ,"09e480814288b5245d39228681f23f311208e9a57170a990");
+                ,"f2020e118a4aa8fd39a4560c79b16b30024fb29b64242b5e");
         Assertions.assertEquals(true, sec);
+    }
+
+    /**
+     * hmac加密
+     * */
+    @Test
+    public void MD54() {
+        String iscas = MD5Utils.hmacMd5("iscas", "123456");
+        System.out.println(iscas);
+        Assertions.assertNotNull(iscas);
+    }
+
+    /**
+     * hmac校验
+     * */
+    @Test
+    public void MD55() {
+        String data = MD5Utils.hmacMd5("iscas", "123456");
+        System.out.println(data);
+        boolean res = MD5Utils.hmacVerify("iscas", "123456", data);
+        Assertions.assertTrue(res);
     }
 
     /**
