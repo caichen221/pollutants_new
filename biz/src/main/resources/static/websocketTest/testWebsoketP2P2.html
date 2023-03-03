@@ -6,7 +6,7 @@
     <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script>
-        var socket = new SockJS("http://localhost:7901/demo/webSocketServer");
+        var socket = new SockJS("http://localhost:8181/demo/webSocketServer");
         var stompClient = Stomp.over(socket);
         // stompClient.heartbeat.outgoing = 2000; // client will send heartbeats every 20000ms
         // stompClient.heartbeat.incoming = 0;     // client does not want to receive heartbeats
