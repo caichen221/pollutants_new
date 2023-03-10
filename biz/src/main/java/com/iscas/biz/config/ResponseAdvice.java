@@ -25,7 +25,7 @@ public class ResponseAdvice implements ResponseBodyAdvice {
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         // 如果返回值不是ResponseEntity 或者 有@NoneResponseEntity注解在方法或类上。
-        boolean notResponseEntity = !returnType.getParameterType().isAssignableFrom(ResponseEntity.class);
+        boolean notResponseEntity = !ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
         boolean annotationPresent = returnType.hasMethodAnnotation(NoneResponseEntity.class) ||
                 returnType.getMethod().getDeclaringClass().isAnnotationPresent(NoneResponseEntity.class);
         boolean res = false;
