@@ -1,8 +1,10 @@
 package com.iscas.biz.mp.enhancer.injector;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import com.iscas.common.tools.core.io.file.ScannerUtils;
 import com.iscas.common.tools.exception.lambda.Lambdas;
 
@@ -26,6 +28,7 @@ public class CustomSqlInjector extends DefaultSqlInjector {
                 if (methodCache == null) {
                     List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
                     methodList.addAll(getCustomMethods());
+                    methodList.add(new InsertBatchSomeColumn(i -> i.getFieldFill() != FieldFill.UPDATE));
                     methodCache = methodList;
                 }
             }
