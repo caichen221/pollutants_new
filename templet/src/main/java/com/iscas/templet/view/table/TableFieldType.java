@@ -64,7 +64,9 @@ public enum  TableFieldType {
     /**（特殊-宽度100%的文本输入框）*/
     fulltext,
     /**（特殊-宽度100%的多行文本输入框）*/
-    bigtextarea
+    bigtextarea,
+    /**密码输入框*/
+    password
     ;
 
 
