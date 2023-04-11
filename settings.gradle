@@ -61,4 +61,6 @@ include 'common:common-nexus-tools'
 findProject(':common:common-nexus-tools')?.name = 'common-nexus-tools'
 include 'special:common-ehcache2-tools'
 findProject(':special:common-ehcache2-tools')?.name = 'common-ehcache2-tools'
+include 'common:common-prometheus-tools'
+findProject(':common:common-prometheus-tools')?.name = 'common-prometheus-tools'
 
