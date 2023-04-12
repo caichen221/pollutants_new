@@ -160,7 +160,11 @@ public class ResultParser {
             keyAsString = keyAsString.replace("iscas123", "+");
             keyAsString = keyAsString.replace("Iscas123", "/");
             keyAsString = keyAsString.replace("dengyu", "=");
-            keyAsString = new String(Base64.getDecoder().decode(keyAsString), StandardCharsets.UTF_8);
+            try {
+                keyAsString = new String(Base64.getDecoder().decode(keyAsString), StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             result.put(keyAsString, value);
         }
         result.putAll(groupInfo);

@@ -260,6 +260,19 @@ public class ConnectionTest {
     }
 
     /**
+     * 测试count(*)
+     */
+    @Test
+    public void testCount2() throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select count(*) AS c from ods_test_88 WHERE name like '%test%'");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getInt(1));
+
+        }
+    }
+
+    /**
      * 测试Mid
      */
     @Test
