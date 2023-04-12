@@ -44,8 +44,8 @@ public class ResultParser {
     public static void parse(List<Map<String, Object>> items, List<StatisticResult> statisticResults,
                              List<SelectItem> selectItems, boolean hasGroupBy) {
 //        if (hasGroupBy) {
-        if (CollectionUtils.isNotEmpty(statisticResults) && CollectionUtils.isNotEmpty(statisticResults.get(0).getResult()) &&
-                statisticResults.get(0).getResult().get(0).getKey() != null) {
+        if (CollectionUtils.isNotEmpty(statisticResults) && CollectionUtils.isNotEmpty(statisticResults.get(0).getResult()) /*&&
+                statisticResults.get(0).getResult().get(0).getKey() != null*/) {
             List<Map<String, Object>> itemsOld = new ArrayList<>(items);
             items.clear();
             parseStatisticResult(statisticResults.get(0), items, new HashMap<>());
@@ -111,26 +111,41 @@ public class ResultParser {
     private static void parseStatisticResult(StatisticResult sr, List<Map<String, Object>> items, Map<String, Object> groupInfo) {
         String alias = sr.getAlias();
         List<StatisticItem> statisticItems = sr.getResult();
-        if (CollectionUtils.isNotEmpty(statisticItems) && statisticItems.get(0).getKey() != null) {
+        if (CollectionUtils.isNotEmpty(statisticItems)) {
             for (StatisticItem statisticItem : statisticItems) {
                 Object k = statisticItem.getKey();
-                Map<String, Object> subGroupInfo = new HashMap<>();
-                subGroupInfo.put(alias, k);
-                subGroupInfo.putAll(groupInfo);
-                List<StatisticResult> children = statisticItem.getChildren();
-                if (CollectionUtils.isNotEmpty(children)) {
-                    List<StatisticItem> result = children.get(0).getResult();
-                    if (CollectionUtils.isNotEmpty(result) && result.get(0).getChildren() == null) {
-                        // 处理最后的值
-                        handleLastData(children, subGroupInfo, items);
-                    } else {
-                        for (StatisticResult child : children) {
-                            parseStatisticResult(child, items, subGroupInfo);
+                if (Objects.nonNull(k)) {
+                    Map<String, Object> subGroupInfo = new HashMap<>();
+                    subGroupInfo.put(alias, k);
+                    subGroupInfo.putAll(groupInfo);
+                    List<StatisticResult> children = statisticItem.getChildren();
+                    if (CollectionUtils.isNotEmpty(children)) {
+                        List<StatisticItem> result = children.get(0).getResult();
+                        if (CollectionUtils.isNotEmpty(result) && result.get(0).getChildren() == null) {
+                            // 处理最后的值
+                            handleLastData(children, subGroupInfo, items);
+                        } else {
+                            for (StatisticResult child : children) {
+                                parseStatisticResult(child, items, subGroupInfo);
+                            }
                         }
+                    } else {
+                        // 处理最后的值
+                        handleLastData(List.of(sr), subGroupInfo, items);
                     }
                 } else {
-                    // 处理最后的值
-                    handleLastData(List.of(sr), subGroupInfo, items);
+                    List<StatisticResult> children = statisticItem.getChildren();
+                    if (CollectionUtils.isNotEmpty(children)) {
+                        List<StatisticItem> result = children.get(0).getResult();
+                        if (CollectionUtils.isNotEmpty(result) && result.get(0).getChildren() == null) {
+                            // 处理最后的值
+                            handleLastData(children, new HashMap<>(), items);
+                        } else {
+                            for (StatisticResult child : children) {
+                                parseStatisticResult(child, items, new HashMap<>());
+                            }
+                        }
+                    }
                 }
             }
         }

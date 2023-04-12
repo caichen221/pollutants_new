@@ -176,8 +176,8 @@ public class ExecuteQuery {
                     Column column = new Column();
                     column.setName("_id");
                     headers.add(0, column);
-                    return headers.stream().map(Column::getName).collect(Collectors.toList());
                 }
+                return headers.stream().map(Column::getName).collect(Collectors.toList());
             }
         }
         return Collections.EMPTY_LIST;

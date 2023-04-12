@@ -18,7 +18,7 @@ public class ConnectionTest {
     public void testConnection() {
         try {
             Class.forName("com.iscas.datasong.connector.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:datasong://192.168.100.21:15680/dmodbdatasong1", null, null);
+            connection = DriverManager.getConnection("jdbc:datasong://192.168.100.22:15680/dmodbdatasong1", null, null);
             System.out.println(connection);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -34,9 +34,9 @@ public class ConnectionTest {
     public void test() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select * from ods_table_02");
+        ResultSet rs = statement.executeQuery("select * from ods_test_88");
         while (rs.next()) {
-            System.out.println(rs.getString(1));
+            System.out.println(rs.getString(2));
         }
     }
 
@@ -47,8 +47,10 @@ public class ConnectionTest {
     public void testStatement2() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select * from testtable limit 0, 1");
-        System.out.println(rs);
+        ResultSet rs = statement.executeQuery("select * from ods_test_88 limit 0, 1");
+        while (rs.next()) {
+            System.out.println(rs.getString(2));
+        }
     }
 
     /**
@@ -58,8 +60,13 @@ public class ConnectionTest {
     public void testStatement3() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select name AS lala, t.*, id, max(id) AS x, avg(name) from testtable t limit 0, 1");
-        System.out.println(rs);
+        ResultSet rs = statement.executeQuery("select name AS lala, id, max(id) AS x, avg(name) from ods_test_88 t limit 0, 1");
+        while (rs.next()) {
+            System.out.println(rs.getObject(1));
+            System.out.println(rs.getObject(2));
+            System.out.println(rs.getObject(3));
+            System.out.println(rs.getObject(4));
+        }
     }
 
     /**
@@ -69,16 +76,12 @@ public class ConnectionTest {
     public void testSelectAll() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select * from testtable t");
+        ResultSet rs = statement.executeQuery("select * from ods_test_88 t");
         while (rs.next()) {
-            String col1 = rs.getString(1);
-            String col2 = rs.getString(2);
-            int col3 = rs.getInt(3);
-            String col4 = rs.getString(4);
-            System.out.println(col1);
-            System.out.println(col2);
-            System.out.println(col3);
-            System.out.println(col4);
+            System.out.println(rs.getObject(1));
+            System.out.println(rs.getObject(2));
+            System.out.println(rs.getObject(3));
+            System.out.println(rs.getObject(4));
         }
     }
 
@@ -89,16 +92,12 @@ public class ConnectionTest {
     public void testSelectAllLimit() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select * from testtable t limit 1");
+        ResultSet rs = statement.executeQuery("select * from ods_test_88 t limit 1");
         while (rs.next()) {
-            String col1 = rs.getString(1);
-            String col2 = rs.getString(2);
-            int col3 = rs.getInt(3);
-            String col4 = rs.getString(4);
-            System.out.println(col1);
-            System.out.println(col2);
-            System.out.println(col3);
-            System.out.println(col4);
+            System.out.println(rs.getObject(1));
+            System.out.println(rs.getObject(2));
+            System.out.println(rs.getObject(3));
+            System.out.println(rs.getObject(4));
         }
     }
 
@@ -109,7 +108,7 @@ public class ConnectionTest {
     public void testSelectUseFunction() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select LOWER(NAME) from testtable t limit 1");
+        ResultSet rs = statement.executeQuery("select LOWER(NAME) from ods_test_88 t limit 1");
         while (rs.next()) {
             String col1 = rs.getString("LOWER(NAME)");
             System.out.println(col1);
@@ -124,7 +123,7 @@ public class ConnectionTest {
         Statement statement = connection.createStatement();
         System.out.println(statement);
         try {
-            ResultSet rs = statement.executeQuery("update testtable t set name = '111'");
+            ResultSet rs = statement.executeQuery("update ods_test_88 t set name = '111'");
             while (rs.next()) {
                 int col1 = rs.getInt(1);
                 System.out.println(col1);
@@ -141,7 +140,7 @@ public class ConnectionTest {
     public void testInsert() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("insert into testtable(id, name) values (77, 'testName')");
+        int count = statement.executeUpdate("insert into ods_test_88(id, name) values (78, 'testName2')");
         System.out.println(count);
     }
 
@@ -152,18 +151,18 @@ public class ConnectionTest {
     public void testInsert2() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("insert into testtable values ('wegwe',88, 'testName')");
+        int count = statement.executeUpdate("insert into ods_test_88 values (88, 'testName', 'xx', 'id')");
         System.out.println(count);
     }
 
     /**
-     * 测试执行executeUpdate中使用insert
+     * 测试insert中执行多条语句
      */
     @Test
     public void testInsert3() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("insert into testtable(id, name) values (89, 'testName'),(90, 'testName')");
+        int count = statement.executeUpdate("insert into ods_test_88(id, name) values (89, 'testName'),(90, 'testName')");
         System.out.println(count);
     }
 
@@ -174,7 +173,7 @@ public class ConnectionTest {
     public void testUpdate1() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("update testtable set name = 'testName_2' WHERE id = 90");
+        int count = statement.executeUpdate("update ods_test_88 set name = 'testName_2' WHERE id = 90");
         System.out.println(count);
     }
 
@@ -185,7 +184,7 @@ public class ConnectionTest {
     public void testDelete1() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        int count = statement.executeUpdate("delete from testtable  WHERE id = 89");
+        int count = statement.executeUpdate("delete from ods_test_88  WHERE id = 89");
         System.out.println(count);
     }
 
@@ -196,7 +195,7 @@ public class ConnectionTest {
     public void testGroupBy() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        ResultSet rs = statement.executeQuery("select count(*), sum(id), name, id from testtable  group by name, id");
+        ResultSet rs = statement.executeQuery("select count(*), sum(id), name, id from ods_test_88  group by name, id");
         while (rs.next()) {
             int c = rs.getInt("count(*)");
             int s = rs.getInt("sum(id)");
@@ -213,10 +212,10 @@ public class ConnectionTest {
     public void testGetGenerateKey() throws SQLException {
         Statement statement = connection.createStatement();
         System.out.println(statement);
-        statement.executeUpdate("insert into testtable (id, name) values (92, '王二')", Statement.RETURN_GENERATED_KEYS);
+        statement.executeUpdate("insert into ods_test_88 (id, name) values (98, '王二')", Statement.RETURN_GENERATED_KEYS);
         ResultSet rs = statement.getGeneratedKeys();
         while (rs.next()) {
-            System.out.println(rs.getString(1));
+            System.out.println(rs.getString("_id"));
         }
     }
 
@@ -225,7 +224,7 @@ public class ConnectionTest {
      */
     @Test
     public void testPrepareStatement() throws SQLException {
-        PreparedStatement prepareStatement = connection.prepareStatement("select * from testtable");
+        PreparedStatement prepareStatement = connection.prepareStatement("select * from ods_test_88");
         ResultSet resultSet = prepareStatement.executeQuery();
         while (resultSet.next()) {
             System.out.println(resultSet.getString("name"));
@@ -237,7 +236,7 @@ public class ConnectionTest {
      */
     @Test
     public void testPrepareStatement2() throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("select * from testtable where name = ?");
+        PreparedStatement ps = connection.prepareStatement("select * from ods_test_88 where name = ?");
         ps.setString(1, "testName");
         ResultSet resultSet = ps.executeQuery();
         while (resultSet.next()) {
@@ -251,7 +250,7 @@ public class ConnectionTest {
      */
     @Test
     public void testCount() throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("select count(*), sum(id) from testtable WHERE name like '%test%'");
+        PreparedStatement ps = connection.prepareStatement("select count(*), sum(id) from ods_test_88 WHERE name like '%test%'");
         ResultSet resultSet = ps.executeQuery();
         while (resultSet.next()) {
             System.out.println(resultSet.getInt(1));
@@ -265,7 +264,7 @@ public class ConnectionTest {
      */
     @Test
     public void testMid() throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("select mid('axaaaa', 1, 3) from testtable WHERE name like '%test%'");
+        PreparedStatement ps = connection.prepareStatement("select mid('axaaaa', 1, 3) from ods_test_88 WHERE name like '%test%'");
         ResultSet resultSet = ps.executeQuery();
         while (resultSet.next()) {
             System.out.println(resultSet.getString(1));
