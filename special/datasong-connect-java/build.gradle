@@ -15,7 +15,7 @@ dependencies {
     api("org.apache.httpcomponents:httpmime:${httpcomponentsVersion}")
     api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
     api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
-    api group: 'cn.hutool', name: 'hutool-core', version: "${htoolVersion}"
+    api group: 'cn.hutool', name: 'hutool-core', version: "${hutoolVersion}"
     api fileTree(dir:"libs", include: "*.jar")
 }
 

@@ -63,4 +63,6 @@ include 'special:common-ehcache2-tools'
 findProject(':special:common-ehcache2-tools')?.name = 'common-ehcache2-tools'
 include 'common:common-prometheus-tools'
 findProject(':common:common-prometheus-tools')?.name = 'common-prometheus-tools'
+include 'special:common-mqtt-tools'
+findProject(':special:common-mqtt-tools')?.name = 'common-mqtt-tools'
 

@@ -11,7 +11,7 @@ dependencies {
     api group: 'io.lettuce', name: 'lettuce-core', version: "${lettuceCoreVersion}"
 
     //hutool-all
-    api "cn.hutool:hutool-all:${htoolVersion}"
+    api "cn.hutool:hutool-all:${hutoolVersion}"
 
     //jrejson
     api group: 'com.redislabs', name: 'jrejson', version: "${jrejsonVersion}"

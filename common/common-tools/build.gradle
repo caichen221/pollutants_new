@@ -38,7 +38,7 @@ dependencies {
     api group: 'org.lionsoul', name: 'ip2region', version: "${ip2regionVersion}"
 
     //hutool-all
-    api "cn.hutool:hutool-all:${htoolVersion}"
+    api "cn.hutool:hutool-all:${hutoolVersion}"
 
     api "cglib:cglib:${cglibVersion}"
 

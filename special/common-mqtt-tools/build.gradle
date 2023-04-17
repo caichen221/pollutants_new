@@ -1,0 +1,5 @@
+dependencies {
+    api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${mqttv3Version}"
+    api "org.apache.commons:commons-pool2:${commonsPool2Version}"
+    api "cn.hutool:hutool-all:${hutoolVersion}"
+}
