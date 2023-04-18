@@ -29,6 +29,73 @@ import java.util.*;
 public class EchartTests {
     private static String url = "http://localhost:7777";
 
+
+    @Test
+    public void test2() throws IOException {
+        String base64 = EchartsUtils.generateEchartsBase64(url, "{\n" +
+                "  title: {\n" +
+                "    text: \"项目团队人员情况\",\n" +
+                "    show: false,\n" +
+                "    x:'center',\n" +
+                "    y:'bottom'\n" +
+                "  },\n" +
+                "  tooltip: {\n" +
+                "    trigger: 'axis'\n" +
+                "  },\n" +
+                "  legend: {\n" +
+                "    data: [\"第1次里程碑\",\"第2次里程碑\"]\n" +
+                "  },\n" +
+                "  toolbox: {\n" +
+                "    show: false,\n" +
+                "    feature: {\n" +
+                "      dataView: { show: true, readOnly: false },\n" +
+                "      magicType: { show: true, type: ['line', 'bar'] },\n" +
+                "      restore: { show: true },\n" +
+                "      saveAsImage: { show: true }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  calculable: true,\n" +
+                "  xAxis: [\n" +
+                "    {\n" +
+                "      type: 'category',\n" +
+                "      data: [\"团队人员总计（人）\",\"全职人员总计（人）\",\"双兼聘人员总计（人）\"]\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  yAxis: [\n" +
+                "    {\n" +
+                "      type: 'value'\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  series: [\n" +
+                "    {\n" +
+                "      name: \"第1次里程碑\",\n" +
+                "      type: 'bar',\n" +
+                "      data: [70,49,21],\n" +
+                "      label: {\n" +
+                "        show: true,\n" +
+                "      },\n" +
+                "    },\n" +
+                "    {\n" +
+                "      name: \"第2次里程碑\",\n" +
+                "      type: 'bar',\n" +
+                "      data: [90,59,31],\n" +
+                "      label: {\n" +
+                "        show: true,\n" +
+                "      },\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}");
+
+        System.out.println("BASE64:" + base64);
+
+        File test = File.createTempFile("test", ".png");
+        test.deleteOnExit();
+        try (OutputStream os = new FileOutputStream(test)) {
+            ImageUtils.convertBase64ToImage(base64, os);
+        }
+        System.out.println("测试完成");
+    }
+
     //测试柱状图
     @Test
     public void test() throws TemplateException, IOException {

@@ -65,4 +65,6 @@ include 'common:common-prometheus-tools'
 findProject(':common:common-prometheus-tools')?.name = 'common-prometheus-tools'
 include 'special:common-mqtt-tools'
 findProject(':special:common-mqtt-tools')?.name = 'common-mqtt-tools'
+include 'special:common-markdown-tools'
+findProject(':special:common-markdown-tools')?.name = 'common-markdown-tools'
 

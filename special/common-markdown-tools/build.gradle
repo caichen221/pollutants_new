@@ -1,0 +1,5 @@
+dependencies {
+    api "org.commonmark:commonmark:${commonMarkVersion}"
+    api "org.commonmark:commonmark-ext-heading-anchor:${commonMarkVersion}"
+    api "org.commonmark:commonmark-ext-gfm-tables:${commonMarkVersion}"
+}
