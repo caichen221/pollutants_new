@@ -1,5 +1,6 @@
 package com.iscas.biz.filter;
 
+import com.iscas.base.biz.config.log.LogRecordConfig;
 import com.iscas.base.biz.filter.started.AbstractStartedFilter;
 import com.iscas.base.biz.filter.started.StartedFilterComponent;
 import com.iscas.biz.mp.aop.enable.ConditionalOnMybatis;
@@ -25,8 +26,10 @@ public class ClearLogTaskFilter extends AbstractStartedFilter {
 
     @Override
     public void doFilterInternal(ApplicationContext applicationContext) {
-        log.info("=============启动后测试过滤器4=================");
-        clearLogTask();
+        log.info("=============启动后清理日志过滤器=================");
+        if (LogRecordConfig.flag) {
+            clearLogTask();
+        }
         super.doFilterInternal(applicationContext);
     }
 
