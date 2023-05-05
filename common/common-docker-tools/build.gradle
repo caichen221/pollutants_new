@@ -1,6 +1,0 @@
-
-
-dependencies {
-    api group: 'com.github.docker-java', name: 'docker-java', version: "${dockerJavaVersion}"
-
-}

@@ -1,4 +1,0 @@
-
-dependencies {
-    api("org.rocksdb:rocksdbjni:${rocksdbjniVersion}")
-}

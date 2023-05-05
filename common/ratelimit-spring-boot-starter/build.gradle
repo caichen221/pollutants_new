@@ -1,0 +1,13 @@
+
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation  'org.springframework.boot:spring-boot-configuration-processor'
+    implementation  'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework:spring-web'
+    api group: 'com.google.guava', name: 'guava', version:"${guavaVersion}"
+    api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
+    api project (":templet")
+
+}
+

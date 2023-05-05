@@ -1,4 +1,0 @@
-
-dependencies {
-    api group: 'org.influxdb', name: 'influxdb-java', version: "${influxdbVersion}"
-}

@@ -1,7 +1,0 @@
-dependencies {
-    implementation ("de.codecentric:spring-boot-admin-starter-server:${bootAdminVersion}")
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-//    compile group: 'de.codecentric', name: 'spring-boot-admin-starter-server-ui', version:'2.1.0'
-}

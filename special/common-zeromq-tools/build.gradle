@@ -1,5 +1,0 @@
-
-dependencies {
-    api group: 'org.zeromq', name: 'jeromq', version: "${zeromqVersion}"
-
-}

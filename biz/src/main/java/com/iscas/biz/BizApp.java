@@ -4,10 +4,8 @@ import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.github.lianjiatech.retrofit.spring.boot.annotation.RetrofitScan;
 import com.iscas.base.biz.aop.enable.*;
-import com.iscas.base.biz.config.norepeat.submit.NoRepeatSubmitLockType;
 import com.iscas.base.biz.config.stomp.WsPushType;
 import com.iscas.base.biz.util.SpringUtils;
-import com.iscas.biz.flowable.enable.EnableFlowable;
 import com.iscas.biz.mp.aop.enable.EnableDruidMonitor;
 import com.iscas.biz.mp.aop.enable.EnableMybatis;
 import com.iscas.biz.mp.aop.enable.EnableQuartz;
@@ -35,7 +33,6 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.StopWatch;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -63,10 +60,9 @@ import java.io.OutputStream;
         @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.iscas.base.biz.test.*")
 }
 )
-@EnableNoRepeatSubmit(lockType = NoRepeatSubmitLockType.JVM)  //是否开启防重复提交
 @EnableCaching //开启缓存
 @EnableTransactionManagement //开启事务支持
-@EnableRateLimiter //开启自定义的限流支持
+//开启自定义的限流支持
 //@EnableAuth //开启自定义的用户认证，权限校验
 //@EnableOpenAuthClient //连接自定义的开放平台，与EnableAuth二者取一
 @EnableWebsocketStomp(pushType = WsPushType.SIMPLE) //开启websocketstomp支持

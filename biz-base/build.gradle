@@ -22,7 +22,6 @@ dependencies {
     api project (":common:common-tools")
     //导入web相关的基础工具工程
     api project (":common:common-web-tools")
-    api project (":common:common-redis-tools")
     //导入模板
     api project (":templet")
 

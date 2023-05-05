@@ -1,4 +1,0 @@
-
-dependencies {
-    api group: 'org.luaj', name: 'luaj-jse', version: "${luajJseVersion}"
-}

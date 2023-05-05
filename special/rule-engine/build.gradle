@@ -1,8 +1,0 @@
-
-dependencies {
-    api project(":common:common-tools")
-    api group: 'com.googlecode.aviator', name: 'aviator', version: "${aviatorVersion}"
-    api group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jacksonVersion}"
-    api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
-    api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
-}

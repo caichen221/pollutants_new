@@ -1,4 +1,0 @@
-
-dependencies {
-    api "net.sf.ehcache:ehcache:${ehcache2Version}"
-}

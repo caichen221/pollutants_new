@@ -1,5 +1,0 @@
-
-dependencies {
-    implementation group: 'net.sf.ucanaccess', name: 'ucanaccess', version: '5.0.1'
-}
-

@@ -1,7 +1,0 @@
-
-
-dependencies {
-    api group: 'org.ehcache', name: 'ehcache', version: "${ehcacheVersion}"
-    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: "${jaxbApiVersion}"
-    implementation group: 'javax.xml', name: 'jaxb-impl', version: "${jaxbImplVersion}"
-}

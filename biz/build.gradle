@@ -13,10 +13,10 @@ configurations {
 
 dependencies {
     api project(":biz-base")
+    api project(":common:ratelimit-spring-boot-starter")
 //    api project(":special:biz-flowable")
 //    api project(":common:common-tools")
 
-    api project(":special:ssh-server")
 //    api project(":special:biz-neo4j")
 
     //SSH客户端
@@ -25,7 +25,6 @@ dependencies {
     //引入mybatis,如果引入了这个模块，
     api project(":biz-mp")
 
-    api project(":special:datasong-connect-java")
 
     api "org.flowable:flowable-spring-boot-starter-basic:${flowableVersion}"
     api group: 'org.flowable', name: 'flowable-rest', version: "${flowableVersion}"
