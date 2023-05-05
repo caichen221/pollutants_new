@@ -67,4 +67,6 @@ include 'special:common-mqtt-tools'
 findProject(':special:common-mqtt-tools')?.name = 'common-mqtt-tools'
 include 'special:common-markdown-tools'
 findProject(':special:common-markdown-tools')?.name = 'common-markdown-tools'
+include 'special:common-csvjdbc-tools'
+findProject(':special:common-csvjdbc-tools')?.name = 'common-csvjdbc-tools'
 
