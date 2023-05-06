@@ -1,0 +1,57 @@
+dependencies {
+    //导入基础工具工程
+    api project (":common:common-tools")
+    //导入web相关的基础工具工程
+    api project (":common:common-web-tools")
+    //导入模板
+    api project (":templet")
+
+    api fileTree(dir:'libs',include:['*.jar'])
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    api ('org.springframework.boot:spring-boot-starter-web')
+            {
+                exclude group: 'ch.qos.logback', module: 'logback-access'
+                exclude group: 'ch.qos.logback', module: 'logback-classic'
+                exclude group: 'ch.qos.logback', module: 'logback-core'
+                exclude group: 'org.slf4j', module: 'slf4j-api'
+            }
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+
+    api group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: "${mybatis_plus_boot_starter_version}"
+
+    api "com.baomidou:mybatis-plus-generator:${mybatis_plus_generator_version}"
+    api "com.baomidou:mybatis-plus-dts:${mybatis_plus_dts_version}"
+    api group: 'org.apache.velocity', name: 'velocity-engine-core', version: "${velocity_engine_core_version}"
+
+    api group: 'org.freemarker', name: 'freemarker'
+
+    // mysql连接
+    api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    //神州通用连接
+    api group: 'com.csicit.thirdparty', name: 'oscar', version: "${oscarVersion}"
+    //oracle连接
+    api group: 'com.oracle.database.jdbc', name: 'ojdbc6', version: "${ojdbc6Version}"
+
+    //mybatis分页插件(基本弃用)
+    api group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: "${pagehelperVersion}"
+    //druid连接池配置
+//    api group: 'com.alibaba', name: 'druid-spring-boot-starter', version: "${druidVersion}"
+    api group: 'com.alibaba', name: 'druid', version: "${druidVersion}"
+
+
+    api group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: "${mybatisGeneratorVersion}"
+
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-jta-atomikos'
+
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-quartz'
+
+    api group: 'org.springframework', name: 'spring-jdbc'
+
+    api group: 'org.apache.shardingsphere', name: 'sharding-jdbc-core', version: "${shardingJdbcCoreVersion}"
+    api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
+    api group: 'com.github.jsqlparser', name: 'jsqlparser', version: "${jsqlparserVersion}"
+    api group: 'p6spy', name: 'p6spy', version: "${p6spyVersion}"
+
+}

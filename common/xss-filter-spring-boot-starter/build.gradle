@@ -1,0 +1,9 @@
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation  'org.springframework.boot:spring-boot-configuration-processor'
+//    implementation 'org.springframework:spring-web'
+    api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
+    api group: 'org.jsoup', name: 'jsoup', version: "${jsoupVersion}"
+    api group: 'org.apache.commons', name: 'commons-lang3', version:"${commonLang3Version}"
+}

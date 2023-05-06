@@ -1,5 +1,4 @@
 
 dependencies {
-    api group: 'cglib', name: 'cglib', version: "${cglibVersion}"
     api group: 'com.alibaba', name: 'fastjson', version: "${fastJsonVersion}"
 }

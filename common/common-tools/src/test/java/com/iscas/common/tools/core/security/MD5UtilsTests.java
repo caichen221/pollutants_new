@@ -42,26 +42,7 @@ public class MD5UtilsTests {
         Assertions.assertEquals(true, sec);
     }
 
-    /**
-     * hmac加密
-     * */
-    @Test
-    public void MD54() {
-        String iscas = MD5Utils.hmacMd5("iscas", "123456");
-        System.out.println(iscas);
-        Assertions.assertNotNull(iscas);
-    }
 
-    /**
-     * hmac校验
-     * */
-    @Test
-    public void MD55() {
-        String data = MD5Utils.hmacMd5("iscas", "123456");
-        System.out.println(data);
-        boolean res = MD5Utils.hmacVerify("iscas", "123456", data);
-        Assertions.assertTrue(res);
-    }
 
     /**
      * 获取大文件MD5码

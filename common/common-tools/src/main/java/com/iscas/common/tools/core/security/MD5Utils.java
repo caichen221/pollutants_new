@@ -2,19 +2,12 @@ package com.iscas.common.tools.core.security;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.digests.MD5Digest;
-import org.bouncycastle.crypto.macs.HMac;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -154,78 +147,9 @@ public final class MD5Utils {
         return doMd5((str + salt).getBytes(charset)).equals(new String(cs1));
     }
 
-    /**
-     * hmacMD5
-     *
-     * @param key     密钥
-     * @param input   输入字符串
-     * @param charset 编码格式
-     * @return java.lang.String
-     * @date 2018/7/14
-     */
-    @SuppressWarnings("UnusedAssignment")
-    public static String hmacMd5(String key, String input, String charset) throws UnsupportedEncodingException {
-        byte[] bytes = input.getBytes(charset);
-        byte[] keyBytes = key.getBytes(charset);
-        byte[] hmacResult = doHmacMd5(keyBytes, bytes);
-        return ByteUtils.toHexString(hmacResult);
-    }
 
-    /**
-     * hmacMD5
-     *
-     * @param key   密钥
-     * @param input 输入字符串
-     * @return java.lang.String
-     * @date 2018/7/14
-     */
-    @SuppressWarnings("UnusedAssignment")
-    public static String hmacMd5(String key, String input) {
-        try {
-            return hmacMd5(key, input, DEFAULT_CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    /**
-     * HMAC校验
-     *
-     * @param str     明文
-     * @param md5     密文
-     * @param charset 编码格式
-     * @return boolean 校验成功与否
-     * @date 2018/7/14
-     */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static boolean hmacVerify(String key, String str, String md5, String charset) throws UnsupportedEncodingException {
-        assert StringUtils.isNotBlank(str);
-        assert StringUtils.isNotBlank(md5);
-        assert StringUtils.isNotBlank(key);
-        assert StringUtils.isNotBlank(charset);
-        byte[] src = ByteUtils.fromHexString(md5);
-        byte[] keyBytes = key.getBytes(charset);
-        byte[] strBytes = str.getBytes(charset);
-        byte[] target = doHmacMd5(keyBytes, strBytes);
-        return Arrays.equals(src, target);
-    }
 
-    /**
-     * HMAC校验
-     *
-     * @param str 明文
-     * @param md5 密文
-     * @return boolean 校验成功与否
-     * @date 2018/7/14
-     */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public static boolean hmacVerify(String key, String str, String md5) {
-        try {
-            return hmacVerify(key, str, md5, DEFAULT_CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 //    /**
 //     * 获取十六进制字符串形式的MD5摘要
@@ -293,15 +217,5 @@ public final class MD5Utils {
         return result;
     }
 
-    @NotNull
-    private static byte[] doHmacMd5(byte[] keyBytes, byte[] bytes) {
-        Digest mg = new MD5Digest();
-        HMac hMac = new HMac(mg);
-        hMac.init(new KeyParameter(keyBytes));
-        hMac.update(bytes, 0, bytes.length);
-        byte[] hmacResult = new byte[hMac.getMacSize()];
-        hMac.doFinal(hmacResult, 0);
-        return hmacResult;
-    }
 
 }

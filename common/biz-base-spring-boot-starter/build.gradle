@@ -1,0 +1,104 @@
+
+apply plugin: 'war'
+
+//configurations {
+//    compile.exclude module: "spring-boot-starter-tomcat"
+////    compile.exclude group: 'ch.qos.logback'
+////    compile.exclude group: 'org.slf4j', module:'slf4j-api'
+//
+//}
+
+configurations {
+
+    api.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//    api.exclude group: 'ch.qos.logback', module: 'logback-access'
+    api.exclude group: 'ch.qos.logback', module: 'logback-classic'
+//    api.exclude group: 'ch.qos.logback', module: 'logback-core'
+}
+
+
+dependencies {
+    //导入基础工具工程
+    api project (":common:common-tools")
+    //导入web相关的基础工具工程
+    api project (":common:common-web-tools")
+    //导入模板
+    api project (":templet")
+
+    api fileTree(dir:'libs',include:['*.jar'])
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    api ('org.springframework.boot:spring-boot-starter-web')
+            {
+                exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
+//            {
+//                exclude group: 'ch.qos.logback', module: 'logback-access'
+//                exclude group: 'ch.qos.logback', module: 'logback-classic'
+//                exclude group: 'ch.qos.logback', module: 'logback-core'
+//                exclude group: 'org.slf4j', module: 'slf4j-api'
+//            }
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-undertow'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-websocket'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-tx
+    api group: 'org.springframework', name: 'spring-tx'
+
+    api('org.springframework.boot:spring-boot-starter-validation')
+
+    //okhttp
+    api "com.squareup.okhttp3:okhttp"
+    //google caffeine
+    api group: 'com.github.ben-manes.caffeine', name: 'caffeine'
+    //gson
+    api group: 'com.google.code.gson',name:'gson'
+
+    //jwt
+    api group: 'com.auth0', name: 'java-jwt', version: "${jwtVersion}"
+
+    //实现RSA 对请求和返回值的加解密
+    api "cn.shuibo:rsa-encrypt-body-spring-boot:${rsaEncryVersion}"
+
+    //验证码
+    api "com.github.penggle:kaptcha:${kaptchaVersion}"
+
+    //redis
+    api "org.springframework.boot:spring-boot-starter-data-redis"
+
+    //rabiitmq-做websocket集群推送
+    api "org.springframework.boot:spring-boot-starter-amqp"
+    api "org.springframework.boot:spring-boot-starter-reactor-netty"
+
+    // mysql连接
+    api group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+
+    //feign
+    api group: 'io.github.openfeign', name: 'feign-core', version: "${feignVersion}"
+    api group: 'io.github.openfeign', name: 'feign-jackson', version: "${feignVersion}"
+    api group: 'io.github.openfeign.form', name: 'feign-form', version: "${feignFormVersion}"
+
+    api group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.11'
+
+    api 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    api group: 'javax.el', name: 'javax.el-api', version: "${elVersion}"
+    api group: 'org.glassfish', name: 'javax.el', version: "${elVersion}"
+
+
+    api group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+
+    api ("org.springframework.boot:spring-boot-starter-actuator")
+            {
+                exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
+    api group: 'com.alibaba', name: 'transmittable-thread-local', version: '2.14.2'
+
+}
+
+
+

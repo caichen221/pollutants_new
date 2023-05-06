@@ -68,18 +68,6 @@ public class JsonUtilsTests {
         System.out.println(map);
     }
 
-    @Test
-    @Disabled
-    public void test1() {
-        String name = JsonUtils.getValueByKey(json, "name");
-        System.out.println(name);
-    }
-    @Test
-    @Disabled
-    public void test2() {
-        String ret = JsonUtils.getValueByKey(json2, "json.b.www");
-        System.out.println(ret);
-    }
 
     /**
      * 测试嵌套的类

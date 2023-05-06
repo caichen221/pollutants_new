@@ -1,6 +1,5 @@
 package com.iscas.common.web.tools.json;
 
-import cn.miludeer.jsoncode.JsonCode;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -354,13 +353,6 @@ public class JsonUtils {
             }
         }
         return convertData;
-    }
-
-    /**
-     * 获取JSON中的一个数据，字符串形式
-     */
-    public static String getValueByKey(String json, String key) {
-        return JsonCode.getValue(json, String.format("$.%s", key));
     }
 
     //==========================Json序列化和反序列化扩展方法　add by zqw======================================

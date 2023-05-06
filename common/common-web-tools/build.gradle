@@ -10,18 +10,10 @@ dependencies {
 
     api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
 
-    api group: 'cn.miludeer', name: 'jsoncode', version: "${jsoncodeVersion}"
 
-    api ("net.sf.json-lib:json-lib:${jsonlibVersion}")
-
-    api group: 'org.json', name: 'json', version: "${orgJsonVersion}"
-
-    api ("xom:xom:${xomVersion}")
+//    api ("xom:xom:${xomVersion}")
 
     api("org.apache.httpcomponents:httpmime:${httpcomponentsVersion}")
 
-    api "eu.bitwalker:UserAgentUtils:${UserAgentUtilsVersion}"
     api group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
-    api group: 'com.github.abel533', name: 'ECharts', version: "${echartsVersion}"
-    api group: 'com.google.code.gson', name: 'gson', version: "${gsonVersion}"
 }

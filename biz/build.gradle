@@ -12,71 +12,25 @@ configurations {
 }
 
 dependencies {
-    api project(":biz-base")
-    api project(":common:ratelimit-spring-boot-starter")
-//    api project(":special:biz-flowable")
-//    api project(":common:common-tools")
 
-//    api project(":special:biz-neo4j")
+    //==============一些可按需启用的功能==============//
+//    api project(":common:ratelimit-spring-boot-starter")
+//    api project(":common:xss-filter-spring-boot-starter")
+//    api project(":common:datasong-spring-boot-starter")
+//    api project(":common:check-referer-spring-boot-starter")
+//    api project(":common:biz-mp-spring-boot-starter")
+    api project(":common:biz-base-spring-boot-starter")
+    //============================================//
 
-    //SSH客户端
-//    api project(":special:common-ssh-tools")
-
-    //引入mybatis,如果引入了这个模块，
-    api project(":biz-mp")
-
-
-    api "org.flowable:flowable-spring-boot-starter-basic:${flowableVersion}"
-    api group: 'org.flowable', name: 'flowable-rest', version: "${flowableVersion}"
-    api "org.flowable:flowable-spring-boot-starter-process-rest:${flowableVersion}"
-//    api "io.github.markixy:flowable-swagger:1.0.0"
     api group: 'javax.annotation', name: 'javax.annotation-api', version: "${annotationApiVersion}"
 
     api group: 'org.eweb4j', name: 'fel', version: "${felVersion}"
     api group: 'xerces', name: 'xercesImpl', version: "${xercesImplVersion}"
 
-
-    //引入jpa,如果引入了这个模块
-//    api project(":biz-jpa")
-
-    api group: 'org.webjars', name: 'jquery', version: "${jqueryVersion}"
-
-//    annotationProcessor 'org.springframework:spring-context-indexer'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    implementation group: 'org.openjdk.jol', name: 'jol-core', version: '0.16'
-
-
-    //devTools 默认不使用
-//    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
-//// 清除lib
-//task myClearLib(type: Delete) {
-//    delete "$buildDir/libs/lib"
-//}
-//
-//// 拷贝lib
-//task myCopyLib(type: Copy) {
-//    into "$buildDir/libs/lib"
-//    from configurations.compileClasspath
-//}
 
-// 打瘦包配置
-//bootJar {
-//    excludes = ["*.jar"]
-//
-//    // lib目录的清除和复制任务
-//    dependsOn myClearLib
-//    dependsOn myCopyLib
-//
-//    manifest {
-//        attributes 'Start-Class': 'com.iscas.biz.BizApp',
-//                'Manifest-Version': 1.0,
-//                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' '),
-//                'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
-//    }
-//
-//}
 
 // 打胖包配置
 bootJar {
@@ -124,23 +78,3 @@ docker {
     }
 }
 
-
-//使用springboot自带的打docker镜像的方法
-//bootBuildImage {
-//    imageName = "192.168.100.96:80/library/${project.name}:${project.version}"
-//    pullPolicy = "IF_NOT_PRESENT"
-//    builder = "paketobuildpacks/builder:base"
-//    publish = true
-//    docker {
-//        host = "tcp://192.168.100.91:2375"
-//        tlsVerify = false
-////        certPath = "/home/users/.minikube/certs"
-//        publishRegistry {
-//            username = "admin"
-//            password = "Harbor12345"
-//            url = "http://192.168.100.96"
-//            email = "76775081@qq.com"
-//        }
-//    }
-//
-//}

@@ -1,124 +1,24 @@
 
 dependencies {
-    //codec
     api group: 'commons-codec', name: 'commons-codec', version:"${codecVersion}"
-    // https://mvnrepository.com/artifact/org.ostermiller/utils
-    api group: 'org.ostermiller', name: 'utils', version: "${ostermillerVersion}"
-
-    //commons-lang3
     api group: 'org.apache.commons', name: 'commons-lang3', version:"${commonLang3Version}"
-    // https://mvnrepository.com/artifact/dom4j/dom4j
-    api group: 'dom4j', name: 'dom4j', version:"${dom4jVersion}"
-    // https://mvnrepository.com/artifact/org.apache.poi/poi
     api group: 'org.apache.poi', name: 'poi',version:"${poiVersion}"
-    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
     api group: 'org.apache.poi', name: 'poi-ooxml', version: "${poiOoxmlVersion}"
-    // https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans
-//    api group: 'org.apache.xmlbeans', name: 'xmlbeans'
-
-    // https://mvnrepository.com/artifact/commons-io/commons-io
     api group: 'commons-io', name: 'commons-io', version:"${commonsIoVersion}"
-    // https://mvnrepository.com/artifact/stax/stax-api
-    api group: 'stax', name: 'stax-api', version: "${staxVersion}"
-    // https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
     api group: 'commons-beanutils', name: 'commons-beanutils', version:"${commonsBeanutilsVersion}"
-
-    api group: 'com.itextpdf', name: 'itext-asian', version: "${itextAsianVersion}"
-    api group: 'com.lowagie', name: 'itext', version: "${itextVersion}"
-
-// https://mvnrepository.com/artifact/com.google.zxing/core
-    api group: 'com.google.zxing', name: 'core', version: "${zxingCoreVersion}"
-
     api fileTree(dir: 'libs', include: '*.jar')
-
-    //jzip压缩
-    api group: 'org.apache.ant', name: 'ant', version: "${apacheAntVersion}"
-
-    // ip to area
-    api group: 'org.lionsoul', name: 'ip2region', version: "${ip2regionVersion}"
-
-    //hutool-all
     api "cn.hutool:hutool-all:${hutoolVersion}"
-
     api "cglib:cglib:${cglibVersion}"
-
-    //https://mvnrepository.com/artifact/com.google.guava/guava
     api group: 'com.google.guava', name: 'guava', version:"${guavaVersion}"
-
-    // https://mvnrepository.com/artifact/com.belerweb/pinyin4j
-    //拼音转换工具包
-    api group: 'com.belerweb', name: 'pinyin4j', version: "${pingyin4jVersion}"
-
-    // https://mvnrepository.com/artifact/com.vdurmont/emoji-java
-    api group: 'com.vdurmont', name: 'emoji-java', version: "${emojiJavaVersion}"
-
-    // https://mvnrepository.com/artifact/com.squareup.okio/okio
     api group: 'com.squareup.okio', name: 'okio', version: "${okioVersion}"
-
-    api group: 'org.freemarker', name: 'freemarker', version: "${freemarkerVersion}"
-
-    // https://mvnrepository.com/artifact/com.yahoo.platform.yui/yuicompressor
-    api group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: "${yuicompressorVersion}"
-
-    // https://mvnrepository.com/artifact/com.rnkrsoft.bopomofo4j/bopomofo4j
-    //拼音转换工具包
-    api group: 'com.rnkrsoft.bopomofo4j', name: 'bopomofo4j', version: "${bopomofo4jVersion}"
-
-    // https://mvnrepository.com/artifact/com.github.junrar/junrar
-    api group: 'com.github.junrar', name: 'junrar', version: "${junrarVersion}"
-
-    // https://mvnrepository.com/artifact/net.oschina.htmlsucker/HtmlSucker
-    api ("net.oschina.htmlsucker:HtmlSucker:${htmlsuckerVersion}") {
-        exclude group:"org.jsoup", module:"jsoup"
-    }
     api group:"org.jsoup", name:"jsoup", version:"${jsoupVersion}"
-    // https://mvnrepository.com/artifact/com.alibaba/easyexcel
-    api group: 'com.alibaba', name: 'easyexcel', version: "${easyexcelVersion}"
-
-    // https://mvnrepository.com/artifact/com.esotericsoftware/kryo
-    api group: 'com.esotericsoftware', name: 'kryo', version: "${kryoVersion}"
-
-    api "org.yaml:snakeyaml:${snakeyamlVersion}"
-
-    // https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv
-//    api group: 'net.sourceforge.javacsv', name: 'javacsv', version: "${javacsvVersion}"
-
-//    api group: 'e-iceblue', name: 'spire.doc.free', version: "${spireDocFreeVersion}"
-    // https://mvnrepository.com/artifact/e-iceblue/spire.doc
-//    api group: 'e-iceblue', name: 'spire.doc', version: '3.11.6'
-
-
-    // https://mvnrepository.com/artifact/org.javatuples/javatuples
     api group: 'org.javatuples', name: 'javatuples', version: "${javatuplesVersion}"
-
-    //线程亲和性调度
-    api group: 'net.openhft', name: 'affinity', version: "${affinityVersion}"
-
-    //命令行工具
-    api group: 'org.apache.commons', name: 'commons-exec', version: "${commonsExecVersion}"
-
-
-    //map struct
-    api group: 'org.mapstruct', name: 'mapstruct', version: "${mapStructVersion}"
-    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "${mapStructVersion}"
-    testAnnotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "${mapStructVersion}"
-    api group: 'org.mapstruct', name: 'mapstruct-jdk8', version: "${mapStructVersion}"
-
-
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jApiVersion}"
     implementation group: 'ch.qos.logback', name: 'logback-core', version: "${logbackVersion}"
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: "${logbackVersion}"
-    api group: 'com.esotericsoftware', name: 'reflectasm', version: "${reflectasmVersion}"
-    api group: 'com.esotericsoftware', name: 'minlog', version: "${minlogVersion}"
-    api group: 'com.deepoove', name: 'poi-tl', version: "${poiTlVersion}"
-    api("com.github.jsqlparser:jsqlparser:${jsqlparserVersion}")
     api "com.lmax:disruptor:${disruptorVersion}"
-    api group: 'de.schlichtherle.truelicense', name: 'truelicense-core', version: "${truelicenseVersion}"
-
     api group: 'javax.activation', name: 'activation', version: "${activationVersion}"
     api group: 'javax.xml', name: 'jaxb-impl', version: "${jaxbImplVersion}"
     api group: 'javax.xml.bind', name: 'jaxb-api', version: "${jaxbApiVersion}"
-//    api group: 'com.github.liaochong', name: 'myexcel', version: "${myexcelVersion}"
 
-    api "org.bouncycastle:bcprov-jdk15on:${bcprovVersion}"
 }

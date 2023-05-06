@@ -35,7 +35,7 @@ public class ZipUtils {
      */
     public static void compress(File sourceFile, ZipOutputStream os, String name, boolean keepDirStructure) throws Exception {
         if (sourceFile.isFile()) {
-            os.putNextEntry(new org.apache.tools.zip.ZipEntry(name));
+            os.putNextEntry(new ZipEntry(name));
             FileInputStream is = new FileInputStream(sourceFile);
             IoUtil.copy(is, os);
             is.close();

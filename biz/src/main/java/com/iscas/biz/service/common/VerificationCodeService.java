@@ -2,7 +2,6 @@ package com.iscas.biz.service.common;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
-import com.iscas.base.biz.service.IAuthCacheService;
 import com.iscas.base.biz.util.CacheUtils;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.common.tools.constant.HeaderKey;
@@ -13,7 +12,6 @@ import com.iscas.templet.exception.LoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -37,8 +35,6 @@ import static com.iscas.base.biz.config.Constants.CAPTCHA_CACHE;
 public class VerificationCodeService implements HeaderKey, MediaType {
     @Autowired
     private Producer producer;
-    @Autowired
-    private IAuthCacheService authCacheService;
 
     public void verificationCode(String key) throws LoginException, IOException {
         HttpServletResponse response = SpringUtils.getResponse();

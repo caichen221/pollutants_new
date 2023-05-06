@@ -1,0 +1,10 @@
+
+dependencies {
+    api project(":templet")
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation  'org.springframework.boot:spring-boot-configuration-processor'
+    api group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
+    api group: 'org.apache.commons', name: 'commons-lang3', version:"${commonLang3Version}"
+    api fileTree(dir:'libs',include:['*.jar'])
+    api("org.apache.thrift:libthrift:0.10.0")
+}

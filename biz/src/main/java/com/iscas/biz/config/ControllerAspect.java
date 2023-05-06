@@ -1,7 +1,6 @@
 package com.iscas.biz.config;
 
 import com.iscas.base.biz.config.StaticInfo;
-import com.iscas.base.biz.util.AuthContextHolder;
 import com.iscas.base.biz.util.SpringUtils;
 import com.iscas.templet.common.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -48,27 +47,20 @@ public class ControllerAspect {
             log.debug("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
             log.trace("ARGS : " + Arrays.toString(joinPoint.getArgs()));
         }
-
-        try {
-            Object result = joinPoint.proceed();
-            if (request != null) {
-                //如果是ResponseEntity类型那么直接注入值
-                if (result instanceof ResponseEntity) {
-                    ResponseEntity responseEntity = (ResponseEntity) result;
-                    responseEntity.setTookInMillis(System.currentTimeMillis() - start);
-                    //注入requestURL
-                    responseEntity.setRequestURL(request.getRequestURI());
-                }
-                // 处理完请求，返回内容
-                if (result != null) {
-                    log.trace("Response:" + result);
-                }
+        Object result = joinPoint.proceed();
+        if (request != null) {
+            //如果是ResponseEntity类型那么直接注入值
+            if (result instanceof ResponseEntity) {
+                ResponseEntity responseEntity = (ResponseEntity) result;
+                responseEntity.setTookInMillis(System.currentTimeMillis() - start);
+                //注入requestURL
+                responseEntity.setRequestURL(request.getRequestURI());
             }
-            return result;
-        } finally {
-//            StaticInfo.START_TIME_THREAD_LOCAL.remove();
-            AuthContextHolder.removeContext();
+            // 处理完请求，返回内容
+            if (result != null) {
+                log.trace("Response:" + result);
+            }
         }
-
+        return result;
     }
 }

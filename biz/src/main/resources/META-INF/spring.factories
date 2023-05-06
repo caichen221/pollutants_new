@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
- com.iscas.biz.flowable.filter.FlowableAutoConfigurationExclusionFilter

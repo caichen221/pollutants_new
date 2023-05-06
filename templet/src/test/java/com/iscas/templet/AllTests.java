@@ -1,6 +1,5 @@
 package com.iscas.templet;
 
-import com.iscas.templet.dynamic.TestBean;
 import com.iscas.templet.helper.HeaderHelperTests;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
@@ -15,7 +14,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(JUnitPlatform.class)
 @SelectClasses({
-        TestBean.class, HeaderHelperTests.class
+        HeaderHelperTests.class
 })
 public class AllTests {
 }
