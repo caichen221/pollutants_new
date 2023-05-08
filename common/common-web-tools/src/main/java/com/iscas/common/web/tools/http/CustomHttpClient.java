@@ -6,10 +6,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -52,9 +49,18 @@ public class CustomHttpClient {
             synchronized (CustomHttpClient.class) {
                 if (client == null) {
                     this.httpClientProps = httpClientProps;
+                    SSLContext sslContext;
+                    try {
+                        sslContext = getSslContext();
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    } catch (KeyManagementException e) {
+                        throw new RuntimeException(e);
+                    }
                     HttpClient.Builder builder = HttpClient.newBuilder()
                             .version(httpClientProps.getVersion())
                             .connectTimeout(Duration.ofMillis(httpClientProps.getConnectTimeout()))
+                            .sslContext(sslContext)
                             .followRedirects(httpClientProps.getRedirect());
                     Optional.ofNullable(httpClientProps.getAuthenticator()).ifPresent(builder::authenticator);
                     Optional.ofNullable(httpClientProps.getCookieHandler()).ifPresent(builder::cookieHandler);
@@ -63,6 +69,34 @@ public class CustomHttpClient {
                     client = builder.build();
                 }
             }
+        }
+    }
+
+    private SSLContext getSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
+        return sc;
+    }
+
+    private static class TrustAllCerts implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }
+
+    private static class TrustAllHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
         }
     }
 
