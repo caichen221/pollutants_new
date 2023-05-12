@@ -85,9 +85,9 @@ public class ReflectUtilsTests {
     public void test3() throws NoSuchFieldException, IllegalAccessException {
         System.out.println("--------反射测试3 begin---------");
         Integer a = new Integer(4);
-        boolean flag = ReflectUtils.isWrapClass(a.getClass());
+        boolean flag = ReflectUtils.isWrap(a.getClass());
         Assertions.assertEquals(flag, true);
-        boolean flag1 = ReflectUtils.isWrapClass(A.class);
+        boolean flag1 = ReflectUtils.isWrap(A.class);
         Assertions.assertEquals(flag1, false);
         System.out.println("--------反射测试3 end---------");
     }

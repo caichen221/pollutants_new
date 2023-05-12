@@ -198,7 +198,7 @@ public class ReflectUtils {
      * @date 2018/7/16
      * @since jdk1.8
      */
-    public static boolean isWrapClass(Class clz) {
+    public static boolean isWrap(Class clz) {
         try {
             return ((Class) clz.getField("TYPE").get(null)).isPrimitive();
         } catch (Exception e) {
@@ -232,7 +232,54 @@ public class ReflectUtils {
         if (null == clazz) {
             return false;
         }
-        return (clazz.isPrimitive() || isWrapClass(clazz));
+        return (clazz.isPrimitive() || isWrap(clazz));
+    }
+
+    /**
+     * 是否为基本类型（包括包装类和原始类）
+     *
+     * @param obj 对象
+     * @return 是否为基本类型
+     */
+    public static boolean isBasicType(Object obj) {
+        if (null == obj) {
+            return false;
+        }
+        return isBasicType(obj.getClass());
+    }
+
+    /**
+     * 判断一个对象是否为基本数据类型
+     *
+     * @param obj 对象
+     * @return boolean
+     * @date 2018/7/16
+     * @since jdk1.8
+     */
+    public static boolean isWrap(Object obj) {
+        return obj != null && isWrap(obj.getClass());
+    }
+
+    /**
+     * 判断一个类是否为基础数据类型或String
+     *
+     * @param clz 类
+     * @return boolean
+     * @date 2023/5/12
+     */
+    public static boolean isBasicOrStr(Class clz) {
+        return clz != null && isBasicType(clz);
+    }
+
+    /**
+     * 判断一个对象是否为基础数据类型或String
+     *
+     * @param obj 对象
+     * @return boolean
+     * @date 2023/5/12
+     */
+    public static boolean isBasicOrStr(Object obj) {
+        return obj != null && isBasicOrStr(obj.getClass());
     }
 
     /**
@@ -1592,8 +1639,8 @@ public class ReflectUtils {
         for (int i = 0; i < types1.length; i++) {
             type1 = types1[i];
             type2 = types2[i];
-            boolean b = (isWrapClass(type1) && isPrimitive(type2)) ||
-                    (isPrimitive(type1) && isWrapClass(type2));
+            boolean b = (isWrap(type1) && isPrimitive(type2)) ||
+                    (isPrimitive(type1) && isWrap(type2));
             if (b) {
                 // 原始类型和包装类型存在不一致情况
                 return false;
