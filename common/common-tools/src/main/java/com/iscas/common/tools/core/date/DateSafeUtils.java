@@ -32,7 +32,7 @@ public class DateSafeUtils {
      * @param pattern PATTERN
      * @return simpleDataFormat
      */
-    private static SimpleDateFormat getSdf(final String pattern) {
+    public static SimpleDateFormat getSdf(final String pattern) {
         ThreadLocal<SimpleDateFormat> tl = SDF_MAP.get(pattern);
         // 此处的双重判断和同步是为了防止sdfMap这个单例被多次put重复的sdf
         if (tl == null) {
@@ -49,7 +49,7 @@ public class DateSafeUtils {
         return tl.get();
     }
 
-    private static SimpleDateFormat getSdf(final String pattern, final TimeZone timeZone) {
+    public static SimpleDateFormat getSdf(final String pattern, final TimeZone timeZone) {
         String key = pattern + "_" + timeZone.getRawOffset();
         ThreadLocal<SimpleDateFormat> tl = SDF_MAP.get(key);
         // 此处的双重判断和同步是为了防止sdfMap这个单例被多次put重复的sdf
@@ -59,7 +59,11 @@ public class DateSafeUtils {
                 if (tl == null) {
                     // 只有Map中还没有这个pattern的sdf才会生成新的sdf并放入map
                     // 这里是关键,使用ThreadLocal<SimpleDateFormat>替代原来直接new SimpleDateFormat
-                    tl = ThreadLocal.withInitial(() -> new SimpleDateFormat(pattern));
+                    tl = ThreadLocal.withInitial(() -> {
+                        SimpleDateFormat df = new SimpleDateFormat(pattern);
+                        df.setTimeZone(timeZone);
+                        return df;
+                    });
                     SDF_MAP.put(key, tl);
                 }
             }
