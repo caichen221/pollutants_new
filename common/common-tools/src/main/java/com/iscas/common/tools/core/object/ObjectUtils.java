@@ -86,7 +86,7 @@ public class ObjectUtils {
         }
         T result = null;
 
-        if (ReflectUtils.isWrapClass(targetClass) || targetClass == String.class ||
+        if (ReflectUtils.isWrap(targetClass) || targetClass == String.class ||
                 targetClass.isPrimitive()) {
             //如果是基本数据类型，或者String，或者包装类型
             result = (T) oriObj;
@@ -240,7 +240,7 @@ public class ObjectUtils {
 
     private static Class<?> forName(Class<?> clazz, Map<String, Class> paramClassMap) throws ClassNotFoundException {
         Class<?> result;
-        if (ReflectUtils.isWrapClass(clazz) || clazz == String.class ||
+        if (ReflectUtils.isWrap(clazz) || clazz == String.class ||
                 clazz.isPrimitive()) {
             //如果是基本数据类型，或者String，或者包装类型
             result = clazz;
@@ -264,7 +264,7 @@ public class ObjectUtils {
         }
         T result = null;
 
-        if (ReflectUtils.isWrapClass(targetClass) || targetClass == String.class ||
+        if (ReflectUtils.isWrap(targetClass) || targetClass == String.class ||
                 targetClass.isPrimitive()) {
             //如果是基本数据类型，或者String，或者包装类型
             result = (T) oriObj;
