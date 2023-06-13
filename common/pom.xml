@@ -8,6 +8,12 @@
 
         <module>xss-filter-spring-boot-starter</module>
         <module>ratelimit-spring-boot-starter</module>
+        <module>datasong-spring-boot-starter</module>
+        <module>common-web-tools</module>
+        <module>common-tools</module>
+        <module>check-referer-spring-boot-starter</module>
+        <module>biz-mp-spring-boot-starter</module>
+        <module>biz-base-spring-boot-starter</module>
 
 
     </modules>

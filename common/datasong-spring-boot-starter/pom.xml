@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.iscas</groupId>
+        <artifactId>common</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>datasong-spring-boot-starter</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.iscas</groupId>
+            <artifactId>templet</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>${libthrift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.iscas</groupId>
+            <artifactId>datasong-client</artifactId>
+            <version>0.2.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/datasong-client-0.2.4.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.iscas</groupId>
+            <artifactId>datasong-client-plus</artifactId>
+            <version>0.2.4-1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/datasong-client-plus-0.2.4-1.jar</systemPath>
+        </dependency>
+
+    </dependencies>
+
+
+</project>

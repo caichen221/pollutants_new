@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 
 /**
- *
- *
  * @author zhuquanwen
  * @version 1.0
  * @date 2018/10/12 14:58
@@ -23,7 +21,7 @@ import org.springframework.core.env.Environment;
 @SuppressWarnings({"AccessStaticViaInstance", "AliAccessStaticViaInstance", "AlibabaRemoveCommentedCode", "unused", "UnusedAssignment", "InstantiationOfUtilityClass", "CommentedOutCode"})
 @Lazy(value = false)
 @EnableConfigurationProperties(DatasongPlusProps.class)
-@ConditionalOnProperty(prefix = "datasong.client.plus",matchIfMissing = true,value = "enabled")
+@ConditionalOnProperty(prefix = "datasong.client.plus", matchIfMissing = true, value = "enabled")
 @Configuration
 public class DatasongClientPlusConfig implements EnvironmentAware {
     private Environment environment;
@@ -61,7 +59,7 @@ public class DatasongClientPlusConfig implements EnvironmentAware {
 
 
     @Bean
-    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(){
+    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
         //新的配置方式，将repository直接注册到spring
 
         String dbName = environment.getProperty("datasong.client.plus.dbname");
